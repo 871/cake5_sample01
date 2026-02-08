@@ -57,10 +57,22 @@ return function (RouteBuilder $routes): void {
          */
         $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
 
+
+        // debug($_SERVER['REQUEST_URI']);
+        // debug(preg_replace('/^\/([^\/\?]+)\/?.*$/', '$1', $_SERVER['REQUEST_URI']));
+        require match (preg_replace('/^\/([^\/\?]+)\/?.*$/', '$1', $_SERVER['REQUEST_URI'])) {
+            'cs' => CONFIG . 'routes/custmer.php',
+            'us' => CONFIG . 'routes/user.php',
+            'ad' => CONFIG . 'routes/admin.php',
+            default => CONFIG . 'routes/other.php',
+        };
+
         /*
          * ...and connect the rest of 'Pages' controller's URLs.
          */
         $builder->connect('/pages/*', 'Pages::display');
+
+
 
         /*
          * Connect catchall routes for all controllers.
@@ -75,7 +87,7 @@ return function (RouteBuilder $routes): void {
          * It is NOT recommended to use fallback routes after your initial prototyping phase!
          * See https://book.cakephp.org/5/en/development/routing.html#fallbacks-method for more information
          */
-        $builder->fallbacks();
+        // $builder->fallbacks();
     });
 
     /*
