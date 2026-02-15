@@ -66,6 +66,7 @@ header {
 .table-scroll {
     overflow: auto;
     resize: vertical;
+    min-height: 70vh;
     height: 70vh; /* 初期表示高さ：画面の約70% */
     border: 1px solid #dee2e6;
 }
@@ -123,7 +124,6 @@ footer {
 
     <!-- Main Content -->
     <main class="main-content">
-
         <!-- Search Form -->
         <div class="card mb-3">
             <div class="card-header search-toggle" id="searchToggle">
@@ -143,34 +143,37 @@ footer {
                             <label class="form-label">BIGINT 完全一致</label>
                             <input type="number" name="bigint_col" class="form-control">
                         </div>
+                        <div class="col-md-3">
+                            <label class="form-label">DECIMAL 範囲</label>
+                            <input type="number" step="0.01" name="decimal_from" class="form-control mb-1" placeholder="From">
+                            <input type="number" step="0.01" name="decimal_to" class="form-control" placeholder="To">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">FLOAT 範囲</label>
+                            <input type="number" step="0.01" name="float_from" class="form-control mb-1" placeholder="From">
+                            <input type="number" step="0.01" name="float_to" class="form-control" placeholder="To">
+                        </div>
                     </div>
 
                     <div class="row mb-2">
                         <div class="col-md-3">
-                            <label class="form-label">DECIMAL From</label>
-                            <input type="number" step="0.01" name="decimal_from" class="form-control">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">DECIMAL To</label>
-                            <input type="number" step="0.01" name="decimal_to" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-md-3">
-                            <label class="form-label">DATE From</label>
-                            <input type="date" name="date_from" class="form-control">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">DATE To</label>
+                            <label class="form-label">DATE 範囲</label>
+                            <input type="date" name="date_from" class="form-control mb-1">
                             <input type="date" name="date_to" class="form-control">
                         </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-md-6">
-                            <label class="form-label">キーワード検索（全文検索）</label>
-                            <input type="text" name="keyword" class="form-control">
+                        <div class="col-md-3">
+                            <label class="form-label">TIME 範囲</label>
+                            <input type="time" name="time_from" class="form-control mb-1">
+                            <input type="time" name="time_to" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">DATETIME 範囲</label>
+                            <input type="datetime-local" name="datetime_from" class="form-control mb-1">
+                            <input type="datetime-local" name="datetime_to" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">キーワード検索</label>
+                            <input type="text" name="keyword" class="form-control" placeholder="全文検索">
                         </div>
                     </div>
 
@@ -180,7 +183,6 @@ footer {
                 </form>
             </div>
         </div>
-
         <!-- Pagination Top -->
         <div class="d-flex justify-content-between align-items-center mb-2">
             <nav>

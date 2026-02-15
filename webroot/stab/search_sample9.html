@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>MySQL Type Samples Search</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* ===== Header 固定 ===== */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 56px;
+    background: #212529;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 1000;
+}
+
+/* ===== Layout ===== */
+.wrapper {
+    display: flex;
+    height: calc(100% - 56px);
+    margin-top: 56px;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+    width: 240px;
+    background: #343a40;
+    color: #fff;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+/* ===== Main ===== */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+/* ===== Search Toggle ===== */
+.search-toggle {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.search-toggle:hover {
+    background-color: #f1f3f5;
+}
+
+/* ===== Table Scroll Area ===== */
+.table-scroll {
+    overflow: auto;
+    resize: vertical;
+    min-height: 70vh;
+    height: 70vh; /* 初期表示高さ：画面の約70% */
+    border: 1px solid #dee2e6;
+}
+
+/* ===== Sticky Table Header ===== */
+.table thead th {
+    position: sticky;
+    top: 0;
+    background: #f8f9fa;
+    z-index: 2;
+    border-bottom: 2px solid #dee2e6;
+    text-align: center;
+}
+
+/* ===== Fixed Column Width ===== */
+.table th, .table td {
+    white-space: nowrap;
+    width: auto;
+}
+
+.table th.col_choice, .table td.col_choice { width: 40px; min-width: 40px; max-width: 40px; }
+.table th.col_id, .table td.col_id { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_int, .table td.col_int { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_bigint, .table td.col_bigint { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_decimal, .table td.col_decimal { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_float, .table td.col_float { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_double, .table td.col_double { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_date, .table td.col_date { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_time, .table td.col_time { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_datetime, .table td.col_datetime { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_char, .table td.col_char { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_varchar, .table td.col_varchar { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_text, .table td.col_text { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_mediumtext, .table td.col_mediumtext { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_longtext, .table td.col_longtext { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_json, .table td.col_json { width: 140px; min-width: 140px; max-width: 140px; }
+.table th.col_action, .table td.col_action { width: 180px; min-width: 180px; max-width: 180px; }
+
+
+/* ===== Alignment Classes ===== */
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+
+/* ===== Result TextBox Style ===== */
+.result-input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    outline: none;
+}
+
+/* ===== Footer (full width) ===== */
+footer {
+    width: 100%;
+    background: #212529;
+    color: #fff;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 0.9rem;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h5 class="mb-0">MySQL Type Samples 管理画面</h5>
+</header>
+
+<div class="wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h6>メニュー</h6>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link text-white" href="#">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="#">Search</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="#">Settings</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Search Form -->
+        <div class="card mb-3">
+            <div class="card-header search-toggle" id="searchToggle">
+                <span>検索条件</span>
+                <span id="searchIcon">▼</span>
+            </div>
+
+            <div class="card-body" id="searchBody">
+                <form method="get">
+
+                    <div class="row mb-2">
+                        <div class="col-md-3">
+                            <label class="form-label">INT 完全一致</label>
+                            <input type="number" name="int_col" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">BIGINT 完全一致</label>
+                            <input type="number" name="bigint_col" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">DECIMAL 範囲</label>
+                            <input type="number" step="0.01" name="decimal_from" class="form-control mb-1" placeholder="From">
+                            <input type="number" step="0.01" name="decimal_to" class="form-control" placeholder="To">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">FLOAT 範囲</label>
+                            <input type="number" step="0.01" name="float_from" class="form-control mb-1" placeholder="From">
+                            <input type="number" step="0.01" name="float_to" class="form-control" placeholder="To">
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-3">
+                            <label class="form-label">DATE 範囲</label>
+                            <input type="date" name="date_from" class="form-control mb-1">
+                            <input type="date" name="date_to" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">TIME 範囲</label>
+                            <input type="time" name="time_from" class="form-control mb-1">
+                            <input type="time" name="time_to" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">DATETIME 範囲</label>
+                            <input type="datetime-local" name="datetime_from" class="form-control mb-1">
+                            <input type="datetime-local" name="datetime_to" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">キーワード検索</label>
+                            <input type="text" name="keyword" class="form-control" placeholder="全文検索">
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <label class="form-label">表示設定</label>
+                            <div class="form-control">
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle all_check_show_fields" 
+                                        type="checkbox" 
+                                    >全て
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="ID"
+                                    >ID
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="INT"
+                                    >INT
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="BIGINT"
+                                    >BIGINT
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="DECIMAL"
+                                    >DECIMAL
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="FLOAT"
+                                    >FLOAT
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="DOUBLE"
+                                    >DOUBLE
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="DATE"
+                                    >DATE
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="TIME"
+                                    >TIME
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="DATETIME"
+                                    >DATETIME
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="CHAR"
+                                    >CHAR
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="VARCHAR"
+                                    >VARCHAR
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="TEXT"
+                                    >TEXT
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="MEDIUMTEXT"
+                                    >MEDIUMTEXT
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="LONGTEXT"
+                                    >LONGTEXT
+                                </label>
+                                <label class="form-check-label">
+                                    <input 
+                                        class="form-check-input column-toggle" 
+                                        type="checkbox" 
+                                        name="show_fields[]"
+                                        value="JSON"
+                                    >JSON
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary">検索</button>
+                    <button type="reset" class="btn btn-secondary">クリア</button>
+
+                </form>
+            </div>
+        </div>
+        <!-- Pagination Top -->
+        <p>全300件中 1-100を表示</p>
+        <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+            <!-- 左：ページネーション -->
+            <div class="order-1">
+                <nav>
+                    <ul class="pagination mb-0">
+                        <li class="page-item disabled"><a class="page-link">First</a></li>
+                        <li class="page-item disabled"><a class="page-link">Prev</a></li>
+                        <li class="page-item active"><a class="page-link">1</a></li>
+                        <li class="page-item"><a class="page-link">2</a></li>
+                        <li class="page-item"><a class="page-link">3</a></li>
+                        <li class="page-item"><a class="page-link">Next</a></li>
+                        <li class="page-item"><a class="page-link">Last</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- 中央：ボタン -->
+            <div class="order-2 mx-auto d-flex gap-2">
+                <button class="btn btn-sm btn-success">一括更新</button>
+                <button class="btn btn-sm btn-danger">一括削除</button>
+                <button class="btn btn-sm btn-secondary">エクスポート</button>
+            </div>
+            <!-- 右：件数表示 -->
+            <div class="order-3 ms-auto">
+                <select class="form-select form-select-sm w-auto">
+                    <option>10件表示</option>
+                    <option>20件表示</option>
+                    <option>50件表示</option>
+                    <option>100件表示</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Result Table -->
+        <div class="table-scroll mb-2">
+            <table class="table table-bordered table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th class="col_choice">
+                            <input type="checkbox" id="checkAll">
+                        </th>
+                        <th class="col_id">ID</th>
+                        <th class="col_int">INT</th>
+                        <th class="col_bigint">BIGINT</th>
+                        <th class="col_decimal">DECIMAL</th>
+                        <th class="col_float">FLOAT</th>
+                        <th class="col_double">DOUBLE</th>
+                        <th class="col_date">DATE</th>
+                        <th class="col_time">TIME</th>
+                        <th class="col_datetime">DATETIME</th>
+                        <th class="col_char">CHAR</th>
+                        <th class="col_varchar">VARCHAR</th>
+                        <th class="col_text">TEXT</th>
+                        <th class="col_mediumtext">MEDIUMTEXT</th>
+                        <th class="col_longtext">LONGTEXT</th>
+                        <th class="col_json">JSON</th>
+                        <th class="col_action">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     <script>
+                        for(let i=1;i<=50;i++){
+                            document.write('<tr>');
+                            document.write('<td style="text-align:center;"><input type="checkbox" class="row-check"></td>');
+                            document.write('<td><input class="result-input text-center" value="uuid-'+i+'"></td>');
+                            document.write('<td><input class="result-input text-right" value="'+i+'"></td>');
+                            document.write('<td><input class="result-input text-right" value="'+(1000+i)+'"></td>');
+                            document.write('<td><input class="result-input text-right" value="12.34"></td>');
+                            document.write('<td><input class="result-input text-right" value="1.23"></td>');
+                            document.write('<td><input class="result-input text-right" value="9.87"></td>');
+                            document.write('<td><input class="result-input text-center" value="2026-02-08"></td>');
+                            document.write('<td><input class="result-input text-center" value="12:34:56"></td>');
+                            document.write('<td><input class="result-input text-center" value="2026-02-08 12:34:56"></td>');
+                            document.write('<td><input class="result-input" value="CHAR'+i+'"></td>');
+                            document.write('<td><input class="result-input" value="VARCHAR'+i+'"></td>');
+                            document.write('<td><input class="result-input" value="TEXT'+i+'"></td>');
+                            document.write('<td><input class="result-input" value="MEDIUMTEXT'+i+'"></td>');
+                            document.write('<td><input class="result-input" value="LONGTEXT'+i+'"></td>');
+                            document.write('<td><input class="result-input" value=\'{"a":'+i+'}\'></td>');
+                            document.write('<td class="text-center"><button class="btn btn-sm btn-info me-2">更新</button><button class="btn btn-sm btn-info me-2">詳細</button><button class="btn btn-sm btn-info me-2">複製</button></td>');
+                            document.write('</tr>');
+                        }
+                    </script>
+
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+            <!-- 左：ページネーション -->
+            <div class="order-1">
+                <nav>
+                    <ul class="pagination mb-0">
+                        <li class="page-item disabled"><a class="page-link">First</a></li>
+                        <li class="page-item disabled"><a class="page-link">Prev</a></li>
+                        <li class="page-item active"><a class="page-link">1</a></li>
+                        <li class="page-item"><a class="page-link">2</a></li>
+                        <li class="page-item"><a class="page-link">3</a></li>
+                        <li class="page-item"><a class="page-link">Next</a></li>
+                        <li class="page-item"><a class="page-link">Last</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- 中央：ボタン -->
+            <div class="order-2 mx-auto d-flex gap-2">
+                <button class="btn btn-sm btn-success">一括更新</button>
+                <button class="btn btn-sm btn-danger">一括削除</button>
+                <button class="btn btn-sm btn-secondary">エクスポート</button>
+            </div>
+            <!-- 右：件数表示 -->
+            <div class="order-3 ms-auto">
+                <select class="form-select form-select-sm w-auto">
+                    <option>10件表示</option>
+                    <option>20件表示</option>
+                    <option>50件表示</option>
+                    <option>100件表示</option>
+                </select>
+            </div>
+        </div>
+        <p>全300件中 1-100を表示</p>
+    </main>
+</div>
+
+<!-- Footer (Full Width) -->
+<footer>
+    © 2026 MySQL Type Samples System
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const checkAll = document.getElementById("checkAll");
+
+    // 全選択 / 全解除
+    checkAll.addEventListener("change", function () {
+
+        document.querySelectorAll(".row-check").forEach(chk => chk.checked = checkAll.checked);
+    });
+
+    // 個別チェック → ヘッダーcheckbox同期
+    document.addEventListener("change", function (e) {
+        if (e.target.classList.contains("row-check")) {
+            const rows = document.querySelectorAll(".row-check");
+            const allChecked = [...rows].every(chk => chk.checked);
+            const someChecked = [...rows].some(chk => chk.checked);
+
+            checkAll.checked = allChecked;
+            checkAll.indeterminate = !allChecked && someChecked; // 中間状態
+        }
+    });
+});
+
+document.getElementById("searchToggle").addEventListener("click", function() {
+    const body = document.getElementById("searchBody");
+    const icon = document.getElementById("searchIcon");
+
+    if (body.style.display === "none") {
+        body.style.display = "block";
+        icon.textContent = "▼";
+    } else {
+        body.style.display = "none";
+        icon.textContent = "▲";
+    }
+});
+</script>
+
+</body>
+</html>
