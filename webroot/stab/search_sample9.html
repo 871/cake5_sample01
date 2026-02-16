@@ -9,6 +9,7 @@
 html, body {
     height: 100%;
     margin: 0;
+    min-width: 1280px;
 }
 
 /* ===== Header 固定 ===== */
@@ -49,6 +50,48 @@ header {
     flex-direction: column;
     padding: 15px;
     overflow-y: auto;
+}
+
+.breadcrumb {
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+/* ===== Custom Messages ===== */
+
+.alert {
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+/* Notice：青系の罫線＋通常背景 */
+.alert-notice {
+    border: 2px solid #0d6efd;
+    background: #ffffff;
+    color: #0d6efd;
+}
+
+/* Success：緑背景＋白文字 */
+.alert-success-custom {
+    background: #198754;
+    color: #ffffff;
+    border: 2px solid #198754;
+}
+
+/* Warning：黄背景＋黒文字 */
+.alert-warning-custom {
+    background: #ffc107;
+    color: #000000;
+    border: 2px solid #ffc107;
+}
+
+/* Error：赤背景＋白文字 */
+.alert-error-custom {
+    background: #dc3545;
+    color: #ffffff;
+    border: 2px solid #dc3545;
 }
 
 /* ===== Search Toggle ===== */
@@ -129,6 +172,12 @@ footer {
     font-size: 0.9rem;
 }
 </style>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<!-- jQuery（Select2は必要） -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 <body>
 
@@ -149,6 +198,53 @@ footer {
 
     <!-- Main Content -->
     <main class="main-content">
+        <!-- Header Menu -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2 rounded">
+            <div class="container-fluid px-2">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">一覧</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">新規作成</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">CSVインポート</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">設定</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-3">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">MySQL Type Samples</a></li>
+                <li class="breadcrumb-item active" aria-current="page">一覧</li>
+            </ol>
+        </nav>
+        <!-- Message Area -->
+        <div class="message-area mb-3">
+
+            <div class="alert alert-notice">
+                Notice：データを読み込みました。
+            </div>
+
+            <div class="alert alert-success-custom">
+                Success：更新が完了しました。
+            </div>
+
+            <div class="alert alert-warning-custom">
+                Warning：一部のデータが未入力です。
+            </div>
+
+            <div class="alert alert-error-custom">
+                Error：保存に失敗しました。
+            </div>
+
+        </div>
         <!-- Search Form -->
         <div class="card mb-3">
             <div class="card-header search-toggle" id="searchToggle">
@@ -197,6 +293,61 @@ footer {
                             <input type="datetime-local" name="datetime_to" class="form-control">
                         </div>
                         <div class="col-md-3">
+                            <label class="form-label">カテゴリ検索（Select2）</label>
+                            <select name="category_select2" class="form-select select2">
+                                <option value="">全て</option>
+                                <option value="type1">タイプ1</option>
+                                <option value="type2">タイプ2</option>
+                                <option value="type3">タイプ3</option>
+                                <option value="type4">タイプ4</option>
+                                <option value="type5">タイプ5</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <label class="form-label">ステータス検索（ラジオボタン）</label>
+                            <div class="form-control d-flex gap-4">
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                        name="status" value="" id="status_all" checked>
+                                    <label class="form-check-label" for="status_all">
+                                        全て
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                        name="status" value="active" id="status_active">
+                                    <label class="form-check-label" for="status_active">
+                                        有効
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                        name="status" value="inactive" id="status_inactive">
+                                    <label class="form-check-label" for="status_inactive">
+                                        無効
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                        name="status" value="deleted" id="status_deleted">
+                                    <label class="form-check-label" for="status_deleted">
+                                        削除済み
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-12">
                             <label class="form-label">キーワード検索</label>
                             <input type="text" name="keyword" class="form-control" placeholder="全文検索">
                         </div>
@@ -335,10 +486,10 @@ footer {
                             </div>
                         </div>
                     </div>
-
-                    <button class="btn btn-primary">検索</button>
-                    <button type="reset" class="btn btn-secondary">クリア</button>
-
+                    <div class="text-center mt-3">
+                        <button class="btn btn-primary me-2">検索</button>
+                        <button type="reset" class="btn btn-secondary">クリア</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -506,6 +657,16 @@ document.getElementById("searchToggle").addEventListener("click", function() {
         body.style.display = "none";
         icon.textContent = "▲";
     }
+});
+
+$(document).ready(function() {
+
+    $('.select2').select2({
+        width: '100%',
+        placeholder: "選択してください",
+        allowClear: true
+    });
+
 });
 </script>
 
