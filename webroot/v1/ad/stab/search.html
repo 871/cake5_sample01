@@ -4,180 +4,39 @@
 <meta charset="UTF-8">
 <title>MySQL Type Samples Search</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<style>
-html, body {
-    height: 100%;
-    margin: 0;
-    min-width: 1280px;
-}
-
-/* ===== Header 固定 ===== */
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 56px;
-    background: #212529;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    z-index: 1000;
-}
-
-/* ===== Layout ===== */
-.wrapper {
-    display: flex;
-    height: calc(100% - 56px);
-    margin-top: 56px;
-}
-
-/* ===== Sidebar ===== */
-.sidebar {
-    width: 240px;
-    background: #343a40;
-    color: #fff;
-    padding: 15px;
-    overflow-y: auto;
-}
-
-/* ===== Main ===== */
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-    overflow-y: auto;
-}
-
-.breadcrumb {
-    background-color: #f8f9fa;
-    padding: 8px 12px;
-    border-radius: 6px;
-}
-/* ===== Custom Messages ===== */
-
-.alert {
-    padding: 10px 15px;
-    border-radius: 6px;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-}
-
-/* Notice：青系の罫線＋通常背景 */
-.alert-notice {
-    border: 2px solid #0d6efd;
-    background: #ffffff;
-    color: #0d6efd;
-}
-
-/* Success：緑背景＋白文字 */
-.alert-success-custom {
-    background: #198754;
-    color: #ffffff;
-    border: 2px solid #198754;
-}
-
-/* Warning：黄背景＋黒文字 */
-.alert-warning-custom {
-    background: #ffc107;
-    color: #000000;
-    border: 2px solid #ffc107;
-}
-
-/* Error：赤背景＋白文字 */
-.alert-error-custom {
-    background: #dc3545;
-    color: #ffffff;
-    border: 2px solid #dc3545;
-}
-
-/* ===== Search Toggle ===== */
-.search-toggle {
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.search-toggle:hover {
-    background-color: #f1f3f5;
-}
-
-/* ===== Table Scroll Area ===== */
-.table-scroll {
-    overflow: auto;
-    resize: vertical;
-    min-height: 70vh;
-    height: 70vh; /* 初期表示高さ：画面の約70% */
-    border: 1px solid #dee2e6;
-}
-
-/* ===== Sticky Table Header ===== */
-.table thead th {
-    position: sticky;
-    top: 0;
-    background: #f8f9fa;
-    z-index: 2;
-    border-bottom: 2px solid #dee2e6;
-    text-align: center;
-}
-
-/* ===== Fixed Column Width ===== */
-.table th, .table td {
-    white-space: nowrap;
-    width: auto;
-}
-
-.table th.col_choice, .table td.col_choice { width: 40px; min-width: 40px; max-width: 40px; }
-.table th.col_id, .table td.col_id { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_int, .table td.col_int { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_bigint, .table td.col_bigint { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_decimal, .table td.col_decimal { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_float, .table td.col_float { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_double, .table td.col_double { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_date, .table td.col_date { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_time, .table td.col_time { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_datetime, .table td.col_datetime { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_char, .table td.col_char { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_varchar, .table td.col_varchar { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_text, .table td.col_text { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_mediumtext, .table td.col_mediumtext { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_longtext, .table td.col_longtext { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_json, .table td.col_json { width: 140px; min-width: 140px; max-width: 140px; }
-.table th.col_action, .table td.col_action { width: 180px; min-width: 180px; max-width: 180px; }
-
-
-/* ===== Alignment Classes ===== */
-.text-right { text-align: right; }
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-
-/* ===== Result TextBox Style ===== */
-.result-input {
-    border: none;
-    background: transparent;
-    width: 100%;
-    outline: none;
-}
-
-/* ===== Footer (full width) ===== */
-footer {
-    width: 100%;
-    background: #212529;
-    color: #fff;
-    text-align: center;
-    padding: 12px 0;
-    font-size: 0.9rem;
-}
-</style>
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<!-- noUiSlider CSS -->
+<link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
+
+<link href="/v1/ad/css/lyaout.css" rel="stylesheet">
+<link href="/v1/ad/css/search.css" rel="stylesheet">
+<style>
+    .table th.col_choice, .table td.col_choice { width: 40px; min-width: 40px; max-width: 40px; }
+    .table th.col_id, .table td.col_id { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_int, .table td.col_int { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_bigint, .table td.col_bigint { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_decimal, .table td.col_decimal { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_float, .table td.col_float { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_double, .table td.col_double { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_date, .table td.col_date { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_time, .table td.col_time { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_datetime, .table td.col_datetime { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_char, .table td.col_char { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_varchar, .table td.col_varchar { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_text, .table td.col_text { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_mediumtext, .table td.col_mediumtext { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_longtext, .table td.col_longtext { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_json, .table td.col_json { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_action, .table td.col_action { width: 180px; min-width: 180px; max-width: 180px; }
+</style>
+
 <!-- jQuery（Select2は必要） -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- noUiSlider JS -->
+<script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
 </head>
 <body>
 
@@ -228,19 +87,19 @@ footer {
         <!-- Message Area -->
         <div class="message-area mb-3">
 
-            <div class="alert alert-notice">
+            <div class="alert alert-notice" onclick="this.style.display='none'">
                 Notice：データを読み込みました。
             </div>
 
-            <div class="alert alert-success-custom">
+            <div class="alert alert-success-custom" onclick="this.style.display='none'">
                 Success：更新が完了しました。
             </div>
 
-            <div class="alert alert-warning-custom">
+            <div class="alert alert-warning-custom" onclick="this.style.display='none'">
                 Warning：一部のデータが未入力です。
             </div>
 
-            <div class="alert alert-error-custom">
+            <div class="alert alert-error-custom" onclick="this.style.display='none'">
                 Error：保存に失敗しました。
             </div>
 
@@ -302,6 +161,51 @@ footer {
                                 <option value="type4">タイプ4</option>
                                 <option value="type5">タイプ5</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <label class="form-label">INT 範囲（スライダー）</label>
+
+                            <div id="intSlider" class="mb-2"></div>
+
+                            <div class="d-flex gap-2">
+                                <input type="number" name="int_from" id="int_from" class="form-control" placeholder="From">
+                                <input type="number" name="int_to" id="int_to" class="form-control" placeholder="To">
+                            </div>
+                            <script>(function() {
+                                // ===== INT Range Slider =====
+                                const intSlider = document.getElementById('intSlider');
+
+                                noUiSlider.create(intSlider, {
+                                    start: [0, 100],
+                                    connect: true,
+                                    step: 1,
+                                    range: {
+                                        'min': 0,
+                                        'max': 1000
+                                    }
+                                });
+
+                                const intFrom = document.getElementById('int_from');
+                                const intTo = document.getElementById('int_to');
+
+                                // スライダー → input 連動
+                                intSlider.noUiSlider.on('update', function (values) {
+                                    intFrom.value = Math.round(values[0]);
+                                    intTo.value = Math.round(values[1]);
+                                });
+
+                                // input → スライダー連動
+                                intFrom.addEventListener('change', function () {
+                                    intSlider.noUiSlider.set([this.value, null]);
+                                });
+
+                                intTo.addEventListener('change', function () {
+                                    intSlider.noUiSlider.set([null, this.value]);
+                                });
+                            })();</script>
                         </div>
                     </div>
 
@@ -564,9 +468,9 @@ footer {
                             document.write('<td><input class="result-input text-right" value="12.34"></td>');
                             document.write('<td><input class="result-input text-right" value="1.23"></td>');
                             document.write('<td><input class="result-input text-right" value="9.87"></td>');
-                            document.write('<td><input class="result-input text-center" value="2026-02-08"></td>');
+                            document.write('<td><input class="result-input text-center" value="2026/02/08"></td>');
                             document.write('<td><input class="result-input text-center" value="12:34:56"></td>');
-                            document.write('<td><input class="result-input text-center" value="2026-02-08 12:34:56"></td>');
+                            document.write('<td><input class="result-input text-center" value="2026/02/08 12:34:56"></td>');
                             document.write('<td><input class="result-input" value="CHAR'+i+'"></td>');
                             document.write('<td><input class="result-input" value="VARCHAR'+i+'"></td>');
                             document.write('<td><input class="result-input" value="TEXT'+i+'"></td>');
