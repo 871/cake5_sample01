@@ -8,7 +8,8 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <!-- noUiSlider CSS -->
 <link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
-
+<!-- Summernote CSS -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
 <link href="/v1/ad/css/lyaout.css" rel="stylesheet">
 
 <!-- jQuery（Select2は必要） -->
@@ -17,6 +18,8 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <!-- noUiSlider JS -->
 <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+<!-- Summernote JS -->
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
 </head>
 <body>
 
@@ -160,9 +163,26 @@
                             <label class="form-label">VARCHAR</label>
                             <input type="text" name="varchar_col" class="form-control">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-12">
                             <label class="form-label">TEXT</label>
-                            <textarea name="text_col" class="form-control"></textarea>
+                            <textarea id="textEditor" name="text_col"></textarea>
+                            <script>(function($) {
+
+                                $(document).ready(function() {
+                                    $('#textEditor').summernote({
+                                        height: 250,
+                                        placeholder: '本文を入力してください',
+                                        toolbar: [
+                                            ['style', ['bold', 'italic', 'underline', 'clear']],
+                                            ['font', ['fontsize']],
+                                            ['color', ['color']],
+                                            ['para', ['ul', 'ol', 'paragraph']],
+                                            ['insert', ['link']],
+                                            ['view', ['codeview']]
+                                        ]
+                                    });
+                                });
+                            })(jQuery);</script>
                         </div>
                     </div>
 
