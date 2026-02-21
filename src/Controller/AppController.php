@@ -29,6 +29,12 @@ use Cake\Controller\Controller;
 class AppController extends Controller
 {
     /**
+     * 
+     * @var \App\Security\Auth\AuthContext
+     */
+    protected \App\Security\Auth\AuthContext $authContext;
+
+    /**
      * Initialization hook method.
      *
      * Use this method to add common initialization code like loading components.
@@ -41,8 +47,9 @@ class AppController extends Controller
     {
         parent::initialize();
 
-
         $this->loadComponent('Flash');
+
+        $this->authContext = \App\Security\Auth\AuthContextResolver::getInstance($this->getRequest())->resolve();
 
         /*
          * Enable the following component for recommended CakePHP form protection settings.

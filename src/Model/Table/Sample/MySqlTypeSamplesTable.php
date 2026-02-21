@@ -27,6 +27,8 @@ use Cake\Validation\Validator;
  */
 class MySqlTypeSamplesTable extends Table
 {
+    use \App\Model\Table\TableLocatorTrait;
+    
     /**
      * Initialize method
      *
