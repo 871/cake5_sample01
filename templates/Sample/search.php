@@ -12,6 +12,16 @@
 
     <div class="card-body" id="searchBody">
         <form method="get">
+            <input 
+                type="hidden" 
+                name="limit" 
+                value="<?= h($this->getRequest()->getQuery('limit', '20')) ?>"
+            >
+            <input 
+                type="hidden" 
+                name="page" 
+                value="1"
+            >
             <div class="row mb-2">
                 <div class="col-md-3">
                     <label class="form-label">INT 範囲</label>
@@ -358,11 +368,11 @@
     <div class="order-1">
         <nav>
             <ul class="pagination mb-0">
-                <?= $this->Paginator->first(__('First')) ?>
-                <?= $this->Paginator->prev( __('Prev')) ?>
+                <?= $this->Paginator->first(__('最初へ')) ?>
+                <?= $this->Paginator->prev( __('前へ')) ?>
                 <?= $this->Paginator->numbers() ?>
-                <?= $this->Paginator->next(__('Next')) ?>
-                <?= $this->Paginator->last(__('Last')) ?>
+                <?= $this->Paginator->next(__('次へ')) ?>
+                <?= $this->Paginator->last(__('最後へ')) ?>
             </ul>
         </nav>
     </div>
@@ -374,11 +384,21 @@
     </div>
     <!-- 右：件数表示 -->
     <div class="order-3 ms-auto">
-        <select class="form-select form-select-sm w-auto">
-            <option>10件表示</option>
-            <option>20件表示</option>
-            <option>50件表示</option>
-            <option>100件表示</option>
+        <select 
+            class="form-select form-select-sm w-auto limit-select"
+            onchange="location = this.value;"
+        >
+        <?php foreach ([10, 20, 50, 100] as $option) : ?>
+            <option 
+                value="<?= $this->Url->build([
+                    '?' => array_merge($this->getRequest()->getQuery(), [
+                        'limit' => $option, 
+                        'page' => 1,
+                    ])
+                ]) ?>" 
+                <?= (int) $this->getRequest()->getQuery('limit', '20') === $option ? 'selected' : '' ?>
+            ><?= h($option) ?>件表示</option>
+        <?php endforeach; ?>
         </select>
     </div>
 </div>
@@ -464,11 +484,11 @@
     <div class="order-1">
         <nav>
             <ul class="pagination mb-0">
-                <?= $this->Paginator->first(__('First')) ?>
-                <?= $this->Paginator->prev( __('Prev')) ?>
+                <?= $this->Paginator->first(__('最初へ')) ?>
+                <?= $this->Paginator->prev( __('前へ')) ?>
                 <?= $this->Paginator->numbers() ?>
-                <?= $this->Paginator->next(__('Next')) ?>
-                <?= $this->Paginator->last(__('Last')) ?>
+                <?= $this->Paginator->next(__('次へ')) ?>
+                <?= $this->Paginator->last(__('最後へ')) ?>
             </ul>
         </nav>
     </div>
@@ -480,11 +500,21 @@
     </div>
     <!-- 右：件数表示 -->
     <div class="order-3 ms-auto">
-        <select class="form-select form-select-sm w-auto">
-            <option>10件表示</option>
-            <option>20件表示</option>
-            <option>50件表示</option>
-            <option>100件表示</option>
+        <select 
+            class="form-select form-select-sm w-auto limit-select"
+            onchange="location = this.value;"
+        >
+        <?php foreach ([10, 20, 50, 100] as $option) : ?>
+            <option 
+                value="<?= $this->Url->build([
+                    '?' => array_merge($this->getRequest()->getQuery(), [
+                        'limit' => $option, 
+                        'page' => 1,
+                    ])
+                ]) ?>" 
+                <?= (int) $this->getRequest()->getQuery('limit', '20') === $option ? 'selected' : '' ?>
+            ><?= h($option) ?>件表示</option>
+        <?php endforeach; ?>
         </select>
     </div>
 </div>

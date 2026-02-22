@@ -47,6 +47,12 @@ class Search implements \App\Service\Controller\ServiceInterface
      */
     public function getSearchSettings() : array
     {
-        return [];
+        return [
+            'limit' => 20,
+            'maxLimit' => 200,
+            'order' => [
+                'id' => 'DESC'
+            ],
+        ];
     }
 }
