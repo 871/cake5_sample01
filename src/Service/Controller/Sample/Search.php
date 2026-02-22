@@ -37,6 +37,16 @@ class Search implements \App\Service\Controller\ServiceInterface
     public function getSearchQuery() : \Cake\ORM\Query
     {
         return $this->mySqlTypeSamplesTable
-            ->find();
+            ->find()
+            ;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function getSearchSettings() : array
+    {
+        return [];
     }
 }

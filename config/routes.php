@@ -49,7 +49,7 @@ return function (RouteBuilder $routes): void {
      */
     $routes->setRouteClass(DashedRoute::class);
 
-    $routes->scope('/', function (RouteBuilder $builder): void {
+    $routes->scope('/v1', function (RouteBuilder $builder): void {
         /*
          * Here, we are connecting '/' (base path) to a controller called 'Pages',
          * its action called 'display', and we pass a param to select the view file
@@ -60,7 +60,7 @@ return function (RouteBuilder $routes): void {
 
         // debug($_SERVER['REQUEST_URI']);
         // debug(preg_replace('/^\/([^\/\?]+)\/?.*$/', '$1', $_SERVER['REQUEST_URI']));
-        require match (preg_replace('/^\/([^\/\?]+)\/?.*$/', '$1', $_SERVER['REQUEST_URI'])) {
+        require match (preg_replace('/^\/v1\/([^\/\?]+)\/?.*$/', '$1', $_SERVER['REQUEST_URI'])) {
             'cs' => CONFIG . 'routes/custmer.php',
             'us' => CONFIG . 'routes/user.php',
             'ad' => CONFIG . 'routes/admin.php',

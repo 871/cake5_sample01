@@ -28,12 +28,15 @@ class SearchController extends AppController
         parent::initialize();
 
         $this->categoryService = CategoryService::getInstance()
-            ->setDatetime(new \DateTimeImmutable())
+            ->setDatetime($this->datetime)
             ->setAuthContext($this->authContext)
             ->setRequest($this->request);
 
         $this->ctlService = $this->categoryService
             ->createService(CtlService::class);
+
+        $this->viewBuilder()
+            ->setLayout('sample');
     }
 
     /**
@@ -43,7 +46,7 @@ class SearchController extends AppController
      */
     public function init()
     {
-        $this->request->redirect([
+        $this->redirect([
             'action' => 'index',
             '?' => $this->ctlService->getInitParams(),
         ]);
@@ -56,8 +59,11 @@ class SearchController extends AppController
     public function index()
     {
         $query = $this->ctlService->getSearchQuery();
+        $settings = $this->ctlService->getSearchSettings();
         $this->set([
-            'rows' => $this->paginate($query),
+            'rows' => $this->paginate($query, $settings),
         ]);
+
+        return $this->render('/Sample/search');
     }
 }

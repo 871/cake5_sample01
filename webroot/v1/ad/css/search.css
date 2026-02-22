@@ -14,8 +14,8 @@
 .table-scroll {
     overflow: auto;
     resize: vertical;
-    min-height: 70vh;
-    height: 70vh; /* 初期表示高さ：画面の約70% */
+    /* min-height: 70vh; */
+    /* height: 70vh; */ /* 初期表示高さ：画面の約70% */
     border: 1px solid #dee2e6;
 }
 
@@ -35,6 +35,22 @@
     width: auto;
 }
 
+/* ===== Sort Link Classes ===== */
+.sort-link {
+    color: #212529;
+    text-decoration: none;
+}
+.sort-link:hover {
+    text-decoration: underline;
+}
+.sort-link.asc::after {
+    content: " ▲";
+    font-size: 0.75em;
+}
+.sort-link.desc::after {
+    content: " ▼";
+    font-size: 0.75em;
+}
 
 /* ===== Alignment Classes ===== */
 .text-right { text-align: right; }

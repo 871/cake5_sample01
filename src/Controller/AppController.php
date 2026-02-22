@@ -30,6 +30,12 @@ class AppController extends Controller
 {
     /**
      * 
+     * @var \DateTimeImmutable
+     */
+    protected \DateTimeImmutable $datetime;
+
+    /**
+     * 
      * @var \App\Security\Auth\AuthContext
      */
     protected \App\Security\Auth\AuthContext $authContext;
@@ -49,7 +55,8 @@ class AppController extends Controller
 
         $this->loadComponent('Flash');
 
-        $this->authContext = \App\Security\Auth\AuthContextResolver::getInstance($this->getRequest())->resolve();
+        $this->datetime = new \DateTimeImmutable();
+        $this->authContext = \App\Security\Auth\AuthContextResolver::getInstance($this->request)->resolve();
 
         /*
          * Enable the following component for recommended CakePHP form protection settings.

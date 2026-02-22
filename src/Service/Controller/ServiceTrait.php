@@ -49,21 +49,18 @@ trait ServiceTrait
      * @return \App\Service\Controller\ServiceInterface
      */
     public function createService(string $serviceClassName) : \App\Service\Controller\ServiceInterface
-    {
-        if (!$serviceClassName instanceof \App\Service\Controller\ServiceInterface) {
-            
+    {   
+        if (!is_subclass_of($serviceClassName, \App\Service\Controller\ServiceInterface::class)) {
+
             throw new \InvalidArgumentException(
                 'Service class must implement \App\Service\Controller\ServiceInterface'
                 . '[serviceClassName: ' . $serviceClassName . ']'
             );
         }
 
-        return (function() use ($serviceClassName) : \App\Service\Controller\ServiceInterface {
-
-            return $serviceClassName::getInstance()
-                ->setDatetime($this->datetime);
-        })()
+        return $serviceClassName::getInstance()
             ->setRequest($this->request)
-            ->setAuthContext($this->authContext);
+            ->setAuthContext($this->authContext)
+            ->setDatetime($this->datetime);
     }
 }
