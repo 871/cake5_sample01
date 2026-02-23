@@ -94,6 +94,26 @@
             </div>
 
             <div class="row mb-2">
+
+                <div class="col-md-3">
+                    <label class="form-label">DOUBLE 範囲</label>
+                    <input 
+                        type="number" 
+                        step="0.01" 
+                        name="double_from" 
+                        class="form-control mb-1" 
+                        placeholder="From"
+                        value="<?= h($this->getRequest()->getQuery('double_from', '')) ?>"
+                    >
+                    <input 
+                        type="number" 
+                        step="0.01" 
+                        name="double_to" 
+                        class="form-control" 
+                        placeholder="To"
+                        value="<?= h($this->getRequest()->getQuery('double_to', '')) ?>"
+                    >
+                </div>
                 <div class="col-md-3">
                     <label class="form-label">DATE 範囲</label>
                     <input 
@@ -141,7 +161,9 @@
                         value="<?= h($this->getRequest()->getQuery('datetime_to', '')) ?>"
                     >
                 </div>
-                <div class="col-md-3">
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
                     <label class="form-label">ID 完全一致</label>
                     <input 
                         type="text" 
@@ -153,12 +175,12 @@
             </div>
             <div class="row mb-2">
                 <div class="col-md-12">
-                    <label class="form-label">キーワード検索</label>
+                    <label class="form-label">キーワード検索（+必須語 -除外語 "フレーズ" 前方一致*）</label>
                     <input 
                         type="text" 
                         name="keyword" 
                         class="form-control" 
-                        placeholder="全文検索"
+                        placeholder="<?= h('キーワード検索（+必須語 -除外語 "フレーズ" 前方一致*）') ?>"
                         value="<?= h($this->getRequest()->getQuery('keyword', '')) ?>"
                     >
                 </div>
