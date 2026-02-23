@@ -41,7 +41,7 @@ trait ServiceTrait
     /**
      * 
      * @param string $serviceClassName
-     * @return \App\Service\Controller\ServiceInterface
+     * @return ServiceInterface
      */
     public function createService(string $serviceClassName) : ServiceInterface
     {

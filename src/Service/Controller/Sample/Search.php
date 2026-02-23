@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Sample;
 
-use \App\Service\Controller\ServiceParamsInterface;
+use \Cake\Datasource\Paging\PaginatedInterface;
 use \App\Security\Input\Cast;
 use \App\Domain\Sample\Sample\MySqlTypeSamples\Search as MySqlTypeSamplesSearch;
 use \App\Domain\Sample\Sample\MySqlTypeSamples\SearchConditionInterface as MySqlTypeSamplesSearchConditionInterface;
@@ -26,9 +26,21 @@ final class Search implements \App\Service\Controller\Shared\ServiceInterface
 
     /**
      * 
+     * @return PaginatedInterface
+     */
+    public function getSearchResults() : PaginatedInterface
+    {
+        return $this->controller->paginate(
+            $this->getSearchQuery(),
+            $this->getSearchSettings()
+        );
+    }
+
+    /**
+     * 
      * @return \Cake\ORM\Query
      */
-    public function getSearchQuery() : \Cake\ORM\Query
+    private function getSearchQuery() : \Cake\ORM\Query
     {
         // Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。
         // 完全なDDDへ再設計する場合は、ドメインサービス内でページネーションやソートの処理も完結させる形にすることも検討してください。
@@ -154,7 +166,7 @@ final class Search implements \App\Service\Controller\Shared\ServiceInterface
      * 
      * @return array
      */
-    public function getSearchSettings() : array
+    private function getSearchSettings() : array
     {
         return [
             'limit' => 20,

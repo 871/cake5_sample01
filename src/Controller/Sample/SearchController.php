@@ -61,10 +61,8 @@ class SearchController extends AppController implements ServiceParamsInterface
     public function index()
     {
         try {
-            $query = $this->ctlService->getSearchQuery();
-            $settings = $this->ctlService->getSearchSettings();
             $this->set([
-                'rows' => $this->paginate($query, $settings),
+                'rows' => $this->ctlService->getSearchResults(),
             ]);
         } catch (NotFoundException $e) {
 
