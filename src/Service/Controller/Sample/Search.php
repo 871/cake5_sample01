@@ -4,24 +4,19 @@ declare(strict_types=1);
 namespace App\Service\Controller\Sample;
 
 use \App\Security\Input\Cast;
-use \Cake\Database\Expression\QueryExpression;
+use \App\Domain\Sample\Sample\MySqlTypeSamples\Search as MySqlTypeSamplesSearch;
+use \App\Domain\Sample\Sample\MySqlTypeSamples\SearchConditionInterface as MySqlTypeSamplesSearchConditionInterface;
 
 /**
  *
  */
-class Search implements \App\Service\Controller\ServiceInterface
+final class Search implements \App\Service\Controller\ServiceInterface
 {
     use \App\Service\Controller\ServiceTrait;
 
-    /**
-     * 
-     * @var \App\Model\Table\Sample\MySqlTypeSamplesTable
-     */
-    private \App\Model\Table\Sample\MySqlTypeSamplesTable $mySqlTypeSamplesTable;
-
     private function __construct()
     {
-        $this->mySqlTypeSamplesTable = \App\Model\Table\Sample\MySqlTypeSamplesTable::getInstance();
+    
     }
 
     /**
@@ -39,47 +34,124 @@ class Search implements \App\Service\Controller\ServiceInterface
      */
     public function getSearchQuery() : \Cake\ORM\Query
     {
-        return $this->mySqlTypeSamplesTable
-            ->find()
-            ->select([
-                'MySqlTypeSamples__id' => 'MySqlTypeSamples.id',
-                'MySqlTypeSamples__int_col' => 'MySqlTypeSamples.int_col',
-                'MySqlTypeSamples__bigint_col' => 'MySqlTypeSamples.bigint_col',
-                'MySqlTypeSamples__decimal_col' => 'MySqlTypeSamples.decimal_col',
-                'MySqlTypeSamples__float_col' => 'MySqlTypeSamples.float_col',
-                'MySqlTypeSamples__double_col' => 'MySqlTypeSamples.double_col',
-                'MySqlTypeSamples__date_col' => 'MySqlTypeSamples.date_col',
-                'MySqlTypeSamples__time_col' => 'MySqlTypeSamples.time_col',
-                'MySqlTypeSamples__datetime_col' => 'MySqlTypeSamples.datetime_col',
-                'MySqlTypeSamples__char_col' => 'MySqlTypeSamples.char_col',
-                'MySqlTypeSamples__varchar_col' => 'MySqlTypeSamples.varchar_col',
-                'MySqlTypeSamples__json_col' => 'MySqlTypeSamples.json_col',
-            ])
-            ->where(array_filter([
-                'MySqlTypeSamples.id' => Cast::toString($this->request->getQuery('id')),
-                'MySqlTypeSamples.int_col >=' => Cast::toInt($this->request->getQuery('int_col_from')),
-                'MySqlTypeSamples.int_col <=' => Cast::toInt($this->request->getQuery('int_col_to')),
-                'MySqlTypeSamples.bigint_col >=' => Cast::toInt($this->request->getQuery('bigint_col_from')),
-                'MySqlTypeSamples.bigint_col <=' => Cast::toInt($this->request->getQuery('bigint_col_to')),
-                'MySqlTypeSamples.decimal_col >=' => Cast::toFloat($this->request->getQuery('decimal_col_from')),
-                'MySqlTypeSamples.decimal_col <=' => Cast::toFloat($this->request->getQuery('decimal_col_to')),
-                'MySqlTypeSamples.float_col >=' => Cast::toFloat($this->request->getQuery('float_col_from')),
-                'MySqlTypeSamples.float_col <=' => Cast::toFloat($this->request->getQuery('float_col_to')),
-                'MySqlTypeSamples.double_col >=' => Cast::toFloat($this->request->getQuery('double_col_from')),
-                'MySqlTypeSamples.double_col <=' => Cast::toFloat($this->request->getQuery('double_col_to')),
-                'MySqlTypeSamples.date_col >=' => Cast::toDate($this->request->getQuery('date_col_from')),
-                'MySqlTypeSamples.date_col <=' => Cast::toDate($this->request->getQuery('date_col_to')),
-                'MySqlTypeSamples.time_col >=' => Cast::toTime($this->request->getQuery('time_col_from')),
-                'MySqlTypeSamples.time_col <=' => Cast::toTime($this->request->getQuery('time_col_to')),
-                'MySqlTypeSamples.datetime_col >=' => Cast::toDateTime($this->request->getQuery('datetime_col_from')),
-                'MySqlTypeSamples.datetime_col <=' => Cast::toDateTime($this->request->getQuery('datetime_col_to')),
-                $this->request->getQuery('keyword') ? new QueryExpression(
-                        'MATCH(search_text) AGAINST(:kw IN BOOLEAN MODE)'
-                    ) : ":kw = ''",
+        // Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。
+        // 完全なDDDへ再設計する場合は、ドメインサービス内でページネーションやソートの処理も完結させる形にすることも検討してください。
+        return (new MySqlTypeSamplesSearch(
+            new class (
+                id: Cast::toString($this->request->getQuery('id')),
+                intColFrom: Cast::toInt($this->request->getQuery('int_col_from')),
+                intColTo: Cast::toInt($this->request->getQuery('int_col_to')),
+                bigintColFrom: Cast::toInt($this->request->getQuery('bigint_col_from')),
+                bigintColTo: Cast::toInt($this->request->getQuery('bigint_col_to')),
+                decimalColFrom: Cast::toFloat($this->request->getQuery('decimal_col_from')),
+                decimalColTo: Cast::toFloat($this->request->getQuery('decimal_col_to')),
+                floatColFrom: Cast::toFloat($this->request->getQuery('float_col_from')),
+                floatColTo: Cast::toFloat($this->request->getQuery('float_col_to')),
+                doubleColFrom: Cast::toFloat($this->request->getQuery('double_col_from')),
+                doubleColTo: Cast::toFloat($this->request->getQuery('double_col_to')),
+                dateColFrom: Cast::toDate($this->request->getQuery('date_col_from')),
+                dateColTo: Cast::toDate($this->request->getQuery('date_col_to')),
+                timeColFrom: Cast::toTime($this->request->getQuery('time_col_from')),
+                timeColTo: Cast::toTime($this->request->getQuery('time_col_to')),
+                datetimeColFrom: Cast::toDateTime($this->request->getQuery('datetime_col_from')),
+                datetimeColTo: Cast::toDateTime($this->request->getQuery('datetime_col_to')),
+                keyword: Cast::toString($this->request->getQuery('keyword')),
+            ) implements MySqlTypeSamplesSearchConditionInterface {
+                public function __construct(
+                    private ?string $id,
+                    private ?int $intColFrom,
+                    private ?int $intColTo,
+                    private ?int $bigintColFrom,
+                    private ?int $bigintColTo,
+                    private ?float $decimalColFrom,
+                    private ?float $decimalColTo,
+                    private ?float $floatColFrom,
+                    private ?float $floatColTo,
+                    private ?float $doubleColFrom,
+                    private ?float $doubleColTo,
+                    private ?\DateTimeInterface $dateColFrom,
+                    private ?\DateTimeInterface $dateColTo,
+                    private ?\DateTimeInterface $timeColFrom,
+                    private ?\DateTimeInterface $timeColTo,
+                    private ?\DateTimeInterface $datetimeColFrom,
+                    private ?\DateTimeInterface $datetimeColTo,
+                    private ?string $keyword
+                ) {}
 
-            ]))
-            ->bind(':kw', $this->request->getQuery('keyword'), 'string');
-            ;
+                public function getId(): ?string
+                {
+                    return $this->id;
+                }
+                public function getIntColFrom(): ?int
+                {
+                    return $this->intColFrom;
+                }
+                public function getIntColTo(): ?int
+                {
+                    return $this->intColTo;
+                }
+                public function getBigintColFrom(): ?int
+                {
+                    return $this->bigintColFrom;
+                }
+                public function getBigintColTo(): ?int
+                {
+                    return $this->bigintColTo;
+                }
+                public function getDecimalColFrom(): ?float
+                {
+                    return $this->decimalColFrom;
+                }
+                public function getDecimalColTo(): ?float
+                {
+                    return $this->decimalColTo;
+                }
+                public function getFloatColFrom(): ?float
+                {
+                    return $this->floatColFrom;
+                }
+                public function getFloatColTo(): ?float
+                {
+                    return $this->floatColTo;
+                }
+                public function getDoubleColFrom(): ?float
+                {
+                    return $this->doubleColFrom;
+                }
+                public function getDoubleColTo(): ?float
+                {
+                    return $this->doubleColTo;
+                }
+                public function getDateColFrom(): ?\DateTimeInterface
+                {
+                    return $this->dateColFrom;
+                }
+                public function getDateColTo(): ?\DateTimeInterface
+                {
+                    return $this->dateColTo;
+                }
+                public function getTimeColFrom(): ?\DateTimeInterface
+                {
+                    return $this->timeColFrom;
+                }
+                public function getTimeColTo(): ?\DateTimeInterface
+                {
+                    return $this->timeColTo;
+                }
+                public function getDatetimeColFrom(): ?\DateTimeInterface
+                {
+                    return $this->datetimeColFrom;
+                }
+                public function getDatetimeColTo(): ?\DateTimeInterface
+                {
+                    return $this->datetimeColTo;
+                }
+                public function getKeyword(): ?string
+                {
+                    return $this->keyword;
+                }
+            }
+        ))->getQuery();
     }
 
     /**

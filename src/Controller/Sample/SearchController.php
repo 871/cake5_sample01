@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Sample;
 
-use App\Controller\AppController;
-use App\Service\Controller\Sample as CategoryService;
-use App\Service\Controller\Sample\Search as CtlService;
+use \App\Controller\AppController;
+use \App\Service\Controller\Sample as CategoryService;
+use \App\Service\Controller\Sample\Search as CtlService;
+use \Cake\Http\Exception\NotFoundException;
+use Cake\Log\Log;
 
 /**
  *
@@ -58,11 +60,27 @@ class SearchController extends AppController
      */
     public function index()
     {
-        $query = $this->ctlService->getSearchQuery();
-        $settings = $this->ctlService->getSearchSettings();
-        $this->set([
-            'rows' => $this->paginate($query, $settings),
-        ]);
+        try {
+            $query = $this->ctlService->getSearchQuery();
+            $settings = $this->ctlService->getSearchSettings();
+            $this->set([
+                'rows' => $this->paginate($query, $settings),
+            ]);
+        } catch (NotFoundException $e) {
+
+            Log::error(
+                '無効なページが指定されました。'
+                . '[message: ' . $e->getMessage() . ']'
+                . '[Uri: ' . $this->request->getRequestTarget() . ']'
+            );
+
+            $this->Flash->warning('無効なページが指定されました。1ページ目を表示します。');
+            return $this->redirect([
+                '?' => array_merge($this->request->getQuery(), [
+                    'page' => 1,
+                ]),
+            ]);
+        }
 
         return $this->render('/Sample/search');
     }
