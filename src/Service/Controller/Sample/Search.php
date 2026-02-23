@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Sample;
 
+use \App\Service\Controller\ServiceParamsInterface;
 use \App\Security\Input\Cast;
 use \App\Domain\Sample\Sample\MySqlTypeSamples\Search as MySqlTypeSamplesSearch;
 use \App\Domain\Sample\Sample\MySqlTypeSamples\SearchConditionInterface as MySqlTypeSamplesSearchConditionInterface;
@@ -10,14 +11,9 @@ use \App\Domain\Sample\Sample\MySqlTypeSamples\SearchConditionInterface as MySql
 /**
  *
  */
-final class Search implements \App\Service\Controller\ServiceInterface
+final class Search implements \App\Service\Controller\Shared\ServiceInterface
 {
-    use \App\Service\Controller\ServiceTrait;
-
-    private function __construct()
-    {
-    
-    }
+    use \App\Service\Controller\Shared\ServiceTrait;
 
     /**
      * 

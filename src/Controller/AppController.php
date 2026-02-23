@@ -29,18 +29,6 @@ use Cake\Controller\Controller;
 class AppController extends Controller
 {
     /**
-     * 
-     * @var \DateTimeImmutable
-     */
-    protected \DateTimeImmutable $datetime;
-
-    /**
-     * 
-     * @var \App\Security\Auth\AuthContext
-     */
-    protected \App\Security\Auth\AuthContext $authContext;
-
-    /**
      * Initialization hook method.
      *
      * Use this method to add common initialization code like loading components.
@@ -54,9 +42,6 @@ class AppController extends Controller
         parent::initialize();
 
         $this->loadComponent('Flash');
-
-        $this->datetime = new \DateTimeImmutable();
-        $this->authContext = \App\Security\Auth\AuthContextResolver::getInstance($this->request)->resolve();
 
         /*
          * Enable the following component for recommended CakePHP form protection settings.

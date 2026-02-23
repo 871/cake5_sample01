@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Sample;
 
 use \App\Controller\AppController;
+use \App\Service\Controller\Shared\ServiceParamsInterface;
 use \App\Service\Controller\Sample as CategoryService;
 use \App\Service\Controller\Sample\Search as CtlService;
 use \Cake\Http\Exception\NotFoundException;
@@ -12,8 +13,10 @@ use Cake\Log\Log;
 /**
  *
  */
-class SearchController extends AppController
+class SearchController extends AppController implements ServiceParamsInterface
 {
+    use \App\Controller\ServiceParamsTrait;
+
     /**
      * @var CategoryService
      */
@@ -29,10 +32,7 @@ class SearchController extends AppController
     {
         parent::initialize();
 
-        $this->categoryService = CategoryService::getInstance()
-            ->setDatetime($this->datetime)
-            ->setAuthContext($this->authContext)
-            ->setRequest($this->request);
+        $this->categoryService = new CategoryService($this);
 
         $this->ctlService = $this->categoryService
             ->createService(CtlService::class);
