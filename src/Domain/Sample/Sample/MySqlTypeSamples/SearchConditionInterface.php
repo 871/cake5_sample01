@@ -5,6 +5,8 @@ namespace App\Domain\Sample\Sample\MySqlTypeSamples;
 
 interface SearchConditionInterface
 {
+    public function getPaginator() : Paginator;
+
     public function getId() : ?string;
 
     public function getIntColFrom() : ?int;

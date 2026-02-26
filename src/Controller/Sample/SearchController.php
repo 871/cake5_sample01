@@ -8,12 +8,13 @@ use \App\Service\Controller\Shared\ServiceParamsInterface;
 use \App\Service\Controller\Sample as CategoryService;
 use \App\Service\Controller\Sample\Search as CtlService;
 use \Cake\Http\Exception\NotFoundException;
-use Cake\Log\Log;
+use \Cake\Log\Log;
+use \App\Infrastructure\Cake\CakePaginatorAdapter;
 
 /**
  *
  */
-class SearchController extends AppController implements ServiceParamsInterface
+class SearchController extends AppController implements ServiceParamsInterface, CakePaginatorAdapter
 {
     use \App\Controller\ServiceParamsTrait;
 

@@ -7,6 +7,7 @@ use \Cake\Datasource\Paging\PaginatedInterface;
 use \App\Security\Input\Cast;
 use \App\Domain\Sample\Sample\MySqlTypeSamples\Search as MySqlTypeSamplesSearch;
 use \App\Domain\Sample\Sample\MySqlTypeSamples\SearchConditionInterface as MySqlTypeSamplesSearchConditionInterface;
+use \App\Infrastructure\Cake\CakePaginatorAdapter;
 
 /**
  *
@@ -46,117 +47,88 @@ final class Search implements \App\Service\Controller\Shared\ServiceInterface
         // 完全なDDDへ再設計する場合は、ドメインサービス内でページネーションやソートの処理も完結させる形にすることも検討してください。
         return (new MySqlTypeSamplesSearch(
             new class (
-                id: Cast::toString($this->request->getQuery('id')),
-                intColFrom: Cast::toInt($this->request->getQuery('int_col_from')),
-                intColTo: Cast::toInt($this->request->getQuery('int_col_to')),
-                bigintColFrom: Cast::toInt($this->request->getQuery('bigint_col_from')),
-                bigintColTo: Cast::toInt($this->request->getQuery('bigint_col_to')),
-                decimalColFrom: Cast::toFloat($this->request->getQuery('decimal_col_from')),
-                decimalColTo: Cast::toFloat($this->request->getQuery('decimal_col_to')),
-                floatColFrom: Cast::toFloat($this->request->getQuery('float_col_from')),
-                floatColTo: Cast::toFloat($this->request->getQuery('float_col_to')),
-                doubleColFrom: Cast::toFloat($this->request->getQuery('double_col_from')),
-                doubleColTo: Cast::toFloat($this->request->getQuery('double_col_to')),
-                dateColFrom: Cast::toDate($this->request->getQuery('date_col_from')),
-                dateColTo: Cast::toDate($this->request->getQuery('date_col_to')),
-                timeColFrom: Cast::toTime($this->request->getQuery('time_col_from')),
-                timeColTo: Cast::toTime($this->request->getQuery('time_col_to')),
-                datetimeColFrom: Cast::toDateTime($this->request->getQuery('datetime_col_from')),
-                datetimeColTo: Cast::toDateTime($this->request->getQuery('datetime_col_to')),
-                keyword: Cast::toString($this->request->getQuery('keyword')),
+                paginator: $this->controller,
+                request: $this->request,
             ) implements MySqlTypeSamplesSearchConditionInterface {
                 public function __construct(
-                    private ?string $id,
-                    private ?int $intColFrom,
-                    private ?int $intColTo,
-                    private ?int $bigintColFrom,
-                    private ?int $bigintColTo,
-                    private ?float $decimalColFrom,
-                    private ?float $decimalColTo,
-                    private ?float $floatColFrom,
-                    private ?float $floatColTo,
-                    private ?float $doubleColFrom,
-                    private ?float $doubleColTo,
-                    private ?\DateTimeInterface $dateColFrom,
-                    private ?\DateTimeInterface $dateColTo,
-                    private ?\DateTimeInterface $timeColFrom,
-                    private ?\DateTimeInterface $timeColTo,
-                    private ?\DateTimeInterface $datetimeColFrom,
-                    private ?\DateTimeInterface $datetimeColTo,
-                    private ?string $keyword
+                    private CakePaginatorAdapter $paginator,
+                    private \Cake\Http\ServerRequest $request
                 ) {}
-
+                public function getPaginator(): CakePaginatorAdapter
+                {
+                    return $this->paginator;
+                }
                 public function getId(): ?string
                 {
-                    return $this->id;
+                    return Cast::toString($this->request->getQuery('id'));
                 }
                 public function getIntColFrom(): ?int
                 {
-                    return $this->intColFrom;
+                    return Cast::toInt($this->request->getQuery('int_col_from'));
                 }
                 public function getIntColTo(): ?int
                 {
-                    return $this->intColTo;
+                    return Cast::toInt($this->request->getQuery('int_col_to'));
                 }
                 public function getBigintColFrom(): ?int
                 {
-                    return $this->bigintColFrom;
+                    return Cast::toInt($this->request->getQuery('bigint_col_from'));
                 }
                 public function getBigintColTo(): ?int
                 {
-                    return $this->bigintColTo;
+                    return Cast::toInt($this->request->getQuery('bigint_col_to'));
                 }
                 public function getDecimalColFrom(): ?float
                 {
-                    return $this->decimalColFrom;
+                    return Cast::toFloat($this->request->getQuery('decimal_col_from'));
                 }
                 public function getDecimalColTo(): ?float
                 {
-                    return $this->decimalColTo;
+                    return Cast::toFloat($this->request->getQuery('decimal_col_to'));
                 }
                 public function getFloatColFrom(): ?float
                 {
-                    return $this->floatColFrom;
+                    return Cast::toFloat($this->request->getQuery('float_col_from'));
                 }
                 public function getFloatColTo(): ?float
                 {
-                    return $this->floatColTo;
+                    return Cast::toFloat($this->request->getQuery('float_col_to'));
                 }
                 public function getDoubleColFrom(): ?float
                 {
-                    return $this->doubleColFrom;
+                    return Cast::toFloat($this->request->getQuery('double_col_from'));
                 }
                 public function getDoubleColTo(): ?float
                 {
-                    return $this->doubleColTo;
+                    return Cast::toFloat($this->request->getQuery('double_col_to'));
                 }
                 public function getDateColFrom(): ?\DateTimeInterface
                 {
-                    return $this->dateColFrom;
+                    return Cast::toDate($this->request->getQuery('date_col_from'));
                 }
                 public function getDateColTo(): ?\DateTimeInterface
                 {
-                    return $this->dateColTo;
+                    return Cast::toDate($this->request->getQuery('date_col_to'));
                 }
                 public function getTimeColFrom(): ?\DateTimeInterface
                 {
-                    return $this->timeColFrom;
+                    return Cast::toTime($this->request->getQuery('time_col_from'));
                 }
                 public function getTimeColTo(): ?\DateTimeInterface
                 {
-                    return $this->timeColTo;
+                    return Cast::toTime($this->request->getQuery('time_col_to'));
                 }
                 public function getDatetimeColFrom(): ?\DateTimeInterface
                 {
-                    return $this->datetimeColFrom;
+                    return Cast::toDatetime($this->request->getQuery('datetime_col_from'));
                 }
                 public function getDatetimeColTo(): ?\DateTimeInterface
                 {
-                    return $this->datetimeColTo;
+                    return Cast::toDatetime($this->request->getQuery('datetime_col_to'));
                 }
                 public function getKeyword(): ?string
                 {
-                    return $this->keyword;
+                    return Cast::toString($this->request->getQuery('keyword'));
                 }
             }
         ))->getQuery();
