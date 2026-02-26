@@ -1,28 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\Sample;
+namespace App\Controller\Sample\MySqlTypeSamples;
 
 use \App\Controller\AppController;
-use \App\Service\Controller\Shared\ServiceParamsInterface;
-use \App\Service\Controller\Sample as CategoryService;
-use \App\Service\Controller\Sample\Search as CtlService;
+use \App\Service\Controller\Sample\MySqlTypeSamples\Search as CtlService;
+use \App\Security\Auth\AuthContextResolver;
 use \Cake\Http\Exception\NotFoundException;
 use \Cake\Log\Log;
-use \App\Infrastructure\Cake\CakePaginatorAdapter;
 
 /**
  *
  */
-class SearchController extends AppController implements ServiceParamsInterface, CakePaginatorAdapter
+class SearchController extends AppController
 {
-    use \App\Controller\ServiceParamsTrait;
-
-    /**
-     * @var CategoryService
-     */
-    private CategoryService $categoryService;
-
     /**
      * @var CtlService
      */
@@ -33,10 +24,11 @@ class SearchController extends AppController implements ServiceParamsInterface, 
     {
         parent::initialize();
 
-        $this->categoryService = new CategoryService($this);
-
-        $this->ctlService = $this->categoryService
-            ->createService(CtlService::class);
+        $this->ctlService = new CtlService(
+            datetime: new \DateTimeImmutable(),
+            request: $this->request,
+            authContext: AuthContextResolver::resolve($this->request)
+        );
 
         $this->viewBuilder()
             ->setLayout('sample');
@@ -63,7 +55,10 @@ class SearchController extends AppController implements ServiceParamsInterface, 
     {
         try {
             $this->set([
-                'rows' => $this->ctlService->getSearchResults(),
+                'rows' => $this->paginate(
+                    $this->ctlService->getSearchQuery(),
+                    $this->ctlService->getPaginateSettings()
+                ),
             ]);
         } catch (NotFoundException $e) {
 

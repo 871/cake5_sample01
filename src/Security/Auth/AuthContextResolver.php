@@ -2,41 +2,22 @@
 
 namespace App\Security\Auth;
 
-class AuthContextResolver
+final class AuthContextResolver
 {
-    /**
-     * 
-     * @var \Cake\Http\ServerRequest
-     */
-    private \Cake\Http\ServerRequest $request;
-
-    private function __construct(\Cake\Http\ServerRequest $request)
-    {
-        $this->request = $request;
-    }
+    private function __construct(
+        private readonly \Cake\Http\ServerRequest $request
+    ) {}
 
     /**
      * 
-     * @return self
-     */
-    public static function getInstance(\Cake\Http\ServerRequest $request) : self
-    {
-        static $ins = null;
-        if ($ins === null) {
-            $ins = new self($request);
-        }
-
-        return $ins;
-    }
-
-    /**
      * @return \App\Security\Auth\AuthContext
      */
-    public function resolve() : AuthContext
+    public static function resolve(\Cake\Http\ServerRequest $request) : AuthContext
     {
+        $ins = new self($request);
         
         // 未認証の場合は匿名のAuthContextを返す
-        return $this->createAuthContextForAnonymous();
+        return $ins->createAuthContextForAnonymous();
     }
 
     /**
@@ -45,7 +26,7 @@ class AuthContextResolver
      */   
     private function createAuthContextForAnonymous() : AuthContext
     {
-        return new class implements AuthContext {
+        return new class() implements AuthContext {
             // 匿名ユーザーの情報を保持するプロパティやメソッドを定義することができます
         };
     }

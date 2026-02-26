@@ -5,37 +5,12 @@ namespace App\Service\Controller\Shared;
 
 trait ServiceTrait
 {
-    /**
-     * 
-     * @var \DateTimeInterface
-     */
-    private \DateTimeInterface $datetime;
-
-    /**
-     * 
-     * @var \Cake\Http\ServerRequest
-     */
-    private \Cake\Http\ServerRequest $request;
-
-    /**
-     * 
-     * @var \App\Security\Auth\AuthContext
-     */
-    private \App\Security\Auth\AuthContext $authContext;
-
-    /**
-     * 
-     * @var \Cake\Controller\Controller
-     */
-    private \Cake\Controller\Controller $controller;
-
     public function __construct(
-        private ServiceParamsInterface $params
+        private readonly \DateTimeInterface $datetime,
+        private readonly \Cake\Http\ServerRequest $request,
+        private readonly \App\Security\Auth\AuthContext $authContext,
     ) {
-        $this->datetime = $params->getDatetime();
-        $this->request = $params->getRequest();
-        $this->authContext = $params->getAuthContext();
-        $this->controller = $params->getController();
+        // 処理なし
     }
 
     /**
@@ -46,7 +21,11 @@ trait ServiceTrait
     public function createService(string $serviceClassName) : ServiceInterface
     {
         return is_subclass_of($serviceClassName, ServiceInterface::class)
-            ? new $serviceClassName($this->params)
+            ? new $serviceClassName(
+                    datetime: $this->datetime,
+                    request: $this->request,
+                    authContext: $this->authContext
+                )
             : throw new \InvalidArgumentException(
                 'Service class must implement ' . ServiceInterface::class
                 . '[serviceClassName: ' . $serviceClassName . ']'

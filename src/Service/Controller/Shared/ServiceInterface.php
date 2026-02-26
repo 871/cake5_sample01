@@ -8,7 +8,11 @@ interface ServiceInterface
     /**
      * 
      */
-    public function __construct(ServiceParamsInterface $params);
+    public function __construct(
+        \DateTimeInterface $datetime,
+        \Cake\Http\ServerRequest $request,
+        \App\Security\Auth\AuthContext $authContext,
+    );
 
     /**
      * 
