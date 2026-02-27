@@ -1,24 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\Sample;
+namespace App\Controller\Sample\MySqlTypeSamples;
 
 use \App\Controller\AppController;
-use \App\Service\Controller\Sample as CategoryService;
-use \App\Service\Controller\Sample\Search as CtlService;
+use \App\Service\Controller\Sample\MySqlTypeSamples\Search as CtlService;
+use \App\Security\Auth\AuthContextResolver;
 use \Cake\Http\Exception\NotFoundException;
-use Cake\Log\Log;
+use \Cake\Log\Log;
 
 /**
  *
  */
 class SearchController extends AppController
 {
-    /**
-     * @var CategoryService
-     */
-    private CategoryService $categoryService;
-
     /**
      * @var CtlService
      */
@@ -29,13 +24,11 @@ class SearchController extends AppController
     {
         parent::initialize();
 
-        $this->categoryService = CategoryService::getInstance()
-            ->setDatetime($this->datetime)
-            ->setAuthContext($this->authContext)
-            ->setRequest($this->request);
-
-        $this->ctlService = $this->categoryService
-            ->createService(CtlService::class);
+        $this->ctlService = new CtlService(
+            datetime: new \DateTimeImmutable(),
+            request: $this->request,
+            authContext: AuthContextResolver::resolve($this->request)
+        );
 
         $this->viewBuilder()
             ->setLayout('sample');
@@ -61,10 +54,11 @@ class SearchController extends AppController
     public function index()
     {
         try {
-            $query = $this->ctlService->getSearchQuery();
-            $settings = $this->ctlService->getSearchSettings();
             $this->set([
-                'rows' => $this->paginate($query, $settings),
+                'rows' => $this->paginate(
+                    $this->ctlService->getSearchQuery(),
+                    $this->ctlService->getPaginateSettings()
+                ),
             ]);
         } catch (NotFoundException $e) {
 

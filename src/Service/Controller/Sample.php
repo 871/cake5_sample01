@@ -6,8 +6,8 @@ namespace App\Service\Controller;
 /**
  *
  */
-final class Sample implements \App\Service\Controller\ServiceInterface
+final class Sample implements \App\Service\Controller\Shared\ServiceInterface
 {
-    use \App\Service\Controller\ServiceTrait;
+    use \App\Service\Controller\Shared\ServiceTrait;
 
 }
