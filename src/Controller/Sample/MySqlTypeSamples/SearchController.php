@@ -6,6 +6,7 @@ namespace App\Controller\Sample\MySqlTypeSamples;
 use \App\Controller\AppController;
 use \App\Service\Controller\Sample\MySqlTypeSamples\Search as CtlService;
 use \App\Security\Auth\AuthContextResolver;
+use Cake\Event\EventInterface;
 use \Cake\Http\Exception\NotFoundException;
 use \Cake\Log\Log;
 
@@ -20,9 +21,9 @@ class SearchController extends AppController
     private CtlService $ctlService;
 
 
-    public function initialize(): void
+    public function beforeFilter(EventInterface $event)
     {
-        parent::initialize();
+        parent::beforeFilter($event);
 
         $this->ctlService = new CtlService(
             datetime: new \DateTimeImmutable(),

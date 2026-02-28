@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Sample;
 
 use \Cake\Database\Expression\QueryExpression;
-use App\Domain\Sample\MySqlTypeSamples\Repository\MySqlTypeSamplesRepository as DomainMySqlTypeSamplesRepository;
-use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
+use \App\Domain\Sample\MySqlTypeSamples\Repository\MySqlTypeSamplesRepository as DomainMySqlTypeSamplesRepository;
+use \App\Domain\Sample\MySqlTypeSamples\SearchCondition;
 
 /**
  *

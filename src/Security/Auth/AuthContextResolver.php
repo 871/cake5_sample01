@@ -2,6 +2,10 @@
 
 namespace App\Security\Auth;
 
+use App\Security\Auth\AuthContext;
+use App\Security\Auth\AuthContext\Fields;
+
+
 final class AuthContextResolver
 {
     private function __construct(
@@ -26,8 +30,27 @@ final class AuthContextResolver
      */   
     private function createAuthContextForAnonymous() : AuthContext
     {
-        return new class() implements AuthContext {
-            // 匿名ユーザーの情報を保持するプロパティやメソッドを定義することができます
+        return new class(
+            type : new Fields\Type(AuthContext::TYPE_ANONYMOUS),
+            accountId : new Fields\AccountId(null)
+        ) implements AuthContext {
+
+            public function __construct(
+                private readonly Fields\Type $type,
+                private readonly Fields\AccountId $accountId,
+            ) {
+                // 処理なし
+            }
+
+            public function getType(): Fields\Type
+            {
+                return $this->type;
+            }
+
+            public function getAccountId() : Fields\AccountId
+            {
+                return $this->accountId;
+            }
         };
     }
 }
