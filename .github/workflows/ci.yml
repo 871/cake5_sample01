@@ -27,48 +27,53 @@ jobs:
             dependencies: 'highest'
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-version }}
-        extensions: mbstring, intl, pdo_sqlite
-        ini-values: zend.assertions=1
-        coverage: none
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, intl, pdo_sqlite
+          ini-values: zend.assertions=1
+          coverage: none
 
-    - name: Composer install
-      uses: ramsey/composer-install@v3
-      with:
-        dependency-versions: ${{ matrix.dependencies }}
-        composer-options: ${{ matrix.composer-options }}
+      - name: Composer install
+        uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+          composer-options: --no-interaction --prefer-dist
 
-    - name: Composer post install
-      run: composer run-script post-install-cmd --no-interaction
+      - name: Composer post install
+        run: composer run-script post-install-cmd --no-interaction
 
-    - name: Run PHPUnit
-      run: vendor/bin/phpunit
-      env:
-        DATABASE_TEST_URL: sqlite://./testdb.sqlite
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit
+        env:
+          DATABASE_TEST_URL: sqlite://./testdb.sqlite
 
   coding-standard:
     name: Coding Standard & Static Analysis
     runs-on: ubuntu-24.04
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.1'
-        extensions: mbstring, intl
-        coverage: none
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, intl
+          coverage: none
 
-    - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v3
+        with:
+          composer-options: --no-interaction --prefer-dist
 
-    - name: Run PHP CodeSniffer
-      run: vendor/bin/phpcs
+      # Ensure PHPStan is installed
+      - name: Ensure PHPStan is installed
+        run: composer require --dev phpstan/phpstan:^1.12 --no-interaction
 
-    - name: Run phpstan
-      if: always()
-      run: vendor/bin/phpstan
+      - name: Run PHP CodeSniffer
+        run: vendor/bin/phpcs
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse src tests --level max
