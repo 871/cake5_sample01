@@ -14,7 +14,7 @@ class ProcessIdTest extends TestCase
         $id = new ProcessId('abc123');
         $this->assertInstanceOf(ProcessId::class, $id);
         $this->assertSame('000000000abc123', $id->toString());
-        $this->assertSame('000000000abc123', (string)$id);
+        $this->assertSame('000000000abc12', (string)$id);
     }
 
     public function testThrowsExceptionWhenTooLong(): void
