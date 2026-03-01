@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Migrations\AbstractMigration;
+use Cake\Database\Driver\Sqlite;
 
 class CreateFnctionUuid7 extends AbstractMigration
 {
@@ -19,6 +20,15 @@ class CreateFnctionUuid7 extends AbstractMigration
      */
     public function up(): void
     {
+        /** @var Connection $connection */
+        $connection = $this->getAdapter()->getConnection();
+        /** @var AbstractDriver $driver */
+        $driver = $connection->getDriver();   // ← ここが警告の対象
+        // SQLite の場合は何もしない
+        if ($driver instanceof Sqlite) {
+            return;
+        }
+
         $this->execute("DROP FUNCTION IF EXISTS uuid7");
 
         $this->execute("
@@ -59,6 +69,15 @@ class CreateFnctionUuid7 extends AbstractMigration
 
     public function down(): void
     {
+        /** @var Connection $connection */
+        $connection = $this->getAdapter()->getConnection();
+        /** @var AbstractDriver $driver */
+        $driver = $connection->getDriver();   // ← ここが警告の対象
+        // SQLite の場合は何もしない
+        if ($driver instanceof Sqlite) {
+            return;
+        }
+
         $sql = <<<SQL
 
             DROP FUNCTION IF EXISTS uuid7;
