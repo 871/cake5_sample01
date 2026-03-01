@@ -57,7 +57,7 @@ class Cast
      */
     public static function toString(mixed $value): ?string
     {
-        if ($value === null || $value === '' ) {
+        if ($value === null || $value === '') {
             return null;
         }
 
