@@ -7,6 +7,26 @@ use DateTimeInterface;
 
 class SearchCondition
 {
+    /**
+     * @param ?string $id
+     * @param ?int $intColFrom
+     * @param ?int $intColTo
+     * @param ?int $bigintColFrom
+     * @param ?int $bigintColTo
+     * @param ?float $decimalColFrom
+     * @param ?float $decimalColTo
+     * @param ?float $floatColFrom
+     * @param ?float $floatColTo
+     * @param ?float $doubleColFrom
+     * @param ?float $doubleColTo
+     * @param ?\DateTimeInterface $dateColFrom
+     * @param ?\DateTimeInterface $dateColTo
+     * @param ?\DateTimeInterface $timeColFrom
+     * @param ?\DateTimeInterface $timeColTo
+     * @param ?\DateTimeInterface $datetimeColFrom
+     * @param ?\DateTimeInterface $datetimeColTo
+     * @param ?string $keyword,
+     */
     public function __construct(
         private readonly ?string $id,
         private readonly ?int $intColFrom,
@@ -119,7 +139,7 @@ class SearchCondition
     }
 
     /**
-     * @return ?DateTimeInterface
+     * @return ?\DateTimeInterface
      */
     public function getDateColFrom(): ?DateTimeInterface
     {
@@ -127,7 +147,7 @@ class SearchCondition
     }
 
     /**
-     * @return ?DateTimeInterface
+     * @return ?\DateTimeInterface
      */
     public function getDateColTo(): ?DateTimeInterface
     {
@@ -135,7 +155,7 @@ class SearchCondition
     }
 
     /**
-     * @return ?DateTimeInterface
+     * @return ?\DateTimeInterface
      */
     public function getTimeColFrom(): ?DateTimeInterface
     {
@@ -143,7 +163,7 @@ class SearchCondition
     }
 
     /**
-     * @return ?DateTimeInterface
+     * @return ?\DateTimeInterface
      */
     public function getTimeColTo(): ?DateTimeInterface
     {
@@ -151,7 +171,7 @@ class SearchCondition
     }
 
     /**
-     * @return ?DateTimeInterface
+     * @return ?\DateTimeInterface
      */
     public function getDatetimeColFrom(): ?DateTimeInterface
     {
@@ -159,7 +179,7 @@ class SearchCondition
     }
 
     /**
-     * @return ?DateTimeInterface
+     * @return ?\DateTimeInterface
      */
     public function getDatetimeColTo(): ?DateTimeInterface
     {
