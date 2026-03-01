@@ -18,7 +18,6 @@ class CreateController extends AppController
 
     /**
      * @param \Cake\Event\EventInterface $event
-     * @return void
      */
     public function beforeFilter(EventInterface $event)
     {

@@ -29,9 +29,9 @@ final class Create implements ServiceInterface
      */
     public function startInputProcess(): InputProcess
     {
-        /** @var \App\Service\Controller\Shared\Process\ProcessFactory */
+        /** @var \App\Service\Controller\Shared\Process\ProcessFactory $processFactory */
         $processFactory = $this->createService(ProcessFactory::class);
-        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess */
+        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $process */
         $process = $processFactory->start(InputProcess::class, self::class, new ProcessParams([
             'xxx' => 'xxx',
         ]));
