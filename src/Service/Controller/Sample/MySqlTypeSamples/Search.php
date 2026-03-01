@@ -51,7 +51,7 @@ final class Search implements ServiceInterface
     }
 
     /**
-     * @return array<string>
+     * @return array<string, array<int|string, string>|int>
      */
     public function getPaginateSettings(): array
     {
