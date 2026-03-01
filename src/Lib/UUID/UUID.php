@@ -346,8 +346,8 @@ class UUID
         } elseif ($version === 8) {
             $unixts = hexdec(substr($timehex, 0, 13));
             $subsec = self::decodeSubsec(
-                (int)(hexdec(substr($timehex, 13)) << 2) 
-                + (hexdec(substr($uuid, 16, 1)) & 0x03)
+                (int)(hexdec(substr($timehex, 13)) << 2)
+                + (hexdec(substr($uuid, 16, 1)) & 0x03),
             );
             $retval = strval($unixts * self::V8_SUBSEC_RANGE + $subsec);
             $retval = substr_replace(str_pad($retval, 8, '0', STR_PAD_LEFT), '.', -7, 0);
