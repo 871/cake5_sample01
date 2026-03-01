@@ -74,7 +74,7 @@ jobs:
 
     - name: Annotate PR
       if: always()
-      uses: staabm/annotate-pull-request-from-checkstyle@v1
+      uses: staabm/annotate-pull-request-from-checkstyle@v1.6.0
       with:
         checkstyle-file: phpcs.xml
 
