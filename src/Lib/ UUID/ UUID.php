@@ -1,8 +1,10 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Lib\UUID;
+
+use InvalidArgumentException;
+use const STR_PAD_LEFT;
 
 /**
  * Represents a universally unique identifier (UUID), according to RFC 9562.
@@ -20,36 +22,42 @@ class UUID
 {
     /**
      * When this namespace is specified, the name string is a fully-qualified domain name.
+     *
      * @var string
      * @link https://www.rfc-editor.org/rfc/rfc9562.html#name-namespace-id-usage-and-allo
      */
     public const NAMESPACE_DNS = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
     /**
      * When this namespace is specified, the name string is a URL.
+     *
      * @var string
      * @link https://www.rfc-editor.org/rfc/rfc9562.html#name-namespace-id-usage-and-allo
      */
     public const NAMESPACE_URL = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
     /**
      * When this namespace is specified, the name string is an ISO OID.
+     *
      * @var string
      * @link https://www.rfc-editor.org/rfc/rfc9562.html#name-namespace-id-usage-and-allo
      */
     public const NAMESPACE_OID = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
     /**
      * When this namespace is specified, the name string is an X.500 DN in DER or a text output format.
+     *
      * @var string
      * @link https://www.rfc-editor.org/rfc/rfc9562.html#name-namespace-id-usage-and-allo
      */
     public const NAMESPACE_X500 = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
     /**
      * The nil UUID is special form of UUID that is specified to have all 128 bits set to zero.
+     *
      * @var string
      * @link https://www.rfc-editor.org/rfc/rfc9562.html#name-nil-uuid
      */
     public const NIL = '00000000-0000-0000-0000-000000000000';
     /**
      * The Max UUID is special form of UUID that is specified to have all 128 bits set to one.
+     *
      * @var string
      * @link https://www.rfc-editor.org/rfc/rfc9562.html#name-max-uuid
      */
@@ -58,6 +66,7 @@ class UUID
     /**
      * 0x01b21dd213814000 is the number of 100-ns intervals between the
      * UUID epoch 1582-10-15 00:00:00 and the Unix epoch 1970-01-01 00:00:00.
+     *
      * @var int
      * @link https://www.rfc-editor.org/rfc/rfc9562.html#name-test-vectors
      */
@@ -79,13 +88,19 @@ class UUID
     private const UUID_REGEX = '/^(?:urn:)?(?:uuid:)?(\{)?([0-9a-f]{8})\-?([0-9a-f]{4})'
     . '\-?([0-9a-f]{4})\-?([0-9a-f]{4})\-?([0-9a-f]{12})(?(1)\}|)$/i';
 
-    /** @internal */
+    /**
+     * @internal
+     */
     private static $unixts = 0;
 
-    /** @internal */
+    /**
+     * @internal
+     */
     private static $subsec = 0;
 
-    /** @internal */
+    /**
+     * @internal
+     */
     private static $unixts_ms = 0;
 
     /** @internal */
@@ -106,6 +121,7 @@ class UUID
         }
         self::$unixts = $unixts;
         self::$subsec = $subsec;
+
         return [$unixts, $subsec];
     }
 
@@ -119,6 +135,7 @@ class UUID
             $unixts_ms = self::$unixts_ms + 1;
         }
         self::$unixts_ms = $unixts_ms;
+
         return $unixts_ms;
     }
 
@@ -126,7 +143,7 @@ class UUID
     private static function stripExtras(string $uuid): string
     {
         if (preg_match(self::UUID_REGEX, $uuid, $m) !== 1) {
-            throw new \InvalidArgumentException('Invalid UUID string: ' . $uuid);
+            throw new InvalidArgumentException('Invalid UUID string: ' . $uuid);
         }
         // Get hexadecimal components of UUID
         return strtolower($m[2] . $m[3] . $m[4] . $m[5] . $m[6]);
@@ -155,7 +172,7 @@ class UUID
             // two most significant bits holds zero and one for variant DCE1.1
             (hexdec(substr($uhex, 16, 4)) & 0x3fff) | 0x8000,
             // 48 bits for "node"
-            substr($uhex, 20, 12)
+            substr($uhex, 20, 12),
         );
     }
 
@@ -183,6 +200,7 @@ class UUID
     {
         $nbytes = self::getBytes($namespace);
         $uhex = md5($nbytes . $name);
+
         return self::uuidFromHex($uhex, 3);
     }
 
@@ -194,6 +212,7 @@ class UUID
     public static function uuid4(): string
     {
         $uhex = bin2hex(random_bytes(16));
+
         return self::uuidFromHex($uhex, 4);
     }
 
@@ -209,6 +228,7 @@ class UUID
     {
         $nbytes = self::getBytes($namespace);
         $uhex = sha1($nbytes . $name);
+
         return self::uuidFromHex($uhex, 5);
     }
 
@@ -224,9 +244,10 @@ class UUID
     {
         [$unixts, $subsec] = self::getUnixTimeSubsec();
         $timestamp = $unixts * self::SUBSEC_RANGE + $subsec;
-        $timehex = str_pad(dechex($timestamp + self::TIME_OFFSET_INT), 15, '0', \STR_PAD_LEFT);
+        $timehex = str_pad(dechex($timestamp + self::TIME_OFFSET_INT), 15, '0', STR_PAD_LEFT);
         $uhex = substr_replace(substr($timehex, -15), '6', -3, 0);
         $uhex .= bin2hex(random_bytes(8));
+
         return self::uuidFromHex($uhex, 6);
     }
 
@@ -244,8 +265,9 @@ class UUID
     public static function uuid7(): string
     {
         $unixtsms = self::getUnixTimeMs();
-        $uhex = substr(str_pad(dechex($unixtsms), 12, '0', \STR_PAD_LEFT), -12);
+        $uhex = substr(str_pad(dechex($unixtsms), 12, '0', STR_PAD_LEFT), -12);
         $uhex .= bin2hex(random_bytes(10));
+
         return self::uuidFromHex($uhex, 7);
     }
 
@@ -264,9 +286,10 @@ class UUID
         $subsecB = $subsec & 0x03;
         $randB = random_bytes(8);
         $randB[0] = chr(ord($randB[0]) & 0x0f | $subsecB << 4);
-        $uhex = substr(str_pad(dechex($unixtsms), 12, '0', \STR_PAD_LEFT), -12);
-        $uhex .= '8' . str_pad(dechex($subsecA), 3, '0', \STR_PAD_LEFT);
+        $uhex = substr(str_pad(dechex($unixtsms), 12, '0', STR_PAD_LEFT), -12);
+        $uhex .= '8' . str_pad(dechex($subsecA), 3, '0', STR_PAD_LEFT);
         $uhex .= bin2hex($randB);
+
         return self::uuidFromHex($uhex, 8);
     }
 
@@ -274,7 +297,7 @@ class UUID
      * Check if a string is a valid UUID.
      *
      * @param string $uuid The string UUID to test
-     * @return boolean Returns `true` if uuid is valid, `false` otherwise
+     * @return bool Returns `true` if uuid is valid, `false` otherwise
      */
     public static function isValid(string $uuid): bool
     {
@@ -286,7 +309,7 @@ class UUID
      *
      * @param string $uuid1 The first UUID to test
      * @param string $uuid2 The second UUID to test
-     * @return boolean Returns `true` if uuid1 is equal to uuid2, `false` otherwise
+     * @return bool Returns `true` if uuid1 is equal to uuid2, `false` otherwise
      */
     public static function equals(string $uuid1, string $uuid2): bool
     {
@@ -312,17 +335,18 @@ class UUID
                 $retval = '-';
                 $ts = abs($ts);
             }
-            $retval .= substr_replace(str_pad(strval($ts), 8, '0', \STR_PAD_LEFT), '.', -7, 0);
+            $retval .= substr_replace(str_pad(strval($ts), 8, '0', STR_PAD_LEFT), '.', -7, 0);
         } elseif ($version === 7) {
             $unixts = hexdec(substr($timehex, 0, 13));
             $retval = strval($unixts * self::V7_SUBSEC_RANGE);
-            $retval = substr_replace(str_pad($retval, 8, '0', \STR_PAD_LEFT), '.', -7, 0);
+            $retval = substr_replace(str_pad($retval, 8, '0', STR_PAD_LEFT), '.', -7, 0);
         } elseif ($version === 8) {
             $unixts = hexdec(substr($timehex, 0, 13));
             $subsec = self::decodeSubsec((hexdec(substr($timehex, 13)) << 2) + (hexdec(substr($uuid, 16, 1)) & 0x03));
             $retval = strval($unixts * self::V8_SUBSEC_RANGE + $subsec);
-            $retval = substr_replace(str_pad($retval, 8, '0', \STR_PAD_LEFT), '.', -7, 0);
+            $retval = substr_replace(str_pad($retval, 8, '0', STR_PAD_LEFT), '.', -7, 0);
         }
+
         return $retval;
     }
 
@@ -359,6 +383,7 @@ class UUID
     public static function toString(string $uuid): string
     {
         $uhex = self::stripExtras($uuid);
+
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($uhex, 4));
     }
 
@@ -370,6 +395,7 @@ class UUID
     {
         return self::uuid3(...$args);
     }
+
     /**
      * @see UUID::uuid4() Alias
      * @return string
@@ -378,6 +404,7 @@ class UUID
     {
         return self::uuid4();
     }
+
     /**
      * @see UUID::uuid5() Alias
      * @return string
@@ -386,6 +413,7 @@ class UUID
     {
         return self::uuid5(...$args);
     }
+
     /**
      * @see UUID::uuid6() Alias
      * @return string
@@ -394,6 +422,7 @@ class UUID
     {
         return self::uuid6();
     }
+
     /**
      * @see UUID::uuid7() Alias
      * @return string
@@ -402,6 +431,7 @@ class UUID
     {
         return self::uuid7();
     }
+
     /**
      * @see UUID::uuid8() Alias
      * @return string

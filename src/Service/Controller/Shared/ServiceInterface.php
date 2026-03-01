@@ -3,21 +3,21 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Shared;
 
+use App\Security\Auth\AuthContext;
+use Cake\Http\ServerRequest;
+use DateTimeInterface;
+
 interface ServiceInterface
 {
-    /**
-     * 
-     */
     public function __construct(
-        \DateTimeInterface $datetime,
-        \Cake\Http\ServerRequest $request,
-        \App\Security\Auth\AuthContext $authContext,
+        DateTimeInterface $datetime,
+        ServerRequest $request,
+        AuthContext $authContext,
     );
 
     /**
-     * 
      * @param string $serviceClassName
-     * @return ServiceInterface
+     * @return \App\Service\Controller\Shared\ServiceInterface
      */
-    public function createService(string $serviceClassName) : ServiceInterface;
+    public function createService(string $serviceClassName): ServiceInterface;
 }

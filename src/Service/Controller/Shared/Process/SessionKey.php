@@ -3,20 +3,17 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Shared\Process;
 
-use \App\Security\Auth\AuthContext\Fields;
+use App\Security\Auth\AuthContext\Fields;
+use Stringable;
 
-/**
- *
- */
-final class SessionKey implements \Stringable
+final class SessionKey implements Stringable
 {
     /**
-     * 
      * @param string $prefix
-     * @param Fields\Type $type
-     * @param Fields\AccountId $accountId
+     * @param \App\Security\Auth\AuthContext\Fields\Type $type
+     * @param \App\Security\Auth\AuthContext\Fields\AccountId $accountId
      * @param string $serviceClassName
-     * @param Process\Fields\ProcessId $processId
+     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId
      */
     public function __construct(
         private readonly string $prefix,
@@ -29,10 +26,9 @@ final class SessionKey implements \Stringable
     }
 
     /**
-     * 
      * @return string
      */
-    public function toString() : string
+    public function toString(): string
     {
         return join('.', array_filter([
             $this->prefix,
@@ -44,10 +40,9 @@ final class SessionKey implements \Stringable
     }
 
     /**
-     * 
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->toString();
     }

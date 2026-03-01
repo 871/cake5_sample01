@@ -3,25 +3,21 @@ declare(strict_types=1);
 
 namespace App\Controller\Sample\MySqlTypeSamples;
 
-use \App\Controller\AppController;
-use \App\Service\Controller\Sample\MySqlTypeSamples\Create as CtlService;
-use \App\Security\Auth\AuthContextResolver;
+use App\Controller\AppController;
+use App\Security\Auth\AuthContextResolver;
+use App\Service\Controller\Sample\MySqlTypeSamples\Create as CtlService;
 use Cake\Event\EventInterface;
-use \Cake\Log\Log;
+use DateTimeImmutable;
 
-/**
- *
- */
 class CreateController extends AppController
 {
     /**
-     * @var CtlService
+     * @var \App\Service\Controller\Sample\MySqlTypeSamples\Create
      */
     private CtlService $ctlService;
 
     /**
-     * 
-     * @param EventInterface $event
+     * @param \Cake\Event\EventInterface $event
      */
     public function beforeFilter(EventInterface $event)
     {
@@ -30,14 +26,16 @@ class CreateController extends AppController
         $this->viewBuilder()->setLayout('sample');
 
         $this->ctlService = new CtlService(
-            datetime: new \DateTimeImmutable(),
+            datetime: new DateTimeImmutable(),
             request: $this->request,
-            authContext: AuthContextResolver::resolve($this->request)
+            authContext: AuthContextResolver::resolve($this->request),
         );
 
-        if (!$this->ctlService->existsInputProcess(
-            ignoreActions : ['index', 'copy']
-        )) {
+        if (
+            !$this->ctlService->existsInputProcess(
+                ignoreActions: ['index', 'copy'],
+            )
+        ) {
             return $this->redirect([
                 'action' => 'index',
                 '?' => $this->request->getQuery(),
@@ -46,7 +44,6 @@ class CreateController extends AppController
     }
 
     /**
-     *
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
@@ -60,15 +57,11 @@ class CreateController extends AppController
         ]);
     }
 
-
-
     /**
-     *
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function input()
     {
-        
 
         return $this->render('/Sample/search');
     }

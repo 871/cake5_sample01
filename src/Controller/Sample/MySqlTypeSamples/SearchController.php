@@ -3,32 +3,29 @@ declare(strict_types=1);
 
 namespace App\Controller\Sample\MySqlTypeSamples;
 
-use \App\Controller\AppController;
-use \App\Service\Controller\Sample\MySqlTypeSamples\Search as CtlService;
-use \App\Security\Auth\AuthContextResolver;
+use App\Controller\AppController;
+use App\Security\Auth\AuthContextResolver;
+use App\Service\Controller\Sample\MySqlTypeSamples\Search as CtlService;
 use Cake\Event\EventInterface;
-use \Cake\Http\Exception\NotFoundException;
-use \Cake\Log\Log;
+use Cake\Http\Exception\NotFoundException;
+use Cake\Log\Log;
+use DateTimeImmutable;
 
-/**
- *
- */
 class SearchController extends AppController
 {
     /**
-     * @var CtlService
+     * @var \App\Service\Controller\Sample\MySqlTypeSamples\Search
      */
     private CtlService $ctlService;
 
-
-    public function beforeFilter(EventInterface $event)
+    public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
 
         $this->ctlService = new CtlService(
-            datetime: new \DateTimeImmutable(),
+            datetime: new DateTimeImmutable(),
             request: $this->request,
-            authContext: AuthContextResolver::resolve($this->request)
+            authContext: AuthContextResolver::resolve($this->request),
         );
 
         $this->viewBuilder()
@@ -49,7 +46,6 @@ class SearchController extends AppController
     }
 
     /**
-     *
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
@@ -58,18 +54,18 @@ class SearchController extends AppController
             $this->set([
                 'rows' => $this->paginate(
                     $this->ctlService->getSearchQuery(),
-                    $this->ctlService->getPaginateSettings()
+                    $this->ctlService->getPaginateSettings(),
                 ),
             ]);
         } catch (NotFoundException $e) {
-
             Log::error(
                 '無効なページが指定されました。'
                 . '[message: ' . $e->getMessage() . ']'
-                . '[Uri: ' . $this->request->getRequestTarget() . ']'
+                . '[Uri: ' . $this->request->getRequestTarget() . ']',
             );
 
             $this->Flash->warning('無効なページが指定されました。1ページ目を表示します。');
+
             return $this->redirect([
                 '?' => array_merge($this->request->getQuery(), [
                     'page' => 1,

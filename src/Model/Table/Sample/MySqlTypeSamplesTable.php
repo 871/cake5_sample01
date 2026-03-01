@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Table\Sample;
 
-use Cake\ORM\Query\SelectQuery;
-use Cake\ORM\RulesChecker;
+use App\Model\Table\TableLocatorTrait;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -27,8 +26,8 @@ use Cake\Validation\Validator;
  */
 class MySqlTypeSamplesTable extends Table
 {
-    use \App\Model\Table\TableLocatorTrait;
-    
+    use TableLocatorTrait;
+
     /**
      * Initialize method
      *
