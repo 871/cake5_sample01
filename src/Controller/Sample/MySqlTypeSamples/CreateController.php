@@ -21,7 +21,7 @@ class CreateController extends AppController
      * @param \Cake\Event\EventInterface $event
      * @return ?\Cake\Http\Response
      */
-    public function beforeFilter(EventInterface $event) : ?Response
+    public function beforeFilter(EventInterface $event): ?Response
     {
         parent::beforeFilter($event);
 
