@@ -12,17 +12,17 @@ final class InputProcess implements Process
 {
     public function __construct(
         private readonly Fields\ProcessId $processId,
-        private readonly array $processParams
+        private readonly Fields\ProcessParams $processParams
     ) {
         // 処理なし
     }
 
     /**
      * 
-     * @param array $processParams
+     * @param Fields\ProcessParams $processParams
      * @return self
      */
-    public function setProcessParams(array $processParams) : self
+    public function setProcessParams(Fields\ProcessParams $processParams) : self
     {
         return new self($this->processId, $processParams);
     }
@@ -38,9 +38,9 @@ final class InputProcess implements Process
 
     /**
      * 
-     * @return array
+     * @return Fields\ProcessParams;
      */
-    public function getProcessParams() : array
+    public function getProcessParams() : Fields\ProcessParams
     {
         return $this->processParams;
     }

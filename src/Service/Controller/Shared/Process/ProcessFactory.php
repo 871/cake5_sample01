@@ -3,24 +3,38 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Shared\Process;
 
+use App\Service\Controller\Shared\ServiceInterface;
+use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
+
 /**
  *
  */
-final class ProcessFactory implements \App\Service\Controller\Shared\ServiceInterface
+final class ProcessFactory implements ServiceInterface
 {
     use \App\Service\Controller\Shared\ServiceTrait;
 
     /**
      * 
-     * 
+     * @param string $processClassName
+     * @param string $serviceClassName
+     * @param ProcessParams $processParams
+     * @return Process
      */
-    public function start(string $processClassName, string $serviceClassName, array $processParams) : Process
+    public function start(string $processClassName, string $serviceClassName, ProcessParams $processParams) : Process
     {
         if (!is_subclass_of($processClassName, Process::class)) {
 
             throw new \InvalidArgumentException(
                 'Process class must implement ' . Process::class
                 . '[processClassName: ' . $processClassName . ']'
+            );
+        }
+
+        if (!is_subclass_of($serviceClassName, ServiceInterface::class)) {
+
+            throw new \InvalidArgumentException(
+                'Service class must implement ' . ServiceInterface::class
+                . '[serviceClassName: ' . $serviceClassName . ']'
             );
         }
 
@@ -33,10 +47,10 @@ final class ProcessFactory implements \App\Service\Controller\Shared\ServiceInte
     /**
      * 
      * @param string $serviceClassName
-     * @param array $processParams
+     * @param ProcessParams $processParams
      * @return Process\Fields\ProcessId
      */
-    private function storeAndGenerateId(string $serviceClassName, array $processParams) : Process\Fields\ProcessId
+    private function storeAndGenerateId(string $serviceClassName, ProcessParams $processParams) : Process\Fields\ProcessId
     {
         $processId = new Process\Fields\ProcessId(uniqid());
         $sessionKey = new SessionKey(
@@ -51,10 +65,9 @@ final class ProcessFactory implements \App\Service\Controller\Shared\ServiceInte
             ? $this->storeAndGenerateId($serviceClassName, $processParams)
             : (function() use ($processId, $sessionKey, $processParams) : Process\Fields\ProcessId {
 
-                $this->request->getSession()->write((string) $sessionKey, $processParams);
+                $this->request->getSession()->write((string) $sessionKey, $processParams->toArray());
 
                 return $processId;
             })();
     }
-    
 }

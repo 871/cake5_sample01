@@ -16,6 +16,10 @@ final class ProcessId implements \Stringable
      */
     private string $value;
 
+    /**
+     * 
+     * @param string $process_id
+     */
     public function __construct(
         private readonly string $process_id
     ) {
@@ -48,5 +52,4 @@ final class ProcessId implements \Stringable
     {
         return $this->toString();
     }
-
 }

@@ -12,15 +12,15 @@ interface Process
 
     public function __construct(
         Process\Fields\ProcessId $processId,
-        array $processParams
+        Process\Fields\ProcessParams $processParams
     );
 
     /**
      * 
-     * @param array $processParams
+     * @param Process\Fields\ProcessParams $processParams
      * @return self
      */
-    public function setProcessParams(array $processParams);
+    public function setProcessParams(Process\Fields\ProcessParams $processParams);
 
     /**
      * 
@@ -30,7 +30,7 @@ interface Process
 
     /**
      * 
-     * @return array
+     * @return Process\Fields\ProcessParams;
      */
-    public function getProcessParams() : array;
+    public function getProcessParams() : Process\Fields\ProcessParams;
 }
