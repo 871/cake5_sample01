@@ -18,6 +18,11 @@ class SearchController extends AppController
      */
     private CtlService $ctlService;
 
+    /**
+     * 
+     * @param EventInterface $event
+     * @return void
+     */
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);

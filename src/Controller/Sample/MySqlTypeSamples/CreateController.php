@@ -17,7 +17,7 @@ class CreateController extends AppController
     private CtlService $ctlService;
 
     /**
-     * @param \Cake\Event\EventInterface $event
+     * @param EventInterface $event
      */
     public function beforeFilter(EventInterface $event)
     {
@@ -62,7 +62,6 @@ class CreateController extends AppController
      */
     public function input()
     {
-
         return $this->render('/Sample/search');
     }
 }

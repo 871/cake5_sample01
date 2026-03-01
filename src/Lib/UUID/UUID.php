@@ -91,17 +91,17 @@ class UUID
     /**
      * @internal
      */
-    private static $unixts = 0;
+    private static int $unixts = 0;
 
     /**
      * @internal
      */
-    private static $subsec = 0;
+    private static int $subsec = 0;
 
     /**
      * @internal
      */
-    private static $unixts_ms = 0;
+    private static int $unixts_ms = 0;
 
     /** @internal */
     private static function getUnixTimeSubsec(): array
@@ -388,12 +388,14 @@ class UUID
     }
 
     /**
-     * @see UUID::uuid3() Alias
+     * 
+     * @param string $namespace The UUID namespace in which to create the named UUID
+     * @param string $name The name to create a UUID for
      * @return string
      */
-    public static function v3(...$args): string
+    public static function v3(string $namespace, string $name): string
     {
-        return self::uuid3(...$args);
+        return self::uuid3($namespace, $name);
     }
 
     /**
@@ -406,12 +408,13 @@ class UUID
     }
 
     /**
-     * @see UUID::uuid5() Alias
+     * @param string $namespace The UUID namespace in which to create the named UUID
+     * @param string $name The name to create a UUID for
      * @return string
      */
-    public static function v5(...$args): string
+    public static function v5(string $namespace, string $name): string
     {
-        return self::uuid5(...$args);
+        return self::uuid5($namespace, $name);
     }
 
     /**

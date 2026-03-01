@@ -14,9 +14,12 @@ use Cake\Http\Response;
  */
 class MySqlTypeSamplesController extends AppController
 {
+    /**
+     * 
+     * @return void
+     */
     public function initialize(): void
     {
-
         parent::initialize();
 
         $this->MySqlTypeSamples = $this->fetchTable(MySqlTypeSamplesTable::class);
