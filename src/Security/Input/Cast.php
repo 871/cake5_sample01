@@ -176,9 +176,10 @@ class Cast
 
     /**
      * @param mixed $value
-     * @return string|null
+     * @param string format
+     * @return ?string
      */
-    public static function toDateTimeString(mixed $value, $format = 'Y-m-d H:i:s'): ?string
+    public static function toDateTimeString(mixed $value, string $format = 'Y-m-d H:i:s'): ?string
     {
         $dateTime = self::toDateTime($value);
         if ($dateTime === null) {
@@ -189,10 +190,11 @@ class Cast
     }
 
     /**
-     * @param mixed $value
-     * @return string|null
+     * @param mixed $
+     * @param string format
+     * @return ?string
      */
-    public static function toDateString(mixed $value, $format = 'Y-m-d'): ?string
+    public static function toDateString(mixed $value, string $format = 'Y-m-d'): ?string
     {
         $date = self::toDate($value);
         if ($date === null) {
@@ -204,9 +206,10 @@ class Cast
 
     /**
      * @param mixed $value
-     * @return string|null
+     * @param string format
+     * @return ?string
      */
-    public static function toTimeString(mixed $value, $format = 'H:i:s'): ?string
+    public static function toTimeString(mixed $value, string $format = 'H:i:s'): ?string
     {
         $time = self::toTime($value);
         if ($time === null) {

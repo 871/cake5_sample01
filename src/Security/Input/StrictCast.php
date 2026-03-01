@@ -178,9 +178,10 @@ class StrictCast
 
     /**
      * @param mixed $value
+     * @param string $format
      * @return string
      */
-    public static function toDateTimeString(mixed $value, $format = 'Y-m-d H:i:s'): string
+    public static function toDateTimeString(mixed $value, string $format = 'Y-m-d H:i:s'): string
     {
         $result = Cast::toDateTimeString($value, $format);
         if ($result !== null) {
@@ -203,9 +204,10 @@ class StrictCast
 
     /**
      * @param mixed $value
+     * @param string $format
      * @return string
      */
-    public static function toDateString(mixed $value, $format = 'Y-m-d'): string
+    public static function toDateString(mixed $value, string $format = 'Y-m-d'): string
     {
         $result = Cast::toDateString($value, $format);
         if ($result !== null) {
@@ -228,9 +230,10 @@ class StrictCast
 
     /**
      * @param mixed $value
+     * @param string $format
      * @return string
      */
-    public static function toTimeString(mixed $value, $format = 'H:i:s'): string
+    public static function toTimeString(mixed $value, string $format = 'H:i:s'): string
     {
         $result = Cast::toTimeString($value, $format);
         if ($result !== null) {

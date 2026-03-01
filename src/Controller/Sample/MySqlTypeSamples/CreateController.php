@@ -17,7 +17,8 @@ class CreateController extends AppController
     private CtlService $ctlService;
 
     /**
-     * @param \Cake\Event\EventInterface $event
+     * @param EventInterface $event
+     * @return void
      */
     public function beforeFilter(EventInterface $event)
     {

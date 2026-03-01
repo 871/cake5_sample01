@@ -8,6 +8,9 @@ use Cake\Http\ServerRequest;
 
 final class AuthContextResolver
 {
+    /**
+     * @param ServerRequest $request
+     */
     private function __construct(
         private readonly ServerRequest $request,
     ) {
@@ -35,6 +38,11 @@ final class AuthContextResolver
             type: new Fields\Type(AuthContext::TYPE_ANONYMOUS),
             accountId: new Fields\AccountId(null)
         ) implements AuthContext {
+
+            /**
+             * @param Fields\Type $type
+             * @param Fields\AccountId $accountId
+             */
             public function __construct(
                 private readonly Fields\Type $type,
                 private readonly Fields\AccountId $accountId,
@@ -42,11 +50,17 @@ final class AuthContextResolver
                 // 処理なし
             }
 
+            /**
+             * @return Fields\Type
+             */
             public function getType(): Fields\Type
             {
                 return $this->type;
             }
 
+            /**
+             * @return Fields\AccountId
+             */
             public function getAccountId(): Fields\AccountId
             {
                 return $this->accountId;

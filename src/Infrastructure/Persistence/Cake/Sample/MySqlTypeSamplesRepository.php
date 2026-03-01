@@ -16,6 +16,9 @@ class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
      */
     private MySqlTypeSamplesTable $mySqlTypeSamplesTable;
 
+    /**
+     * @return void
+     */
     public function __construct()
     {
         $this->mySqlTypeSamplesTable = MySqlTypeSamplesTable::getInstance();

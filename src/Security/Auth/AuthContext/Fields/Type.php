@@ -9,6 +9,9 @@ use Stringable;
 
 class Type implements Stringable
 {
+    /**
+     * @param string $value
+     */
     public function __construct(
         private readonly string $value,
     ) {

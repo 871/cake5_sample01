@@ -10,6 +10,11 @@ use InvalidArgumentException;
 
 trait ServiceTrait
 {
+    /**
+     * @param DateTimeInterface $datetime
+     * @param ServerRequest $request
+     * @param AuthContext $authContext
+     */
     public function __construct(
         private readonly DateTimeInterface $datetime,
         private readonly ServerRequest $request,

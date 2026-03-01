@@ -9,6 +9,11 @@ use DateTimeInterface;
 
 interface ServiceInterface
 {
+    /**
+     * @param DateTimeInterface $datetime
+     * @param ServerRequest $request
+     * @param AuthContext $authContext
+     */
     public function __construct(
         DateTimeInterface $datetime,
         ServerRequest $request,

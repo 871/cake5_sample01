@@ -7,6 +7,10 @@ use App\Service\Controller\Shared\Process\Process;
 
 final class InputProcess implements Process
 {
+    /**
+     * @param Fields\ProcessId $processId
+     * @param Fields\ProcessParams $processParams
+     */
     public function __construct(
         private readonly Fields\ProcessId $processId,
         private readonly Fields\ProcessParams $processParams,

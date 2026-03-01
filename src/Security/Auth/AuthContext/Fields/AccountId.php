@@ -8,6 +8,9 @@ use Stringable;
 
 class AccountId implements Stringable
 {
+    /**
+     * @param ?int $value
+     */
     public function __construct(
         private readonly ?int $value,
     ) {
