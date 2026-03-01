@@ -21,16 +21,14 @@ final class ProcessId implements Stringable
     public function __construct(
         private readonly string $process_id,
     ) {
-        strlen($process_id) <= self::LENGTH || throw new InvalidArgumentException(
+        strlen($process_id) <= self::LENGTH && preg_match('/^[a-z0-9]+$/', $process_id) 
+        || throw new InvalidArgumentException(
             self::class . ' process_id length Error'
                 . '[maxlength: ' . (string)self::LENGTH . ']'
                 . '[process_id: ' . (string)$process_id . ']',
         );
 
-        $this->value = substr(
-            str_pad('', self::LENGTH, '0', STR_PAD_LEFT) . $this->process_id,
-            self::LENGTH,
-        );
+        $this->value = str_pad($this->process_id, self::LENGTH, '0', STR_PAD_LEFT);
     }
 
     /**
