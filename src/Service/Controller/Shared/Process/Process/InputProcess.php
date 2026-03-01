@@ -8,8 +8,8 @@ use App\Service\Controller\Shared\Process\Process;
 final class InputProcess implements Process
 {
     /**
-     * @param Fields\ProcessId $processId
-     * @param Fields\ProcessParams $processParams
+     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId
+     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
      */
     public function __construct(
         private readonly Fields\ProcessId $processId,

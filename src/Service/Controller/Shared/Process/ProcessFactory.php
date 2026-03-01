@@ -42,14 +42,13 @@ final class ProcessFactory implements ServiceInterface
 
     /**
      * @param string $serviceClassName
-     * @param ProcessParams $processParams
-     * @return Process\Fields\ProcessId
+     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
+     * @return \App\Service\Controller\Shared\Process\Process\Fields\ProcessId
      */
     private function storeAndGenerateId(
-        string $serviceClassName, 
-        ProcessParams $processParams
-    ) : Process\Fields\ProcessId
-    {
+        string $serviceClassName,
+        ProcessParams $processParams,
+    ): Process\Fields\ProcessId {
         $processId = new Process\Fields\ProcessId(uniqid());
         $sessionKey = new SessionKey(
             prefix: Process::PREFIX,

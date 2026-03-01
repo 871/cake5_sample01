@@ -8,8 +8,8 @@ interface Process
     public const PREFIX = 'process';
 
     /**
-     * @param Process\Fields\ProcessId $processId
-     * @param Process\Fields\ProcessParams $processParams
+     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId
+     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
      */
     public function __construct(
         Process\Fields\ProcessId $processId,
