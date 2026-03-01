@@ -71,7 +71,7 @@ class SearchController extends AppController
             $this->Flash->warning('無効なページが指定されました。1ページ目を表示します。');
 
             return $this->redirect([
-                '?' => array_merge((array) $this->request->getQuery(), [
+                '?' => array_merge((array)$this->request->getQuery(), [
                     'page' => 1,
                 ]),
             ]);

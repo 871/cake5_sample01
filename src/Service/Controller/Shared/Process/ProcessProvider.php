@@ -59,8 +59,8 @@ final class ProcessProvider implements ServiceInterface
             processId: $processId,
         );
 
-        return $this->request->getSession()->check((string) $sessionKey)
-            ? new ProcessParams((array) $this->request->getSession()->read((string) $sessionKey))
+        return $this->request->getSession()->check((string)$sessionKey)
+            ? new ProcessParams((array)$this->request->getSession()->read((string)$sessionKey))
             : null;
     }
 }

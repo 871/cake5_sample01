@@ -61,7 +61,7 @@ class Cast
             return null;
         }
 
-        return (string) $value === '' ? null : (string) $value;
+        return (string)$value === '' ? null : (string)$value;
     }
 
     /**
