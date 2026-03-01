@@ -64,7 +64,6 @@ jobs:
         php-version: '8.1'
         extensions: mbstring, intl
         coverage: none
-        tools: cs2pr, phpstan:1.12
 
     - name: Composer install
       uses: ramsey/composer-install@v3
@@ -79,8 +78,8 @@ jobs:
       run: vendor/bin/phpcs -i
 
     - name: Run PHP CodeSniffer
-      run: vendor/bin/phpcs --report=checkstyle | cs2pr
+      run: vendor/bin/phpcs --report=checkstyle | vendor/bin/cs2pr
 
     - name: Run phpstan
       if: always()
-      run: phpstan
+      run: vendor/bin/phpstan
