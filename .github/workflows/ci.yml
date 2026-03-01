@@ -66,11 +66,14 @@ jobs:
 
     - uses: ramsey/composer-install@v3
 
-    - name: Debug PHPCS
-      run: vendor/bin/phpcs --version
+    - name: Configure PHPCS installed paths
+      run: |
+        vendor/bin/phpcs --config-set installed_paths \
+          vendor/cakephp/cakephp-codesniffer,\
+          vendor/slevomat/coding-standard
 
     - name: Run PHP CodeSniffer
-      run: vendor/bin/phpcs --report=checkstyle > phpcs.xml
+      run: vendor/bin/phpcs
 
     - name: Run phpstan
       if: always()
