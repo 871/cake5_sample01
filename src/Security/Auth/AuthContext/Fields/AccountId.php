@@ -15,6 +15,7 @@ class AccountId implements Stringable
         private readonly ?int $value,
     ) {
         $this->value === null
+        || preg_match('/^\d+$/', (string)$value)
         || throw new Exception(
             self::class . ' Generate Error'
             . '[value: ' . (string)$this->value . ']',
