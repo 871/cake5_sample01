@@ -21,7 +21,7 @@ final class ProcessId implements Stringable
     public function __construct(
         private readonly string $process_id,
     ) {
-        strlen($process_id) <= self::LENGTH && preg_match('/^[a-z0-9]+$/', $process_id) 
+        strlen($process_id) <= self::LENGTH && preg_match('/^[a-z0-9]+$/', $process_id)
         || throw new InvalidArgumentException(
             self::class . ' process_id length Error'
                 . '[maxlength: ' . (string)self::LENGTH . ']'
