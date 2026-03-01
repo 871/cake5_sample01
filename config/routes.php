@@ -60,7 +60,7 @@ return function (RouteBuilder $routes): void {
 
         // debug($_SERVER['REQUEST_URI']);
         // debug(preg_replace('/^\/([^\/\?]+)\/?.*$/', '$1', $_SERVER['REQUEST_URI']));
-        require match (preg_replace('/^\/v1\/([^\/\?]+)\/?.*$/', '$1', $_SERVER['REQUEST_URI'])) {
+        require match (preg_replace('/^\/v1\/([^\/\?]+)\/?.*$/', '$1', $_SERVER['REQUEST_URI'] ?? '/')) {
             'cs' => CONFIG . 'routes/custmer.php',
             'us' => CONFIG . 'routes/user.php',
             'ad' => CONFIG . 'routes/admin.php',
