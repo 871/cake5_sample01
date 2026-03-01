@@ -7,6 +7,7 @@ use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
 use App\Service\Controller\Sample\MySqlTypeSamples\Create as CtlService;
 use Cake\Event\EventInterface;
+use Cake\Http\Response;
 use DateTimeImmutable;
 
 class CreateController extends AppController
@@ -18,8 +19,9 @@ class CreateController extends AppController
 
     /**
      * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Http\Response|null
      */
-    public function beforeFilter(EventInterface $event)
+    public function beforeFilter(EventInterface $event) : ?Response
     {
         parent::beforeFilter($event);
 
@@ -41,6 +43,8 @@ class CreateController extends AppController
                 '?' => $this->request->getQuery(),
             ]);
         }
+
+        return null;
     }
 
     /**
