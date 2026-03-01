@@ -3,36 +3,33 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Sample\MySqlTypeSamples;
 
-use \App\Security\Input\Cast;
-use \App\Domain\Sample\MySqlTypeSamples\SearchCondition;
-use \App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
+use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
+use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
+use App\Security\Input\Cast;
+use App\Service\Controller\Shared\ServiceInterface;
+use App\Service\Controller\Shared\ServiceTrait;
+use Cake\ORM\Query;
 
-
-/**
- *
- */
-final class Search implements \App\Service\Controller\Shared\ServiceInterface
+final class Search implements ServiceInterface
 {
-    use \App\Service\Controller\Shared\ServiceTrait;
+    use ServiceTrait;
 
     /**
-     * 
-     * @return array
+     * @return array<string>
      */
-    public function getInitParams() : array
+    public function getInitParams(): array
     {
         return [];
     }
 
     /**
-     * 
      * @return \Cake\ORM\Query
      */
-    public function getSearchQuery() : \Cake\ORM\Query
+    public function getSearchQuery(): Query
     {
         return (new MySqlTypeSamplesRepository())
-        ->getQuery(new SearchCondition( 
-            id: Cast::toInt($this->request->getQuery('id')),
+        ->getQuery(new SearchCondition(
+            id: Cast::toString($this->request->getQuery('id')),
             intColFrom: Cast::toInt($this->request->getQuery('int_col_from')),
             intColTo: Cast::toInt($this->request->getQuery('int_col_to')),
             bigintColFrom: Cast::toInt($this->request->getQuery('bigint_col_from')),
@@ -54,10 +51,9 @@ final class Search implements \App\Service\Controller\Shared\ServiceInterface
     }
 
     /**
-     * 
-     * @return array
+     * @return array<string, array<int|string, string>|int>
      */
-    public function getPaginateSettings() : array
+    public function getPaginateSettings(): array
     {
         return [
             'limit' => 20,
@@ -77,7 +73,7 @@ final class Search implements \App\Service\Controller\Shared\ServiceInterface
                 'json_col',
             ],
             'order' => [
-                'id' => 'DESC'
+                'id' => 'DESC',
             ],
         ];
     }

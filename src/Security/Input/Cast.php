@@ -1,6 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace App\Security\Input;
+
+use DateTimeImmutable;
+use DateTimeInterface;
+use Exception;
 
 class Cast
 {
@@ -8,7 +13,7 @@ class Cast
      * @param mixed $value
      * @return int|null
      */
-    public static function toInt(mixed $value) : ?int
+    public static function toInt(mixed $value): ?int
     {
         if ($value === null) {
             return null;
@@ -19,7 +24,7 @@ class Cast
         }
 
         if (is_string($value) && preg_match('/^-?\d+$/', $value)) {
-            return (int) $value;
+            return (int)$value;
         }
 
         return null;
@@ -29,7 +34,7 @@ class Cast
      * @param mixed $value
      * @return float|null
      */
-    public static function toFloat(mixed $value) : ?float
+    public static function toFloat(mixed $value): ?float
     {
         if ($value === null) {
             return null;
@@ -40,7 +45,7 @@ class Cast
         }
 
         if (is_string($value) && preg_match('/^-?\d+(\.\d+)?$/', $value)) {
-            return (float) $value;
+            return (float)$value;
         }
 
         return null;
@@ -50,20 +55,21 @@ class Cast
      * @param mixed $value
      * @return string|null
      */
-    public static function toString(mixed $value) : ?string
+    public static function toString(mixed $value): ?string
     {
-        if ($value === null) {
+        if ($value === null || $value === '') {
             return null;
         }
 
-        return (string) $value === '' ? null : (string) $value;
+        return is_scalar($value) || (is_object($value) && method_exists($value, '__toString'))
+            ? (string)$value : null;
     }
 
     /**
      * @param mixed $value
      * @return bool|null
      */
-    public static function toBool(mixed $value) : ?bool
+    public static function toBool(mixed $value): ?bool
     {
         if ($value === null) {
             return null;
@@ -74,7 +80,7 @@ class Cast
         }
 
         if (in_array($value, [0, 1, '0', '1'], true)) {
-            return (bool) $value;
+            return (bool)$value;
         }
 
         if (is_string($value)) {
@@ -94,20 +100,20 @@ class Cast
      * @param mixed $value
      * @return \DateTimeInterface|null
      */
-    public static function toDateTime(mixed $value) : ?\DateTimeInterface
+    public static function toDateTime(mixed $value): ?DateTimeInterface
     {
         if ($value === null) {
             return null;
         }
 
-        if ($value instanceof \DateTimeInterface) {
+        if ($value instanceof DateTimeInterface) {
             return $value;
         }
 
         if (is_string($value)) {
             try {
-                return new \DateTimeImmutable($value);
-            } catch (\Exception $e) {
+                return new DateTimeImmutable($value);
+            } catch (Exception $e) {
                 return null;
             }
         }
@@ -119,22 +125,22 @@ class Cast
      * @param mixed $value
      * @return \DateTimeInterface|null
      */
-    public static function toDate(mixed $value) : ?\DateTimeInterface
+    public static function toDate(mixed $value): ?DateTimeInterface
     {
         if ($value === null) {
             return null;
         }
 
-        if ($value instanceof \DateTimeInterface) {
-            return new \DateTimeImmutable($value->format('Y-m-d'));
+        if ($value instanceof DateTimeInterface) {
+            return new DateTimeImmutable($value->format('Y-m-d'));
         }
 
         if (is_string($value)) {
             try {
-                return new \DateTimeImmutable(
-                    (new \DateTimeImmutable($value))->format('Y-m-d')
+                return new DateTimeImmutable(
+                    (new DateTimeImmutable($value))->format('Y-m-d'),
                 );
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return null;
             }
         }
@@ -146,22 +152,22 @@ class Cast
      * @param mixed $value
      * @return \DateTimeInterface|null
      */
-    public static function toTime(mixed $value) : ?\DateTimeInterface
+    public static function toTime(mixed $value): ?DateTimeInterface
     {
         if ($value === null) {
             return null;
         }
 
-        if ($value instanceof \DateTimeInterface) {
-            return new \DateTimeImmutable($value->format('H:i:s'));
+        if ($value instanceof DateTimeInterface) {
+            return new DateTimeImmutable($value->format('H:i:s'));
         }
 
         if (is_string($value)) {
             try {
-                return new \DateTimeImmutable(
-                    (new \DateTimeImmutable($value))->format('H:i:s')
+                return new DateTimeImmutable(
+                    (new DateTimeImmutable($value))->format('H:i:s'),
                 );
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return null;
             }
         }
@@ -169,12 +175,12 @@ class Cast
         return null;
     }
 
-
     /**
      * @param mixed $value
-     * @return string|null
+     * @param string $format
+     * @return ?string
      */
-    public static function toDateTimeString(mixed $value, $format = 'Y-m-d H:i:s') : ?string
+    public static function toDateTimeString(mixed $value, string $format = 'Y-m-d H:i:s'): ?string
     {
         $dateTime = self::toDateTime($value);
         if ($dateTime === null) {
@@ -186,23 +192,25 @@ class Cast
 
     /**
      * @param mixed $value
-     * @return string|null
+     * @param string $format
+     * @return ?string
      */
-    public static function toDateString(mixed $value, $format = 'Y-m-d') : ?string
+    public static function toDateString(mixed $value, string $format = 'Y-m-d'): ?string
     {
         $date = self::toDate($value);
         if ($date === null) {
             return null;
         }
-        
+
         return $date->format($format);
     }
 
     /**
      * @param mixed $value
-     * @return string|null
+     * @param string $format
+     * @return ?string
      */
-    public static function toTimeString(mixed $value, $format = 'H:i:s') : ?string
+    public static function toTimeString(mixed $value, string $format = 'H:i:s'): ?string
     {
         $time = self::toTime($value);
         if ($time === null) {

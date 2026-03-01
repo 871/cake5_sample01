@@ -3,31 +3,31 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Sample;
 
-use \Cake\Database\Expression\QueryExpression;
 use App\Domain\Sample\MySqlTypeSamples\Repository\MySqlTypeSamplesRepository as DomainMySqlTypeSamplesRepository;
 use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
+use App\Model\Table\Sample\MySqlTypeSamplesTable;
+use Cake\Database\Expression\QueryExpression;
+use Cake\ORM\Query;
 
-/**
- *
- */
 class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
 {
     /**
-     * 
      * @var \App\Model\Table\Sample\MySqlTypeSamplesTable
      */
-    private \App\Model\Table\Sample\MySqlTypeSamplesTable $mySqlTypeSamplesTable;
+    private MySqlTypeSamplesTable $mySqlTypeSamplesTable;
 
+    /**
+     * @return void
+     */
     public function __construct()
     {
-        $this->mySqlTypeSamplesTable = \App\Model\Table\Sample\MySqlTypeSamplesTable::getInstance();
+        $this->mySqlTypeSamplesTable = MySqlTypeSamplesTable::getInstance();
     }
 
     /**
-     * 
      * @return \Cake\ORM\Query
      */
-    public function getQuery(SearchCondition $condition): \Cake\ORM\Query
+    public function getQuery(SearchCondition $condition): Query
     {
         return $this->mySqlTypeSamplesTable
             ->find()
@@ -64,8 +64,8 @@ class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
                 'MySqlTypeSamples.datetime_col >=' => $condition->getDatetimeColFrom(),
                 'MySqlTypeSamples.datetime_col <=' => $condition->getDatetimeColTo(),
                 $condition->getKeyword() ? new QueryExpression(
-                        'MATCH(search_text) AGAINST(:keyword IN BOOLEAN MODE)'
-                    ) : ":keyword IS NULL",
+                    'MATCH(search_text) AGAINST(:keyword IN BOOLEAN MODE)',
+                ) : ':keyword IS NULL',
 
             ], fn($v) => $v !== null))
             ->bind(':keyword', $condition->getKeyword(), 'string');

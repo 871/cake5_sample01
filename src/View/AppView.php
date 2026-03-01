@@ -37,7 +37,7 @@ class AppView extends View
      */
     public function initialize(): void
     {
-         $this->loadHelper('Paginator', [
+        $this->loadHelper('Paginator', [
             'templates' => [
                 'number' => '<li class="page-item"><a class="page-link" href="{{url}}">{{text}}</a></li>',
                 'current' => '<li class="page-item active"><span class="page-link">{{text}}</span></li>',

@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Controller\Sample;
 
 use App\Controller\AppController;
+use App\Model\Table\Sample\MySqlTypeSamplesTable;
+use Cake\Http\Response;
 
 /**
  * MySqlTypeSamples Controller
@@ -12,13 +14,14 @@ use App\Controller\AppController;
  */
 class MySqlTypeSamplesController extends AppController
 {
-
+    /**
+     * @return void
+     */
     public function initialize(): void
     {
-        
         parent::initialize();
 
-        $this->MySqlTypeSamples = $this->fetchTable(\App\Model\Table\Sample\MySqlTypeSamplesTable::class);
+        $this->MySqlTypeSamples = $this->fetchTable(MySqlTypeSamplesTable::class);
     }
 
     /**
@@ -41,7 +44,7 @@ class MySqlTypeSamplesController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $mySqlTypeSample = $this->MySqlTypeSamples->get($id, contain: []);
         $this->set(compact('mySqlTypeSample'));
@@ -56,7 +59,7 @@ class MySqlTypeSamplesController extends AppController
     {
         $mySqlTypeSample = $this->MySqlTypeSamples->newEmptyEntity();
         if ($this->request->is('post')) {
-            $mySqlTypeSample = $this->MySqlTypeSamples->patchEntity($mySqlTypeSample, $this->request->getData());
+            $mySqlTypeSample = $this->MySqlTypeSamples->patchEntity($mySqlTypeSample, (array)$this->request->getData());
             if ($this->MySqlTypeSamples->save($mySqlTypeSample)) {
                 $this->Flash->success(__('The my sql type sample has been saved.'));
 
@@ -74,11 +77,11 @@ class MySqlTypeSamplesController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $mySqlTypeSample = $this->MySqlTypeSamples->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $mySqlTypeSample = $this->MySqlTypeSamples->patchEntity($mySqlTypeSample, $this->request->getData());
+            $mySqlTypeSample = $this->MySqlTypeSamples->patchEntity($mySqlTypeSample, (array)$this->request->getData());
             if ($this->MySqlTypeSamples->save($mySqlTypeSample)) {
                 $this->Flash->success(__('The my sql type sample has been saved.'));
 
@@ -96,7 +99,7 @@ class MySqlTypeSamplesController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete(?string $id = null): ?Response
     {
         $this->request->allowMethod(['post', 'delete']);
         $mySqlTypeSample = $this->MySqlTypeSamples->get($id);
