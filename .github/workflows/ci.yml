@@ -66,8 +66,17 @@ jobs:
 
     - uses: ramsey/composer-install@v3
 
+    - name: Debug PHPCS
+      run: vendor/bin/phpcs --version
+
     - name: Run PHP CodeSniffer
-      run: vendor/bin/phpcs
+      run: vendor/bin/phpcs --report=checkstyle > phpcs.xml
+
+    - name: Annotate PR
+      if: always()
+      uses: staabm/annotate-pull-request-from-checkstyle@master
+      with:
+        checkstyle-file: phpcs.xml
 
     - name: Run phpstan
       if: always()
