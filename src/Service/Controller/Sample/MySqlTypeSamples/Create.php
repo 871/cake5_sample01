@@ -14,7 +14,7 @@ final class Create implements ServiceInterface
     use ServiceTrait;
 
     /**
-     * @param array $ignoreActions
+     * @param array<string> $ignoreActions
      * @return bool
      */
     public function existsInputProcess(array $ignoreActions = []): bool

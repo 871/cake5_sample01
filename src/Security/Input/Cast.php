@@ -57,11 +57,12 @@ class Cast
      */
     public static function toString(mixed $value): ?string
     {
-        if ($value === null) {
+        if ($value === null || $value === '' ) {
             return null;
         }
 
-        return (string)$value === '' ? null : (string)$value;
+        return is_scalar($value) || (is_object($value) && method_exists($value, '__toString'))
+            ? (string)$value : null;
     }
 
     /**
@@ -176,7 +177,7 @@ class Cast
 
     /**
      * @param mixed $value
-     * @param string format
+     * @param string $format
      * @return ?string
      */
     public static function toDateTimeString(mixed $value, string $format = 'Y-m-d H:i:s'): ?string
@@ -190,8 +191,8 @@ class Cast
     }
 
     /**
-     * @param mixed $
-     * @param string format
+     * @param mixed $value
+     * @param string $format
      * @return ?string
      */
     public static function toDateString(mixed $value, string $format = 'Y-m-d'): ?string
@@ -206,7 +207,7 @@ class Cast
 
     /**
      * @param mixed $value
-     * @param string format
+     * @param string $format
      * @return ?string
      */
     public static function toTimeString(mixed $value, string $format = 'H:i:s'): ?string
