@@ -37,5 +37,22 @@ class AppView extends View
      */
     public function initialize(): void
     {
+        $this->loadHelper('Paginator', [
+            'templates' => [
+                'number' => '<li class="page-item"><a class="page-link" href="{{url}}">{{text}}</a></li>',
+                'current' => '<li class="page-item active"><span class="page-link">{{text}}</span></li>',
+                'prevActive' => '<li class="page-item"><a class="page-link" href="{{url}}">{{text}}</a></li>',
+                'prevDisabled' => '<li class="page-item disabled"><span class="page-link">{{text}}</span></li>',
+                'nextActive' => '<li class="page-item"><a class="page-link" href="{{url}}">{{text}}</a></li>',
+                'nextDisabled' => '<li class="page-item disabled"><span class="page-link">{{text}}</span></li>',
+                'first' => '<li class="page-item"><a class="page-link" href="{{url}}">{{text}}</a></li>',
+                'last' => '<li class="page-item"><a class="page-link" href="{{url}}">{{text}}</a></li>',
+                'sort' => '<a class="sort-link" href="{{url}}">{{text}}</a>',
+                'sortAsc' => '<a class="sort-link asc" href="{{url}}">{{text}}</a>',
+                'sortDesc' => '<a class="sort-link desc" href="{{url}}">{{text}}</a>',
+                'sortAscLocked' => '<a class="sort-link asc locked" href="{{url}}">{{text}}</a>',
+                'sortDescLocked' => '<a class="sort-link desc locked" href="{{url}}">{{text}}</a>',
+            ],
+        ]);
     }
 }
