@@ -8,7 +8,6 @@ use App\Security\Auth\AuthContext\Fields;
 use App\Service\Controller\Shared\Process\ProcessFactory;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\Process\Process\InputProcess;
-use App\Service\Controller\Shared\ServiceInterface;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
@@ -35,9 +34,7 @@ final class ProcessFactoryTest extends TestCase
             }
         };
 
-        $request = $this->getMockBuilder(ServerRequest::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $request = $this->createMock(ServerRequest::class);
 
         $this->factory = new ProcessFactory(
             datetime : new \DateTimeImmutable(),
