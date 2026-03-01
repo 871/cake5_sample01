@@ -69,12 +69,14 @@ jobs:
     - name: Composer install
       uses: ramsey/composer-install@v3
 
-    - name: Configure PHPCS installed paths   # ← ★追加
+    - name: Configure PHPCS installed paths
       run: |
-        vendor/bin/phpcs --config-set installed_paths vendor/cakephp/cakephp-codesniffer,vendor/slevomat/coding-standard
+        vendor/bin/phpcs --config-set installed_paths \
+        $(pwd)/vendor/cakephp/cakephp-codesniffer,\
+        $(pwd)/vendor/slevomat/coding-standard
 
-    - name: Composer post install
-      run: composer run-script post-install-cmd --no-interaction
+    - name: Debug PHPCS
+      run: vendor/bin/phpcs -i
 
     - name: Run PHP CodeSniffer
       run: vendor/bin/phpcs --report=checkstyle | cs2pr
