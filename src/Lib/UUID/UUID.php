@@ -388,7 +388,6 @@ class UUID
     }
 
     /**
-     * 
      * @param string $namespace The UUID namespace in which to create the named UUID
      * @param string $name The name to create a UUID for
      * @return string

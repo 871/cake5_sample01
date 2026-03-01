@@ -19,8 +19,7 @@ class SearchController extends AppController
     private CtlService $ctlService;
 
     /**
-     * 
-     * @param EventInterface $event
+     * @param \Cake\Event\EventInterface $event
      * @return void
      */
     public function beforeFilter(EventInterface $event): void

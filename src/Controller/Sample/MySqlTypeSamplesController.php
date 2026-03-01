@@ -15,7 +15,6 @@ use Cake\Http\Response;
 class MySqlTypeSamplesController extends AppController
 {
     /**
-     * 
      * @return void
      */
     public function initialize(): void

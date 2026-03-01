@@ -13,7 +13,6 @@ use Cake\ORM\Locator\TableLocator;
 trait TableLocatorTrait
 {
     /**
-     * 
      * @return self
      */
     public static function getInstance(): self
