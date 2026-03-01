@@ -11,9 +11,9 @@ use InvalidArgumentException;
 trait ServiceTrait
 {
     /**
-     * @param DateTimeInterface $datetime
-     * @param ServerRequest $request
-     * @param AuthContext $authContext
+     * @param \DateTimeInterface $datetime
+     * @param \Cake\Http\ServerRequest $request
+     * @param \App\Security\Auth\AuthContext $authContext
      */
     public function __construct(
         private readonly DateTimeInterface $datetime,

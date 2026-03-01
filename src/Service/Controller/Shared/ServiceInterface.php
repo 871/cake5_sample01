@@ -10,9 +10,9 @@ use DateTimeInterface;
 interface ServiceInterface
 {
     /**
-     * @param DateTimeInterface $datetime
-     * @param ServerRequest $request
-     * @param AuthContext $authContext
+     * @param \DateTimeInterface $datetime
+     * @param \Cake\Http\ServerRequest $request
+     * @param \App\Security\Auth\AuthContext $authContext
      */
     public function __construct(
         DateTimeInterface $datetime,
@@ -22,7 +22,7 @@ interface ServiceInterface
 
     /**
      * @param string $serviceClassName
-     * @return \App\Service\Controller\Shared\ServiceInterface
+     * @return self
      */
-    public function createService(string $serviceClassName): ServiceInterface;
+    public function createService(string $serviceClassName): self;
 }
