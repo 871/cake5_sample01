@@ -30,14 +30,14 @@ final class ProcessRepository implements ServiceInterface
             type: $this->authContext->getType(),
             accountId: $this->authContext->getAccountId(),
             serviceClassName: $serviceClassName,
-            processId: $process->getProcessParams()->getId()->toString(),
+            processId: $process->getId(),
         );
 
         $this->request->getSession()->check((string)$sessionKey)
             ? $this->request->getSession()->write((string)$sessionKey, $process->getProcessParams()->toArray())
             : throw new InvalidArgumentException(
                 'An invalid Process Instance was set'
-                . '[ProcessId: ' . $process->getProcessParams()->getId()->toString() . ']'
+                . '[ProcessId: ' . $process->getId()->toString() . ']'
                 . '[ProcessParams: ' . print_r($process->getProcessParams()->toArray(), true) . ']',
             );
     }

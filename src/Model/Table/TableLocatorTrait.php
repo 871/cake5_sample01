@@ -17,6 +17,9 @@ trait TableLocatorTrait
      */
     public static function getInstance(): self
     {
-        return (new TableLocator())->get(self::class);
+        /** @var self $table */
+        $table = (new TableLocator())->get(self::class);
+
+        return $table;
     }
 }

@@ -59,7 +59,7 @@ class MySqlTypeSamplesController extends AppController
     {
         $mySqlTypeSample = $this->MySqlTypeSamples->newEmptyEntity();
         if ($this->request->is('post')) {
-            $mySqlTypeSample = $this->MySqlTypeSamples->patchEntity($mySqlTypeSample, $this->request->getData());
+            $mySqlTypeSample = $this->MySqlTypeSamples->patchEntity($mySqlTypeSample, (array) $this->request->getData());
             if ($this->MySqlTypeSamples->save($mySqlTypeSample)) {
                 $this->Flash->success(__('The my sql type sample has been saved.'));
 
@@ -81,7 +81,7 @@ class MySqlTypeSamplesController extends AppController
     {
         $mySqlTypeSample = $this->MySqlTypeSamples->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $mySqlTypeSample = $this->MySqlTypeSamples->patchEntity($mySqlTypeSample, $this->request->getData());
+            $mySqlTypeSample = $this->MySqlTypeSamples->patchEntity($mySqlTypeSample, (array) $this->request->getData());
             if ($this->MySqlTypeSamples->save($mySqlTypeSample)) {
                 $this->Flash->success(__('The my sql type sample has been saved.'));
 

@@ -11,7 +11,7 @@ use JsonSerializable;
 final class ProcessParams implements IteratorAggregate, JsonSerializable
 {
     /**
-     * @param array $values
+     * @param array $values<string, mixed>
      */
     public function __construct(
         private readonly array $values,
@@ -19,7 +19,7 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
     }
 
     /**
-     * @param array $overrides
+     * @param array $overrides<string, mixed>
      * @return self
      */
     public function with(array $overrides = []): self
@@ -45,7 +45,7 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
@@ -53,7 +53,7 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function jsonSerialize(): array
     {
