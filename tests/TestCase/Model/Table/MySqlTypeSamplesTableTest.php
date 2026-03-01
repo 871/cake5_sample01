@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\MySqlTypeSamplesTable;
+use App\Model\Table\Sample\MySqlTypeSamplesTable;
 use Cake\TestSuite\TestCase;
 
 /**
