@@ -11,7 +11,7 @@ use JsonSerializable;
 final class ProcessParams implements IteratorAggregate, JsonSerializable
 {
     /**
-     * @param array $values<string, mixed>
+     * @param array<string, mixed> $values
      */
     public function __construct(
         private readonly array $values,
@@ -19,11 +19,12 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
     }
 
     /**
-     * @param array $overrides<string, mixed>
+     * @param array<string, mixed> $overrides
      * @return self
      */
     public function with(array $overrides = []): self
     {
+        // 存在しないキーが指定された場合は例外
         array_diff_key($overrides, $this->values) === []
             || throw new InvalidArgumentException(
                 'There are no overridable'

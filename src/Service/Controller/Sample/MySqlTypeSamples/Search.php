@@ -15,7 +15,7 @@ final class Search implements ServiceInterface
     use ServiceTrait;
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getInitParams(): array
     {
@@ -29,7 +29,7 @@ final class Search implements ServiceInterface
     {
         return (new MySqlTypeSamplesRepository())
         ->getQuery(new SearchCondition(
-            id: Cast::toInt($this->request->getQuery('id')),
+            id: Cast::toString($this->request->getQuery('id')),
             intColFrom: Cast::toInt($this->request->getQuery('int_col_from')),
             intColTo: Cast::toInt($this->request->getQuery('int_col_to')),
             bigintColFrom: Cast::toInt($this->request->getQuery('bigint_col_from')),
@@ -51,7 +51,7 @@ final class Search implements ServiceInterface
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getPaginateSettings(): array
     {
