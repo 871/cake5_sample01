@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Service\Controller\Shared\Process\Process;
 
-use App\Service\Controller\Shared\Process\Process\InputProcess;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
+use App\Service\Controller\Shared\Process\Process\InputProcess;
 use PHPUnit\Framework\TestCase;
 
 final class InputProcessTest extends TestCase

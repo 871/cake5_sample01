@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Service\Controller\Shared\Process\Process\Fields;
 
+use ArrayIterator;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,7 @@ final class ProcessParamsTest extends TestCase
 
         // getIterator() returns ArrayIterator with same data
         $iterator = $params->getIterator();
-        $this->assertInstanceOf(\ArrayIterator::class, $iterator);
+        $this->assertInstanceOf(ArrayIterator::class, $iterator);
         $this->assertSame($data, $iterator->getArrayCopy());
     }
 
