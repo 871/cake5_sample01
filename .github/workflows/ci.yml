@@ -58,27 +58,25 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+    - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.1'
         extensions: mbstring, intl
         coverage: none
 
-    - name: Composer install
-      uses: ramsey/composer-install@v3
-
-    - name: Configure PHPCS installed paths
-      run: |
-        vendor/bin/phpcs --config-set installed_paths \
-        $(pwd)/vendor/cakephp/cakephp-codesniffer,\
-        $(pwd)/vendor/slevomat/coding-standard
+    - uses: ramsey/composer-install@v3
 
     - name: Debug PHPCS
-      run: vendor/bin/phpcs -i
+      run: vendor/bin/phpcs --version
 
     - name: Run PHP CodeSniffer
-      run: vendor/bin/phpcs --report=checkstyle | vendor/bin/cs2pr
+      run: vendor/bin/phpcs --report=checkstyle > phpcs.xml
+
+    - name: Annotate PR
+      if: always()
+      uses: staabm/annotate-pull-request-from-checkstyle@v1
+      with:
+        checkstyle-file: phpcs.xml
 
     - name: Run phpstan
       if: always()
