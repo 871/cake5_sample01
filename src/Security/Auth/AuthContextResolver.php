@@ -24,7 +24,6 @@ final class AuthContextResolver
         $ins = new self($request);
 
         return match (preg_replace('/^\/v1\/([^\/]+)\/.*$/', '$1', $ins->request->getPath())) {
-
             // 未認証の場合は匿名のAuthContextを返す
             default => $ins->createAuthContextForAnonymous(),
         };

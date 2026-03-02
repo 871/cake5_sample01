@@ -8,7 +8,8 @@ use Stringable;
 
 class AccountId implements Stringable
 {
-    const int MAX = 2147483647; // MySql SIGNED INT の上限値
+    private const int MAX = 2147483647; // MySql SIGNED INT の上限値
+
     /**
      * @param ?int $value
      */
