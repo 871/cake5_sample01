@@ -28,22 +28,28 @@ final class AccountIdTest extends TestCase
         new AccountId($value);
     }
 
+    /**
+     * @return array<string, array{0: ?int}>
+     */
     public static function validValues(): array
     {
         return [
             'null' => [null],
             'min' => [1],
             'middle' => [100],
-            'max' => [2147483647], // AccountId::MAXの値
+            'max' => [2147483647], // AccountId::MAX_INTの値
         ];
     }
 
+    /**
+     * @return array<string, array{0: ?int}>
+     */
     public static function invalidValues(): array
     {
         return [
             'zero' => [0],
             'negative' => [-1],
-            'over max' => [2147483647 + 1], // AccountId::MAXの値 + 1
+            'over max' => [2147483647 + 1], // AccountId::MAX_INTの値 + 1
         ];
     }
 }

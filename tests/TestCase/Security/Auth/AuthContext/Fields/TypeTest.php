@@ -28,6 +28,9 @@ final class TypeTest extends TestCase
         new Type($value);
     }
 
+    /**
+     * @return array<string, array{0: string}>
+     */
     public static function validTypes(): array
     {
         return [
@@ -38,6 +41,9 @@ final class TypeTest extends TestCase
         ];
     }
 
+    /**
+     * @return array<string, array{0: string}>
+     */
     public static function invalidTypes(): array
     {
         return [

@@ -8,7 +8,7 @@ use Stringable;
 
 class AccountId implements Stringable
 {
-    private const int MAX = 2147483647; // MySql SIGNED INT の上限値
+    private const MAX_INT = 2147483647; // MySql SIGNED INT の上限値
 
     /**
      * @param ?int $value
@@ -17,7 +17,7 @@ class AccountId implements Stringable
         private readonly ?int $value,
     ) {
         $this->value === null
-        || ($this->value > 0 && $this->value <= self::MAX)
+        || ($this->value > 0 && $this->value <= self::MAX_INT)
         || throw new DomainException(
             self::class . ' Generate Error'
             . '[value: ' . (string)$this->value . ']',
