@@ -30,7 +30,7 @@ final class ProcessFactoryTest extends TestCase
 
             public function getAccountId(): Fields\AccountId
             {
-                return new Fields\AccountId(10001);
+                return new Fields\AccountId(null);
             }
         };
 
