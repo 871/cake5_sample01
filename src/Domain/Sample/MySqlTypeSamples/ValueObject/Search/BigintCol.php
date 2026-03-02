@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Sample\MySqlTypeSamples\ValueObject\Search;
 
-use DomainException;
 use App\Domain\Shared\ValueObject\Search\IntFromToTrait;
+use DomainException;
 
 class BigintCol
 {
@@ -28,7 +28,7 @@ class BigintCol
             self::class . 'Frmo value range Error'
                 . '[minInt: ' . (string)$minInt . ']'
                 . '[maxInt: ' . (string)$maxInt . ']'
-                . '[fromValue: ' . (string)$fromValue . ']',
+                . '[fromValue: ' . (string)$this->fromValue . ']',
         );
 
         ($this->toValue >= $minInt && $this->toValue <= $maxInt)
@@ -36,7 +36,7 @@ class BigintCol
             self::class . 'To value range Error'
                 . '[minInt: ' . (string)$minInt . ']'
                 . '[maxInt: ' . (string)$maxInt . ']'
-                . '[toValue: ' . (string)$toValue . ']',
+                . '[toValue: ' . (string)$this->toValue . ']',
         );
 
         $this->fromValue > $this->toValue
@@ -44,8 +44,8 @@ class BigintCol
             self::class . 'To value range Error'
                 . '[minInt: ' . (string)$minInt . ']'
                 . '[maxInt: ' . (string)$maxInt . ']'
-                . '[fromValue: ' . (string)$fromValue . ']'
-                . '[toValue: ' . (string)$toValue . ']'
+                . '[fromValue: ' . (string)$this->fromValue . ']'
+                . '[toValue: ' . (string)$this->toValue . ']',
         );
     }
 }

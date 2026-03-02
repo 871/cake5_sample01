@@ -14,7 +14,7 @@ use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
 use Cake\TestSuite\TestCase;
-use InvalidArgumentException;
+use DomainException;
 
 final class ProcessRepositoryTest extends TestCase
 {
@@ -74,7 +74,7 @@ final class ProcessRepositoryTest extends TestCase
 
     public function testSaveThrowsWhenSessionMissing(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessage('An invalid Process Instance was set');
 
         $process = new InputProcess(
@@ -92,7 +92,7 @@ final class ProcessRepositoryTest extends TestCase
 
     public function testSaveThrowsOnInvalidServiceClass(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Service class must implement');
 
         $process = new InputProcess(

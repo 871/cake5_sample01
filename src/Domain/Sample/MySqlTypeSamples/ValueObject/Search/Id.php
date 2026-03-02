@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Sample\MySqlTypeSamples\ValueObject\Search;
 
-use DomainException;
 use App\Domain\Shared\ValueObject\Search\StringTrait;
+use DomainException;
 
 class Id
 {

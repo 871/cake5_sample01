@@ -5,7 +5,7 @@ namespace App\Test\TestCase\Service\Controller\Shared\Process\Process\Fields;
 
 use ArrayIterator;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
-use InvalidArgumentException;
+use DomainException;
 use PHPUnit\Framework\TestCase;
 
 final class ProcessParamsTest extends TestCase
@@ -49,7 +49,7 @@ final class ProcessParamsTest extends TestCase
 
     public function testWithThrowsExceptionOnUnknownKeys(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessageMatches('/There are no overridable/');
 
         $params = new ProcessParams([

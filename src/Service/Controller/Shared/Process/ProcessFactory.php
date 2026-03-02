@@ -6,7 +6,7 @@ namespace App\Service\Controller\Shared\Process;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
-use InvalidArgumentException;
+use DomainException;
 
 final class ProcessFactory implements ServiceInterface
 {
@@ -21,14 +21,14 @@ final class ProcessFactory implements ServiceInterface
     public function start(string $processClassName, string $serviceClassName, ProcessParams $processParams): Process
     {
         if (!is_subclass_of($processClassName, Process::class)) {
-            throw new InvalidArgumentException(
+            throw new DomainException(
                 'Process class must implement ' . Process::class
                 . '[processClassName: ' . $processClassName . ']',
             );
         }
 
         if (!is_subclass_of($serviceClassName, ServiceInterface::class)) {
-            throw new InvalidArgumentException(
+            throw new DomainException(
                 'Service class must implement ' . ServiceInterface::class
                 . '[serviceClassName: ' . $serviceClassName . ']',
             );

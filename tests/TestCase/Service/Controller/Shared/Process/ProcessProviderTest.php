@@ -14,7 +14,7 @@ use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
 use Cake\TestSuite\TestCase;
-use InvalidArgumentException;
+use DomainException;
 
 final class ProcessProviderTest extends TestCase
 {
@@ -106,7 +106,7 @@ final class ProcessProviderTest extends TestCase
 
     public function testThrowsOnInvalidProcessClass(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Process class must implement');
 
         $this->provider->provide(
@@ -118,7 +118,7 @@ final class ProcessProviderTest extends TestCase
 
     public function testThrowsOnInvalidServiceClass(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Service class must implement');
 
         $this->provider->provide(

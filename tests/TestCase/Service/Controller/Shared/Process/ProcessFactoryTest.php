@@ -10,7 +10,7 @@ use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\Process\Process\InputProcess;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
-use InvalidArgumentException;
+use DomainException;
 
 final class ProcessFactoryTest extends TestCase
 {
@@ -58,7 +58,7 @@ final class ProcessFactoryTest extends TestCase
 
     public function testStartThrowsOnInvalidProcessClass(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Process class must implement');
 
         $params = new ProcessParams([]);
@@ -71,7 +71,7 @@ final class ProcessFactoryTest extends TestCase
 
     public function testStartThrowsOnInvalidServiceClass(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Service class must implement');
 
         $params = new ProcessParams([]);

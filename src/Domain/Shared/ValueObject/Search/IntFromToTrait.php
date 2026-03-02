@@ -28,8 +28,8 @@ trait IntFromToTrait
     {
         return (string)$this->fromValue;
     }
+
     /**
-     * 
      * @return string
      */
     public function toStringTo(): string

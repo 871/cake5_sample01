@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Test\TestCase\Service\Controller\Shared\Process\Process\Fields;
 
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
-use InvalidArgumentException;
+use DomainException;
 use PHPUnit\Framework\TestCase;
 
 class ProcessIdTest extends TestCase
@@ -19,7 +19,7 @@ class ProcessIdTest extends TestCase
 
     public function testThrowsExceptionWhenTooLong(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessage('process_id length Error');
 
         new ProcessId('abcdefghijklmnop'); // 16文字, LENGTH=15
@@ -27,7 +27,7 @@ class ProcessIdTest extends TestCase
 
     public function testThrowsExceptionWhenNonAscii(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessage('process_id length Error');
 
         new ProcessId('abc123あいう'); // 全角文字を含む
