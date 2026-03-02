@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Security\Auth\AuthContext\Fields;
 
 use App\Security\Auth\AuthContext;
-use Exception;
+use DomainException;
 use Stringable;
 
 class Type implements Stringable
@@ -17,7 +17,10 @@ class Type implements Stringable
     ) {
         in_array($this->value, [
             AuthContext::TYPE_ANONYMOUS,
-        ], true) || throw new Exception(
+            AuthContext::TYPE_CUSTMER,
+            AuthContext::TYPE_USER,
+            AuthContext::TYPE_ADMIN,
+        ], true) || throw new DomainException(
             self::class . ' Generate Error'
             . '[type: ' . $this->value . ']',
         );

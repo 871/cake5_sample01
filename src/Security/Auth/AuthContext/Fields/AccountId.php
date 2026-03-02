@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace App\Security\Auth\AuthContext\Fields;
 
-use Exception;
+use DomainException;
 use Stringable;
 
 class AccountId implements Stringable
 {
+    const int MAX = 2147483647; // MySql SIGNED INT の上限値
     /**
      * @param ?int $value
      */
@@ -15,8 +16,8 @@ class AccountId implements Stringable
         private readonly ?int $value,
     ) {
         $this->value === null
-        || preg_match('/^\d+$/', (string)$value)
-        || throw new Exception(
+        || ($this->value > 0 && $this->value <= self::MAX)
+        || throw new DomainException(
             self::class . ' Generate Error'
             . '[value: ' . (string)$this->value . ']',
         );
