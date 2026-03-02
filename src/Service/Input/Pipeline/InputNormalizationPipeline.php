@@ -30,6 +30,7 @@ final class InputNormalizationPipeline
     public function process(mixed $input): mixed
     {
         foreach ($this->normalizers as $normalizer) {
+            /** @var InputNormalizer $input */
             $input = $normalizer->normalize($input);
         }
 
