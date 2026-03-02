@@ -13,12 +13,12 @@ class Id
     public const LENGTH = 36; // UUIDの上限文字数
 
     /**
-     * @param string $value
+     * @param ?string $value
      */
     public function __construct(
-        private readonly string $value,
+        private readonly ?string $value,
     ) {
-        strlen($value) <= self::LENGTH
+        $value === null || strlen($value) <= self::LENGTH
         || throw new DomainException(
             self::class . ' value length Error'
                 . '[maxlength: ' . (string)self::LENGTH . ']'
