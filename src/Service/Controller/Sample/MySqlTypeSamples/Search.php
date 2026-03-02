@@ -27,8 +27,8 @@ final class Search implements ServiceInterface
      */
     public function getSearchQuery(): Query
     {
-        return (new MySqlTypeSamplesRepository())
-        ->getQuery(new SearchCondition(
+        $repository = new MySqlTypeSamplesRepository();
+        return $repository->search(new SearchCondition(
             id: Cast::toString($this->request->getQuery('id')),
             intColFrom: Cast::toInt($this->request->getQuery('int_col_from')),
             intColTo: Cast::toInt($this->request->getQuery('int_col_to')),

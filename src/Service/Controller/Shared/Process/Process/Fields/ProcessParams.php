@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Service\Controller\Shared\Process\Process\Fields;
 
 use ArrayIterator;
-use InvalidArgumentException;
+use DomainException;
 use IteratorAggregate;
 use JsonSerializable;
 
@@ -26,7 +26,7 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
     {
         // 存在しないキーが指定された場合は例外
         array_diff_key($overrides, $this->values) === []
-            || throw new InvalidArgumentException(
+            || throw new DomainException(
                 'There are no overridable'
                 . '[Invalid parameters: ' . print_r(array_diff_key($overrides, $this->values), true) . ' ]'
                 . '[allowParamsKeys: ' . print_r(array_keys($this->values), true) . ']',

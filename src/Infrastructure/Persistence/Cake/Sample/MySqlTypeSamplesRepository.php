@@ -27,7 +27,7 @@ class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
     /**
      * @return \Cake\ORM\Query
      */
-    public function getQuery(SearchCondition $condition): Query
+    public function search(SearchCondition $condition): Query
     {
         return $this->mySqlTypeSamplesTable
             ->find()
