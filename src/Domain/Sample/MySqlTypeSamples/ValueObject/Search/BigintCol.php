@@ -10,40 +10,17 @@ class BigintCol
 {
     use IntFromToTrait;
 
-    public const MIN_INT = -9223372036854775808;
-    public const MAX_INT = 9223372036854775807;
-
     /**
-     * @param string $value
+     * @param ?int $fromValue
+     * @param ?int $toValue
      */
     public function __construct(
         private readonly ?int $fromValue,
         private readonly ?int $toValue,
     ) {
-        $minInt = self::MIN_INT <= PHP_INT_MIN ? self::MIN_INT : PHP_INT_MIN;
-        $maxInt = self::MAX_INT <= PHP_INT_MAX ? self::MAX_INT : PHP_INT_MAX;
-
-        ($this->fromValue >= $minInt && $this->fromValue <= $maxInt)
-        || throw new DomainException(
-            self::class . 'Frmo value range Error'
-                . '[minInt: ' . (string)$minInt . ']'
-                . '[maxInt: ' . (string)$maxInt . ']'
-                . '[fromValue: ' . (string)$this->fromValue . ']',
-        );
-
-        ($this->toValue >= $minInt && $this->toValue <= $maxInt)
+        $this->fromValue === null || $this->toValue === null || $this->fromValue > $this->toValue
         || throw new DomainException(
             self::class . 'To value range Error'
-                . '[minInt: ' . (string)$minInt . ']'
-                . '[maxInt: ' . (string)$maxInt . ']'
-                . '[toValue: ' . (string)$this->toValue . ']',
-        );
-
-        $this->fromValue > $this->toValue
-        || throw new DomainException(
-            self::class . 'To value range Error'
-                . '[minInt: ' . (string)$minInt . ']'
-                . '[maxInt: ' . (string)$maxInt . ']'
                 . '[fromValue: ' . (string)$this->fromValue . ']'
                 . '[toValue: ' . (string)$this->toValue . ']',
         );
