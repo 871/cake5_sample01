@@ -67,7 +67,7 @@ final class ProcessRepositoryTest extends TestCase
             ->method('write');
 
         $this->repository->save(
-            DummyService::class,
+            ProcessRepositoryTestDummyService::class,
             $process
         );
     }
@@ -85,7 +85,7 @@ final class ProcessRepositoryTest extends TestCase
         $this->session->method('check')->willReturn(false);
 
         $this->repository->save(
-            DummyService::class,
+            ProcessRepositoryTestDummyService::class,
             $process
         );
     }
@@ -107,7 +107,7 @@ final class ProcessRepositoryTest extends TestCase
     }
 }
 
-final class DummyService implements ServiceInterface
+final class ProcessRepositoryTestDummyService implements ServiceInterface
 {
     use ServiceTrait;
 }

@@ -59,7 +59,7 @@ final class ProcessProviderTest extends TestCase
 
         $process = $this->provider->provide(
             InputProcess::class,
-            DummyService::class,
+            ProcessProviderTestDummyService::class,
             $processId
         );
 
@@ -97,7 +97,7 @@ final class ProcessProviderTest extends TestCase
 
         $result = $this->provider->provide(
             InputProcess::class,
-            DummyService::class,
+            ProcessProviderTestDummyService::class,
             $processId
         );
 
@@ -111,7 +111,7 @@ final class ProcessProviderTest extends TestCase
 
         $this->provider->provide(
             \stdClass::class,
-            DummyService::class,
+            ProcessProviderTestDummyService::class,
             new ProcessId('x')
         );
     }
@@ -129,7 +129,7 @@ final class ProcessProviderTest extends TestCase
     }
 }
 
-final class DummyService implements ServiceInterface
+final class ProcessProviderTestDummyService implements ServiceInterface
 {
     use ServiceTrait;
 }
