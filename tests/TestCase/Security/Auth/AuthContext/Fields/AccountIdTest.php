@@ -34,7 +34,7 @@ final class AccountIdTest extends TestCase
             'null' => [null],
             'min' => [1],
             'middle' => [100],
-            'max' => [AccountId::MAX],
+            'max' => [2147483647], // AccountId::MAXの値
         ];
     }
 
@@ -43,7 +43,7 @@ final class AccountIdTest extends TestCase
         return [
             'zero' => [0],
             'negative' => [-1],
-            'over max' => [AccountId::MAX + 1],
+            'over max' => [2147483647 + 1], // AccountId::MAXの値 + 1
         ];
     }
 }
