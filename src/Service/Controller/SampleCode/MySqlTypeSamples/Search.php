@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Sample\MySqlTypeSamples;
+namespace App\Service\Controller\SampleCode\MySqlTypeSamples;
 
 use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
 use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
