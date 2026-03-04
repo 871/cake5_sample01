@@ -1,0 +1,43 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Domain\Sample\MySqlTypeSamples\ValueObject;
+
+use App\Domain\Shared\ValueObject\FloatTrait;
+use DomainException;
+use Stringable;
+
+final class DoubleCol implements Stringable
+{
+    use FloatTrait;
+
+    public const SCALE = 4;
+    public const MIN = 0.0000;
+    public const MAX = 99999.9999;
+
+    /**
+     * @var string
+     */
+    private readonly string $value;
+
+    /**
+     * @param string $value
+     */
+    private function __construct(string $value)
+    {
+        if (!preg_match('/^-?\d+(\.\d{0, ' . (string)self::SCALE . '})?$/', $value)) {
+            throw new DomainException("Invalid double format: {$value}");
+        }
+
+        if ((float)$value < self::MIN || (float)$value > self::MAX) {
+            throw new DomainException(
+                self::class . ' value range Error'
+                    . '[value: ' . $value . ']'
+                    . '[MIN: ' . (string)self::MIN . ']'
+                    . '[MAX: ' . (string)self::MAX . ']',
+            );
+        }
+
+        $this->value = sprintf('%.' . (string)self::SCALE . 'f', $value);
+    }
+}

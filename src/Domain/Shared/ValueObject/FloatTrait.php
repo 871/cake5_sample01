@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Domain\Shared\ValueObject\Search;
+namespace App\Domain\Shared\ValueObject;
 
-trait IntTrait
+trait FloatTrait
 {
     /**
-     * @return int
+     * @return float
      */
-    public function toInt(): ?int
+    public function toFloat(): float
     {
-        return $this->value;
+        return (float)$this->value;
     }
 
     /**

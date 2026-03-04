@@ -54,11 +54,6 @@ class SearchController extends AppController
      */
     public function index()
     {
-        debug([
-            1,2,3,
-            PHP_INT_MIN,
-            PHP_INT_MAX,
-        ]);
         try {
             $this->set([
                 'rows' => $this->paginate(

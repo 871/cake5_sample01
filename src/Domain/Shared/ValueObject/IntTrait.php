@@ -1,16 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Domain\Shared\ValueObject\Search;
+namespace App\Domain\Shared\ValueObject;
 
-trait StringTrait
+trait IntTrait
 {
+    /**
+     * @return int
+     */
+    public function toInt(): ?int
+    {
+        return (int)$this->value;
+    }
+
     /**
      * @return string
      */
     public function toString(): string
     {
-        return $this->value ?? '';
+        return (string)$this->value;
     }
 
     /**

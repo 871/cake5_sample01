@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Domain\Sample\MySqlTypeSamples\ValueObject\Search;
+namespace App\Domain\Sample\MySqlTypeSamples\ValueObject;
 
-use App\Domain\Shared\ValueObject\Search\StringTrait;
+use App\Domain\Shared\ValueObject\StringTrait;
 use DomainException;
+use Stringable;
 
-class Id
+class Id implements Stringable
 {
     use StringTrait;
 
