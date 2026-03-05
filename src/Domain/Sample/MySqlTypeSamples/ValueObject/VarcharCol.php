@@ -7,11 +7,11 @@ use App\Domain\Shared\ValueObject\Trait\StringTrait;
 use DomainException;
 use Stringable;
 
-class Id implements Stringable
+class VarcharCol implements Stringable
 {
     use StringTrait;
 
-    public const MATCH = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
+    public const MATCH = '/^.{1,255}$/';
 
     /**
      * @param ?string $value
@@ -21,7 +21,7 @@ class Id implements Stringable
     ) {
         if ($value !== null && !preg_match(self::MATCH, $value)) {
             throw new DomainException(
-                self::class . ' value uuid format Error'
+                self::class . ' value varchar format Error'
                     . '[match: ' . (string)self::MATCH . ']'
                     . '[value: ' . $value . ']',
             );

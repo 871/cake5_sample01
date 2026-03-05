@@ -7,11 +7,11 @@ use App\Domain\Shared\ValueObject\Trait\StringTrait;
 use DomainException;
 use Stringable;
 
-class Id implements Stringable
+class LongtextCol implements Stringable
 {
     use StringTrait;
 
-    public const MATCH = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
+    public const MAX_LENGTH = 4294967295;
 
     /**
      * @param ?string $value
@@ -19,10 +19,10 @@ class Id implements Stringable
     public function __construct(
         private readonly ?string $value,
     ) {
-        if ($value !== null && !preg_match(self::MATCH, $value)) {
+        if ($value !== null && mb_strlen($value) > self::MAX_LENGTH) {
             throw new DomainException(
-                self::class . ' value uuid format Error'
-                    . '[match: ' . (string)self::MATCH . ']'
+                self::class . ' value longtext format Error'
+                    . '[max length: ' . (string)self::MAX_LENGTH . ']'
                     . '[value: ' . $value . ']',
             );
         }
