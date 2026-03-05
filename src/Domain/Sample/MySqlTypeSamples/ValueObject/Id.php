@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Sample\MySqlTypeSamples\ValueObject;
 
-use App\Domain\Shared\ValueObject\StringTrait;
+use App\Domain\Shared\ValueObject\Trait\StringTrait;
 use DomainException;
 use Stringable;
 

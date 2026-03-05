@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Domain\Shared\ValueObject;
+namespace App\Domain\Shared\ValueObject\Trait;
 
 use DateTime;
 use DateTimeImmutable;
 
-trait TimeTrait
+trait DatetimeTrait
 {
     /**
      * @var ?\DateTimeImmutable
@@ -17,7 +17,7 @@ trait TimeTrait
      * @param string $format
      * @return ?string
      */
-    public function format(string $format = 'H:i:s'): ?string
+    public function format(string $format = 'Y-m-d H:i:s'): ?string
     {
         return $this->value?->format($format);
     }

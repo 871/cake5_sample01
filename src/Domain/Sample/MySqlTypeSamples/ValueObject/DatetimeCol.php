@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Sample\MySqlTypeSamples\ValueObject;
 
-use App\Domain\Shared\ValueObject\DatetimeTrait;
+use App\Domain\Shared\ValueObject\Trait\DatetimeTrait;
 use DateTimeImmutable;
 use DomainException;
 use Stringable;
