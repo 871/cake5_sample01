@@ -18,13 +18,18 @@ final class DecimalCol implements Stringable
     /**
      * @var string
      */
-    private readonly string $value;
+    private readonly ?string $value;
 
     /**
-     * @param string $value
+     * @param ?string $value
      */
-    private function __construct(string $value)
+    private function __construct(?string $value)
     {
+        if ($value === null) {
+            $this->value = null;
+            return;
+        }
+
         if (!preg_match('/^-?\d+(\.\d{0, ' . (string)self::SCALE . '})?$/', $value)) {
             throw new DomainException("Invalid decimal format: {$value}");
         }

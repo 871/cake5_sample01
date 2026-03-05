@@ -10,7 +10,7 @@ trait IntTrait
      */
     public function toInt(): ?int
     {
-        return (int)$this->value;
+        return $this->value === null ? null : (int)$this->value;
     }
 
     /**

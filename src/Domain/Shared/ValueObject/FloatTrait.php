@@ -8,9 +8,9 @@ trait FloatTrait
     /**
      * @return float
      */
-    public function toFloat(): float
+    public function toFloat(): ?float
     {
-        return (float)$this->value;
+        return $this->value === null ? null : (float)$this->value;
     }
 
     /**
