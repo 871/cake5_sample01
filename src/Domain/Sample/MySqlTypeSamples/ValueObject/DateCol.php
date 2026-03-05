@@ -16,17 +16,18 @@ class DateCol implements Stringable
     public const MAX = '2999-12-31';
 
     /**
-     * @var ?DateTimeImmutable
+     * @var ?\DateTimeImmutable
      */
     private readonly ?DateTimeImmutable $value;
 
     /**
      * @param ?string $value
      */
-    public function __construct(?string $value, string $format = 'Y-m-d') 
+    public function __construct(?string $value, string $format = 'Y-m-d')
     {
         if ($value === null) {
             $this->value = null;
+
             return;
         }
 
@@ -40,16 +41,16 @@ class DateCol implements Stringable
 
         $minDate = DateTimeImmutable::createFromFormat('Y-m-d', self::MIN);
         $maxDate = DateTimeImmutable::createFromFormat('Y-m-d', self::MAX);
-        $value = DateTimeImmutable::createFromFormat($format, $value);
-        if ($value < $minDate || $value > $maxDate) {
+        $resultValue = DateTimeImmutable::createFromFormat($format, $value);
+        if ($resultValue === false || $resultValue < $minDate || $resultValue > $maxDate) {
             throw new DomainException(
                 self::class . ' value date range Error'
-                    . '[value: ' . (string)$value . ']'
+                    . '[value: ' . $value . ']'
                     . '[min: ' . self::MIN . ']'
                     . '[max: ' . self::MAX . ']',
             );
         }
 
-        $this->value = $value;
+        $this->value = $resultValue;
     }
 }

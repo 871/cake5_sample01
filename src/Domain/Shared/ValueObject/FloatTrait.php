@@ -6,7 +6,7 @@ namespace App\Domain\Shared\ValueObject;
 trait FloatTrait
 {
     /**
-     * @return float
+     * @return ?float
      */
     public function toFloat(): ?float
     {

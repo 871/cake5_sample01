@@ -9,20 +9,21 @@ use DateTimeImmutable;
 trait DateTrait
 {
     /**
-     * @var ?DateTimeImmutable
+     * @var ?\DateTimeImmutable
      */
     private readonly ?DateTimeImmutable $value;
 
     /**
+     * @param string $format
      * @return ?string
      */
-    public function format($format = 'Y-m-d'): ?string
+    public function format(string $format = 'Y-m-d'): ?string
     {
-        return $this->value?->format($format) ?? null;
+        return $this->value?->format($format);
     }
 
     /**
-     * @return ?string
+     * @return string
      */
     public function toString(): string
     {
@@ -44,6 +45,7 @@ trait DateTrait
     protected static function checkFormat(string $value, string $format): bool
     {
         $dt = DateTime::createFromFormat($format, $value);
+
         return $dt !== false && $dt->format($format) === $value;
     }
 }

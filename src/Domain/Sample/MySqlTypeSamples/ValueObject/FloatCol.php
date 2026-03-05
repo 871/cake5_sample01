@@ -27,6 +27,7 @@ final class FloatCol implements Stringable
     {
         if ($value === null) {
             $this->value = null;
+
             return;
         }
 

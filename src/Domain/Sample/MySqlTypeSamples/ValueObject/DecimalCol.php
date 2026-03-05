@@ -27,6 +27,7 @@ final class DecimalCol implements Stringable
     {
         if ($value === null) {
             $this->value = null;
+
             return;
         }
 
