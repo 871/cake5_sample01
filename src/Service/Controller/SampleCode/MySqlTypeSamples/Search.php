@@ -4,10 +4,11 @@ declare(strict_types=1);
 namespace App\Service\Controller\SampleCode\MySqlTypeSamples;
 
 use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
+use App\Domain\Sample\MySqlTypeSamples\ValueObject;
 use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
-use App\Security\Input\Cast;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
+use App\Service\Input\Normalizer\RecursiveEmptyStringToNullNormalizer;
 use Cake\ORM\Query;
 
 final class Search implements ServiceInterface
@@ -27,27 +28,27 @@ final class Search implements ServiceInterface
      */
     public function getSearchQuery(): Query
     {
-        $repository = new MySqlTypeSamplesRepository();
+        $data = (new RecursiveEmptyStringToNullNormalizer())->normalize($this->request->getQuery());
 
-        return $repository->search(new SearchCondition(
-            id: Cast::toString($this->request->getQuery('id')),
-            intColFrom: Cast::toInt($this->request->getQuery('int_col_from')),
-            intColTo: Cast::toInt($this->request->getQuery('int_col_to')),
-            bigintColFrom: Cast::toInt($this->request->getQuery('bigint_col_from')),
-            bigintColTo: Cast::toInt($this->request->getQuery('bigint_col_to')),
-            decimalColFrom: Cast::toFloat($this->request->getQuery('decimal_col_from')),
-            decimalColTo: Cast::toFloat($this->request->getQuery('decimal_col_to')),
-            floatColFrom: Cast::toFloat($this->request->getQuery('float_col_from')),
-            floatColTo: Cast::toFloat($this->request->getQuery('float_col_to')),
-            doubleColFrom: Cast::toFloat($this->request->getQuery('double_col_from')),
-            doubleColTo: Cast::toFloat($this->request->getQuery('double_col_to')),
-            dateColFrom: Cast::toDate($this->request->getQuery('date_col_from')),
-            dateColTo: Cast::toDate($this->request->getQuery('date_col_to')),
-            timeColFrom: Cast::toTime($this->request->getQuery('time_col_from')),
-            timeColTo: Cast::toTime($this->request->getQuery('time_col_to')),
-            datetimeColFrom: Cast::toDateTime($this->request->getQuery('datetime_col_from')),
-            datetimeColTo: Cast::toDateTime($this->request->getQuery('datetime_col_to')),
-            keyword: Cast::toString($this->request->getQuery('keyword')),
+        return (new MySqlTypeSamplesRepository())->search(new SearchCondition(
+            id: new ValueObject\Id($data['id'] ?? null),
+            intColFrom: new ValueObject\IntCol($data['int_col_from'] ?? null),
+            intColTo: new ValueObject\IntCol($data['int_col_to'] ?? null),
+            bigintColFrom: new ValueObject\BigintCol($data['bigint_col_from'] ?? null),
+            bigintColTo: new ValueObject\BigintCol($data['bigint_col_to'] ?? null),
+            decimalColFrom: new ValueObject\DecimalCol($data['decimal_col_from'] ?? null),
+            decimalColTo: new ValueObject\DecimalCol($data['decimal_col_to'] ?? null),
+            floatColFrom: new ValueObject\FloatCol($data['float_col_from'] ?? null),
+            floatColTo: new ValueObject\FloatCol($data['float_col_to'] ?? null),
+            doubleColFrom: new ValueObject\DoubleCol($data['double_col_from'] ?? null),
+            doubleColTo: new ValueObject\DoubleCol($data['double_col_to'] ?? null),
+            dateColFrom: new ValueObject\DateCol($data['date_col_from'] ?? null),
+            dateColTo: new ValueObject\DateCol($data['date_col_to'] ?? null),
+            timeColFrom: new ValueObject\TimeCol($data['time_col_from'] ?? null),
+            timeColTo: new ValueObject\TimeCol($data['time_col_to'] ?? null),
+            datetimeColFrom: new ValueObject\DatetimeCol($data['datetime_col_from'] ?? null),
+            datetimeColTo: new ValueObject\DatetimeCol($data['datetime_col_to'] ?? null),
+            keyword: new ValueObject\Search\Keyword($data['keyword'] ?? null),
         ));
     }
 

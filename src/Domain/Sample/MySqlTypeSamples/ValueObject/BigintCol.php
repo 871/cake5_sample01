@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Domain\Sample\MySqlTypeSamples\ValueObject\Search;
+namespace App\Domain\Sample\MySqlTypeSamples\ValueObject;
 
 use App\Domain\Shared\ValueObject\Trait\IntTrait;
 use DomainException;

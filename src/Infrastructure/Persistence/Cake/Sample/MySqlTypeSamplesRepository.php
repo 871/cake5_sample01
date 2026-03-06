@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Sample;
 
+use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample as DomainEntity;
 use App\Domain\Sample\MySqlTypeSamples\Repository\MySqlTypeSamplesRepository as DomainMySqlTypeSamplesRepository;
 use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
 use App\Model\Table\Sample\MySqlTypeSamplesTable;
+use App\Service\Input\Normalizer\RecursiveEmptyStringToNullNormalizer;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 
@@ -25,6 +27,7 @@ class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
     }
 
     /**
+     * @param \App\Domain\Sample\MySqlTypeSamples\SearchCondition $condition
      * @return \Cake\ORM\Query
      */
     public function search(SearchCondition $condition): Query
@@ -43,31 +46,43 @@ class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
                 'MySqlTypeSamples__datetime_col' => 'MySqlTypeSamples.datetime_col',
                 'MySqlTypeSamples__char_col' => 'MySqlTypeSamples.char_col',
                 'MySqlTypeSamples__varchar_col' => 'MySqlTypeSamples.varchar_col',
+                'MySqlTypeSamples__text_col' => 'MySqlTypeSamples.text_col',
+                'MySqlTypeSamples__mediumtext_col' => 'MySqlTypeSamples.mediumtext_col',
+                'MySqlTypeSamples__longtext_col' => 'MySqlTypeSamples.longtext_col',
                 'MySqlTypeSamples__json_col' => 'MySqlTypeSamples.json_col',
             ])
-            ->where(array_filter([
-                'MySqlTypeSamples.id' => $condition->getId(),
-                'MySqlTypeSamples.int_col >=' => $condition->getIntColFrom(),
-                'MySqlTypeSamples.int_col <=' => $condition->getIntColTo(),
-                'MySqlTypeSamples.bigint_col >=' => $condition->getBigintColFrom(),
-                'MySqlTypeSamples.bigint_col <=' => $condition->getBigintColTo(),
-                'MySqlTypeSamples.decimal_col >=' => $condition->getDecimalColFrom(),
-                'MySqlTypeSamples.decimal_col <=' => $condition->getDecimalColTo(),
-                'MySqlTypeSamples.float_col >=' => $condition->getFloatColFrom(),
-                'MySqlTypeSamples.float_col <=' => $condition->getFloatColTo(),
-                'MySqlTypeSamples.double_col >=' => $condition->getDoubleColFrom(),
-                'MySqlTypeSamples.double_col <=' => $condition->getDoubleColTo(),
-                'MySqlTypeSamples.date_col >=' => $condition->getDateColFrom(),
-                'MySqlTypeSamples.date_col <=' => $condition->getDateColTo(),
-                'MySqlTypeSamples.time_col >=' => $condition->getTimeColFrom(),
-                'MySqlTypeSamples.time_col <=' => $condition->getTimeColTo(),
-                'MySqlTypeSamples.datetime_col >=' => $condition->getDatetimeColFrom(),
-                'MySqlTypeSamples.datetime_col <=' => $condition->getDatetimeColTo(),
-                $condition->getKeyword() ? new QueryExpression(
-                    'MATCH(search_text) AGAINST(:keyword IN BOOLEAN MODE)',
-                ) : ':keyword IS NULL',
+            ->where(
+                array_filter([
+                    'MySqlTypeSamples.id' => $condition->getId()->toString(),
+                    'MySqlTypeSamples.int_col >=' => $condition->getIntColFrom()->toString(),
+                    'MySqlTypeSamples.int_col <=' => $condition->getIntColTo()->toString(),
+                    'MySqlTypeSamples.bigint_col >=' => $condition->getBigintColFrom()->toString(),
+                    'MySqlTypeSamples.bigint_col <=' => $condition->getBigintColTo()->toString(),
+                    'MySqlTypeSamples.decimal_col >=' => $condition->getDecimalColFrom()->toString(),
+                    'MySqlTypeSamples.decimal_col <=' => $condition->getDecimalColTo()->toString(),
+                    'MySqlTypeSamples.float_col >=' => $condition->getFloatColFrom()->toString(),
+                    'MySqlTypeSamples.float_col <=' => $condition->getFloatColTo()->toString(),
+                    'MySqlTypeSamples.double_col >=' => $condition->getDoubleColFrom()->toString(),
+                    'MySqlTypeSamples.double_col <=' => $condition->getDoubleColTo()->toString(),
+                    'MySqlTypeSamples.date_col >=' => $condition->getDateColFrom()->toString(),
+                    'MySqlTypeSamples.date_col <=' => $condition->getDateColTo()->toString(),
+                    'MySqlTypeSamples.time_col >=' => $condition->getTimeColFrom()->toString(),
+                    'MySqlTypeSamples.time_col <=' => $condition->getTimeColTo()->toString(),
+                    'MySqlTypeSamples.datetime_col >=' => $condition->getDatetimeColFrom()->toString(),
+                    'MySqlTypeSamples.datetime_col <=' => $condition->getDatetimeColTo()->toString(),
+                    $condition->getKeyword()->toString() !== '' ? new QueryExpression(
+                        'MATCH(MySqlTypeSamples.search_text) AGAINST(:keyword IN BOOLEAN MODE)',
+                    ) : new QueryExpression(":keyword = ''"),
+                ], fn($v) => $v !== ''),
+            )
+            ->bind(':keyword', $condition->getKeyword()->toString(), 'string')
+            ->formatResults(function ($results) {
+                return $results->map(function ($entity) {
 
-            ], fn($v) => $v !== null))
-            ->bind(':keyword', $condition->getKeyword(), 'string');
+                    $data = (new RecursiveEmptyStringToNullNormalizer())->normalize($entity->toArray());
+
+                    return new DomainEntity(...$data);
+                });
+            });
     }
 }

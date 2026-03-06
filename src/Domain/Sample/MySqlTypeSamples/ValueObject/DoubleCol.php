@@ -23,7 +23,7 @@ final class DoubleCol implements Stringable
     /**
      * @param ?string $value
      */
-    private function __construct(?string $value)
+    public function __construct(?string $value)
     {
         if ($value === null) {
             $this->value = null;
