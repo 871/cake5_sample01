@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\SampleCode\MySqlTypeSamples;
 
+use App\Domain\Sample\MySqlTypeSamples\ValueObject;
+use App\Exception\ValidateException;
+use App\Lib\UUID\UUID;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\Process\Process\InputProcess;
 use App\Service\Controller\Shared\Process\ProcessFactory;
@@ -11,6 +14,7 @@ use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
+use Cake\Validation\Validator;
 
 final class Create implements ServiceInterface
 {
@@ -50,7 +54,23 @@ final class Create implements ServiceInterface
             processClassName: InputProcess::class, 
             serviceClassName: self::class, 
             processParams: new ProcessParams([
-                'xxx' => 'xxx',
+                '_errorMessages' => [],
+                '_errorFields' => [],
+                '_process_key' => UUID::uuid4(),
+                'int_col' => '',
+                'bigint_col' => '',
+                'decimal_col' => '',
+                'float_col' => '',
+                'double_col' => '',
+                'date_col' => '',
+                'time_col' => '',
+                'datetime_col' => '',
+                'char_col' => '',
+                'varchar_col' => '',
+                'text_col' => '',
+                'mediumtext_col' => '',
+                'longtext_col' => '',
+                'json_col' => '',
             ])
         );
 
@@ -71,5 +91,121 @@ final class Create implements ServiceInterface
         );
 
         return $inputProcess;
+    }
+
+    /**
+     * @return self
+     */
+    public function inputProcessUpdate(): self
+    {   
+        $inputProcess = $this->getInputProcess();
+        $inputProcessParams = $inputProcess->getProcessParams();
+
+        if (!$this->checkProcessKey($inputProcessParams)) {
+            throw new ValidateException([
+                '_process_key' => [
+                    'notMatch' => __('別プロセスで更新されました。')
+                ],
+            ]);
+        }
+
+        /** @var \App\Service\Controller\Shared\Process\ProcessRepository $processRepository */
+        $processRepository = $this->createService(ProcessRepository::class);
+        $processRepository->save(
+            serviceClassName: self::class, 
+            process: $inputProcess->setProcessParams(
+                processParams: $inputProcessParams->with(
+                    overrides: $this->getOverwriteParams(),
+                )
+            )
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param InputProcess $inputProcess
+     * @return bool
+     */
+    private function checkProcessKey(InputProcess $inputProcess): bool
+    {
+        return $inputProcess->getProcessParams()->hasParam(
+            path: '_process_key', 
+            samValue: $this->request->getData('_process_key'),
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function getOverwriteParams(): array
+    {
+        return [
+            '_errorMessages' => [],
+            '_errorFields' => [],
+            '_process_key' => UUID::uuid4(),
+            'int_col' => $this->request->getData('int_col'),
+            'bigint_col' => $this->request->getData('bigint_col'),
+            'decimal_col' => $this->request->getData('decimal_col'),
+            'float_col' => $this->request->getData('float_col'),
+            'double_col' => $this->request->getData('double_col'),
+            'date_col' => $this->request->getData('date_col'),
+            'time_col' => $this->request->getData('time_col'),
+            'datetime_col' => $this->request->getData('datetime_col'),
+            'char_col' => $this->request->getData('char_col'),
+            'varchar_col' => $this->request->getData('varchar_col'),
+            'text_col' => $this->request->getData('text_col'),
+            'mediumtext_col' => $this->request->getData('mediumtext_col'),
+            'longtext_col' => $this->request->getData('longtext_col'),
+            'json_col' => $this->request->getData('json_col'),
+        ];
+    }
+
+    /**
+     * @return self
+     */
+    public function inputProcessValidation(): self
+    {
+        $inputProcess = $this->getInputProcess();
+        $inputProcessParams = $inputProcess->getProcessParams();
+        $errorIfos = $this->getValidator()
+            ->validate(
+                $inputProcessParams->toArray()
+            );
+        if ($errorIfos !== []) {
+            throw new ValidateException($errorIfos);
+        }
+
+        return $this;
+    }
+
+    private function getValidator(): Validator
+    {
+        return (new Validator());
+    }
+
+    /**
+     * @param ValidateException $ex
+     * @return self
+     */
+    public function inputProcessErrorUpdate(ValidateException $ex): self
+    {
+        $inputProcess = $this->getInputProcess();
+        $inputProcessParams = $inputProcess->getProcessParams();
+        /** @var \App\Service\Controller\Shared\Process\ProcessRepository $processRepository */
+        $processRepository = $this->createService(ProcessRepository::class);
+        $processRepository->save(
+            serviceClassName: self::class,
+            process: $inputProcess->setProcessParams(
+                processParams: $inputProcessParams->with(
+                    overrides: [
+                        '_errorMessages' => $ex->getErrorMeesasges(),
+                        '_errorFields' => $ex->getErrorFields(),
+                    ],
+                )
+            )
+        );
+
+        return $this;
     }
 }

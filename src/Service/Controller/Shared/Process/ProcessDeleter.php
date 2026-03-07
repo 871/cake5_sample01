@@ -7,18 +7,18 @@ use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use DomainException;
 
-final class ProcessRepository implements ServiceInterface
+final class ProcessDeleter implements ServiceInterface
 {
     use ServiceTrait;
 
     /**
-     * Process Instance の内容をSessionに保存する
+     * Sessionに保存されたProcess Instance の内容を削除する
      * 
      * @param string $serviceClassName
      * @param \App\Service\Controller\Shared\Process\Process $process
      * @return void
      */
-    public function save(string $serviceClassName, Process $process): void
+    public function delete(string $serviceClassName, Process $process): void
     {
         if (!is_subclass_of($serviceClassName, ServiceInterface::class)) {
             throw new DomainException(
@@ -36,11 +36,10 @@ final class ProcessRepository implements ServiceInterface
         );
 
         $this->request->getSession()->check((string)$sessionKey)
-            ? $this->request->getSession()->write((string)$sessionKey, $process->getProcessParams()->toArray())
+            ? $this->request->getSession()->delete((string)$sessionKey)
             : throw new DomainException(
                 'An invalid Process Instance was set'
                 . '[ProcessId: ' . $process->getId()->toString() . ']'
-                . '[ProcessParams: ' . print_r($process->getProcessParams()->toArray(), true) . ']',
             );
     }
 }

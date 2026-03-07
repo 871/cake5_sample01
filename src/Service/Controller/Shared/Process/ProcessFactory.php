@@ -13,6 +13,8 @@ final class ProcessFactory implements ServiceInterface
     use ServiceTrait;
 
     /**
+     * ProcessInstanceの内容（ProcessParams）をSessionに保存してからProcessInstanceを作成する
+     * 
      * @param string $processClassName
      * @param string $serviceClassName
      * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams

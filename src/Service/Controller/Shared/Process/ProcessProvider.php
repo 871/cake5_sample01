@@ -14,6 +14,8 @@ final class ProcessProvider implements ServiceInterface
     use ServiceTrait;
 
     /**
+     * Sessionに保存されたProcessInstanceの内容からProcessInstanceを取得する
+     * 
      * @param string $processClassName
      * @param string $serviceClassName
      * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId

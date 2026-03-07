@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Service\Controller\Shared\Process\Process\Fields;
 
 use ArrayIterator;
+use Cake\Utility\Hash;
 use DomainException;
 use IteratorAggregate;
 use JsonSerializable;
@@ -25,12 +26,13 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
     public function with(array $overrides = []): self
     {
         // 存在しないキーが指定された場合は例外
-        array_diff_key($overrides, $this->values) === []
-            || throw new DomainException(
+        if (array_diff_key($overrides, $this->values) === []) {
+            throw new DomainException(
                 'There are no overridable'
                 . '[Invalid parameters: ' . print_r(array_diff_key($overrides, $this->values), true) . ' ]'
                 . '[allowParamsKeys: ' . print_r(array_keys($this->values), true) . ']',
             );
+        }
 
         return new self(
             array_merge($this->values, $overrides),
@@ -60,4 +62,49 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
     {
         return $this->values;
     }
+
+    /**
+     * @param string $path
+     * @param mixed $value
+     * @return mixed
+     */
+    public function setParam(string $path, mixed $value): self 
+    {
+        if (!array_key_exists(preg_replace('/^([^\.]+)\..+$/', '$1', $path), $this->values)) {
+            throw new DomainException(
+                'Process Param not fund'
+                . '[path: ' . $path . ' ]'
+                . '[value: ' . $value . ' ]'
+                . '[values: ' . print_r($this->values, true) . ']',
+            );
+        }
+
+        return new self(Hash::insert($this->values, $path, $value));
+    }
+
+    /**
+     * @param string $path
+     * @return mixed
+     */
+    public function getParam(string $path): mixed 
+    {
+        return Hash::get($this->values, $path) 
+            ?? throw new DomainException(
+                'Process Param not fund'
+                . '[path: ' . $path . ' ]'
+                . '[values: ' . print_r($this->values, true) . ']',
+            );
+    }
+
+    /**
+     * @param string $path
+     * @param mixed $samValue
+     * @return mixed
+     */
+    public function hasParam(string $path, mixed $samValue): bool 
+    {
+        return Hash::get($this->values, $path) === $samValue;
+    }
+
+
 }
