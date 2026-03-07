@@ -78,8 +78,8 @@ class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
             ->bind(':keyword', $condition->getKeyword()->toString(), 'string')
             ->formatResults(function ($results) {
                 return $results->map(function ($entity) {
-
-                    $data = (new RecursiveEmptyStringToNullNormalizer())->normalize($entity->toArray());
+                    /** @var array<string, ?string> $data */
+                    $data = (array)(new RecursiveEmptyStringToNullNormalizer())->normalize($entity->toArray());
 
                     return new DomainEntity(...$data);
                 });

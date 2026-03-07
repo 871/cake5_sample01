@@ -31,7 +31,7 @@ class JsonCol implements Stringable
         }
 
         try {
-            $this->value = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+            $this->value = (array)json_decode($value, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw new DomainException(
                 self::class . ' JSON decode failed: ' . $e->getMessage()

@@ -36,4 +36,15 @@ trait JsonTrait
 
         return (array)$this->value;
     }
+
+    /**
+     * @param ?string $value
+     * @return self
+     */
+    public static function fromString(?string $value): self
+    {
+        return new self(
+            $value === null || $value === '' ? null : $value,
+        );
+    }
 }

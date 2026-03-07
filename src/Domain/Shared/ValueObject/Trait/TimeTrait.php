@@ -39,6 +39,19 @@ trait TimeTrait
     }
 
     /**
+     * @param ?string $value
+     * @param string $format
+     * @return self
+     */
+    public static function fromString(?string $value, string $format = 'H:i:s'): self
+    {
+        return new self(
+            $value === null || $value === '' ? null : $value,
+            $format,
+        );
+    }
+
+    /**
      * @param string $value
      * @param string $format
      */

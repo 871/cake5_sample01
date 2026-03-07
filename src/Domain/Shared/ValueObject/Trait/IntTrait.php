@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Shared\ValueObject\Trait;
 
+use DomainException;
+
 trait IntTrait
 {
     /**
@@ -27,5 +29,25 @@ trait IntTrait
     public function __toString(): string
     {
         return $this->toString();
+    }
+
+    /**
+     * @param ?string $value
+     * @return self;
+     */
+    public static function fromString(?string $value): self
+    {
+        if ($value === null || $value === '') {
+            return new self(null);
+        }
+
+        if (preg_match('/^-?¥d+$/', $value)) {
+            return new self((int)$value);
+        }
+
+        throw new DomainException(
+            self::class . ' value not int Error'
+                . '[value: ' . $value . ']',
+        );
     }
 }
