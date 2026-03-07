@@ -8,6 +8,9 @@ use App\Security\Auth\AuthContext\Fields;
 interface AuthContext
 {
     public const TYPE_ANONYMOUS = 'anonymous';
+    public const TYPE_CUSTMER = 'custmer';
+    public const TYPE_USER = 'user';
+    public const TYPE_ADMIN = 'admin';
 
     /**
      * 認証コンテキストのタイプを取得する

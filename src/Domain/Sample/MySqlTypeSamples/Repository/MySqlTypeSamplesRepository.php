@@ -14,5 +14,5 @@ interface MySqlTypeSamplesRepository
      *
      * @return \Cake\ORM\Query
      */
-    public function getQuery(SearchCondition $condition): Query;
+    public function search(SearchCondition $condition): Query;
 }

@@ -6,6 +6,8 @@
     <rule ref="CakePHP"/>
 
     <file>src/</file>
-    <file>tests/</file>
+
+    <!-- tests 配下は除外 -->
+    <exclude-pattern>tests/*</exclude-pattern>
 
 </ruleset>

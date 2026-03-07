@@ -7,7 +7,7 @@ use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
-use InvalidArgumentException;
+use DomainException;
 
 final class ProcessProvider implements ServiceInterface
 {
@@ -22,14 +22,14 @@ final class ProcessProvider implements ServiceInterface
     public function provide(string $processClassName, string $serviceClassName, ProcessId $processId): ?Process
     {
         if (!is_subclass_of($processClassName, Process::class)) {
-            throw new InvalidArgumentException(
+            throw new DomainException(
                 'Process class must implement ' . Process::class
                 . '[processClassName: ' . $processClassName . ']',
             );
         }
 
         if (!is_subclass_of($serviceClassName, ServiceInterface::class)) {
-            throw new InvalidArgumentException(
+            throw new DomainException(
                 'Service class must implement ' . ServiceInterface::class
                 . '[serviceClassName: ' . $serviceClassName . ']',
             );
