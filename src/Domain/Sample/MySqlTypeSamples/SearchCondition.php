@@ -3,193 +3,191 @@ declare(strict_types=1);
 
 namespace App\Domain\Sample\MySqlTypeSamples;
 
-use DateTimeInterface;
-
 class SearchCondition
 {
     /**
-     * @param ?string $id
-     * @param ?int $intColFrom
-     * @param ?int $intColTo
-     * @param ?int $bigintColFrom
-     * @param ?int $bigintColTo
-     * @param ?float $decimalColFrom
-     * @param ?float $decimalColTo
-     * @param ?float $floatColFrom
-     * @param ?float $floatColTo
-     * @param ?float $doubleColFrom
-     * @param ?float $doubleColTo
-     * @param ?\DateTimeInterface $dateColFrom
-     * @param ?\DateTimeInterface $dateColTo
-     * @param ?\DateTimeInterface $timeColFrom
-     * @param ?\DateTimeInterface $timeColTo
-     * @param ?\DateTimeInterface $datetimeColFrom
-     * @param ?\DateTimeInterface $datetimeColTo
-     * @param ?string $keyword,
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\Id $id
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\IntCol $intColFrom
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\IntCol $intColTo
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\BigintCol $bigintColFrom
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\BigintCol $bigintColTo
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DecimalCol $decimalColFrom
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DecimalCol $decimalColTo
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\FloatCol $floatColFrom
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\FloatCol $floatColTo
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DoubleCol $doubleColFrom
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DoubleCol $doubleColTo
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateCol $dateColFrom
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateCol $dateColTo
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\TimeCol $timeColFrom
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\TimeCol $timeColTo
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DatetimeCol $datetimeColFrom
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DatetimeCol $datetimeColTo
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\Search\Keyword $keyword,
      */
     public function __construct(
-        private readonly ?string $id,
-        private readonly ?int $intColFrom,
-        private readonly ?int $intColTo,
-        private readonly ?int $bigintColFrom,
-        private readonly ?int $bigintColTo,
-        private readonly ?float $decimalColFrom,
-        private readonly ?float $decimalColTo,
-        private readonly ?float $floatColFrom,
-        private readonly ?float $floatColTo,
-        private readonly ?float $doubleColFrom,
-        private readonly ?float $doubleColTo,
-        private readonly ?DateTimeInterface $dateColFrom,
-        private readonly ?DateTimeInterface $dateColTo,
-        private readonly ?DateTimeInterface $timeColFrom,
-        private readonly ?DateTimeInterface $timeColTo,
-        private readonly ?DateTimeInterface $datetimeColFrom,
-        private readonly ?DateTimeInterface $datetimeColTo,
-        private readonly ?string $keyword,
+        private readonly ValueObject\Id $id,
+        private readonly ValueObject\IntCol $intColFrom,
+        private readonly ValueObject\IntCol $intColTo,
+        private readonly ValueObject\BigintCol $bigintColFrom,
+        private readonly ValueObject\BigintCol $bigintColTo,
+        private readonly ValueObject\DecimalCol $decimalColFrom,
+        private readonly ValueObject\DecimalCol $decimalColTo,
+        private readonly ValueObject\FloatCol $floatColFrom,
+        private readonly ValueObject\FloatCol $floatColTo,
+        private readonly ValueObject\DoubleCol $doubleColFrom,
+        private readonly ValueObject\DoubleCol $doubleColTo,
+        private readonly ValueObject\DateCol $dateColFrom,
+        private readonly ValueObject\DateCol $dateColTo,
+        private readonly ValueObject\TimeCol $timeColFrom,
+        private readonly ValueObject\TimeCol $timeColTo,
+        private readonly ValueObject\DatetimeCol $datetimeColFrom,
+        private readonly ValueObject\DatetimeCol $datetimeColTo,
+        private readonly ValueObject\Search\Keyword $keyword,
     ) {
         // 処理なし
     }
 
     /**
-     * @return ?string
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\Id
      */
-    public function getId(): ?string
+    public function getId(): ValueObject\Id
     {
         return $this->id;
     }
 
     /**
-     * @return ?int
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\IntCol
      */
-    public function getIntColFrom(): ?int
+    public function getIntColFrom(): ValueObject\IntCol
     {
         return $this->intColFrom;
     }
 
     /**
-     * @return ?int
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\IntCol
      */
-    public function getIntColTo(): ?int
+    public function getIntColTo(): ValueObject\IntCol
     {
         return $this->intColTo;
     }
 
     /**
-     * @return ?int
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\BigintCol
      */
-    public function getBigintColFrom(): ?int
+    public function getBigintColFrom(): ValueObject\BigintCol
     {
         return $this->bigintColFrom;
     }
 
     /**
-     * @return ?int
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\BigintCol
      */
-    public function getBigintColTo(): ?int
+    public function getBigintColTo(): ValueObject\BigintCol
     {
         return $this->bigintColTo;
     }
 
     /**
-     * @return ?float
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DecimalCol
      */
-    public function getDecimalColFrom(): ?float
+    public function getDecimalColFrom(): ValueObject\DecimalCol
     {
         return $this->decimalColFrom;
     }
 
     /**
-     * @return ?float
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DecimalCol
      */
-    public function getDecimalColTo(): ?float
+    public function getDecimalColTo(): ValueObject\DecimalCol
     {
         return $this->decimalColTo;
     }
 
     /**
-     * @return ?float
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\FloatCol
      */
-    public function getFloatColFrom(): ?float
+    public function getFloatColFrom(): ValueObject\FloatCol
     {
         return $this->floatColFrom;
     }
 
     /**
-     * @return ?float
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\FloatCol
      */
-    public function getFloatColTo(): ?float
+    public function getFloatColTo(): ValueObject\FloatCol
     {
         return $this->floatColTo;
     }
 
     /**
-     * @return ?float
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DoubleCol
      */
-    public function getDoubleColFrom(): ?float
+    public function getDoubleColFrom(): ValueObject\DoubleCol
     {
         return $this->doubleColFrom;
     }
 
     /**
-     * @return ?float
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DoubleCol
      */
-    public function getDoubleColTo(): ?float
+    public function getDoubleColTo(): ValueObject\DoubleCol
     {
         return $this->doubleColTo;
     }
 
     /**
-     * @return ?\DateTimeInterface
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateCol
      */
-    public function getDateColFrom(): ?DateTimeInterface
+    public function getDateColFrom(): ValueObject\DateCol
     {
         return $this->dateColFrom;
     }
 
     /**
-     * @return ?\DateTimeInterface
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateCol
      */
-    public function getDateColTo(): ?DateTimeInterface
+    public function getDateColTo(): ValueObject\DateCol
     {
         return $this->dateColTo;
     }
 
     /**
-     * @return ?\DateTimeInterface
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\TimeCol
      */
-    public function getTimeColFrom(): ?DateTimeInterface
+    public function getTimeColFrom(): ValueObject\TimeCol
     {
         return $this->timeColFrom;
     }
 
     /**
-     * @return ?\DateTimeInterface
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\TimeCol
      */
-    public function getTimeColTo(): ?DateTimeInterface
+    public function getTimeColTo(): ValueObject\TimeCol
     {
         return $this->timeColTo;
     }
 
     /**
-     * @return ?\DateTimeInterface
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DatetimeCol
      */
-    public function getDatetimeColFrom(): ?DateTimeInterface
+    public function getDatetimeColFrom(): ValueObject\DatetimeCol
     {
         return $this->datetimeColFrom;
     }
 
     /**
-     * @return ?\DateTimeInterface
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DatetimeCol
      */
-    public function getDatetimeColTo(): ?DateTimeInterface
+    public function getDatetimeColTo(): ValueObject\DatetimeCol
     {
         return $this->datetimeColTo;
     }
 
     /**
-     * @return ?string
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\Search\Keyword
      */
-    public function getKeyword(): ?string
+    public function getKeyword(): ValueObject\Search\Keyword
     {
         return $this->keyword;
     }

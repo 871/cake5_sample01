@@ -476,21 +476,21 @@
                 <td class="col_choice text-center">
                     <input type="checkbox" class="row-check">
                 </td>
-                <td class="col_id"><input class="result-input text-center" value="<?= h($row['id']) ?>"></td>
-                <td class="col_int"><input class="result-input text-right" value="<?= h($row['int_col']) ?>"></td>
-                <td class="col_bigint"><input class="result-input text-right" value="<?= h($row['bigint_col']) ?>"></td>
-                <td class="col_decimal"><input class="result-input text-right" value="<?= h($row['decimal_col']) ?>"></td>
-                <td class="col_float"><input class="result-input text-right" value="<?= h($row['float_col']) ?>"></td>
-                <td class="col_double"><input class="result-input text-right" value="<?= h($row['double_col']) ?>"></td>
-                <td class="col_date"><input class="result-input text-center" value="<?= h($row['date_col']) ?>"></td>
-                <td class="col_time"><input class="result-input text-center" value="<?= h($row['time_col']) ?>"></td>
-                <td class="col_datetime"><input class="result-input text-center" value="<?= h($row['datetime_col']) ?>"></td>
-                <td class="col_char"><input class="result-input" value="<?= h($row['char_col']) ?>"></td>
-                <td class="col_varchar"><input class="result-input" value="<?= h($row['varchar_col']) ?>"></td>
-                <td class="col_text"><input class="result-input" value="<?= h($row['text_col']) ?>"></td>
-                <td class="col_mediumtext"><input class="result-input" value="<?= h($row['mediumtext_col']) ?>"></td>
-                <td class="col_longtext"><input class="result-input" value="<?= h($row['longtext_col']) ?>"></td>
-                <td class="col_json"><input class="result-input" value="<?= h($row['json_col']) ?>"></td>
+                <td class="col_id"><input class="result-input text-center" value="<?= h($row->id()) ?>"></td>
+                <td class="col_int"><input class="result-input text-right" value="<?= h($row->intCol()) ?>"></td>
+                <td class="col_bigint"><input class="result-input text-right" value="<?= h($row->bigintCol()) ?>"></td>
+                <td class="col_decimal"><input class="result-input text-right" value="<?= h($row->decimalCol()) ?>"></td>
+                <td class="col_float"><input class="result-input text-right" value="<?= h($row->floatCol()) ?>"></td>
+                <td class="col_double"><input class="result-input text-right" value="<?= h($row->doubleCol()) ?>"></td>
+                <td class="col_date"><input class="result-input text-center" value="<?= h($row->dateCol()->format('Y/m/d') ?? '----/--/--') ?>"></td>
+                <td class="col_time"><input class="result-input text-center" value="<?= h($row->timeCol()->format('H:i:s') ?? '--:--:--') ?>"></td>
+                <td class="col_datetime"><input class="result-input text-center" value="<?= h($row->datetimeCol()->format('Y/m/d H:i:s') ?? '----/--/-- --:--:--') ?>"></td>
+                <td class="col_char"><input class="result-input" value="<?= h($row->charCol()) ?>"></td>
+                <td class="col_varchar"><input class="result-input" value="<?= h($row->varcharCol()) ?>"></td>
+                <td class="col_text"><input class="result-input" value="<?= h($row->textCol()) ?>"></td>
+                <td class="col_mediumtext"><input class="result-input" value="<?= h($row->mediumtextCol()) ?>"></td>
+                <td class="col_longtext"><input class="result-input" value="<?= h($row->longtextCol()) ?>"></td>
+                <td class="col_json"><input class="result-input" value="<?= h($row->jsonCol()) ?>"></td>
                 <td class="col_action text-center">
                     <button class="btn btn-sm btn-info me-2">更新</button>
                     <button class="btn btn-sm btn-info me-2">詳細</button>

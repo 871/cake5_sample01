@@ -6,7 +6,7 @@ namespace App\Service\Controller;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 
-final class Sample implements ServiceInterface
+final class SampleCode implements ServiceInterface
 {
     use ServiceTrait;
 }

@@ -5,7 +5,7 @@ namespace App\Service\Controller\Shared\Process;
 
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
-use InvalidArgumentException;
+use DomainException;
 
 final class ProcessRepository implements ServiceInterface
 {
@@ -19,7 +19,7 @@ final class ProcessRepository implements ServiceInterface
     public function save(string $serviceClassName, Process $process): void
     {
         if (!is_subclass_of($serviceClassName, ServiceInterface::class)) {
-            throw new InvalidArgumentException(
+            throw new DomainException(
                 'Service class must implement ' . ServiceInterface::class
                 . '[serviceClassName: ' . $serviceClassName . ']',
             );
@@ -35,7 +35,7 @@ final class ProcessRepository implements ServiceInterface
 
         $this->request->getSession()->check((string)$sessionKey)
             ? $this->request->getSession()->write((string)$sessionKey, $process->getProcessParams()->toArray())
-            : throw new InvalidArgumentException(
+            : throw new DomainException(
                 'An invalid Process Instance was set'
                 . '[ProcessId: ' . $process->getId()->toString() . ']'
                 . '[ProcessParams: ' . print_r($process->getProcessParams()->toArray(), true) . ']',

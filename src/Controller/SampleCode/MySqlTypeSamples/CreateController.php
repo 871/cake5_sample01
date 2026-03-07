@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\Sample\MySqlTypeSamples;
+namespace App\Controller\SampleCode\MySqlTypeSamples;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Sample\MySqlTypeSamples\Create as CtlService;
+use App\Service\Controller\SampleCode\MySqlTypeSamples\Create as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
@@ -13,7 +13,7 @@ use DateTimeImmutable;
 class CreateController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Sample\MySqlTypeSamples\Create
+     * @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Create
      */
     private CtlService $ctlService;
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Shared\Process\Process\Fields;
 
-use InvalidArgumentException;
+use DomainException;
 use Stringable;
 
 final class ProcessId implements Stringable
@@ -21,16 +21,14 @@ final class ProcessId implements Stringable
     public function __construct(
         private readonly string $process_id,
     ) {
-        strlen($process_id) <= self::LENGTH || throw new InvalidArgumentException(
+        strlen($process_id) <= self::LENGTH && preg_match('/^[a-z0-9]+$/', $process_id)
+        || throw new DomainException(
             self::class . ' process_id length Error'
                 . '[maxlength: ' . (string)self::LENGTH . ']'
                 . '[process_id: ' . (string)$process_id . ']',
         );
 
-        $this->value = substr(
-            str_pad('', self::LENGTH, '0', STR_PAD_LEFT) . $this->process_id,
-            self::LENGTH,
-        );
+        $this->value = str_pad($this->process_id, self::LENGTH, '0', STR_PAD_LEFT);
     }
 
     /**
