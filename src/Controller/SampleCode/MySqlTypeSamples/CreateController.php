@@ -66,6 +66,24 @@ class CreateController extends AppController
      */
     public function input()
     {
+        $this->set([
+            'input' => $this->ctlService->getInputProcess(),
+
+        ]);
+
+        return $this->render('/Sample/search');
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function inputPost()
+    {
+        $this->set([
+
+        
+        ]);
+
         return $this->render('/Sample/search');
     }
 }
