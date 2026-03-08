@@ -3,17 +3,18 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\SampleCode\MySqlTypeSamples;
 
-use App\Domain\Sample\MySqlTypeSamples\ValueObject;
 use App\Exception\ValidateException;
 use App\Lib\UUID\UUID;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\Process\Process\InputProcess;
+use App\Service\Controller\Shared\Process\ProcessDeleter;
 use App\Service\Controller\Shared\Process\ProcessFactory;
 use App\Service\Controller\Shared\Process\ProcessProvider;
 use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
+use App\Service\Controller\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting;
 use Cake\Validation\Validator;
 
 final class Create implements ServiceInterface
@@ -166,11 +167,11 @@ final class Create implements ServiceInterface
      */
     public function inputProcessValidation(): self
     {
-        $inputProcess = $this->getInputProcess();
-        $inputProcessParams = $inputProcess->getProcessParams();
         $errorIfos = $this->getValidator()
             ->validate(
-                $inputProcessParams->toArray()
+                $this->getInputProcess()
+                    ->getProcessParams()
+                    ->toArray(),
             );
         if ($errorIfos !== []) {
             throw new ValidateException($errorIfos);
@@ -179,9 +180,55 @@ final class Create implements ServiceInterface
         return $this;
     }
 
+    /**
+     * @return Validator
+     */
     private function getValidator(): Validator
     {
-        return (new Validator());
+        $validator = new Validator();
+        /** @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting $validatorSetting */
+        $validatorSetting = $this->createService(ValidatorSetting::class);
+        $validatorSetting
+            ->intCol($validator)
+            ->bigintCol($validator)
+            // ->decimalCol($validator)
+            // ->floatCol($validator)
+            // ->doubleCol($validator)
+            // ->dateCol($validator)
+            // ->timeCol($validator)
+            // ->datetimeCol($validator)
+            // ->charCol($validator)
+            // ->varcharCol($validator)
+            // ->textCol($validator)
+            // ->mediumtextCol($validator)
+            // ->longtextCol($validator)
+            // ->jsonCol($validator)
+            ;
+
+        return $validator;
+    }
+
+    /**
+     * @return self
+     */
+    public function saveInputProcess(): self
+    {
+        // TODO
+
+
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function endInputProcess(): self
+    {
+        /** @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Shared\ProcessDeleter $processDeleter */
+        $processDeleter = $this->createService(ProcessDeleter::class);
+        $processDeleter->delete(self::class, $this->getInputProcess());
+
+        return $this;
     }
 
     /**
