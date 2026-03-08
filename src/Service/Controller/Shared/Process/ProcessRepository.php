@@ -13,12 +13,12 @@ final class ProcessRepository implements ServiceInterface
 
     /**
      * Process Instance の内容をSessionに保存する
-     * 
+     *
      * @param string $serviceClassName
-     * @param \App\Service\Controller\Shared\Process\Process $process
+     * @param \App\Service\Controller\Shared\Process\ProcessInterface $process
      * @return void
      */
-    public function save(string $serviceClassName, Process $process): void
+    public function save(string $serviceClassName, ProcessInterface $process): void
     {
         if (!is_subclass_of($serviceClassName, ServiceInterface::class)) {
             throw new DomainException(
@@ -28,7 +28,7 @@ final class ProcessRepository implements ServiceInterface
         }
 
         $sessionKey = new SessionKey(
-            prefix: Process::PREFIX,
+            prefix: ProcessInterface::PREFIX,
             type: $this->authContext->getType(),
             accountId: $this->authContext->getAccountId(),
             serviceClassName: $serviceClassName,

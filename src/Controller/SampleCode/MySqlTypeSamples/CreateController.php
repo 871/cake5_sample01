@@ -127,7 +127,6 @@ class CreateController extends AppController
                 ->saveInputProcess()
                 ->endInputProcess()
                 ;
-
             $this->Flash->success(__('MySqlTypeSampleの作成が完了しました。'));
 
             return $this->redirect([

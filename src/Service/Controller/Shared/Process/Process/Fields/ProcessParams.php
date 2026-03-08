@@ -66,11 +66,11 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
     /**
      * @param string $path
      * @param mixed $value
-     * @return mixed
+     * @return self
      */
-    public function setParam(string $path, mixed $value): self 
+    public function setParam(string $path, mixed $value): self
     {
-        if (!array_key_exists(preg_replace('/^([^\.]+)\..+$/', '$1', $path), $this->values)) {
+        if (!array_key_exists((string)preg_replace('/^([^\.]+)\..+$/', '$1', $path), $this->values)) {
             throw new DomainException(
                 'Process Param not fund'
                 . '[path: ' . $path . ' ]'
@@ -86,9 +86,9 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
      * @param string $path
      * @return mixed
      */
-    public function getParam(string $path): mixed 
+    public function getParam(string $path): mixed
     {
-        return Hash::get($this->values, $path) 
+        return Hash::get($this->values, $path)
             ?? throw new DomainException(
                 'Process Param not fund'
                 . '[path: ' . $path . ' ]'
@@ -99,12 +99,10 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
     /**
      * @param string $path
      * @param mixed $samValue
-     * @return mixed
+     * @return bool
      */
-    public function hasParam(string $path, mixed $samValue): bool 
+    public function hasParam(string $path, mixed $samValue): bool
     {
         return Hash::get($this->values, $path) === $samValue;
     }
-
-
 }

@@ -5,16 +5,17 @@ namespace App\Service\Controller\SampleCode\MySqlTypeSamples;
 
 use App\Exception\ValidateException;
 use App\Lib\UUID\UUID;
+use App\Security\Input\StrictCast;
+use App\Service\Controller\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting;
+use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\Process\Process\InputProcess;
 use App\Service\Controller\Shared\Process\ProcessDeleter;
 use App\Service\Controller\Shared\Process\ProcessFactory;
 use App\Service\Controller\Shared\Process\ProcessProvider;
 use App\Service\Controller\Shared\Process\ProcessRepository;
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
-use App\Service\Controller\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting;
 use Cake\Validation\Validator;
 
 final class Create implements ServiceInterface
@@ -27,17 +28,18 @@ final class Create implements ServiceInterface
      */
     public function existsInputProcess(array $ignoreActions = []): bool
     {
-        if (in_array($this->request->getAction(), $ignoreActions, true)) {
-
+        if (in_array($this->request->getParam('action'), $ignoreActions, true)) {
             return true;
         }
 
         /** @var \App\Service\Controller\Shared\Process\ProcessProvider $processProvider */
         $processProvider = $this->createService(ProcessProvider::class);
         $inputProcess = $processProvider->provide(
-            processClassName: InputProcess::class, 
-            serviceClassName: self::class, 
-            processId: new ProcessId($this->request->getParam('process_id')),
+            processClassName: InputProcess::class,
+            serviceClassName: self::class,
+            processId: new ProcessId(
+                process_id: StrictCast::toString($this->request->getParam('process_id')),
+            ),
         );
 
         return $inputProcess !== null;
@@ -52,8 +54,8 @@ final class Create implements ServiceInterface
         $processFactory = $this->createService(ProcessFactory::class);
         /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $process */
         $process = $processFactory->start(
-            processClassName: InputProcess::class, 
-            serviceClassName: self::class, 
+            processClassName: InputProcess::class,
+            serviceClassName: self::class,
             processParams: new ProcessParams([
                 '_errorMessages' => [],
                 '_errorFields' => [],
@@ -72,23 +74,26 @@ final class Create implements ServiceInterface
                 'mediumtext_col' => '',
                 'longtext_col' => '',
                 'json_col' => '',
-            ])
+            ]),
         );
 
         return $process;
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\InputProcess;
+     * @return \App\Service\Controller\Shared\Process\Process\InputProcess
      */
     public function getInputProcess(): InputProcess
-    {   
+    {
         /** @var \App\Service\Controller\Shared\Process\ProcessProvider $processProvider */
         $processProvider = $this->createService(ProcessProvider::class);
+        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $inputProcess */
         $inputProcess = $processProvider->provide(
-            processClassName: InputProcess::class, 
-            serviceClassName: self::class, 
-            processId: new ProcessId($this->request->getParam('process_id')),
+            processClassName: InputProcess::class,
+            serviceClassName: self::class,
+            processId: new ProcessId(
+                process_id: StrictCast::toString($this->request->getParam('process_id')),
+            ),
         );
 
         return $inputProcess;
@@ -98,46 +103,44 @@ final class Create implements ServiceInterface
      * @return self
      */
     public function inputProcessUpdate(): self
-    {   
+    {
         $inputProcess = $this->getInputProcess();
         $inputProcessParams = $inputProcess->getProcessParams();
-
-        if (!$this->checkProcessKey($inputProcessParams)) {
+        if (!$this->checkProcessKey($inputProcess)) {
             throw new ValidateException([
                 '_process_key' => [
-                    'notMatch' => __('別プロセスで更新されました。')
+                    'notMatch' => __('別プロセスで更新されました。'),
                 ],
             ]);
         }
-
         /** @var \App\Service\Controller\Shared\Process\ProcessRepository $processRepository */
         $processRepository = $this->createService(ProcessRepository::class);
         $processRepository->save(
-            serviceClassName: self::class, 
+            serviceClassName: self::class,
             process: $inputProcess->setProcessParams(
                 processParams: $inputProcessParams->with(
                     overrides: $this->getOverwriteParams(),
-                )
-            )
+                ),
+            ),
         );
 
         return $this;
     }
 
     /**
-     * @param InputProcess $inputProcess
+     * @param \App\Service\Controller\Shared\Process\Process\InputProcess $inputProcess
      * @return bool
      */
     private function checkProcessKey(InputProcess $inputProcess): bool
     {
         return $inputProcess->getProcessParams()->hasParam(
-            path: '_process_key', 
+            path: '_process_key',
             samValue: $this->request->getData('_process_key'),
         );
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     private function getOverwriteParams(): array
     {
@@ -167,21 +170,21 @@ final class Create implements ServiceInterface
      */
     public function inputProcessValidation(): self
     {
-        $errorIfos = $this->getValidator()
-            ->validate(
-                $this->getInputProcess()
-                    ->getProcessParams()
-                    ->toArray(),
-            );
-        if ($errorIfos !== []) {
-            throw new ValidateException($errorIfos);
+        /** @var array<string, mixed> $input */
+        $input = $this->getInputProcess()
+            ->getProcessParams()
+            ->toArray();
+        /** @var array<string, array<string, string|array<int|string, mixed>>> $errorInfos */
+        $errorInfos = $this->getValidator()->validate($input);
+        if ($errorInfos !== []) {
+            throw new ValidateException($errorInfos);
         }
 
         return $this;
     }
 
     /**
-     * @return Validator
+     * @return \Cake\Validation\Validator
      */
     private function getValidator(): Validator
     {
@@ -190,7 +193,7 @@ final class Create implements ServiceInterface
         $validatorSetting = $this->createService(ValidatorSetting::class);
         $validatorSetting
             ->intCol($validator)
-            ->bigintCol($validator)
+            ->bigintCol($validator);
             // ->decimalCol($validator)
             // ->floatCol($validator)
             // ->doubleCol($validator)
@@ -203,7 +206,7 @@ final class Create implements ServiceInterface
             // ->mediumtextCol($validator)
             // ->longtextCol($validator)
             // ->jsonCol($validator)
-            ;
+
 
         return $validator;
     }
@@ -224,15 +227,18 @@ final class Create implements ServiceInterface
      */
     public function endInputProcess(): self
     {
-        /** @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Shared\ProcessDeleter $processDeleter */
+        /** @var \App\Service\Controller\Shared\Process\ProcessDeleter $processDeleter */
         $processDeleter = $this->createService(ProcessDeleter::class);
-        $processDeleter->delete(self::class, $this->getInputProcess());
+        $processDeleter->delete(
+            serviceClassName: self::class, 
+            process: $this->getInputProcess(),
+        );
 
         return $this;
     }
 
     /**
-     * @param ValidateException $ex
+     * @param \App\Exception\ValidateException $ex
      * @return self
      */
     public function inputProcessErrorUpdate(ValidateException $ex): self
@@ -249,8 +255,8 @@ final class Create implements ServiceInterface
                         '_errorMessages' => $ex->getErrorMeesasges(),
                         '_errorFields' => $ex->getErrorFields(),
                     ],
-                )
-            )
+                ),
+            ),
         );
 
         return $this;

@@ -15,7 +15,7 @@ final class ValidatorSetting implements ServiceInterface
     use ServiceTrait;
 
     /**
-     * @param Validator $validator
+     * @param \Cake\Validation\Validator $validator
      * @return self
      */
     public function intCol(Validator $validator): self
@@ -28,24 +28,26 @@ final class ValidatorSetting implements ServiceInterface
             ->range('int_col', [Vo\IntCol::MIN, Vo\IntCol::MAX], $message)
             ->add('int_col', [
                 'domain' => [
-                    'rule' => function($value) {
+                    'rule' => function ($value) {
                         try {
                             new Vo\IntCol($value);
+
                             return true;
                         } catch (DomainException $ex) {
                             Log::error($ex->getMessage());
+
                             return false;
                         }
                     },
                     'message' => $message,
-                ]
+                ],
             ]);
 
         return $this;
     }
 
     /**
-     * @param Validator $validator
+     * @param \Cake\Validation\Validator $validator
      * @return self
      */
     public function bigintCol(Validator $validator): self
@@ -58,22 +60,24 @@ final class ValidatorSetting implements ServiceInterface
             ->range('bigint_col', [Vo\BigintCol::MIN, Vo\BigintCol::MAX], $message)
             ->add('bigint_col', [
                 'domain' => [
-                    'rule' => function($value) {
+                    'rule' => function ($value) {
                         try {
                             new Vo\BigintCol($value);
+
                             return true;
                         } catch (DomainException $ex) {
                             Log::error($ex->getMessage());
+
                             return false;
                         }
                     },
                     'message' => $message,
-                ]
+                ],
             ]);
 
         return $this;
     }
-    
+
 /*
             ->decimalCol($validator)
             ->floatCol($validator)
@@ -82,7 +86,7 @@ final class ValidatorSetting implements ServiceInterface
             ->dateCol($validator)
             ->timeCol($validator)
             ->datetimeCol($validator)
-            
+
             ->charCol($validator)
             ->varcharCol($validator)
             ->textCol($validator)
@@ -90,5 +94,4 @@ final class ValidatorSetting implements ServiceInterface
             ->longtextCol($validator)
             ->jsonCol($validator)
 */
-
 }

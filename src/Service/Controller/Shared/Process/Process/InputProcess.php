@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Shared\Process\Process;
 
-use App\Service\Controller\Shared\Process\Process;
+use App\Service\Controller\Shared\Process\ProcessInterface;
 
-final class InputProcess implements Process
+final class InputProcess implements ProcessInterface
 {
     /**
      * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId

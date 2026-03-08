@@ -9,9 +9,10 @@ use Exception;
 class ValidateException extends Exception
 {
     /**
-     * @param array<string, array<string, string|array>> $errorInfos
+     * @param array<string, array<string, string|array<int|string, mixed>>> $errorInfos
      */
     public function __construct(
+        /** @var array<string, array<string, string|array<int|string, mixed>>> */
         private readonly array $errorInfos
     ) {
         // 処理なし
@@ -24,8 +25,8 @@ class ValidateException extends Exception
     {
         return array_values(
             array_unique(
-                Hash::flatten($this->errorInfos)
-            )
+                Hash::flatten($this->errorInfos),
+            ),
         );
     }
 
@@ -35,7 +36,7 @@ class ValidateException extends Exception
     public function getErrorFields(): array
     {
         return array_values(
-            array_keys($this->errorInfos)
+            array_keys($this->errorInfos),
         );
     }
 }
