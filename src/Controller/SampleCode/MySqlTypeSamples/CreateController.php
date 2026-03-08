@@ -82,8 +82,7 @@ class CreateController extends AppController
         try {
             $this->ctlService
                 ->inputProcessUpdate()
-                ->inputProcessValidation()
-                ;
+                ->inputProcessValidation();
 
             return $this->redirect([
                 'action' => 'conf',
@@ -91,7 +90,6 @@ class CreateController extends AppController
                 '?' => $this->request->getQuery(),
             ]);
         } catch (ValidateException $ex) {
-
             $this->ctlService
                 ->inputProcessErrorUpdate($ex);
 
@@ -125,8 +123,7 @@ class CreateController extends AppController
                 ->inputProcessUpdate()
                 ->inputProcessValidation()
                 ->saveInputProcess()
-                ->endInputProcess()
-                ;
+                ->endInputProcess();
             $this->Flash->success(__('MySqlTypeSampleの作成が完了しました。'));
 
             return $this->redirect([
@@ -135,7 +132,6 @@ class CreateController extends AppController
                 '?' => $this->request->getQuery(),
             ]);
         } catch (ValidateException $ex) {
-
             $this->ctlService
                 ->inputProcessErrorUpdate($ex);
 

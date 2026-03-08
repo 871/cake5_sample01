@@ -73,4 +73,83 @@ final class ProcessParamsTest extends TestCase
 
         $this->assertSame($data, $collected);
     }
+
+    public function testSetParamUpdatesNestedValue(): void
+    {
+        $params = new ProcessParams([
+            'user' => [
+                'name' => 'Alice',
+                'age' => 30,
+            ],
+        ]);
+
+        $newParams = $params->setParam('user.age', 31);
+
+        // 元の値は不変
+        $this->assertSame(30, $params->getParam('user.age'));
+
+        // 新しい値
+        $this->assertSame(31, $newParams->getParam('user.age'));
+    }
+
+    public function testSetParamThrowsExceptionIfRootKeyNotExists(): void
+    {
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessageMatches('/Process Param not fund/');
+
+        $params = new ProcessParams([
+            'user' => [
+                'name' => 'Alice',
+            ],
+        ]);
+
+        $params->setParam('unknown.name', 'Bob');
+    }
+
+    public function testGetParamReturnsValue(): void
+    {
+        $params = new ProcessParams([
+            'user' => [
+                'name' => 'Alice',
+            ],
+        ]);
+
+        $this->assertSame('Alice', $params->getParam('user.name'));
+    }
+
+    public function testGetParamThrowsExceptionWhenMissing(): void
+    {
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessageMatches('/Process Param not fund/');
+
+        $params = new ProcessParams([
+            'user' => [
+                'name' => 'Alice',
+            ],
+        ]);
+
+        $params->getParam('user.age');
+    }
+
+    public function testHasParamReturnsTrueWhenValueMatches(): void
+    {
+        $params = new ProcessParams([
+            'user' => [
+                'name' => 'Alice',
+            ],
+        ]);
+
+        $this->assertTrue($params->hasParam('user.name', 'Alice'));
+    }
+
+    public function testHasParamReturnsFalseWhenValueDifferent(): void
+    {
+        $params = new ProcessParams([
+            'user' => [
+                'name' => 'Alice',
+            ],
+        ]);
+
+        $this->assertFalse($params->hasParam('user.name', 'Bob'));
+    }
 }

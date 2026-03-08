@@ -13,7 +13,7 @@ class ValidateException extends Exception
      */
     public function __construct(
         /** @var array<string, array<string, string|array<int|string, mixed>>> */
-        private readonly array $errorInfos
+        private readonly array $errorInfos,
     ) {
         // 処理なし
     }

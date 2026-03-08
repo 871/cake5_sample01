@@ -230,7 +230,7 @@ final class Create implements ServiceInterface
         /** @var \App\Service\Controller\Shared\Process\ProcessDeleter $processDeleter */
         $processDeleter = $this->createService(ProcessDeleter::class);
         $processDeleter->delete(
-            serviceClassName: self::class, 
+            serviceClassName: self::class,
             process: $this->getInputProcess(),
         );
 

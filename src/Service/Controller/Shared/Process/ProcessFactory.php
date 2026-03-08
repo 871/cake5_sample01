@@ -20,8 +20,11 @@ final class ProcessFactory implements ServiceInterface
      * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
      * @return \App\Service\Controller\Shared\Process\ProcessInterface
      */
-    public function start(string $processClassName, string $serviceClassName, ProcessParams $processParams): ProcessInterface
-    {
+    public function start(
+        string $processClassName,
+        string $serviceClassName,
+        ProcessParams $processParams,
+    ): ProcessInterface {
         if (!is_subclass_of($processClassName, ProcessInterface::class)) {
             throw new DomainException(
                 'Process class must implement ' . ProcessInterface::class

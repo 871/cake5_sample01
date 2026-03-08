@@ -26,7 +26,7 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
     public function with(array $overrides = []): self
     {
         // 存在しないキーが指定された場合は例外
-        if (array_diff_key($overrides, $this->values) === []) {
+        if (array_diff_key($overrides, $this->values) !== []) {
             throw new DomainException(
                 'There are no overridable'
                 . '[Invalid parameters: ' . print_r(array_diff_key($overrides, $this->values), true) . ' ]'
