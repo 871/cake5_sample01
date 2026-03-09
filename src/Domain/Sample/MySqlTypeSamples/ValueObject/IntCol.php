@@ -23,9 +23,9 @@ class IntCol implements Stringable
         if ($this->value !== null && ($this->value < self::MIN || $this->value > self::MAX)) {
             throw new DomainException(
                 self::class . ' value range Error'
-                    . '[value: ' . (string)$this->value . ']'
-                    . '[MIN: ' . (string)self::MIN . ']'
-                    . '[MAX: ' . (string)self::MAX . ']',
+                . '[value: ' . (string)$this->value . ']'
+                . '[MIN: ' . (string)self::MIN . ']'
+                . '[MAX: ' . (string)self::MAX . ']',
             );
         }
     }

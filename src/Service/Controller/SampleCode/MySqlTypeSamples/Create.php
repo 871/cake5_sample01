@@ -193,20 +193,19 @@ final class Create implements ServiceInterface
         $validatorSetting = $this->createService(ValidatorSetting::class);
         $validatorSetting
             ->intCol($validator)
-            ->bigintCol($validator);
-            // ->decimalCol($validator)
-            // ->floatCol($validator)
-            // ->doubleCol($validator)
-            // ->dateCol($validator)
-            // ->timeCol($validator)
-            // ->datetimeCol($validator)
-            // ->charCol($validator)
-            // ->varcharCol($validator)
-            // ->textCol($validator)
-            // ->mediumtextCol($validator)
-            // ->longtextCol($validator)
-            // ->jsonCol($validator)
-
+            ->bigintCol($validator)
+            ->decimalCol($validator)
+            ->floatCol($validator)
+            ->doubleCol($validator)
+            ->dateCol($validator)
+            ->timeCol($validator)
+            ->datetimeCol($validator)
+            ->charCol($validator)
+            ->varcharCol($validator)
+            ->textCol($validator)
+            ->mediumtextCol($validator)
+            ->longtextCol($validator)
+            ->jsonCol($validator);
 
         return $validator;
     }

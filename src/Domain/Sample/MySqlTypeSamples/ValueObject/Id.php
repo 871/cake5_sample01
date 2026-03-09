@@ -22,8 +22,8 @@ class Id implements Stringable
         if ($value !== null && !preg_match(self::MATCH, $value)) {
             throw new DomainException(
                 self::class . ' value uuid format Error'
-                    . '[match: ' . (string)self::MATCH . ']'
-                    . '[value: ' . $value . ']',
+                . '[match: ' . (string)self::MATCH . ']'
+                . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
             );
         }
     }

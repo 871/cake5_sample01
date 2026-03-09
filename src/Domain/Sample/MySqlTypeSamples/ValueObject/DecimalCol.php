@@ -38,9 +38,9 @@ final class DecimalCol implements Stringable
         if ((float)$value < self::MIN || (float)$value > self::MAX) {
             throw new DomainException(
                 self::class . ' value range Error'
-                    . '[value: ' . $value . ']'
-                    . '[MIN: ' . (string)self::MIN . ']'
-                    . '[MAX: ' . (string)self::MAX . ']',
+                . '[value: ' . $value . ']'
+                . '[MIN: ' . (string)self::MIN . ']'
+                . '[MAX: ' . (string)self::MAX . ']',
             );
         }
 
