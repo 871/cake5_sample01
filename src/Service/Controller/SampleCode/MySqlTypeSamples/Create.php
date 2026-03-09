@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\SampleCode\MySqlTypeSamples;
 
+use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample;
 use App\Exception\ValidateException;
+use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
 use App\Lib\UUID\UUID;
+use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
 use App\Service\Controller\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
@@ -215,8 +218,28 @@ final class Create implements ServiceInterface
      */
     public function saveInputProcess(): self
     {
-        // TODO
+        /** @var array<string, mixed> $input */
+        $input = $this->getInputProcess()
+            ->getProcessParams()
+            ->toArray();
 
+        (new MySqlTypeSamplesRepository())->create(new MySqlTypeSample(
+            id: null,
+            int_col: Cast::toString($input['int_col']),
+            bigint_col: Cast::toString($input['bigint_col']),
+            decimal_col: Cast::toString($input['decimal_col']),
+            float_col: Cast::toString($input['float_col']),
+            double_col: Cast::toString($input['double_col']),
+            date_col: Cast::toString($input['date_col']),
+            time_col: Cast::toString($input['time_col']),
+            datetime_col: Cast::toString($input['datetime_col']),
+            char_col: Cast::toString($input['char_col']),
+            varchar_col: Cast::toString($input['varchar_col']),
+            text_col: Cast::toString($input['text_col']),
+            mediumtext_col: Cast::toString($input['mediumtext_col']),
+            longtext_col: Cast::toString($input['longtext_col']),
+            json_col: Cast::toString($input['json_col']),
+        ));
 
         return $this;
     }
