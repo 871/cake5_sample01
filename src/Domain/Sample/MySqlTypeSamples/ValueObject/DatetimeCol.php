@@ -12,8 +12,8 @@ class DatetimeCol implements Stringable
 {
     use DatetimeTrait;
 
-    public const MIN = '1970-01-01 00:00:00';
-    public const MAX = '2999-12-31 23:59:59';
+    public const MIN = '1970-01-01T00:00:00';
+    public const MAX = '2999-12-31T23:59:59';
 
     /**
      * @var ?\DateTimeImmutable
@@ -23,7 +23,7 @@ class DatetimeCol implements Stringable
     /**
      * @param ?string $value
      */
-    public function __construct(?string $value, string $format = 'Y-m-d H:i:s')
+    public function __construct(?string $value, string $format = 'Y-m-d\TH:i:s')
     {
         if ($value === null) {
             $this->value = null;
@@ -39,8 +39,8 @@ class DatetimeCol implements Stringable
             );
         }
 
-        $minDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', self::MIN);
-        $maxDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', self::MAX);
+        $minDate = DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s', self::MIN);
+        $maxDate = DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s', self::MAX);
         $resultValue = DateTimeImmutable::createFromFormat($format, $value);
         if ($resultValue === false || $resultValue < $minDate || $resultValue > $maxDate) {
             throw new DomainException(

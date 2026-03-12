@@ -10,6 +10,7 @@ class BigintCol
 {
     use IntTrait;
 
+    public const STEP = 1;
     public const MIN = -100000000000;
     public const MAX = 100000000000;
 
@@ -19,12 +20,16 @@ class BigintCol
     public function __construct(
         private readonly ?int $value,
     ) {
-        if ($this->value !== null && ($this->value < self::MIN || $this->value > self::MAX)) {
+        if ($this->value !== null 
+            && ($this->value < self::MIN || $this->value > self::MAX)
+            && $this->value % self::STEP !== 0
+        ) {
             throw new DomainException(
                 self::class . ' value range Error'
                 . '[value: ' . (string)$this->value . ']'
                 . '[MIN: ' . (string)self::MIN . ']'
-                . '[MAX: ' . (string)self::MAX . ']',
+                . '[MAX: ' . (string)self::MAX . ']'
+                . '[STEP: ' . (string)self::STEP . ']',
             );
         }
     }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Table\Sample;
 
+use App\Model\Entity\Sample\MySqlTypeSample;
 use App\Model\Table\TableLocatorTrait;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -38,6 +39,7 @@ class MySqlTypeSamplesTable extends Table
     {
         parent::initialize($config);
 
+        $this->setEntityClass(MySqlTypeSample::class);
         $this->setTable('my_sql_type_samples');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');

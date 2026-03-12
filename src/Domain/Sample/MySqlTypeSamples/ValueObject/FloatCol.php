@@ -11,6 +11,8 @@ final class FloatCol implements Stringable
 {
     use FloatTrait;
 
+
+    public const STEP = 0.00001;
     public const SCALE = 5;
     public const MIN = -99999.99999;
     public const MAX = 99999.99999;
@@ -35,12 +37,15 @@ final class FloatCol implements Stringable
             throw new DomainException("Invalid float format: {$value}");
         }
 
-        if ((float)$value < self::MIN || (float)$value > self::MAX) {
+        if ((float)$value < self::MIN || (float)$value > self::MAX
+            && $this->value % self::STEP !== 0
+        ) {
             throw new DomainException(
                 self::class . ' value range Error'
                 . '[value: ' . $value . ']'
                 . '[MIN: ' . (string)self::MIN . ']'
-                . '[MAX: ' . (string)self::MAX . ']',
+                . '[MAX: ' . (string)self::MAX . ']'
+                . '[STEP: ' . (string)self::STEP . ']',
             );
         }
 

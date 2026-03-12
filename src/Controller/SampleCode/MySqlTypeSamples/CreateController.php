@@ -71,7 +71,7 @@ class CreateController extends AppController
             'input' => $this->ctlService->getInputProcess(),
         ]);
 
-        return $this->render('/SampleCode/create/input');
+        return $this->render('/SampleCode/MySqlTypeSamples/input');
     }
 
     /**
@@ -110,7 +110,7 @@ class CreateController extends AppController
             'input' => $this->ctlService->getInputProcess(),
         ]);
 
-        return $this->render('/SampleCode/create/conf');
+        return $this->render('/SampleCode/MySqlTypeSamples/conf');
     }
 
     /**
@@ -120,10 +120,11 @@ class CreateController extends AppController
     {
         try {
             $this->ctlService
-                ->inputProcessUpdate()
+                // ->inputProcessUpdate()
                 ->inputProcessValidation()
                 ->saveInputProcess()
                 ->endInputProcess();
+
             $this->Flash->success(__('MySqlTypeSampleの作成が完了しました。'));
 
             return $this->redirect([

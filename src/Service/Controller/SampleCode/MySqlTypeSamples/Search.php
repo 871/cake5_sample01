@@ -19,7 +19,15 @@ final class Search implements ServiceInterface
      */
     public function getInitParams(): array
     {
-        return [];
+        return [
+            'show_fields' => [
+                'col_id',
+                'col_int',
+                'col_date',
+                'col_char',
+                'col_varchar',
+            ],
+        ];
     }
 
     /**

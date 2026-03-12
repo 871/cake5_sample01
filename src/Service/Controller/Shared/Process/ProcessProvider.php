@@ -52,7 +52,6 @@ final class ProcessProvider implements ServiceInterface
      */
     private function getProcessParams(string $serviceClassName, ProcessId $processId): ?ProcessParams
     {
-        $processId = new Process\Fields\ProcessId(uniqid());
         $sessionKey = new SessionKey(
             prefix: ProcessInterface::PREFIX,
             type: $this->authContext->getType(),

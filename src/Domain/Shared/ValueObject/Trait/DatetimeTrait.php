@@ -17,7 +17,7 @@ trait DatetimeTrait
      * @param string $format
      * @return ?string
      */
-    public function format(string $format = 'Y-m-d H:i:s'): ?string
+    public function format(string $format = 'Y-m-d\TH:i:s'): ?string
     {
         return $this->value?->format($format);
     }
@@ -43,7 +43,7 @@ trait DatetimeTrait
      * @param string $format
      * @return self
      */
-    public static function fromString(?string $value, string $format = 'Y-m-d H:i:s'): self
+    public static function fromString(?string $value, string $format = 'Y-m-d\TH:i:s'): self
     {
         return new self(
             $value === null || $value === '' ? null : $value,

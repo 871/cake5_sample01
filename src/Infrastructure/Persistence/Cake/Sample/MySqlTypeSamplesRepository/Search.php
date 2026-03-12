@@ -83,7 +83,23 @@ final class Search
                     /** @var array<string, ?string> $data */
                     $data = (array)(new RecursiveEmptyStringToNullNormalizer())->normalize($entity->toArray());
                     // Memo: 実装的にはやりすぎ感はあるがTEST的に試す
-                    return new DomainEntity(...$data);
+                    return new DomainEntity(
+                        id: $data['id'],
+                        int_col: $data['int_col'],
+                        bigint_col: $data['bigint_col'],
+                        decimal_col: $data['decimal_col'],
+                        float_col: $data['float_col'],
+                        double_col: $data['double_col'],
+                        date_col: $data['date_col']?->format('Y-m-d'),
+                        time_col: $data['time_col']?->format('H:i:s'),
+                        datetime_col: $data['datetime_col']?->format('Y-m-d\TH:i:s'),
+                        char_col: $data['char_col'],
+                        varchar_col: $data['varchar_col'],
+                        text_col: $data['text_col'],
+                        mediumtext_col: $data['mediumtext_col'],
+                        longtext_col: $data['longtext_col'],
+                        json_col: $data['json_col'],
+                    );
                 });
             });
     }

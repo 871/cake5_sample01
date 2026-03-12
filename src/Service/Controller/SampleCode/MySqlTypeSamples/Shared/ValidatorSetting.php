@@ -29,7 +29,7 @@ final class ValidatorSetting implements ServiceInterface
                 'domain' => [
                     'rule' => function ($value) {
                         try {
-                            new Vo\IntCol($value);
+                            new Vo\IntCol((int)$value);
 
                             return true;
                         } catch (DomainException $ex) {
@@ -60,7 +60,7 @@ final class ValidatorSetting implements ServiceInterface
                 'domain' => [
                     'rule' => function ($value) {
                         try {
-                            new Vo\BigintCol($value);
+                            new Vo\BigintCol((int)$value);
 
                             return true;
                         } catch (DomainException $ex) {
@@ -161,11 +161,12 @@ final class ValidatorSetting implements ServiceInterface
     public function doubleCol(Validator $validator): self
     {
         $message = __(
-            '{0}は、{1}〜{2}の小数（小数点以下{3}桁まで）を入力してください。',
+            '{0}は、{1}〜{2}の小数（小数点以下{3}桁まで）を{3}刻みで入力してください。',
             'DoubleCol',
             Vo\DoubleCol::MIN,
             Vo\DoubleCol::MAX,
             Vo\DoubleCol::SCALE,
+            Vo\DoubleCol::STEP,
         );
 
         $validator

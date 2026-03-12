@@ -35,8 +35,6 @@ class ValidateException extends Exception
      */
     public function getErrorFields(): array
     {
-        return array_values(
-            array_keys($this->errorInfos),
-        );
+        return array_map(fn() => 'error', $this->errorInfos);
     }
 }
