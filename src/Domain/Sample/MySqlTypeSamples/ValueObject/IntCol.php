@@ -21,9 +21,10 @@ class IntCol implements Stringable
     public function __construct(
         private readonly ?int $value,
     ) {
-        if ($this->value !== null 
+        if (
+            // Memo: STEPの判定は省略
+            $this->value !== null
             && ($this->value < self::MIN || $this->value > self::MAX)
-            && $this->value % self::STEP !== 0
         ) {
             throw new DomainException(
                 self::class . ' value range Error'

@@ -15,7 +15,7 @@ final class Search implements ServiceInterface
     use ServiceTrait;
 
     /**
-     * @return array<string>
+     * @return array<string, array<int, string>>
      */
     public function getInitParams(): array
     {

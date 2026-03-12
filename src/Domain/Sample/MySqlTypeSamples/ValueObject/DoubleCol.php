@@ -11,7 +11,6 @@ final class DoubleCol implements Stringable
 {
     use FloatTrait;
 
-
     public const STEP = 0.0005;
     public const SCALE = 4;
     public const MIN = 0.0000;
@@ -37,8 +36,9 @@ final class DoubleCol implements Stringable
             throw new DomainException("Invalid double format: {$value}");
         }
 
-        if ((float)$value < self::MIN || (float)$value > self::MAX
-            && $this->value % self::STEP !== 0
+        if (
+            (float)$value < self::MIN || (float)$value > self::MAX
+            || (float)$value % self::STEP !== 0
         ) {
             throw new DomainException(
                 self::class . ' value range Error'

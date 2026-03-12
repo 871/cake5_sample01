@@ -36,8 +36,9 @@ final class DecimalCol implements Stringable
             throw new DomainException("Invalid decimal format: {$value}");
         }
 
-        if ((float)$value < self::MIN || (float)$value > self::MAX
-            && $this->value % self::STEP !== 0
+        if (
+            // Memo: STEPの判定は省略
+            (float)$value < self::MIN || (float)$value > self::MAX
         ) {
             throw new DomainException(
                 self::class . ' value range Error'

@@ -45,13 +45,13 @@ final class InputProcess implements ProcessInterface
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function getInputs(): array
     {
         return Hash::expand(
             array_map(
-                fn($v) => (string)$v, 
+                fn($v) => is_string($v) ? (string)$v : $v,
                 Hash::flatten($this->processParams->toArray()),
             ),
         );
@@ -60,26 +60,10 @@ final class InputProcess implements ProcessInterface
     /**
      * @param string $path
      * @param ?string $default
-     * @return null|string|array
+     * @return mixed
      */
-    public function getInput(string $path, ?string $default = null): null|string|array
+    public function getInput(string $path, ?string $default = null): mixed
     {
-        $input = Hash::get($this->processParams->toArray(), $path, $default);
-        if ($input === null) {
-
-            return null;
-        }
-
-        if (is_array($input)) {
-
-            return Hash::expand(
-                array_map(
-                    fn($v) => (string)$v, 
-                    Hash::flatten($input),
-                ),
-            );
-        }
-
-        return (string)$input;
+        return Hash::get($this->getInputs(), $path, $default);
     }
 }

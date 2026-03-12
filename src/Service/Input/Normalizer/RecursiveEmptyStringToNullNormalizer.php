@@ -9,6 +9,7 @@ final class RecursiveEmptyStringToNullNormalizer implements InputNormalizer
 {
     /**
      * @param mixed $input
+     * @return mixed
      */
     public function normalize(mixed $input): mixed
     {
