@@ -6,15 +6,15 @@ namespace App\Controller\SampleCode\MySqlTypeSamples;
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\SampleCode\MySqlTypeSamples\Create as CtlService;
+use App\Service\Controller\SampleCode\MySqlTypeSamples\Edit as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
 
-class CreateController extends AppController
+class EditController extends AppController
 {
     /**
-     * @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Create
+     * @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Edit
      */
     private CtlService $ctlService;
 
@@ -36,10 +36,13 @@ class CreateController extends AppController
 
         if (
             !$this->ctlService->existsInputProcess(
-                ignoreActions: ['index', 'copy'],
+                ignoreActions: ['index'],
             )
         ) {
+            $this->Flash->error(__('更新対象のデータが見つかりません。'));
+
             return $this->redirect([
+                'controller' => 'Search',
                 'action' => 'index',
                 '?' => $this->request->getQuery(),
             ]);
@@ -124,7 +127,7 @@ class CreateController extends AppController
                 ->saveInputProcess()
                 ->endInputProcess();
 
-            $this->Flash->success(__('MySqlTypeSampleの作成が完了しました。'));
+            $this->Flash->success(__('MySqlTypeSampleの更新が完了しました。'));
 
             return $this->redirect([
                 'controller' => 'Search',

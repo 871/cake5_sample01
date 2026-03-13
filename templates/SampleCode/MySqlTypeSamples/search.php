@@ -492,7 +492,12 @@
                 <td class="col_longtext"><input class="result-input" value="<?= h($row->longtextCol()) ?>"></td>
                 <td class="col_json"><input class="result-input" value="<?= h($row->jsonCol()) ?>"></td>
                 <td class="col_action text-center">
-                    <button class="btn btn-sm btn-info me-2">更新</button>
+                    <a href="<?= $this->Url->build([
+                        'controller' => 'Edit',
+                        'action' => 'index',
+                        'my_sql_type_sample_id' => $row->id(),
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>" class="btn btn-sm btn-info me-2">更新</a>
                     <button class="btn btn-sm btn-info me-2">詳細</button>
                     <button class="btn btn-sm btn-info me-2">複製</button>
                 </td>

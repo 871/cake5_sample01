@@ -27,7 +27,7 @@ use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
                     <input 
                         type="text" 
                         name="int_col" 
-                        class="form-control <?= h($input->getInput('_errorFields.id')) ?>"
+                        class="form-control"
                         value="<?= h($input->getInput('id', '（新規作成）')) ?>"
                         readonly
                     >

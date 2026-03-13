@@ -34,7 +34,13 @@ $builder->scope('/', function (RouteBuilder $builder) {
             $builder->post('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'confPost']);
             // 複製登録
             $builder->get('/create/{my_sql_type_sample_id}/copy', ['controller' => 'Create', 'action' => 'copy']);
-    
+            // 更新
+            $builder->get('/edit/{my_sql_type_sample_id}', ['controller' => 'Edit', 'action' => 'index']);
+            $builder->get('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'input']);
+            $builder->post('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
+            $builder->get('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
+            $builder->post('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
+            
         
         }); 
     });
