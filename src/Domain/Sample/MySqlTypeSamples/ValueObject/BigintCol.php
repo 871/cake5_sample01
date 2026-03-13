@@ -14,24 +14,33 @@ class BigintCol
     public const MIN = -100000000000;
     public const MAX = 100000000000;
 
+    private ?int $value;
+
     /**
-     * @param ?int $value
+     * @param ?string $value
      */
-    public function __construct(
-        private readonly ?int $value,
-    ) {
+    public function __construct(?string $value)
+    {
+        if ($value === null || $value === '') {
+            $this->value = null;
+
+            return;
+        }
+
         if (
             // Memo: STEPの判定は省略
-            $this->value !== null
-            && ($this->value < self::MIN || $this->value > self::MAX)
+            !preg_match('/^-?\d+$/', $value)
+            || ((int)$value < self::MIN || (int)$value > self::MAX)
         ) {
             throw new DomainException(
                 self::class . ' value range Error'
-                . '[value: ' . (string)$this->value . ']'
+                . '[value: ' . $value . ']'
                 . '[MIN: ' . (string)self::MIN . ']'
                 . '[MAX: ' . (string)self::MAX . ']'
                 . '[STEP: ' . (string)self::STEP . ']',
             );
         }
+
+        $this->value = (int)$value;
     }
 }

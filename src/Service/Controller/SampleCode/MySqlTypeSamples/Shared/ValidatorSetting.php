@@ -24,12 +24,11 @@ final class ValidatorSetting implements ServiceInterface
 
         $validator
             ->allowEmptyString('int_col')
-            ->integer('int_col', $message) // Memo: VOの型エラー対策で必要
             ->add('int_col', [
                 'domain' => [
                     'rule' => function ($value) {
                         try {
-                            new Vo\IntCol((int)$value);
+                            new Vo\IntCol($value);
 
                             return true;
                         } catch (DomainException $ex) {
@@ -55,12 +54,11 @@ final class ValidatorSetting implements ServiceInterface
 
         $validator
             ->allowEmptyString('bigint_col')
-            ->integer('bigint_col', $message) // Memo: VOの型エラー対策で必要
             ->add('bigint_col', [
                 'domain' => [
                     'rule' => function ($value) {
                         try {
-                            new Vo\BigintCol((int)$value);
+                            new Vo\BigintCol($value);
 
                             return true;
                         } catch (DomainException $ex) {
