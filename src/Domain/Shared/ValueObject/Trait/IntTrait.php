@@ -42,7 +42,7 @@ trait IntTrait
         }
 
         if (preg_match('/^-?¥d+$/', $value)) {
-            return new self((int)$value);
+            return new self($value);
         }
 
         throw new DomainException(

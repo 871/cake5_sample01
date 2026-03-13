@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Shared\Process;
 
-interface Process
+interface ProcessInterface
 {
     public const PREFIX = 'process';
 

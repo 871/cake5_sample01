@@ -77,6 +77,6 @@ class SearchController extends AppController
             ]);
         }
 
-        return $this->render('/SampleCode/search');
+        return $this->render('/SampleCode/MySqlTypeSamples/search');
     }
 }

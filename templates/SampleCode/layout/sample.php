@@ -22,17 +22,35 @@
 <body>
 
 <header>
-    <h5 class="mb-0">MySQL Type Samples 管理画面</h5>
+    <h5 class="mb-0">Sample Code</h5>
 </header>
 
 <div class="wrapper">
     <!-- Sidebar -->
     <aside class="sidebar">
-        <h6>メニュー</h6>
+        <h6>Menu</h6>
         <ul class="nav flex-column">
-            <li class="nav-item"><a class="nav-link text-white" href="#">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link text-white" href="#">Search</a></li>
-            <li class="nav-item"><a class="nav-link text-white" href="#">Settings</a></li>
+            <li class="nav-item">
+                <a 
+                    class="nav-link text-white" 
+                    href="<?= $this->Url->build([
+                        'prefix' => 'SampleCode/MySqlTypeSamples',
+                        'controller' => 'Create',
+                        'action' => 'index',
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>"
+                >Create</a>
+            </li>
+            <li class="nav-item">
+                <a 
+                    class="nav-link text-white" 
+                    href="<?= $this->Url->build([
+                        'prefix' => 'SampleCode/MySqlTypeSamples',
+                        'controller' => 'Search',
+                        'action' => 'init',
+                    ]) ?>"
+                >Search</a>
+            </li>
         </ul>
     </aside>
 
@@ -43,16 +61,26 @@
             <div class="container-fluid px-2">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">一覧</a>
+                        <a 
+                            class="nav-link" 
+                            href="<?= $this->Url->build([
+                                'prefix' => 'SampleCode/MySqlTypeSamples',
+                                'controller' => 'Create',
+                                'action' => 'index',
+                                '?' => $this->getRequest()->getQuery(),
+                            ]) ?>"
+                        >新規作成</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">新規作成</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">CSVインポート</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">設定</a>
+                        <a 
+                            class="nav-link" 
+                            href="<?= $this->Url->build([
+                                'prefix' => 'SampleCode/MySqlTypeSamples',
+                                'controller' => 'Search',
+                                'action' => 'index',
+                                '?' => $this->getRequest()->getQuery(),
+                            ]) ?>"
+                        >検索</a>
                     </li>
                 </ul>
             </div>
@@ -60,18 +88,36 @@
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-3">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">MySQL Type Samples</a></li>
-                <li class="breadcrumb-item active" aria-current="page">一覧</li>
+                <li class="breadcrumb-item">
+                    <a 
+                        href="<?= $this->Url->build([
+                            'prefix' => 'SampleCode/MySqlTypeSamples',
+                            'controller' => 'Create',
+                            'action' => 'index',
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>"
+                    >新規作成</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <a 
+                        href="<?= $this->Url->build([
+                            'prefix' => 'SampleCode/MySqlTypeSamples',
+                            'controller' => 'Search',
+                            'action' => 'index',
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>"
+                    >検索</a>
+                </li>
             </ol>
         </nav>
         <!-- Message Area -->
         <div class="message-area mb-3">
             
             <?= $this->Flash->render() ?>
-
+        </div>
+        <div class="mb-3">
             <?= $this->fetch('content') ?>
-        </div>        
+        </div>
     </main>
 </div>
 

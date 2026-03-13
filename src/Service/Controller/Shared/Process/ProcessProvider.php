@@ -14,16 +14,18 @@ final class ProcessProvider implements ServiceInterface
     use ServiceTrait;
 
     /**
+     * Sessionに保存されたProcessInstanceの内容からProcessInstanceを取得する
+     *
      * @param string $processClassName
      * @param string $serviceClassName
      * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId
-     * @return ?\App\Service\Controller\Shared\Process\Process
+     * @return ?\App\Service\Controller\Shared\Process\ProcessInterface
      */
-    public function provide(string $processClassName, string $serviceClassName, ProcessId $processId): ?Process
+    public function provide(string $processClassName, string $serviceClassName, ProcessId $processId): ?ProcessInterface
     {
-        if (!is_subclass_of($processClassName, Process::class)) {
+        if (!is_subclass_of($processClassName, ProcessInterface::class)) {
             throw new DomainException(
-                'Process class must implement ' . Process::class
+                'Process class must implement ' . ProcessInterface::class
                 . '[processClassName: ' . $processClassName . ']',
             );
         }
@@ -50,9 +52,8 @@ final class ProcessProvider implements ServiceInterface
      */
     private function getProcessParams(string $serviceClassName, ProcessId $processId): ?ProcessParams
     {
-        $processId = new Process\Fields\ProcessId(uniqid());
         $sessionKey = new SessionKey(
-            prefix: Process::PREFIX,
+            prefix: ProcessInterface::PREFIX,
             type: $this->authContext->getType(),
             accountId: $this->authContext->getAccountId(),
             serviceClassName: $serviceClassName,

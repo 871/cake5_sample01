@@ -11,7 +11,7 @@
     </div>
 
     <div class="card-body" id="searchBody">
-        <form method="get">
+        <form method="get" id="searchForm">
             <input 
                 type="hidden" 
                 name="limit" 
