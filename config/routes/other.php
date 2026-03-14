@@ -45,8 +45,6 @@ $builder->scope('/', function (RouteBuilder $builder) {
             // 削除
             $builder->get('/delete/{my_sql_type_sample_id}', ['controller' => 'Delete', 'action' => 'index']);
             $builder->post('/delete/{my_sql_type_sample_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
-            
-        
         }); 
     });
 

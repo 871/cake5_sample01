@@ -7,7 +7,8 @@ use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
 ?>
 <div class="card shadow-sm">
     <div class="card-header bg-success text-white">
-        入力内容確認
+        <?=  $input->getInput('id') ? h('更新') : h('新規登録') ?>
+        （入力内容確認）
     </div>
 
     <div class="card-body">

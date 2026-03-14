@@ -50,7 +50,7 @@ final class Edit implements ServiceInterface
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\InputProcess;
+     * @return \App\Service\Controller\Shared\Process\Process\InputProcess
      */
     public function startInputProcess(): InputProcess
     {

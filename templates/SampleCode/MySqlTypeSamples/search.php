@@ -493,25 +493,30 @@
                 <td class="col_json"><input class="result-input" value="<?= h($row->jsonCol()) ?>"></td>
                 <td class="col_action text-center">
                     <a href="<?= $this->Url->build([
+                        'controller' => 'Detail',
+                        'action' => 'index',
+                        'my_sql_type_sample_id' => $row->id(),
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>" class="btn btn-sm btn-info me-2">詳細</a>
+                    <a href="<?= $this->Url->build([
                         'controller' => 'Edit',
                         'action' => 'index',
                         'my_sql_type_sample_id' => $row->id(),
                         '?' => $this->getRequest()->getQuery(),
-                    ]) ?>" class="btn btn-sm btn-info me-2">更新</a>
+                    ]) ?>" class="btn btn-sm btn-primary me-2">更新</a>
                     <a href="<?= $this->Url->build([
                         'controller' => 'Create',
                         'action' => 'copy',
                         'my_sql_type_sample_id' => $row->id(),
                         '?' => $this->getRequest()->getQuery(),
-                    ]) ?>" class="btn btn-sm btn-info me-2">複製</a>
-                    <button class="btn btn-sm btn-info me-2">詳細</button>
+                    ]) ?>" class="btn btn-sm btn-primary me-2">複製</a>
                     <?= $this->Form->postLink('削除', [
                         'controller' => 'Delete',
                         'action' => 'index',
                         'my_sql_type_sample_id' => $row->id()->toString(),
                         '?' => $this->getRequest()->getQuery(),
                     ], [
-                        'class' => 'btn btn-sm btn-info me-2',
+                        'class' => 'btn btn-sm btn-danger me-2',
                         'confirm' => '削除しますか？'
                     ]) ?>
                 </td>

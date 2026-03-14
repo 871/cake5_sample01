@@ -61,27 +61,59 @@
             <div class="container-fluid px-2">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a 
-                            class="nav-link" 
-                            href="<?= $this->Url->build([
-                                'prefix' => 'SampleCode/MySqlTypeSamples',
-                                'controller' => 'Create',
-                                'action' => 'index',
-                                '?' => $this->getRequest()->getQuery(),
-                            ]) ?>"
-                        >新規作成</a>
+                        <a href="<?= $this->Url->build([
+                            'prefix' => 'SampleCode/MySqlTypeSamples',
+                            'controller' => 'Create',
+                            'action' => 'index',
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="nav-link">新規作成</a>
                     </li>
                     <li class="nav-item">
-                        <a 
-                            class="nav-link" 
-                            href="<?= $this->Url->build([
-                                'prefix' => 'SampleCode/MySqlTypeSamples',
-                                'controller' => 'Search',
-                                'action' => 'index',
-                                '?' => $this->getRequest()->getQuery(),
-                            ]) ?>"
-                        >検索</a>
+                        <a href="<?= $this->Url->build([
+                            'prefix' => 'SampleCode/MySqlTypeSamples',
+                            'controller' => 'Search',
+                            'action' => 'index',
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="nav-link">検索</a>
                     </li>
+                <?php if ($this->getRequest()->getParam('my_sql_type_sample_id')): ?>
+                    <li class="nav-item">
+                        <a href="<?= $this->Url->build([
+                            'controller' => 'Detail',
+                            'action' => 'index',
+                            'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="nav-link">詳細</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= $this->Url->build([
+                            'controller' => 'Edit',
+                            'action' => 'index',
+                            'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="nav-link">更新</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= $this->Url->build([
+                            'controller' => 'Create',
+                            'action' => 'copy',
+                            'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="nav-link">複製</a>
+                    </li>
+                    <li class="nav-item">
+                        <?= $this->Form->postLink('削除', [
+                            'controller' => 'Delete',
+                            'action' => 'index',
+                            'my_sql_type_sample_id' => $entity->id()->toString(),
+                            '?' => $this->getRequest()->getQuery(),
+                        ], [
+                            'class' => 'nav-link',
+                            'confirm' => '削除しますか？'
+                        ]) ?>
+                    </li>
+                <?php endif ?>
+
                 </ul>
             </div>
         </nav>
@@ -89,50 +121,56 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-3">
                 <li class="breadcrumb-item">
-                    <a 
-                        href="<?= $this->Url->build([
-                            'prefix' => 'SampleCode/MySqlTypeSamples',
-                            'controller' => 'Create',
-                            'action' => 'index',
-                            '?' => $this->getRequest()->getQuery(),
-                        ]) ?>"
-                    >新規作成</a>
+                    <a href="<?= $this->Url->build([
+                        'prefix' => 'SampleCode/MySqlTypeSamples',
+                        'controller' => 'Create',
+                        'action' => 'index',
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>">新規作成</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    <a 
-                        href="<?= $this->Url->build([
-                            'prefix' => 'SampleCode/MySqlTypeSamples',
-                            'controller' => 'Search',
-                            'action' => 'index',
-                            '?' => $this->getRequest()->getQuery(),
-                        ]) ?>"
-                    >検索</a>
+                <li class="breadcrumb-item">
+                    <a href="<?= $this->Url->build([
+                        'prefix' => 'SampleCode/MySqlTypeSamples',
+                        'controller' => 'Search',
+                        'action' => 'index',
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>">検索</a>
                 </li>
             <?php if ($this->getRequest()->getParam('my_sql_type_sample_id')): ?>
-                <a href="<?= $this->Url->build([
-                    'controller' => 'Detail',
-                    'action' => 'index',
-                    'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
-                    '?' => $this->getRequest()->getQuery(),
-                ]) ?>" class="btn btn-sm btn-info me-2">詳細</a>
-                <a href="<?= $this->Url->build([
-                    'controller' => 'Edit',
-                    'action' => 'index',
-                    'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
-                    '?' => $this->getRequest()->getQuery(),
-                ]) ?>" class="btn btn-sm btn-info me-2">更新</a>
-                <a href="<?= $this->Url->build([
-                    'controller' => 'Create',
-                    'action' => 'copy',
-                    'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
-                    '?' => $this->getRequest()->getQuery(),
-                ]) ?>" class="btn btn-sm btn-info me-2">複製</a>
-                <a href="<?= $this->Url->build([
-                    'controller' => 'Delete',
-                    'action' => 'indexPost',
-                    'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
-                    '?' => $this->getRequest()->getQuery(),
-                ]) ?>" class="btn btn-sm btn-info me-2">削除</a>
+                <li class="breadcrumb-item">
+                    <a href="<?= $this->Url->build([
+                        'controller' => 'Detail',
+                        'action' => 'index',
+                        'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>">詳細</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="<?= $this->Url->build([
+                        'controller' => 'Edit',
+                        'action' => 'index',
+                        'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>">更新</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="<?= $this->Url->build([
+                        'controller' => 'Create',
+                        'action' => 'copy',
+                        'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>">複製</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <?= $this->Form->postLink('削除', [
+                        'controller' => 'Delete',
+                        'action' => 'index',
+                        'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
+                        '?' => $this->getRequest()->getQuery(),
+                    ], [
+                        'confirm' => '削除しますか？'
+                    ]) ?>
+                </li>
             <?php endif ?>
             </ol>
         </nav>
