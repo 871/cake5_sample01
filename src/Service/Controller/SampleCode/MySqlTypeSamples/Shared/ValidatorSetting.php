@@ -4,15 +4,60 @@ declare(strict_types=1);
 namespace App\Service\Controller\SampleCode\MySqlTypeSamples\Shared;
 
 use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
+use App\Model\Table\Sample\MySqlTypeSamplesTable;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Log\Log;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Validation\Validator;
 use DomainException;
 
 final class ValidatorSetting implements ServiceInterface
 {
     use ServiceTrait;
+    use LocatorAwareTrait;
+
+    /**
+     * @param \Cake\Validation\Validator $validator
+     * @return self
+     */
+    public function id(Validator $validator): self
+    {
+        $message = __('{0}の指定が不正です。', 'Id');
+
+        $validator
+            ->requirePresence('id')
+            ->notEmptyString('id', $message)
+            ->add('id', [
+                'domain' => [
+                    'rule' => function ($value) {
+                        try {
+                            new Vo\Id($value);
+
+                            return true;
+                        } catch (DomainException $ex) {
+                            Log::warning($ex->getMessage());
+
+                            return false;
+                        }
+                    },
+                    'message' => $message,
+                ],
+                'exists' => [
+                    'rule' => function ($value) {
+                        /** @var \App\Model\Table\Sample\MySqlTypeSamplesTable $table */
+                        $table = $this->fetchTable(MySqlTypeSamplesTable::class);
+
+                        return $table->exists([
+                            'id' => $value,
+                        ]);
+                    },
+                    'message' => $message,
+                ],
+            ]);
+
+        return $this;
+    }
 
     /**
      * @param \Cake\Validation\Validator $validator

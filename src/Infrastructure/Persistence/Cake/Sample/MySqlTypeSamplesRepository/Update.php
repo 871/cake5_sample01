@@ -11,7 +11,7 @@ use App\Model\Table\Sample\MySqlTypeSamplesTable;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
-final class Create
+final class Update
 {
     use LocatorAwareTrait;
 
@@ -46,7 +46,7 @@ final class Create
                 function (): OrmEntity {
 
                     return $this->table->saveOrFail(
-                        $this->mapper->toNewOrmEntity($this->domainEntity),
+                        $this->mapper->toPatchOrmEntity($this->domainEntity),
                         [
                             'checkExisting' => false,
                         ],
@@ -57,7 +57,7 @@ final class Create
             return $this->mapper->toDomainEntity($ormEntity);
         } catch (PersistenceFailedException $ex) {
             throw new RepositoryException(
-                message: 'MySqlTypeSamplesRepository Create Error',
+                message: 'MySqlTypeSamplesRepository Update Error',
                 previous: $ex,
             );
         }

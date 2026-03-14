@@ -13,9 +13,8 @@ use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
     </div>
 <?php } ?>
     <div class="card-header bg-primary text-white">
-        新規登録
+        <?=  $input->getInput('id') ? h('更新') : h('新規登録') ?>
     </div>
-
     <div class="card-body">
         <form method="post">
             <input type="hidden" name="_csrfToken" value="<?= $this->request->getAttribute('csrfToken') ?>">
@@ -27,7 +26,7 @@ use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
                     <input 
                         type="text" 
                         name="int_col" 
-                        class="form-control <?= h($input->getInput('_errorFields.id')) ?>"
+                        class="form-control"
                         value="<?= h($input->getInput('id', '（新規作成）')) ?>"
                         readonly
                     >
