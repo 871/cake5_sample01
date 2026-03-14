@@ -25,21 +25,21 @@ final class MySqlTypeSample
      * @param ?string $json_col
      */
     public function __construct(
-        private ?string $id,
-        private ?string $int_col,
-        private ?string $bigint_col,
-        private ?string $decimal_col,
-        private ?string $float_col,
-        private ?string $double_col,
-        private ?string $date_col,
-        private ?string $time_col,
-        private ?string $datetime_col,
-        private ?string $char_col,
-        private ?string $varchar_col,
-        private ?string $text_col,
-        private ?string $mediumtext_col,
-        private ?string $longtext_col,
-        private ?string $json_col,
+        private readonly ?string $id,
+        private readonly ?string $int_col,
+        private readonly ?string $bigint_col,
+        private readonly ?string $decimal_col,
+        private readonly ?string $float_col,
+        private readonly ?string $double_col,
+        private readonly ?string $date_col,
+        private readonly ?string $time_col,
+        private readonly ?string $datetime_col,
+        private readonly ?string $char_col,
+        private readonly ?string $varchar_col,
+        private readonly ?string $text_col,
+        private readonly ?string $mediumtext_col,
+        private readonly ?string $longtext_col,
+        private readonly ?string $json_col,
     ) {
     }
 

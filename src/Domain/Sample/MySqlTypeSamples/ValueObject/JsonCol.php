@@ -30,12 +30,20 @@ class JsonCol implements Stringable
             return;
         }
 
+        if (strlen($value) > self::MAX_BYTE) {
+            throw new DomainException(
+                self::class . ' JSON size exceeded'
+                . '[max byte: ' . self::MAX_BYTE . ']'
+                . '[value: ' . $value . ']',
+            );
+        }
+
         try {
             $this->value = (array)json_decode($value, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw new DomainException(
                 self::class . ' JSON decode failed: ' . $e->getMessage()
-                . '[value: ' . $value . ']',
+                . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
             );
         }
     }

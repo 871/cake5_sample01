@@ -13,16 +13,21 @@ final class ProcessFactory implements ServiceInterface
     use ServiceTrait;
 
     /**
+     * ProcessInstanceの内容（ProcessParams）をSessionに保存してからProcessInstanceを作成する
+     *
      * @param string $processClassName
      * @param string $serviceClassName
      * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
-     * @return \App\Service\Controller\Shared\Process\Process
+     * @return \App\Service\Controller\Shared\Process\ProcessInterface
      */
-    public function start(string $processClassName, string $serviceClassName, ProcessParams $processParams): Process
-    {
-        if (!is_subclass_of($processClassName, Process::class)) {
+    public function start(
+        string $processClassName,
+        string $serviceClassName,
+        ProcessParams $processParams,
+    ): ProcessInterface {
+        if (!is_subclass_of($processClassName, ProcessInterface::class)) {
             throw new DomainException(
-                'Process class must implement ' . Process::class
+                'Process class must implement ' . ProcessInterface::class
                 . '[processClassName: ' . $processClassName . ']',
             );
         }
@@ -51,7 +56,7 @@ final class ProcessFactory implements ServiceInterface
     ): Process\Fields\ProcessId {
         $processId = new Process\Fields\ProcessId(uniqid());
         $sessionKey = new SessionKey(
-            prefix: Process::PREFIX,
+            prefix: ProcessInterface::PREFIX,
             type: $this->authContext->getType(),
             accountId: $this->authContext->getAccountId(),
             serviceClassName: $serviceClassName,

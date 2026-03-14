@@ -34,8 +34,8 @@ class DateCol implements Stringable
         if (!static::checkFormat($value, $format)) {
             throw new DomainException(
                 self::class . ' value date format Error'
-                    . '[value: ' . $value . ']'
-                    . '[format: ' . $format . ']',
+                . '[value: ' . $value . ']'
+                . '[format: ' . $format . ']',
             );
         }
 
@@ -45,9 +45,9 @@ class DateCol implements Stringable
         if ($resultValue === false || $resultValue < $minDate || $resultValue > $maxDate) {
             throw new DomainException(
                 self::class . ' value date range Error'
-                    . '[value: ' . $value . ']'
-                    . '[min: ' . self::MIN . ']'
-                    . '[max: ' . self::MAX . ']',
+                . '[value: ' . $value . ']'
+                . '[min: ' . self::MIN . ']'
+                . '[max: ' . self::MAX . ']',
             );
         }
 

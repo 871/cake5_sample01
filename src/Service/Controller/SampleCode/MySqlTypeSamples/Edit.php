@@ -22,7 +22,7 @@ use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Validation\Validator;
 
-final class Create implements ServiceInterface
+final class Edit implements ServiceInterface
 {
     use ServiceTrait;
 
@@ -50,44 +50,9 @@ final class Create implements ServiceInterface
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\InputProcess;
+     * @return \App\Service\Controller\Shared\Process\Process\InputProcess
      */
     public function startInputProcess(): InputProcess
-    {
-        /** @var \App\Service\Controller\Shared\Process\ProcessFactory $processFactory */
-        $processFactory = $this->createService(ProcessFactory::class);
-        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $process */
-        $process = $processFactory->start(
-            processClassName: InputProcess::class,
-            serviceClassName: self::class,
-            processParams: new ProcessParams([
-                '_errorMessages' => [],
-                '_errorFields' => [],
-                '_process_key' => UUID::uuid4(),
-                'int_col' => '',
-                'bigint_col' => '',
-                'decimal_col' => '',
-                'float_col' => '',
-                'double_col' => '',
-                'date_col' => '',
-                'time_col' => '',
-                'datetime_col' => '',
-                'char_col' => '',
-                'varchar_col' => '',
-                'text_col' => '',
-                'mediumtext_col' => '',
-                'longtext_col' => '',
-                'json_col' => '',
-            ]),
-        );
-
-        return $process;
-    }
-
-    /**
-     * @return \App\Service\Controller\Shared\Process\Process\InputProcess;
-     */
-    public function startInputProcessForCopy(): InputProcess
     {
         $mySqlTypeSample = (new MySqlTypeSamplesRepository())->read(
             new Vo\Id(
@@ -105,6 +70,7 @@ final class Create implements ServiceInterface
                 '_errorMessages' => [],
                 '_errorFields' => [],
                 '_process_key' => UUID::uuid4(),
+                'id' => $mySqlTypeSample->id()->toString(),
                 'int_col' => $mySqlTypeSample->intCol()->toString(),
                 'bigint_col' => $mySqlTypeSample->bigintCol()->toString(),
                 'decimal_col' => $mySqlTypeSample->decimalCol()->toString(),
@@ -140,8 +106,6 @@ final class Create implements ServiceInterface
                 process_id: StrictCast::toString($this->request->getParam('process_id')),
             ),
         );
-
-        // debug($inputProcess);
 
         return $inputProcess;
     }
@@ -239,6 +203,7 @@ final class Create implements ServiceInterface
         /** @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting $validatorSetting */
         $validatorSetting = $this->createService(ValidatorSetting::class);
         $validatorSetting
+            ->id($validator)
             ->intCol($validator)
             ->bigintCol($validator)
             ->decimalCol($validator)
@@ -267,8 +232,8 @@ final class Create implements ServiceInterface
             ->getProcessParams()
             ->toArray();
 
-        (new MySqlTypeSamplesRepository())->create(new MySqlTypeSample(
-            id: null,
+        (new MySqlTypeSamplesRepository())->update(new MySqlTypeSample(
+            id: Cast::toString($input['id']),
             int_col: Cast::toString($input['int_col']),
             bigint_col: Cast::toString($input['bigint_col']),
             decimal_col: Cast::toString($input['decimal_col']),

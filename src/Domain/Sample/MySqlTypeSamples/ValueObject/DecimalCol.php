@@ -11,6 +11,7 @@ final class DecimalCol implements Stringable
 {
     use FloatTrait;
 
+    public const STEP = 0.01;
     public const SCALE = 2;
     public const MIN = 0.01;
     public const MAX = 99999.99;
@@ -35,12 +36,16 @@ final class DecimalCol implements Stringable
             throw new DomainException("Invalid decimal format: {$value}");
         }
 
-        if ((float)$value < self::MIN || (float)$value > self::MAX) {
+        if (
+            // Memo: STEPの判定は省略
+            (float)$value < self::MIN || (float)$value > self::MAX
+        ) {
             throw new DomainException(
                 self::class . ' value range Error'
-                    . '[value: ' . $value . ']'
-                    . '[MIN: ' . (string)self::MIN . ']'
-                    . '[MAX: ' . (string)self::MAX . ']',
+                . '[value: ' . $value . ']'
+                . '[MIN: ' . (string)self::MIN . ']'
+                . '[MAX: ' . (string)self::MAX . ']'
+                . '[STEP: ' . (string)self::STEP . ']',
             );
         }
 

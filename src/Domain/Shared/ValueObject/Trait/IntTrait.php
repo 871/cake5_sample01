@@ -41,8 +41,8 @@ trait IntTrait
             return new self(null);
         }
 
-        if (preg_match('/^-?¥d+$/', $value)) {
-            return new self((int)$value);
+        if (preg_match('/^-?\d+$/', $value)) {
+            return new self($value);
         }
 
         throw new DomainException(

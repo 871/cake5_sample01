@@ -22,8 +22,8 @@ class TextCol implements Stringable
         if ($value !== null && mb_strlen($value) > self::MAX_LENGTH) {
             throw new DomainException(
                 self::class . ' value text format Error'
-                    . '[max length: ' . (string)self::MAX_LENGTH . ']'
-                    . '[value: ' . $value . ']',
+                . '[max length: ' . (string)self::MAX_LENGTH . ']'
+                . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
             );
         }
     }

@@ -15,11 +15,19 @@ final class Search implements ServiceInterface
     use ServiceTrait;
 
     /**
-     * @return array<string>
+     * @return array<string, array<int, string>>
      */
     public function getInitParams(): array
     {
-        return [];
+        return [
+            'show_fields' => [
+                'col_id',
+                'col_int',
+                'col_date',
+                'col_char',
+                'col_varchar',
+            ],
+        ];
     }
 
     /**
