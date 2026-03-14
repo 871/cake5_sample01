@@ -19,7 +19,7 @@ interface MySqlTypeSamplesRepository
     public function search(SearchCondition $condition): Query;
 
     /**
-     * 新規作成
+     * 作成
      *
      * @param \App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample $entity
      * @return \App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample
@@ -41,4 +41,12 @@ interface MySqlTypeSamplesRepository
      * @return \App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample
      */
     public function update(MySqlTypeSample $entity): MySqlTypeSample;
+
+    /**
+     * 削除
+     *
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\Id $id
+     * @return \App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample
+     */
+    public function delete(Vo\Id $id): MySqlTypeSample;
 }

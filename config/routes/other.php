@@ -26,6 +26,8 @@ $builder->scope('/', function (RouteBuilder $builder) {
             // 検索
             $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
             $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+            // 詳細
+            $builder->get('/detail/{my_sql_type_sample_id}', ['controller' => 'Detail', 'action' => 'index']);
             // 登録
             $builder->get('/create', ['controller' => 'Create', 'action' => 'index']);
             $builder->get('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'input']);
@@ -40,6 +42,9 @@ $builder->scope('/', function (RouteBuilder $builder) {
             $builder->post('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
             $builder->get('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
             $builder->post('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
+            // 削除
+            $builder->get('/delete/{my_sql_type_sample_id}', ['controller' => 'Delete', 'action' => 'index']);
+            $builder->post('/delete/{my_sql_type_sample_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
             
         
         }); 

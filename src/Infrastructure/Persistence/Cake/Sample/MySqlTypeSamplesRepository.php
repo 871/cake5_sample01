@@ -9,9 +9,11 @@ use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
 use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
 use Cake\ORM\Query;
 
-class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
+final class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
 {
     /**
+     * 検索
+     *
      * @param \App\Domain\Sample\MySqlTypeSamples\SearchCondition $condition
      * @return \Cake\ORM\Query
      */
@@ -21,7 +23,7 @@ class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
     }
 
     /**
-     * 新規作成
+     * 作成
      *
      * @param \App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample $domainEntity
      * @return \App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample
@@ -51,5 +53,16 @@ class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
     public function update(DomainEntity $domainEntity): DomainEntity
     {
         return (new MySqlTypeSamplesRepository\Update($domainEntity))->run();
+    }
+
+    /**
+     * 削除
+     *
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\Id $id
+     * @return \App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample
+     */
+    public function delete(Vo\Id $id): DomainEntity
+    {
+        return (new MySqlTypeSamplesRepository\Delete($id))->run();
     }
 }

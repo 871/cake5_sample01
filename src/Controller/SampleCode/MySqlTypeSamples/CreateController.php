@@ -65,6 +65,20 @@ class CreateController extends AppController
     /**
      * @return \Cake\Http\Response|null|void Renders view
      */
+    public function copy()
+    {
+        $inputProcess = $this->ctlService->startInputProcessForCopy();
+
+        return $this->redirect([
+            'action' => 'input',
+            'process_id' => $inputProcess->getId(),
+            '?' => $this->request->getQuery(),
+        ]);
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
     public function input()
     {
         $this->set([

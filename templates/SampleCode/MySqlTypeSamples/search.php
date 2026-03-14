@@ -428,22 +428,22 @@
 <!-- Result Table -->
 <style>
     .table th.col_choice, .table td.col_choice { width: 40px; min-width: 40px; max-width: 40px; }
-    .table th.col_id, .table td.col_id { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_id, .table td.col_id { width: 350px; min-width: 350px; max-width: 350px; }
     .table th.col_int, .table td.col_int { width: 140px; min-width: 140px; max-width: 140px; }
     .table th.col_bigint, .table td.col_bigint { width: 140px; min-width: 140px; max-width: 140px; }
     .table th.col_decimal, .table td.col_decimal { width: 140px; min-width: 140px; max-width: 140px; }
     .table th.col_float, .table td.col_float { width: 140px; min-width: 140px; max-width: 140px; }
     .table th.col_double, .table td.col_double { width: 140px; min-width: 140px; max-width: 140px; }
-    .table th.col_date, .table td.col_date { width: 140px; min-width: 140px; max-width: 140px; }
-    .table th.col_time, .table td.col_time { width: 140px; min-width: 140px; max-width: 140px; }
-    .table th.col_datetime, .table td.col_datetime { width: 140px; min-width: 140px; max-width: 140px; }
+    .table th.col_date, .table td.col_date { width: 120px; min-width: 120px; max-width: 120px; }
+    .table th.col_time, .table td.col_time { width: 120px; min-width: 120px; max-width: 120px; }
+    .table th.col_datetime, .table td.col_datetime { width: 170px; min-width: 170px; max-width: 170px; }
     .table th.col_char, .table td.col_char { width: 140px; min-width: 140px; max-width: 140px; }
     .table th.col_varchar, .table td.col_varchar { width: 140px; min-width: 140px; max-width: 140px; }
     .table th.col_text, .table td.col_text { width: 140px; min-width: 140px; max-width: 140px; }
     .table th.col_mediumtext, .table td.col_mediumtext { width: 140px; min-width: 140px; max-width: 140px; }
     .table th.col_longtext, .table td.col_longtext { width: 140px; min-width: 140px; max-width: 140px; }
     .table th.col_json, .table td.col_json { width: 140px; min-width: 140px; max-width: 140px; }
-    .table th.col_action, .table td.col_action { width: 180px; min-width: 180px; max-width: 180px; }
+    .table th.col_action, .table td.col_action { width: 240px; min-width: 240px; max-width: 240px; }
 </style>
 <div class="table-scroll mb-2">
     <table class="table table-bordered table-sm table-hover">
@@ -476,7 +476,7 @@
                 <td class="col_choice text-center">
                     <input type="checkbox" class="row-check">
                 </td>
-                <td class="col_id"><input class="result-input text-center" value="<?= h($row->id()) ?>"></td>
+                <td class="col_id"><input class="result-input text-left" value="<?= h($row->id()) ?>"></td>
                 <td class="col_int"><input class="result-input text-right" value="<?= h($row->intCol()) ?>"></td>
                 <td class="col_bigint"><input class="result-input text-right" value="<?= h($row->bigintCol()) ?>"></td>
                 <td class="col_decimal"><input class="result-input text-right" value="<?= h($row->decimalCol()) ?>"></td>
@@ -498,8 +498,21 @@
                         'my_sql_type_sample_id' => $row->id(),
                         '?' => $this->getRequest()->getQuery(),
                     ]) ?>" class="btn btn-sm btn-info me-2">更新</a>
+                    <a href="<?= $this->Url->build([
+                        'controller' => 'Create',
+                        'action' => 'copy',
+                        'my_sql_type_sample_id' => $row->id(),
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>" class="btn btn-sm btn-info me-2">複製</a>
                     <button class="btn btn-sm btn-info me-2">詳細</button>
-                    <button class="btn btn-sm btn-info me-2">複製</button>
+                    <?= $this->Form->postLink('削除', [
+                        'controller' => 'Delete',
+                        'action' => 'index',
+                        'my_sql_type_sample_id' => $row->id()->toString(),
+                        '?' => $this->getRequest()->getQuery(),
+                    ], [
+                        'class' => 'btn btn-sm btn-info me-2',
+                    ]) ?>
                 </td>
             </tr>
         <?php endforeach; ?>

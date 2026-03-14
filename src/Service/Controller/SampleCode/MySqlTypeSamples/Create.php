@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Service\Controller\SampleCode\MySqlTypeSamples;
 
 use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample;
+use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
 use App\Exception\ValidateException;
 use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
 use App\Lib\UUID\UUID;
@@ -77,6 +78,47 @@ final class Create implements ServiceInterface
                 'mediumtext_col' => '',
                 'longtext_col' => '',
                 'json_col' => '',
+            ]),
+        );
+
+        return $process;
+    }
+
+    /**
+     * @return \App\Service\Controller\Shared\Process\Process\InputProcess;
+     */
+    public function startInputProcessForCopy(): InputProcess
+    {
+        $mySqlTypeSample = (new MySqlTypeSamplesRepository())->read(
+            new Vo\Id(
+                StrictCast::toString($this->request->getParam('my_sql_type_sample_id')),
+            ),
+        );
+
+        /** @var \App\Service\Controller\Shared\Process\ProcessFactory $processFactory */
+        $processFactory = $this->createService(ProcessFactory::class);
+        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $process */
+        $process = $processFactory->start(
+            processClassName: InputProcess::class,
+            serviceClassName: self::class,
+            processParams: new ProcessParams([
+                '_errorMessages' => [],
+                '_errorFields' => [],
+                '_process_key' => UUID::uuid4(),
+                'int_col' => $mySqlTypeSample->intCol()->toString(),
+                'bigint_col' => $mySqlTypeSample->bigintCol()->toString(),
+                'decimal_col' => $mySqlTypeSample->decimalCol()->toString(),
+                'float_col' => $mySqlTypeSample->floatCol()->toString(),
+                'double_col' => $mySqlTypeSample->doubleCol()->toString(),
+                'date_col' => $mySqlTypeSample->dateCol()->toString(),
+                'time_col' => $mySqlTypeSample->timeCol()->toString(),
+                'datetime_col' => $mySqlTypeSample->datetimeCol()->toString(),
+                'char_col' => $mySqlTypeSample->charCol()->toString(),
+                'varchar_col' => $mySqlTypeSample->varcharCol()->toString(),
+                'text_col' => $mySqlTypeSample->textCol()->toString(),
+                'mediumtext_col' => $mySqlTypeSample->mediumtextCol()->toString(),
+                'longtext_col' => $mySqlTypeSample->longtextCol()->toString(),
+                'json_col' => $mySqlTypeSample->jsonCol()->toString(),
             ]),
         );
 

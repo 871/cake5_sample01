@@ -108,6 +108,32 @@
                         ]) ?>"
                     >検索</a>
                 </li>
+            <?php if ($this->getRequest()->getParam('my_sql_type_sample_id')): ?>
+                <a href="<?= $this->Url->build([
+                    'controller' => 'Detail',
+                    'action' => 'index',
+                    'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
+                    '?' => $this->getRequest()->getQuery(),
+                ]) ?>" class="btn btn-sm btn-info me-2">詳細</a>
+                <a href="<?= $this->Url->build([
+                    'controller' => 'Edit',
+                    'action' => 'index',
+                    'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
+                    '?' => $this->getRequest()->getQuery(),
+                ]) ?>" class="btn btn-sm btn-info me-2">更新</a>
+                <a href="<?= $this->Url->build([
+                    'controller' => 'Create',
+                    'action' => 'copy',
+                    'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
+                    '?' => $this->getRequest()->getQuery(),
+                ]) ?>" class="btn btn-sm btn-info me-2">複製</a>
+                <a href="<?= $this->Url->build([
+                    'controller' => 'Delete',
+                    'action' => 'indexPost',
+                    'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
+                    '?' => $this->getRequest()->getQuery(),
+                ]) ?>" class="btn btn-sm btn-info me-2">削除</a>
+            <?php endif ?>
             </ol>
         </nav>
         <!-- Message Area -->

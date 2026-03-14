@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
 
+use App\Domain\Exception\RepositoryException;
 use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample as DomainEntity;
 use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
 use App\Model\Entity\Sample\MySqlTypeSample as OrmEntity;
 use App\Model\Table\Sample\MySqlTypeSamplesTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use DomainException;
 
 final class Read
 {
@@ -80,7 +80,7 @@ final class Read
                     );
                 });
             })
-            ->first() ?? throw new DomainException(
+            ->first() ?? throw new RepositoryException(
                 'MySqlTypeSample data not fund'
                 . '[id: ' . $this->id->toString() . ']',
             );
