@@ -399,11 +399,13 @@
         </nav>
     </div>
     <!-- 中央：ボタン -->
+    <!-- 未実装
     <div class="order-2 mx-auto d-flex gap-2">
         <button class="btn btn-sm btn-success">一括更新</button>
         <button class="btn btn-sm btn-danger">一括削除</button>
         <button class="btn btn-sm btn-secondary">エクスポート</button>
     </div>
+    -->
     <!-- 右：件数表示 -->
     <div class="order-3 ms-auto">
         <select 
@@ -539,11 +541,13 @@
         </nav>
     </div>
     <!-- 中央：ボタン -->
+    <!-- 未実装
     <div class="order-2 mx-auto d-flex gap-2">
         <button class="btn btn-sm btn-success">一括更新</button>
         <button class="btn btn-sm btn-danger">一括削除</button>
         <button class="btn btn-sm btn-secondary">エクスポート</button>
     </div>
+    -->
     <!-- 右：件数表示 -->
     <div class="order-3 ms-auto">
         <select 
