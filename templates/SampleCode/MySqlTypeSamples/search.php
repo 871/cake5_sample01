@@ -443,7 +443,7 @@
     .table th.col_mediumtext, .table td.col_mediumtext { width: 140px; min-width: 140px; max-width: 140px; }
     .table th.col_longtext, .table td.col_longtext { width: 140px; min-width: 140px; max-width: 140px; }
     .table th.col_json, .table td.col_json { width: 140px; min-width: 140px; max-width: 140px; }
-    .table th.col_action, .table td.col_action { width: 240px; min-width: 240px; max-width: 240px; }
+    .table th.col_action, .table td.col_action { width: auto; min-width: 240px;}
 </style>
 <div class="table-scroll mb-2">
     <table class="table table-bordered table-sm table-hover">
@@ -512,6 +512,7 @@
                         '?' => $this->getRequest()->getQuery(),
                     ], [
                         'class' => 'btn btn-sm btn-info me-2',
+                        'confirm' => '削除しますか？'
                     ]) ?>
                 </td>
             </tr>
