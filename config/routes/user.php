@@ -12,7 +12,7 @@ $builder->prefix('User', ['path' => '/us'], static function (RouteBuilder $build
     $builder->get('/login', ['controller' => 'Auth', 'action' => 'login']);
     $builder->post('/login', ['controller' => 'Auth', 'action' => 'loginPost']);
     // ログイン済ルート
-    $builder->scope('/{user_code}', function (RouteBuilder $builder) {
+    $builder->scope('/{account_id}', function (RouteBuilder $builder) {
         // エラー
         $builder->get('/error', ['controller' => 'Error', 'action' => 'index']);
         $builder->get('/error/{message_id}', ['controller' => 'Error', 'action' => 'index']);

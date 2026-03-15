@@ -12,7 +12,7 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
     $builder->get('/login', ['controller' => 'Auth', 'action' => 'login']);
     $builder->post('/login', ['controller' => 'Auth', 'action' => 'loginPost']);
     // ログイン済ルート
-    $builder->scope('/{admin_code}', function (RouteBuilder $builder) {
+    $builder->scope('/{account_id}', static function (RouteBuilder $builder) {
         // エラー
         $builder->get('/error', ['controller' => 'Error', 'action' => 'index']);
         $builder->get('/error/{message_id}', ['controller' => 'Error', 'action' => 'index']);
