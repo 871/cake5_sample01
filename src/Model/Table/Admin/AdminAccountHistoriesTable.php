@@ -4,10 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Table\Admin;
 
 use App\Model\Entity\Admin\AdminAccountHistory;
-use App\Model\Table\Admin\AdminAccountsTable;
 use App\Model\Table\Shared\AccountStatusMastersTable;
-
-use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -17,7 +14,6 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\Admin\AdminAccountsTable&\Cake\ORM\Association\BelongsTo $AdminAccounts
  * @property \App\Model\Table\Shared\AccountStatusMastersTable&\Cake\ORM\Association\BelongsTo $AccountStatusMasters
- *
  * @method \App\Model\Entity\Admin\AdminAccountHistory newEmptyEntity()
  * @method \App\Model\Entity\Admin\AdminAccountHistory newEntity(array $data, array $options = [])
  * @method array<\App\Model\Entity\Admin\AdminAccountHistory> newEntities(array $data, array $options = [])
@@ -31,7 +27,6 @@ use Cake\Validation\Validator;
  * @method iterable<\App\Model\Entity\Admin\AdminAccountHistory>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccountHistory> saveManyOrFail(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Admin\AdminAccountHistory>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccountHistory>|false deleteMany(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Admin\AdminAccountHistory>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccountHistory> deleteManyOrFail(iterable $entities, array $options = [])
- *
  */
 class AdminAccountHistoriesTable extends Table
 {
@@ -152,7 +147,13 @@ class AdminAccountHistoriesTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['admin_account_id'], 'AdminAccounts'), ['errorField' => 'admin_account_id']);
-        $rules->add($rules->existsIn(['account_status_master_id'], 'AccountStatusMasters'), ['errorField' => 'account_status_master_id']);
+        $rules->add(
+            $rules->existsIn(
+                ['account_status_master_id'],
+                'AccountStatusMasters',
+            ),
+            ['errorField' => 'account_status_master_id'],
+        );
 
         return $rules;
     }

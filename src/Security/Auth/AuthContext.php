@@ -26,7 +26,6 @@ interface AuthContext
      */
     public function getAccountId(): Fields\AccountId;
 
-
     /*
         login_code
 
@@ -37,10 +36,9 @@ interface AuthContext
         is_email_verified INT NOT NULL DEFAULT 0 COMMENT 'メール確認済フラグ',
         password_changed_at DATETIME NOT NULL COMMENT 'パスワード最終変更日時',
         password_expires_at DATETIME NOT NULL COMMENT 'パスワード有効期限',
-        
+
         created DATETIME NOT NULL COMMENT '作成日時',
         modified DATETIME NOT NULL COMMENT '更新日時',
 
     */
-
 }

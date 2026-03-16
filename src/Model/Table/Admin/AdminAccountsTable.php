@@ -5,9 +5,6 @@ namespace App\Model\Table\Admin;
 
 use App\Model\Entity\Admin\AdminAccount;
 use App\Model\Table\Shared\AccountStatusMastersTable;
-use App\Model\Table\Admin\AdminAccountHistoriesTable;
-
-use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -17,7 +14,6 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\Shared\AccountStatusMastersTable&\Cake\ORM\Association\BelongsTo $AccountStatusMasters
  * @property \App\Model\Table\Admin\AdminAccountHistoriesTable&\Cake\ORM\Association\HasMany $AdminAccountHistories
- *
  * @method \App\Model\Entity\Admin\AdminAccount newEmptyEntity()
  * @method \App\Model\Entity\Admin\AdminAccount newEntity(array $data, array $options = [])
  * @method array<\App\Model\Entity\Admin\AdminAccount> newEntities(array $data, array $options = [])
@@ -31,7 +27,6 @@ use Cake\Validation\Validator;
  * @method iterable<\App\Model\Entity\Admin\AdminAccount>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccount> saveManyOrFail(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Admin\AdminAccount>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccount>|false deleteMany(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Admin\AdminAccount>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccount> deleteManyOrFail(iterable $entities, array $options = [])
- *
  */
 class AdminAccountsTable extends Table
 {
@@ -138,7 +133,13 @@ class AdminAccountsTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['email']), ['errorField' => 'email']);
-        $rules->add($rules->existsIn(['account_status_master_id'], 'AccountStatusMasters'), ['errorField' => 'account_status_master_id']);
+        $rules->add(
+            $rules->existsIn(
+                ['account_status_master_id'],
+                'AccountStatusMasters',
+            ),
+            ['errorField' => 'account_status_master_id'],
+        );
 
         return $rules;
     }

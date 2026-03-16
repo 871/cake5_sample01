@@ -5,7 +5,10 @@ namespace App\Controller\AdminBake;
 
 use App\Controller\AppController;
 use App\Model\Table\Admin\AdminAccountsTable;
+use App\Security\Input\StrictCast;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Cake\Http\Response;
+use Cake\I18n\DateTime;
 
 /**
  * AdminAccounts Controller
@@ -45,7 +48,7 @@ class AdminAccountsController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $adminAccount = $this->AdminAccounts->get($id, contain: ['AccountStatusMasters', 'AdminAccountHistories']);
         $this->set(compact('adminAccount'));
@@ -60,7 +63,17 @@ class AdminAccountsController extends AppController
     {
         $adminAccount = $this->AdminAccounts->newEmptyEntity();
         if ($this->request->is('post')) {
-            $adminAccount = $this->AdminAccounts->patchEntity($adminAccount, $this->request->getData());
+            $adminAccount = $this->AdminAccounts->patchEntity(
+                $adminAccount,
+                array_merge((array)$this->request->getData(), [
+                    'password' => (new DefaultPasswordHasher())->hash(
+                        StrictCast::toString($this->request->getData('password')),
+                    ),
+                ]),
+            );
+            $adminAccount->created = new DateTime();
+            $adminAccount->modified = new DateTime();
+
             if ($this->AdminAccounts->save($adminAccount)) {
                 $this->Flash->success(__('The admin account has been saved.'));
 
@@ -79,11 +92,22 @@ class AdminAccountsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $adminAccount = $this->AdminAccounts->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $adminAccount = $this->AdminAccounts->patchEntity($adminAccount, $this->request->getData());
+            $adminAccount = $this->AdminAccounts->patchEntity($adminAccount, (function () use ($adminAccount): array {
+
+                return $adminAccount->password === $this->request->getData('password')
+                    ? (array)$this->request->getData()
+                    : array_merge((array)$this->request->getData(), [
+                        'password' => (new DefaultPasswordHasher())->hash(
+                            StrictCast::toString($this->request->getData('password')),
+                        ),
+                    ]);
+            })());
+            $adminAccount->modified = new DateTime();
+
             if ($this->AdminAccounts->save($adminAccount)) {
                 $this->Flash->success(__('The admin account has been saved.'));
 
@@ -102,7 +126,7 @@ class AdminAccountsController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete(?string $id = null): ?Response
     {
         $this->request->allowMethod(['post', 'delete']);
         $adminAccount = $this->AdminAccounts->get($id);
