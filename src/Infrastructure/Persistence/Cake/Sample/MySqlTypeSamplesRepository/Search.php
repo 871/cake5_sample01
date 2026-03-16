@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
 
-use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSampleMapper;
 use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
+use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSampleMapper;
 use App\Model\Entity\Sample\MySqlTypeSample as OrmEntity;
 use App\Model\Table\Sample\MySqlTypeSamplesTable;
 use Cake\Database\Expression\QueryExpression;

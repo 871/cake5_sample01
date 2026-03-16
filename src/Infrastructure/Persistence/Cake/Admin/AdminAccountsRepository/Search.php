@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 
-use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
 use App\Domain\Admin\AdminAccounts\SearchCondition;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
 use App\Model\Entity\Admin\AdminAccount as OrmEntity;
@@ -62,8 +61,8 @@ final class Search
                 'OR' => array_filter([
                     'AdminAccounts.email LIKE' => $this->condition->getKeyword()->toQueryLike(),
                     'AdminAccounts.name LIKE' => $this->condition->getKeyword()->toQueryLike(),
-                ], fn ($v) => !in_array($v, [null, '', []], true)),
-            ], fn ($v) => !in_array($v, [null, '', []], true)))
+                ], fn($v) => !in_array($v, [null, '', []], true)),
+            ], fn($v) => !in_array($v, [null, '', []], true)))
             ->formatResults(function ($results) {
                 return $results->map(function (OrmEntity $entity) {
                     return $this->mapper->toDomainEntity($entity);

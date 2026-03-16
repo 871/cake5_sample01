@@ -5,11 +5,11 @@ namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
 use App\Domain\Exception\RepositoryException;
+use App\Domain\Shared\ValueObject as SVo;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
 use App\Model\Entity\Admin\AdminAccount as OrmEntity;
-use App\Model\Table\Admin\AdminAccountsTable;
 use App\Model\Table\Admin\AdminAccountHistoriesTable;
-use App\Domain\Shared\ValueObject as SVo;
+use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -49,15 +49,11 @@ final class Update
     public function run(): DomainEntity
     {
         try {
-            // 現在のパスワードハッシュを取得する
-            $currentOrmEntity = $this->table->get($this->domainEntity->id()->toInt());
-            $currentHashedPassword = $currentOrmEntity->password;
-
             /** @var \App\Model\Entity\Admin\AdminAccount $ormEntity */
             $ormEntity = $this->table->getConnection()->transactional(
-                function () use ($currentHashedPassword): OrmEntity {
+                function (): OrmEntity {
                     $savedEntity = $this->table->saveOrFail(
-                        $this->mapper->toPatchOrmEntity($this->domainEntity, $currentHashedPassword),
+                        $this->mapper->toPatchOrmEntity($this->domainEntity),
                         [
                             'checkExisting' => false,
                         ],
@@ -65,7 +61,7 @@ final class Update
 
                     $this->historyTable->saveOrFail(
                         $this->mapper->toNewOrmHistoryEntity(
-                            $savedEntity, 
+                            $savedEntity,
                             SVo\OperationType::UPDATE,
                             $savedEntity->modified,
                         ),

@@ -5,8 +5,8 @@ namespace App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
 
 use App\Domain\Exception\RepositoryException;
 use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample as DomainEntity;
-use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSampleMapper;
 use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
+use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSampleMapper;
 use App\Model\Entity\Sample\MySqlTypeSample as OrmEntity;
 use App\Model\Table\Sample\MySqlTypeSamplesTable;
 use Cake\ORM\Locator\LocatorAwareTrait;

@@ -4,17 +4,16 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Admin;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
+use App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory as DomainHistoryEntity;
+use App\Lib\UUID\UUID;
 use App\Model\Entity\Admin\AdminAccount as OrmEntity;
 use App\Model\Entity\Admin\AdminAccountHistory as OrmHistoryEntity;
-use App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory as DomainHistoryEntity;
-use App\Model\Table\Admin\AdminAccountsTable;
 use App\Model\Table\Admin\AdminAccountHistoriesTable;
-use App\Lib\UUID\UUID;
+use App\Model\Table\Admin\AdminAccountsTable;
 use App\Security\Input\Cast;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
-use DateTimeImmutable;
-use Cake\I18n\DateTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use DateTimeInterface;
 
 final class AdminAccountMapper
 {
@@ -101,13 +100,13 @@ final class AdminAccountMapper
     /**
      * @param \App\Model\Entity\Admin\AdminAccount $ormEntity
      * @param string $operationType
-     * @param \DateTimeImmutable $history_created
+     * @param \DateTimeInterface $history_created
      * @return \App\Model\Entity\Admin\AdminAccountHistory
      */
     public function toNewOrmHistoryEntity(
         OrmEntity $ormEntity,
         string $operationType,
-        DateTimeImmutable $history_created
+        DateTimeInterface $history_created,
     ): OrmHistoryEntity {
         return $this->historyTable->newEntity(array_merge($ormEntity->toArray(), [
             'id' => UUID::uuid7(),
@@ -133,12 +132,12 @@ final class AdminAccountMapper
             admin_note: Cast::toString($ormEntity->admin_note),
             account_status_master_id: Cast::toString($ormEntity->account_status_master_id),
             is_email_verified: Cast::toString($ormEntity->is_email_verified),
-            password_changed_at: Cast::toString($ormEntity->password_changed_at?->format('Y-m-d\TH:i:s')),
-            password_expires_at: Cast::toString($ormEntity->password_expires_at?->format('Y-m-d\TH:i:s')),
-            created: Cast::toString($ormEntity->created?->format('Y-m-d\TH:i:s')),
+            password_changed_at: Cast::toString($ormEntity->password_changed_at->format('Y-m-d\TH:i:s')),
+            password_expires_at: Cast::toString($ormEntity->password_expires_at->format('Y-m-d\TH:i:s')),
+            created: Cast::toString($ormEntity->created->format('Y-m-d\TH:i:s')),
             created_by: Cast::toString($ormEntity->created_by),
             created_ip: Cast::toString($ormEntity->created_ip),
-            modified: Cast::toString($ormEntity->modified?->format('Y-m-d\TH:i:s')),
+            modified: Cast::toString($ormEntity->modified->format('Y-m-d\TH:i:s')),
             modified_by: Cast::toString($ormEntity->modified_by),
             modified_ip: Cast::toString($ormEntity->modified_ip),
         );
@@ -147,7 +146,7 @@ final class AdminAccountMapper
     /**
      * @param \App\Model\Entity\Admin\AdminAccountHistory $ormEntity
      * @return \App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory
-     */    
+     */
     public function toDomainHistoryEntity(OrmHistoryEntity $ormEntity): DomainHistoryEntity
     {
         return new DomainHistoryEntity(
@@ -158,16 +157,16 @@ final class AdminAccountMapper
             admin_note: Cast::toString($ormEntity->admin_note),
             account_status_master_id: Cast::toString($ormEntity->account_status_master_id),
             is_email_verified: Cast::toString($ormEntity->is_email_verified),
-            password_changed_at: Cast::toString($ormEntity->password_changed_at?->format('Y-m-d\TH:i:s')),
-            password_expires_at: Cast::toString($ormEntity->password_expires_at?->format('Y-m-d\TH:i:s')),
-            created: Cast::toString($ormEntity->created?->format('Y-m-d\TH:i:s')),
+            password_changed_at: Cast::toString($ormEntity->password_changed_at->format('Y-m-d\TH:i:s')),
+            password_expires_at: Cast::toString($ormEntity->password_expires_at->format('Y-m-d\TH:i:s')),
+            created: Cast::toString($ormEntity->created->format('Y-m-d\TH:i:s')),
             created_by: Cast::toString($ormEntity->created_by),
             created_ip: Cast::toString($ormEntity->created_ip),
-            modified: Cast::toString($ormEntity->modified?->format('Y-m-d\TH:i:s')),
+            modified: Cast::toString($ormEntity->modified->format('Y-m-d\TH:i:s')),
             modified_by: Cast::toString($ormEntity->modified_by),
             modified_ip: Cast::toString($ormEntity->modified_ip),
             operation_type: Cast::toString($ormEntity->operation_type),
-            history_created: Cast::toString($ormEntity->history_created?->format('Y-m-d\TH:i:s')),
+            history_created: Cast::toString($ormEntity->history_created->format('Y-m-d\TH:i:s')),
         );
     }
 }

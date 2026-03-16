@@ -11,17 +11,24 @@ class Id implements Stringable
 {
     use IntTrait;
 
-    const MIN = 900000;
-    const MAX = 999999;
+    public const MIN = 900000;
+    public const MAX = 999999;
+
+    /**
+     * @param ?string $value
+     */
+    private ?string $value;
 
     /**
      * @param ?string $value
      */
     public function __construct(
-        private readonly ?string $value,
+        ?string $value,
     ) {
+        
         if ($value === null || $value === '') {
-            return null;
+            $this->value = null;
+            return;
         }
 
         if ($value !== null && !preg_match('/^\d+$/', $value)) {
@@ -37,6 +44,8 @@ class Id implements Stringable
                 . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
             );
         }
+
+        $this->value = $value;
     }
 
     /**

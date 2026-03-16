@@ -7,14 +7,14 @@ use App\Domain\Admin\AdminAccounts\Entity\AdminAccount;
 use App\Domain\Admin\AdminAccounts\SearchCondition;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use Cake\ORM\Query;
-use DateTimeImmutable;
+use DateTimeInterface;
 
 interface AdminAccountsRepository
 {
     /**
-     * @param \DateTimeImmutable $datetime
+     * @param \DateTimeInterface $datetime
      */
-    public function __construct(DateTimeImmutable $datetime);
+    public function __construct(DateTimeInterface $datetime);
 
     /**
      * @param \App\Domain\Admin\AdminAccounts\SearchCondition $condition

@@ -4,21 +4,20 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Admin;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
-use App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory as DomainHistoryEntity;
 use App\Domain\Admin\AdminAccounts\Repository\AdminAccountsRepository as DomainAdminAccountsRepository;
 use App\Domain\Admin\AdminAccounts\SearchCondition;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use Cake\ORM\Query;
-use DateTimeImmutable;
+use DateTimeInterface;
 
 final class AdminAccountsRepository implements DomainAdminAccountsRepository
 {
     /**
-     * @param \DateTimeImmutable $datetime
+     * @param \DateTimeInterface $datetime
      */
     public function __construct(
-        private readonly DateTimeImmutable $datetime)
-    {
+        private readonly DateTimeInterface $datetime,
+    ) {
         // do nothing
     }
 

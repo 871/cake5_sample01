@@ -3,14 +3,11 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 
-use App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory as DomainHistoryEntity;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
-use App\Model\Entity\Admin\AdminAccountHistory as OrmHistoryEntity;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
+use App\Model\Entity\Admin\AdminAccountHistory as OrmHistoryEntity;
 use App\Model\Table\Admin\AdminAccountHistoriesTable;
-use App\Domain\Exception\RepositoryException;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\Query;
 
 final class ReadHistories
 {
@@ -41,7 +38,7 @@ final class ReadHistories
      */
     public function run(): array
     {
-        /** @var array<\App\Model\Entity\Admin\AdminAccountHistory> */
+        /** @var array<\App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory> */
         return $this->table
             ->find()
             ->select([

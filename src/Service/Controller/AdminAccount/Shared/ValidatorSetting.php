@@ -198,7 +198,7 @@ final class ValidatorSetting implements ServiceInterface
             ->notEmptyString('password_changed_at', __('パスワード変更日時を入力してください。'))
             ->add('password_changed_at', [
                 'domain' => [
-                    'rule' => function ($value) use ($message) {
+                    'rule' => function ($value) {
                         try {
                             new Vo\PasswordChangedAt($value);
 
@@ -229,7 +229,7 @@ final class ValidatorSetting implements ServiceInterface
             ->notEmptyString('password_expires_at', __('パスワード有効期限を入力してください。'))
             ->add('password_expires_at', [
                 'domain' => [
-                    'rule' => function ($value) use ($message) {
+                    'rule' => function ($value) {
                         try {
                             new Vo\PasswordExpiresAt($value);
 

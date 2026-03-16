@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Service\Controller\AdminAccount;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
-use App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory as DomainHistoryEntity;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 use App\Security\Input\StrictCast;

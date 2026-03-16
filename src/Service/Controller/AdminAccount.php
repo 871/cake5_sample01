@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace App\Service\Controller;
 
+use App\Model\Table\Shared\AccountStatusMastersTable;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use App\Model\Table\Shared\AccountStatusMastersTable;
 
 final class AdminAccount implements ServiceInterface
 {
-    use ServiceTrait,
-        LocatorAwareTrait;
+    use ServiceTrait;
+    use LocatorAwareTrait;
 
     /**
      * @return array<int, array<string, mixed>>
@@ -20,7 +20,7 @@ final class AdminAccount implements ServiceInterface
     {
         /** @var \App\Model\Table\Shared\AccountStatusMastersTable $table */
         $table = $this->fetchTable(AccountStatusMastersTable::class);
-
+        /** @var array<int, array<string, mixed>> */
         return $table->find()
             ->select(['id', 'name'])
             ->where(['is_active' => 1])

@@ -16,11 +16,17 @@ class Email implements Stringable
     /**
      * @param ?string $value
      */
+    private ?string $value;
+
+    /**
+     * @param ?string $value
+     */
     public function __construct(
-        private readonly ?string $value,
+        ?string $value,
     ) {
-        if ($value === null) {
-            return null;
+        if ($value === null || $value === '') {
+            $this->value = null;
+            return;
         }
 
         if (mb_strlen($value) > self::MAX_LENGTH) {
@@ -36,5 +42,7 @@ class Email implements Stringable
                 . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
             );
         }
+
+        $this->value = $value;
     }
 }
