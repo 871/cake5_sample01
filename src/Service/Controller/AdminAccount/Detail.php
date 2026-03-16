@@ -20,7 +20,7 @@ final class Detail implements ServiceInterface
      */
     public function getDomainEntity(): DomainEntity
     {
-        return (new AdminAccountsRepository())->read(
+        return (new AdminAccountsRepository($this->datetime))->read(
             new Vo\Id(
                 StrictCast::toString($this->request->getParam('admin_account_id')),
             ),
@@ -32,7 +32,7 @@ final class Detail implements ServiceInterface
      */
     public function getHistories(): array
     {
-        return (new AdminAccountsRepository())->readHistories(
+        return (new AdminAccountsRepository($this->datetime))->readHistories(
             new Vo\Id(
                 StrictCast::toString($this->request->getParam('admin_account_id')),
             ),

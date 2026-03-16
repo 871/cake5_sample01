@@ -69,6 +69,5 @@ class AdminAccountHistory extends Entity
      * @var array<string>
      */
     protected array $_hidden = [
-        'password',
     ];
 }

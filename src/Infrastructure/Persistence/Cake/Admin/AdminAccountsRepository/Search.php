@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
 use App\Domain\Admin\AdminAccounts\SearchCondition;
+use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
 use App\Model\Entity\Admin\AdminAccount as OrmEntity;
 use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -20,12 +21,18 @@ final class Search
     private AdminAccountsTable $table;
 
     /**
+     * @var \App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper
+     */
+    private AdminAccountMapper $mapper;
+
+    /**
      * @param \App\Domain\Admin\AdminAccounts\SearchCondition $condition
      */
     public function __construct(
         private readonly SearchCondition $condition,
     ) {
         $this->table = $this->fetchTable(AdminAccountsTable::class);
+        $this->mapper = new AdminAccountMapper();
     }
 
     /**
@@ -49,7 +56,7 @@ final class Search
                 'AccountStatusMasters__name' => 'AccountStatusMasters.name',
             ])
             ->contain(['AccountStatusMasters'])
-            ->where(['AdminAccounts.id !=' => 900000]);
+            ;
 
         if ($this->condition->getId()->toString() !== '') {
             $query->andWhere(['AdminAccounts.id' => $this->condition->getId()->toString()]);
@@ -73,19 +80,7 @@ final class Search
 
         return $query->formatResults(function ($results) {
             return $results->map(function (OrmEntity $entity) {
-                return new DomainEntity(
-                    id: $entity->id === null ? null : (string)$entity->id,
-                    email: $entity->email,
-                    password: null,
-                    name: $entity->name,
-                    admin_note: $entity->admin_note,
-                    account_status_master_id: $entity->account_status_master_id === null
-                        ? null : (string)$entity->account_status_master_id,
-                    is_email_verified: $entity->is_email_verified === null
-                        ? null : (string)$entity->is_email_verified,
-                    password_changed_at: $entity->password_changed_at?->format('Y-m-d\TH:i:s'),
-                    password_expires_at: $entity->password_expires_at?->format('Y-m-d\TH:i:s'),
-                );
+                return $this->mapper->toDomainEntity($entity);
             });
         });
     }

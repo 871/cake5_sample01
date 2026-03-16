@@ -20,6 +20,7 @@ use App\Service\Controller\Shared\Process\ProcessProvider;
 use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
+use App\Service\Controller\AdminAccount as CategoryService;
 use Cake\Validation\Validator;
 
 final class Create implements ServiceInterface
@@ -83,7 +84,7 @@ final class Create implements ServiceInterface
      */
     public function startInputProcessForCopy(): InputProcess
     {
-        $adminAccount = (new AdminAccountsRepository())->read(
+        $adminAccount = (new AdminAccountsRepository($this->datetime))->read(
             new Vo\Id(
                 StrictCast::toString($this->request->getParam('admin_account_id')),
             ),
@@ -241,7 +242,7 @@ final class Create implements ServiceInterface
             ->getProcessParams()
             ->toArray();
 
-        (new AdminAccountsRepository())->create(new AdminAccount(
+        (new AdminAccountsRepository($this->datetime))->create(new AdminAccount(
             id: null,
             email: Cast::toString($input['email']),
             password: Cast::toString($input['password']),
@@ -251,6 +252,12 @@ final class Create implements ServiceInterface
             is_email_verified: Cast::toString($input['is_email_verified']),
             password_changed_at: Cast::toString($input['password_changed_at']),
             password_expires_at: Cast::toString($input['password_expires_at']),
+            created: Cast::toString($this->datetime->format('Y-m-d\TH:i:s')),
+            created_by: Cast::toString($this->authContext->getAccountId()),
+            created_ip: Cast::toString($this->request->clientIp()),
+            modified: Cast::toString($this->datetime->format('Y-m-d\TH:i:s')),
+            modified_by: Cast::toString($this->authContext->getAccountId()),
+            modified_ip: Cast::toString($this->request->clientIp()),
         ));
 
         return $this;
@@ -301,8 +308,9 @@ final class Create implements ServiceInterface
      */
     public function getAccountStatusOptions(): array
     {
-        $searchService = $this->createService(Search::class);
+        /** @var \App\Service\Controller\AdminAccount $categoryService */
+        $categoryService = $this->createService(CategoryService::class);
 
-        return $searchService->getAccountStatusOptions();
+        return $categoryService->getAccountStatusOptions();
     }
 }

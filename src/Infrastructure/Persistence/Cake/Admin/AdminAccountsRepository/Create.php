@@ -11,6 +11,7 @@ use App\Model\Entity\Admin\AdminAccount as OrmEntity;
 use App\Model\Entity\Admin\AdminAccountHistory as OrmHistoryEntity;
 use App\Model\Table\Admin\AdminAccountsTable;
 use App\Model\Table\Admin\AdminAccountHistoriesTable;
+use App\Domain\Shared\ValueObject as SVo;
 use Cake\I18n\DateTime;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -61,7 +62,16 @@ final class Create
                         ],
                     );
 
-                    $this->saveHistory($savedEntity, 'INSERT');
+                    $this->historyTable->saveOrFail(
+                        $this->mapper->toNewOrmHistoryEntity(
+                            $savedEntity, 
+                            SVo\OperationType::INSERT,
+                            $savedEntity->created,
+                        ),
+                        [
+                            'checkExisting' => false,
+                        ],
+                    );
 
                     return $savedEntity;
                 },
@@ -74,36 +84,5 @@ final class Create
                 previous: $ex,
             );
         }
-    }
-
-    /**
-     * @param \App\Model\Entity\Admin\AdminAccount $ormEntity
-     * @param string $operationType
-     * @return void
-     */
-    private function saveHistory(OrmEntity $ormEntity, string $operationType): void
-    {
-        $now = new DateTime();
-        $historyEntity = $this->historyTable->newEntity([
-            'id' => UUID::uuid7(),
-            'admin_account_id' => $ormEntity->id,
-            'email' => $ormEntity->email,
-            'password' => $ormEntity->password,
-            'name' => $ormEntity->name,
-            'admin_note' => $ormEntity->admin_note,
-            'account_status_master_id' => $ormEntity->account_status_master_id,
-            'is_email_verified' => $ormEntity->is_email_verified,
-            'password_changed_at' => $ormEntity->password_changed_at,
-            'password_expires_at' => $ormEntity->password_expires_at,
-            'operation_type' => $operationType,
-            'history_created' => $now,
-        ], [
-            'validate' => false,
-        ]);
-
-        $historyEntity->created = $now;
-        $historyEntity->modified = $now;
-
-        $this->historyTable->saveOrFail($historyEntity, ['checkExisting' => false]);
     }
 }

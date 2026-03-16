@@ -99,9 +99,15 @@
                                     'admin_account_id' => $row->id()->toString(),
                                     '?' => $this->getRequest()->getQuery(),
                                 ]) ?>" class="btn btn-primary btn-sm">更新</a>
+                                <a href="<?= $this->Url->build([
+                                    'controller' => 'Create',
+                                    'action' => 'copy',
+                                    'admin_account_id' => $row->id()->toString(),
+                                    '?' => $this->getRequest()->getQuery(),
+                                ]) ?>" class="btn btn-primary btn-sm">複製</a>
                                 <?= $this->Form->postLink('削除', [
                                     'controller' => 'Delete',
-                                    'action' => 'indexPost',
+                                    'action' => 'index',
                                     'admin_account_id' => $row->id()->toString(),
                                     '?' => $this->getRequest()->getQuery(),
                                 ], [

@@ -19,7 +19,7 @@ final class Delete implements ServiceInterface
      */
     public function delete(): AdminAccount
     {
-        return (new AdminAccountsRepository())->delete(
+        return (new AdminAccountsRepository($this->datetime))->delete(
             new Vo\Id(
                 StrictCast::toString($this->request->getParam('admin_account_id')),
             ),

@@ -6,7 +6,7 @@ namespace App\Service\Controller\AdminAccount;
 use App\Domain\Admin\AdminAccounts\SearchCondition;
 use App\Domain\Admin\AdminAccounts\ValueObject;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
-use App\Model\Table\Shared\AccountStatusMastersTable;
+use App\Service\Controller\AdminAccount as CategoryService;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -33,7 +33,7 @@ final class Search implements ServiceInterface
         /** @var array<string, string> $data */
         $data = $this->request->getQuery();
 
-        return (new AdminAccountsRepository())->search(new SearchCondition(
+        return (new AdminAccountsRepository($this->datetime))->search(new SearchCondition(
             id: new ValueObject\Id($data['id'] ?? null),
             keyword: ValueObject\Search\Keyword::fromString($data['keyword'] ?? null),
             accountStatusMasterId: new ValueObject\AccountStatusMasterId($data['account_status_master_id'] ?? null),
@@ -70,15 +70,9 @@ final class Search implements ServiceInterface
      */
     public function getAccountStatusOptions(): array
     {
-        /** @var \App\Model\Table\Shared\AccountStatusMastersTable $table */
-        $table = $this->fetchTable(AccountStatusMastersTable::class);
+        /** @var \App\Service\Controller\AdminAccount $categoryService */
+        $categoryService = $this->createService(CategoryService::class);
 
-        return $table->find()
-            ->select(['id', 'name'])
-            ->where(['is_active' => 1])
-            ->orderBy(['sort' => 'ASC'])
-            ->all()
-            ->map(fn($e) => ['value' => (string)$e->id, 'label' => $e->name])
-            ->toList();
+        return $categoryService->getAccountStatusOptions();
     }
 }

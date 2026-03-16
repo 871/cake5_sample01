@@ -10,6 +10,7 @@ use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 use App\Lib\UUID\UUID;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
+use App\Service\Controller\AdminAccount as CategoryService;
 use App\Service\Controller\AdminAccount\Shared\ValidatorSetting;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
@@ -54,7 +55,7 @@ final class Edit implements ServiceInterface
      */
     public function startInputProcess(): InputProcess
     {
-        $adminAccount = (new AdminAccountsRepository())->read(
+        $adminAccount = (new AdminAccountsRepository($this->datetime))->read(
             new Vo\Id(
                 StrictCast::toString($this->request->getParam('admin_account_id')),
             ),
@@ -214,7 +215,7 @@ final class Edit implements ServiceInterface
             ->getProcessParams()
             ->toArray();
 
-        (new AdminAccountsRepository())->update(new AdminAccount(
+        (new AdminAccountsRepository($this->datetime))->update(new AdminAccount(
             id: Cast::toString($input['id']),
             email: Cast::toString($input['email']),
             password: Cast::toString($input['password']) ?? '',
@@ -224,6 +225,12 @@ final class Edit implements ServiceInterface
             is_email_verified: Cast::toString($input['is_email_verified']),
             password_changed_at: Cast::toString($input['password_changed_at']),
             password_expires_at: Cast::toString($input['password_expires_at']),
+            created: null,
+            created_by: null,
+            created_ip: null,
+            modified: Cast::toString($this->datetime->format('Y-m-d\TH:i:s')),
+            modified_by: Cast::toString($this->authContext->getAccountId()),
+            modified_ip: Cast::toString($this->request->clientIp()),
         ));
 
         return $this;
@@ -274,8 +281,9 @@ final class Edit implements ServiceInterface
      */
     public function getAccountStatusOptions(): array
     {
-        $searchService = $this->createService(Search::class);
+        /** @var \App\Service\Controller\AdminAccount $categoryService */
+        $categoryService = $this->createService(CategoryService::class);
 
-        return $searchService->getAccountStatusOptions();
+        return $categoryService->getAccountStatusOptions();
     }
 }

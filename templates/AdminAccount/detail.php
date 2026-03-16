@@ -71,7 +71,7 @@ $statusLabels = [
             ]) ?>" class="btn btn-primary px-5">複製</a>
             <?= $this->Form->postLink('削除', [
                 'controller' => 'Delete',
-                'action' => 'indexPost',
+                'action' => 'index',
                 'admin_account_id' => $entity->id()->toString(),
                 '?' => $this->getRequest()->getQuery(),
             ], [
@@ -126,7 +126,7 @@ $statusLabels = [
                             <td><?= $history->isEmailVerified()->toInt() ? '確認済み' : '未確認' ?></td>
                             <td><?= h($history->passwordChangedAt()->format('Y/m/d H:i:s') ?? '') ?></td>
                             <td><?= h($history->passwordExpiresAt()->format('Y/m/d H:i:s') ?? '') ?></td>
-                            <td><?= h($history->historyCreated()) ?></td>
+                            <td><?= h($history->historyCreated()->format('Y/m/d H:i:s') ?? '') ?></td>
                         </tr>
                     <?php } ?>
                 <?php } ?>

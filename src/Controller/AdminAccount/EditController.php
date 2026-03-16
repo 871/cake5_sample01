@@ -26,7 +26,7 @@ class EditController extends AppController
     {
         parent::beforeFilter($event);
 
-        $this->viewBuilder()->setLayout('sample');
+        $this->viewBuilder()->setLayout('admin_account');
 
         $this->ctlService = new CtlService(
             datetime: new DateTimeImmutable(),

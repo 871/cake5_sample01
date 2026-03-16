@@ -47,6 +47,12 @@ final class ReadHistories
                 'AdminAccountHistories__is_email_verified' => 'AdminAccountHistories.is_email_verified',
                 'AdminAccountHistories__password_changed_at' => 'AdminAccountHistories.password_changed_at',
                 'AdminAccountHistories__password_expires_at' => 'AdminAccountHistories.password_expires_at',
+                'AdminAccountHistories__created' => 'AdminAccountHistories.created',
+                'AdminAccountHistories__created_by' => 'AdminAccountHistories.created_by',
+                'AdminAccountHistories__created_ip' => 'AdminAccountHistories.created_ip',
+                'AdminAccountHistories__modified' => 'AdminAccountHistories.modified',
+                'AdminAccountHistories__modified_by' => 'AdminAccountHistories.modified_by',
+                'AdminAccountHistories__modified_ip' => 'AdminAccountHistories.modified_ip',
                 'AdminAccountHistories__operation_type' => 'AdminAccountHistories.operation_type',
                 'AdminAccountHistories__history_created' => 'AdminAccountHistories.history_created',
             ])
@@ -71,8 +77,14 @@ final class ReadHistories
                     ? null : (string)$entity->is_email_verified,
                 password_changed_at: $entity->password_changed_at?->format('Y-m-d\TH:i:s'),
                 password_expires_at: $entity->password_expires_at?->format('Y-m-d\TH:i:s'),
+                created: $entity->created?->format('Y-m-d\TH:i:s'),
+                created_by: $entity->created_by,
+                created_ip: $entity->created_ip,
+                modified: $entity->modified?->format('Y-m-d\TH:i:s'),
+                modified_by: $entity->modified_by,
+                modified_ip: $entity->modified_ip,
                 operation_type: $entity->operation_type,
-                history_created: $entity->history_created?->format('Y-m-d H:i:s'),
+                history_created: $entity->history_created?->format('Y-m-d\TH:i:s'),
             );
         }, $ormEntities);
     }

@@ -9,9 +9,19 @@ use App\Domain\Admin\AdminAccounts\Repository\AdminAccountsRepository as DomainA
 use App\Domain\Admin\AdminAccounts\SearchCondition;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use Cake\ORM\Query;
+use DateTimeImmutable;
 
 final class AdminAccountsRepository implements DomainAdminAccountsRepository
 {
+    /**
+     * @param \DateTimeImmutable $datetime
+     */
+    public function __construct(
+        private readonly DateTimeImmutable $datetime)
+    {
+        // do nothing
+    }
+
     /**
      * 検索
      *
@@ -64,7 +74,7 @@ final class AdminAccountsRepository implements DomainAdminAccountsRepository
      */
     public function delete(Vo\Id $id): DomainEntity
     {
-        return (new AdminAccountsRepository\Delete($id))->run();
+        return (new AdminAccountsRepository\Delete($id, $this->datetime))->run();
     }
 
     /**
