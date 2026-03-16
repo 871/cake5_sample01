@@ -68,7 +68,7 @@
                     <th><?= $this->Paginator->sort('name', '名前') ?></th>
                     <th><?= $this->Paginator->sort('account_status_master_id', 'ステータス') ?></th>
                     <th><?= $this->Paginator->sort('is_email_verified', 'メール確認') ?></th>
-                    <th><?= $this->Paginator->sort('modified', '更新日時') ?></th>
+                    <th><?= $this->Paginator->sort('password_changed_at', 'PW変更日時') ?></th>
                     <th>操作</th>
                 </tr>
             </thead>
