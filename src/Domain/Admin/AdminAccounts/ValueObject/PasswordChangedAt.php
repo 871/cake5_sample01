@@ -1,0 +1,42 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Domain\Admin\AdminAccounts\ValueObject;
+
+use App\Domain\Shared\ValueObject\Trait\DatetimeTrait;
+use DateTimeImmutable;
+use DomainException;
+use Stringable;
+
+class PasswordChangedAt implements Stringable
+{
+    use DatetimeTrait;
+
+    /**
+     * @var ?\DateTimeImmutable
+     */
+    private readonly ?DateTimeImmutable $value;
+
+    /**
+     * @param ?string $value
+     */
+    public function __construct(?string $value, string $format = 'Y-m-d\TH:i:s')
+    {
+        if ($value === null) {
+            $this->value = null;
+
+            return;
+        }
+
+        if (!static::checkFormat($value, $format)) {
+            throw new DomainException(
+                self::class . ' value datetime format Error'
+                . '[value: ' . $value . ']'
+                . '[format: ' . $format . ']',
+            );
+        }
+
+        $resultValue = DateTimeImmutable::createFromFormat($format, $value);
+        $this->value = $resultValue ?: null;
+    }
+}
