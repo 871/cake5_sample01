@@ -7,9 +7,17 @@ use Cake\Routing\RouteBuilder;
 $builder->scope('/', function (RouteBuilder $builder) {
     
     $builder->get('/error', ['controller' => 'Error', 'action' => 'index']);
-    $builder->get('/error/:message_id', ['controller' => 'Error', 'action' => 'index']);
+    $builder->get('/error/{message_id}', ['controller' => 'Error', 'action' => 'index']);
 
-    // Bakeサンプル
+    // 管理者Bake
+    $builder->prefix('AdminBake', ['path' => '/admin-bake'], static function (RouteBuilder $builder) {
+        $builder->connect('/admin-accounts', ['controller' => 'AdminAccounts', 'action' => 'index']);
+        $builder->connect('/admin-accounts/add', ['controller' => 'AdminAccounts', 'action' => 'add']);
+        $builder->connect('/admin-accounts/view/*', ['controller' => 'AdminAccounts', 'action' => 'view']);
+        $builder->connect('/admin-accounts/edit/*', ['controller' => 'AdminAccounts', 'action' => 'edit']);
+        $builder->connect('/admin-accounts/delete/*', ['controller' => 'AdminAccounts', 'action' => 'delete']);
+    });
+    // サンプルBake
     $builder->prefix('SampleBake', ['path' => '/sample-bake'], static function (RouteBuilder $builder) {
         // Bake 
         $builder->connect('/my-sql-type-samples', ['controller' => 'MySqlTypeSamples', 'action' => 'index']);

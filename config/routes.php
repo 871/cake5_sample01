@@ -49,15 +49,16 @@ return function (RouteBuilder $routes): void {
      */
     $routes->setRouteClass(DashedRoute::class);
 
-    $routes->scope('/v1', function (RouteBuilder $builder): void {
+    $routes->redirect('/', '/v1/cs');
+    $routes->scope('/v1', function (RouteBuilder $builder): void { // L7 LB
         /*
          * Here, we are connecting '/' (base path) to a controller called 'Pages',
          * its action called 'display', and we pass a param to select the view file
          * to use (in this case, templates/Pages/home.php)...
          */
-        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
+        // $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
 
-
+        $builder->redirect('', '/v1/cs');
         // debug($_SERVER['REQUEST_URI']);
         // debug(preg_replace('/^\/([^\/\?]+)\/?.*$/', '$1', $_SERVER['REQUEST_URI']));
         require match (preg_replace('/^\/v1\/([^\/\?]+)\/?.*$/', '$1', $_SERVER['REQUEST_URI'] ?? '/')) {
