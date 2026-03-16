@@ -1,0 +1,42 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Domain\Admin\AdminAccounts\Repository;
+
+use App\Domain\Admin\AdminAccounts\Entity\AdminAccount;
+use App\Domain\Admin\AdminAccounts\SearchCondition;
+use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
+use Cake\ORM\Query;
+
+interface AdminAccountsRepository
+{
+    /**
+     * @param \App\Domain\Admin\AdminAccounts\SearchCondition $condition
+     * @return \Cake\ORM\Query
+     */
+    public function search(SearchCondition $condition): Query;
+
+    /**
+     * @param \App\Domain\Admin\AdminAccounts\Entity\AdminAccount $entity
+     * @return \App\Domain\Admin\AdminAccounts\Entity\AdminAccount
+     */
+    public function create(AdminAccount $entity): AdminAccount;
+
+    /**
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\Id $id
+     * @return \App\Domain\Admin\AdminAccounts\Entity\AdminAccount
+     */
+    public function read(Vo\Id $id): AdminAccount;
+
+    /**
+     * @param \App\Domain\Admin\AdminAccounts\Entity\AdminAccount $entity
+     * @return \App\Domain\Admin\AdminAccounts\Entity\AdminAccount
+     */
+    public function update(AdminAccount $entity): AdminAccount;
+
+    /**
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\Id $id
+     * @return \App\Domain\Admin\AdminAccounts\Entity\AdminAccount
+     */
+    public function delete(Vo\Id $id): AdminAccount;
+}
