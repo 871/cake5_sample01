@@ -19,6 +19,34 @@ $builder->scope('/', function (RouteBuilder $builder) {
         $builder->connect('/my-sql-type-samples/delete/*', ['controller' => 'MySqlTypeSamples', 'action' => 'delete']);
     });
 
+    // 管理者アカウント管理
+    $builder->prefix('AdminAccounts', ['path' => '/admin_accounts'], static function (RouteBuilder $builder) {
+
+        $builder->prefix('Accounts', ['path' => '/accounts'], static function (RouteBuilder $builder) {
+            // 検索
+            $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
+            $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+            // 詳細
+            $builder->get('/detail/{admin_account_id}', ['controller' => 'Detail', 'action' => 'index']);
+            // 登録
+            $builder->get('/create', ['controller' => 'Create', 'action' => 'index']);
+            $builder->get('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'input']);
+            $builder->post('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'inputPost']);
+            $builder->get('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'conf']);
+            $builder->post('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'confPost']);
+            // 更新
+            $builder->get('/edit/{admin_account_id}', ['controller' => 'Edit', 'action' => 'index']);
+            $builder->get('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'input']);
+            $builder->post('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
+            $builder->get('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
+            $builder->post('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
+            // 削除
+            $builder->get('/delete/{admin_account_id}', ['controller' => 'Delete', 'action' => 'index']);
+            $builder->post('/delete/{admin_account_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
+        });
+
+    });
+
     // サンプルコード
     $builder->prefix('SampleCode', ['path' => '/sample_code'], static function (RouteBuilder $builder) {
         
