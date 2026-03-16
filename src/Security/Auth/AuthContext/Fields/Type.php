@@ -15,15 +15,19 @@ class Type implements Stringable
     public function __construct(
         private readonly string $value,
     ) {
-        in_array($this->value, [
+        if (
+            in_array($this->value, [
             AuthContext::TYPE_ANONYMOUS,
             AuthContext::TYPE_CUSTMER,
             AuthContext::TYPE_USER,
             AuthContext::TYPE_ADMIN,
-        ], true) || throw new DomainException(
-            self::class . ' Generate Error'
-            . '[type: ' . $this->value . ']',
-        );
+            ], true) === false
+        ) {
+            throw new DomainException(
+                self::class . ' Generate Error'
+                . '[type: ' . $this->value . ']',
+            );
+        }
     }
 
     /**
