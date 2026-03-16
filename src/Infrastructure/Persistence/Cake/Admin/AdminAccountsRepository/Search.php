@@ -40,7 +40,7 @@ final class Search
      */
     public function run(): Query
     {
-        $query = $this->table
+        return $this->table
             ->find()
             ->select([
                 'AdminAccounts__id' => 'AdminAccounts.id',
@@ -56,32 +56,18 @@ final class Search
                 'AccountStatusMasters__name' => 'AccountStatusMasters.name',
             ])
             ->contain(['AccountStatusMasters'])
-            ;
-
-        if ($this->condition->getId()->toString() !== '') {
-            $query->andWhere(['AdminAccounts.id' => $this->condition->getId()->toString()]);
-        }
-
-        if ($this->condition->getAccountStatusMasterId()->toString() !== '') {
-            $query->andWhere([
+            ->where(array_filter([
+                'AdminAccounts.id' => $this->condition->getId()->toString(),
                 'AdminAccounts.account_status_master_id' => $this->condition->getAccountStatusMasterId()->toString(),
-            ]);
-        }
-
-        if ($this->condition->getKeyword()->toString() !== '') {
-            $keyword = '%' . $this->condition->getKeyword()->toString() . '%';
-            $query->andWhere(function ($exp) use ($keyword) {
-                return $exp->or([
-                    'AdminAccounts.email LIKE' => $keyword,
-                    'AdminAccounts.name LIKE' => $keyword,
-                ]);
+                'OR' => array_filter([
+                    'AdminAccounts.email LIKE' => $this->condition->getKeyword()->toQueryLike(),
+                    'AdminAccounts.name LIKE' => $this->condition->getKeyword()->toQueryLike(),
+                ], fn ($v) => !in_array($v, [null, '', []], true)),
+            ], fn ($v) => !in_array($v, [null, '', []], true)))
+            ->formatResults(function ($results) {
+                return $results->map(function (OrmEntity $entity) {
+                    return $this->mapper->toDomainEntity($entity);
+                });
             });
-        }
-
-        return $query->formatResults(function ($results) {
-            return $results->map(function (OrmEntity $entity) {
-                return $this->mapper->toDomainEntity($entity);
-            });
-        });
     }
 }

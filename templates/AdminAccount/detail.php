@@ -90,15 +90,15 @@ $statusLabels = [
     <div class="card-body p-0">
         <table class="table table-bordered mb-0">
             <thead class="table-dark">
-                <tr>
-                    <th>操作</th>
-                    <th>メールアドレス</th>
-                    <th>名前</th>
-                    <th>ステータス</th>
-                    <th>メール確認</th>
-                    <th>PW変更日時</th>
-                    <th>PW有効期限</th>
-                    <th>履歴日時</th>
+                <tr >
+                    <th class="text-black-50">履歴日時</th>
+                    <th class="text-black-50">操作</th>
+                    <th class="text-black-50">メールアドレス</th>
+                    <th class="text-black-50">名前</th>
+                    <th class="text-black-50">ステータス</th>
+                    <th class="text-black-50">メール確認</th>
+                    <th class="text-black-50">PW変更日時</th>
+                    <th class="text-black-50">PW有効期限</th>
                 </tr>
             </thead>
             <tbody>
@@ -109,6 +109,7 @@ $statusLabels = [
                 <?php } else { ?>
                     <?php foreach ($histories as $history) { ?>
                         <tr>
+                            <td><?= h($history->historyCreated()->format('Y/m/d H:i:s') ?? '') ?></td>
                             <td>
                                 <?php
                                 $opLabel = match ($history->operationType()) {
@@ -126,7 +127,6 @@ $statusLabels = [
                             <td><?= $history->isEmailVerified()->toInt() ? '確認済み' : '未確認' ?></td>
                             <td><?= h($history->passwordChangedAt()->format('Y/m/d H:i:s') ?? '') ?></td>
                             <td><?= h($history->passwordExpiresAt()->format('Y/m/d H:i:s') ?? '') ?></td>
-                            <td><?= h($history->historyCreated()->format('Y/m/d H:i:s') ?? '') ?></td>
                         </tr>
                     <?php } ?>
                 <?php } ?>

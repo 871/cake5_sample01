@@ -6,6 +6,7 @@ namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory as DomainHistoryEntity;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Model\Entity\Admin\AdminAccountHistory as OrmHistoryEntity;
+use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
 use App\Model\Table\Admin\AdminAccountHistoriesTable;
 use App\Domain\Exception\RepositoryException;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -21,12 +22,18 @@ final class ReadHistories
     private AdminAccountHistoriesTable $table;
 
     /**
+     * @var \App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper
+     */
+    private AdminAccountMapper $mapper;
+
+    /**
      * @param \App\Domain\Admin\AdminAccounts\ValueObject\Id $adminAccountId
      */
     public function __construct(
         private readonly Vo\Id $adminAccountId,
     ) {
         $this->table = $this->fetchTable(AdminAccountHistoriesTable::class);
+        $this->mapper = new AdminAccountMapper();
     }
 
     /**
@@ -34,8 +41,8 @@ final class ReadHistories
      */
     public function run(): array
     {
-        /** @var array<\App\Model\Entity\Admin\AdminAccountHistory> $ormEntities */
-        $ormEntities = $this->table
+        /** @var array<\App\Model\Entity\Admin\AdminAccountHistory> */
+        return $this->table
             ->find()
             ->select([
                 'AdminAccountHistories__id' => 'AdminAccountHistories.id',
@@ -60,32 +67,13 @@ final class ReadHistories
                 'AdminAccountHistories.admin_account_id' => $this->adminAccountId->toInt(),
             ])
             ->orderBy(['AdminAccountHistories.history_created' => 'DESC'])
+            ->limit(100)
+            ->formatResults(function ($results) {
+                return $results->map(function (OrmHistoryEntity $entity) {
+                    return $this->mapper->toDomainHistoryEntity($entity);
+                });
+            })
             ->all()
             ->toList();
-
-        return array_map(function (OrmHistoryEntity $entity) {
-            return new DomainHistoryEntity(
-                id: $entity->id,
-                admin_account_id: $entity->admin_account_id === null
-                    ? null : (string)$entity->admin_account_id,
-                email: $entity->email,
-                name: $entity->name,
-                admin_note: $entity->admin_note,
-                account_status_master_id: $entity->account_status_master_id === null
-                    ? null : (string)$entity->account_status_master_id,
-                is_email_verified: $entity->is_email_verified === null
-                    ? null : (string)$entity->is_email_verified,
-                password_changed_at: $entity->password_changed_at?->format('Y-m-d\TH:i:s'),
-                password_expires_at: $entity->password_expires_at?->format('Y-m-d\TH:i:s'),
-                created: $entity->created?->format('Y-m-d\TH:i:s'),
-                created_by: $entity->created_by,
-                created_ip: $entity->created_ip,
-                modified: $entity->modified?->format('Y-m-d\TH:i:s'),
-                modified_by: $entity->modified_by,
-                modified_ip: $entity->modified_ip,
-                operation_type: $entity->operation_type,
-                history_created: $entity->history_created?->format('Y-m-d\TH:i:s'),
-            );
-        }, $ormEntities);
     }
 }

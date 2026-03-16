@@ -17,4 +17,12 @@ class Keyword implements Stringable
         private readonly ?string $value,
     ) {
     }
+
+    /**
+     * @return ?string
+     */
+    public function toQueryLike(): ?string
+    {
+        return $this->value !== null ? '%' . $this->value . '%' : null;
+    }
 }
