@@ -1,4 +1,9 @@
 <?php
+// Memo: 静的解析ツールのチェックとFW依存のページ機能を両立させるための措置として、CakePHPのViewファイル内で直接ドメインエンティティへのマッピングを行っています。 --- IGNORE ---
+use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
+use App\Model\Entity\Admin\AdminAccount as OrmEntity;
+
+
 /* @var array $rows */
 /* @var array $accountStatusOptions */
 ?>
@@ -74,55 +79,57 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (count($rows) === 0) { ?>
-                    <tr>
-                        <td colspan="7" class="text-center text-muted py-3">データがありません</td>
-                    </tr>
-                <?php } else { ?>
-                    <?php foreach ($rows as $row) { ?>
-                        <tr>
-                            <td><?= h($row->id()) ?></td>
-                            <td><?= h($row->email()) ?></td>
-                            <td><?= h($row->name()) ?></td>
-                            <td><?= h($row->accountStatusMasterId()) ?></td>
-                            <td><?= $row->isEmailVerified()->toInt() ? '確認済み' : '未確認' ?></td>
-                            <td><?= h($row->passwordChangedAt()->format('Y/m/d H:i:s')) ?></td>
-                            <td class="text-nowrap">
-                                <a href="<?= $this->Url->build([
-                                    'prefix' => 'Other/AdminAccount',
-                                    'controller' => 'Detail',
-                                    'action' => 'index',
-                                    'admin_account_id' => $row->id()->toString(),
-                                    '?' => $this->getRequest()->getQuery(),
-                                ]) ?>" class="btn btn-info btn-sm">詳細</a>
-                                <a href="<?= $this->Url->build([
-                                    'prefix' => 'Other/AdminAccount',
-                                    'controller' => 'Edit',
-                                    'action' => 'index',
-                                    'admin_account_id' => $row->id()->toString(),
-                                    '?' => $this->getRequest()->getQuery(),
-                                ]) ?>" class="btn btn-primary btn-sm">更新</a>
-                                <a href="<?= $this->Url->build([
-                                    'prefix' => 'Other/AdminAccount',
-                                    'controller' => 'Create',
-                                    'action' => 'copy',
-                                    'admin_account_id' => $row->id()->toString(),
-                                    '?' => $this->getRequest()->getQuery(),
-                                ]) ?>" class="btn btn-primary btn-sm">複製</a>
-                                <?= $this->Form->postLink('削除', [
-                                    'prefix' => 'Other/AdminAccount',
-                                    'controller' => 'Delete',
-                                    'action' => 'index',
-                                    'admin_account_id' => $row->id()->toString(),
-                                    '?' => $this->getRequest()->getQuery(),
-                                ], [
-                                    'class' => 'btn btn-danger btn-sm',
-                                    'confirm' => '削除しますか？',
-                                ]) ?>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                <?php } ?>
+            <?php if (count($rows) === 0) { ?>
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-3">データがありません</td>
+                </tr>
+            <?php } else { ?>
+                <?php foreach (collection($rows)
+                    ->map(fn(OrmEntity $e) => (new AdminAccountMapper)->toDomainEntity($e))
+                    ->toList() as $row): ?>
+                <tr>
+                    <td><?= h($row->id()) ?></td>
+                    <td><?= h($row->email()) ?></td>
+                    <td><?= h($row->name()) ?></td>
+                    <td><?= h($row->accountStatusMasterId()) ?></td>
+                    <td><?= $row->isEmailVerified()->toInt() ? '確認済み' : '未確認' ?></td>
+                    <td><?= h($row->passwordChangedAt()->format('Y/m/d H:i:s')) ?></td>
+                    <td class="text-nowrap">
+                        <a href="<?= $this->Url->build([
+                            'prefix' => 'Other/AdminAccount',
+                            'controller' => 'Detail',
+                            'action' => 'index',
+                            'admin_account_id' => $row->id()->toString(),
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="btn btn-info btn-sm">詳細</a>
+                        <a href="<?= $this->Url->build([
+                            'prefix' => 'Other/AdminAccount',
+                            'controller' => 'Edit',
+                            'action' => 'index',
+                            'admin_account_id' => $row->id()->toString(),
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="btn btn-primary btn-sm">更新</a>
+                        <a href="<?= $this->Url->build([
+                            'prefix' => 'Other/AdminAccount',
+                            'controller' => 'Create',
+                            'action' => 'copy',
+                            'admin_account_id' => $row->id()->toString(),
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="btn btn-primary btn-sm">複製</a>
+                        <?= $this->Form->postLink('削除', [
+                            'prefix' => 'Other/AdminAccount',
+                            'controller' => 'Delete',
+                            'action' => 'index',
+                            'admin_account_id' => $row->id()->toString(),
+                            '?' => $this->getRequest()->getQuery(),
+                        ], [
+                            'class' => 'btn btn-danger btn-sm',
+                            'confirm' => '削除しますか？',
+                        ]) ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            <?php } ?>
             </tbody>
         </table>
     </div>

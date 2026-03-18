@@ -30,7 +30,7 @@ final class ValidatorSetting implements ServiceInterface
             ->notEmptyString('id', $message)
             ->add('id', [
                 'domain' => [
-                    'rule' => function ($value) {
+                    'rule' => function (string $value) {
                         try {
                             new Vo\Id($value);
 
@@ -44,7 +44,7 @@ final class ValidatorSetting implements ServiceInterface
                     'message' => $message,
                 ],
                 'exists' => [
-                    'rule' => function ($value) {
+                    'rule' => function (string $value) {
                         /** @var \App\Model\Table\Admin\AdminAccountsTable $table */
                         $table = $this->fetchTable(AdminAccountsTable::class);
 
@@ -155,7 +155,7 @@ final class ValidatorSetting implements ServiceInterface
             ->notEmptyString('account_status_master_id', $message)
             ->add('account_status_master_id', [
                 'domain' => [
-                    'rule' => function ($value) {
+                    'rule' => function (string $value) {
                         try {
                             new Vo\AccountStatusMasterId($value);
 
@@ -198,7 +198,7 @@ final class ValidatorSetting implements ServiceInterface
             ->notEmptyString('password_changed_at', __('パスワード変更日時を入力してください。'))
             ->add('password_changed_at', [
                 'domain' => [
-                    'rule' => function ($value) {
+                    'rule' => function (string $value) {
                         try {
                             new Vo\PasswordChangedAt($value);
 
@@ -229,7 +229,7 @@ final class ValidatorSetting implements ServiceInterface
             ->notEmptyString('password_expires_at', __('パスワード有効期限を入力してください。'))
             ->add('password_expires_at', [
                 'domain' => [
-                    'rule' => function ($value) {
+                    'rule' => function (string $value) {
                         try {
                             new Vo\PasswordExpiresAt($value);
 

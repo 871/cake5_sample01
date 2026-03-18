@@ -6,7 +6,7 @@ namespace App\Domain\Admin\AdminAccounts\Repository;
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount;
 use App\Domain\Admin\AdminAccounts\SearchCondition;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
 
 interface AdminAccountsRepository
@@ -18,9 +18,9 @@ interface AdminAccountsRepository
 
     /**
      * @param \App\Domain\Admin\AdminAccounts\SearchCondition $condition
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
      */
-    public function search(SearchCondition $condition): Query;
+    public function search(SearchCondition $condition): SelectQuery;
 
     /**
      * @param \App\Domain\Admin\AdminAccounts\Entity\AdminAccount $entity

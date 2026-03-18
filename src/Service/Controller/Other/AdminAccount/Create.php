@@ -217,7 +217,7 @@ final class Create implements ServiceInterface
     private function getValidator(): Validator
     {
         $validator = new Validator();
-        /** @var \App\Service\Controller\AdminAccount\Shared\ValidatorSetting $validatorSetting */
+        /** @var \App\Service\Controller\Other\AdminAccount\Shared\ValidatorSetting $validatorSetting */
         $validatorSetting = $this->createService(ValidatorSetting::class);
         $validatorSetting
             ->email($validator)

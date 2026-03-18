@@ -8,7 +8,7 @@ use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
 use App\Model\Entity\Admin\AdminAccount as OrmEntity;
 use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 final class Search
 {
@@ -35,9 +35,9 @@ final class Search
     }
 
     /**
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function run(): Query
+    public function run(): SelectQuery
     {
         return $this->table
             ->find()
@@ -62,11 +62,6 @@ final class Search
                     'AdminAccounts.email LIKE' => $this->condition->getKeyword()->toQueryLike(),
                     'AdminAccounts.name LIKE' => $this->condition->getKeyword()->toQueryLike(),
                 ], fn($v) => !in_array($v, [null, '', []], true)),
-            ], fn($v) => !in_array($v, [null, '', []], true)))
-            ->formatResults(function ($results) {
-                return $results->map(function (OrmEntity $entity) {
-                    return $this->mapper->toDomainEntity($entity);
-                });
-            });
+            ], fn($v) => !in_array($v, [null, '', []], true)));
     }
 }

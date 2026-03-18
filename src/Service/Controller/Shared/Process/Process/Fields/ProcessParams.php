@@ -9,6 +9,9 @@ use DomainException;
 use IteratorAggregate;
 use JsonSerializable;
 
+/**
+ * @implements \IteratorAggregate<string, mixed>
+ */
 final class ProcessParams implements IteratorAggregate, JsonSerializable
 {
     /**
@@ -40,7 +43,7 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
     }
 
     /**
-     * @return \ArrayIterator
+     * @return \ArrayIterator<int|string, mixed>
      */
     public function getIterator(): ArrayIterator
     {
@@ -74,7 +77,7 @@ final class ProcessParams implements IteratorAggregate, JsonSerializable
             throw new DomainException(
                 'Process Param not fund'
                 . '[path: ' . $path . ' ]'
-                . '[value: ' . $value . ' ]'
+                . '[value: ' . print_r($value, true) . ' ]'
                 . '[values: ' . print_r($this->values, true) . ']',
             );
         }

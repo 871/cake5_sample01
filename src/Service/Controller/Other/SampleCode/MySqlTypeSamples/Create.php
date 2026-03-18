@@ -50,7 +50,7 @@ final class Create implements ServiceInterface
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\InputProcess;
+     * @return \App\Service\Controller\Shared\Process\Process\InputProcess
      */
     public function startInputProcess(): InputProcess
     {
@@ -85,7 +85,7 @@ final class Create implements ServiceInterface
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\InputProcess;
+     * @return \App\Service\Controller\Shared\Process\Process\InputProcess
      */
     public function startInputProcessForCopy(): InputProcess
     {

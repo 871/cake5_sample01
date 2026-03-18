@@ -9,7 +9,7 @@ use App\Model\Entity\Sample\MySqlTypeSample as OrmEntity;
 use App\Model\Table\Sample\MySqlTypeSamplesTable;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 final class Search
 {
@@ -36,9 +36,9 @@ final class Search
     }
 
     /**
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Sample\MySqlTypeSample>
      */
-    public function run(): Query
+    public function run(): SelectQuery
     {
         return $this->table
             ->find()
@@ -83,12 +83,6 @@ final class Search
                     ) : new QueryExpression(":keyword = ''"),
                 ], fn($v) => $v !== ''),
             )
-            ->bind(':keyword', $this->condition->getKeyword()->toString(), 'string')
-            ->formatResults(function ($results) {
-                return $results->map(function (OrmEntity $entity) {
-
-                    return $this->mapper->toDomainEntity($entity);
-                });
-            });
+            ->bind(':keyword', $this->condition->getKeyword()->toString(), 'string');
     }
 }

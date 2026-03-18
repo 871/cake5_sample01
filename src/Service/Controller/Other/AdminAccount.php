@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Service\Controller\Other;
 
 use App\Model\Table\Shared\AccountStatusMastersTable;
+use App\Model\Entity\Shared\AccountStatusMaster;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -26,7 +27,7 @@ final class AdminAccount implements ServiceInterface
             ->where(['is_active' => 1])
             ->orderBy(['sort' => 'ASC'])
             ->all()
-            ->map(fn($e) => ['value' => (string)$e->id, 'label' => $e->name])
+            ->map(fn(AccountStatusMaster $e) => ['value' => (string)$e->id, 'label' => $e->name])
             ->toList();
     }
 }

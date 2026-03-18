@@ -11,30 +11,14 @@ use Cake\Validation\Validator;
 /**
  * MySqlTypeSamples Model
  *
- * @method \App\Model\Entity\Sample\MySqlTypeSample newEmptyEntity()
- * @method \App\Model\Entity\Sample\MySqlTypeSample newEntity(array $data, array $options = [])
- * @method array<\App\Model\Entity\Sample\MySqlTypeSample> newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Sample\MySqlTypeSample get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\Sample\MySqlTypeSample findOrCreate($search, ?callable $callback = null, array $options = [])
- * @method \App\Model\Entity\Sample\MySqlTypeSample patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method array<\App\Model\Entity\Sample\MySqlTypeSample> patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\Sample\MySqlTypeSample|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Sample\MySqlTypeSample saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method iterable<\App\Model\Entity\Sample\MySqlTypeSample>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MySqlTypeSample>|false saveMany(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Sample\MySqlTypeSample>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MySqlTypeSample> saveManyOrFail(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Sample\MySqlTypeSample>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MySqlTypeSample>|false deleteMany(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Sample\MySqlTypeSample>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MySqlTypeSample> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method MySqlTypeSample newEmptyEntity()
+ * @method MySqlTypeSample newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method list<MySqlTypeSample> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
  */
-class MySqlTypeSamplesTable extends Table
+final class MySqlTypeSamplesTable extends Table
 {
     use TableLocatorTrait;
 
-    /**
-     * Initialize method
-     *
-     * @param array<string, mixed> $config The configuration for the Table.
-     * @return void
-     */
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -45,12 +29,6 @@ class MySqlTypeSamplesTable extends Table
         $this->setPrimaryKey('id');
     }
 
-    /**
-     * Default validation rules.
-     *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
-     */
     public function validationDefault(Validator $validator): Validator
     {
         $validator

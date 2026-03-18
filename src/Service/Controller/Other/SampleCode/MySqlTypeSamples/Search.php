@@ -8,7 +8,7 @@ use App\Domain\Sample\MySqlTypeSamples\ValueObject;
 use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 final class Search implements ServiceInterface
 {
@@ -31,9 +31,9 @@ final class Search implements ServiceInterface
     }
 
     /**
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Sample\MySqlTypeSample>
      */
-    public function getSearchQuery(): Query
+    public function getSearchQuery(): SelectQuery
     {
         /** @var array<string, string> $data */
         $data = $this->request->getQuery();
@@ -54,8 +54,8 @@ final class Search implements ServiceInterface
             dateColTo: ValueObject\DateCol::fromString($data['date_col_to'] ?? null),
             timeColFrom: ValueObject\TimeCol::fromString($data['time_col_from'] ?? null),
             timeColTo: ValueObject\TimeCol::fromString($data['time_col_to'] ?? null),
-            datetimeColFrom: ValueObject\DatetimeCol::fromString($data['datetime_col_from'] ?? null),
-            datetimeColTo: ValueObject\DatetimeCol::fromString($data['datetime_col_to'] ?? null),
+            datetimeColFrom: ValueObject\DateTimeCol::fromString($data['datetime_col_from'] ?? null),
+            datetimeColTo: ValueObject\DateTimeCol::fromString($data['datetime_col_to'] ?? null),
             keyword: ValueObject\Search\Keyword::fromString($data['keyword'] ?? null),
         ));
     }

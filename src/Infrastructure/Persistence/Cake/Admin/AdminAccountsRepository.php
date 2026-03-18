@@ -7,7 +7,7 @@ use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
 use App\Domain\Admin\AdminAccounts\Repository\AdminAccountsRepository as DomainAdminAccountsRepository;
 use App\Domain\Admin\AdminAccounts\SearchCondition;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
 
 final class AdminAccountsRepository implements DomainAdminAccountsRepository
@@ -25,9 +25,9 @@ final class AdminAccountsRepository implements DomainAdminAccountsRepository
      * 検索
      *
      * @param \App\Domain\Admin\AdminAccounts\SearchCondition $condition
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
      */
-    public function search(SearchCondition $condition): Query
+    public function search(SearchCondition $condition): SelectQuery
     {
         return (new AdminAccountsRepository\Search($condition))->run();
     }

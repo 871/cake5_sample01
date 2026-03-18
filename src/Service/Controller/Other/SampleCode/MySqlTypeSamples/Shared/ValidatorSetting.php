@@ -30,7 +30,7 @@ final class ValidatorSetting implements ServiceInterface
             ->notEmptyString('id', $message)
             ->add('id', [
                 'domain' => [
-                    'rule' => function ($value) {
+                    'rule' => function (string $value): bool {
                         try {
                             new Vo\Id($value);
 
@@ -44,7 +44,7 @@ final class ValidatorSetting implements ServiceInterface
                     'message' => $message,
                 ],
                 'exists' => [
-                    'rule' => function ($value) {
+                    'rule' => function (string $value): bool {
                         /** @var \App\Model\Table\Sample\MySqlTypeSamplesTable $table */
                         $table = $this->fetchTable(MySqlTypeSamplesTable::class);
 
@@ -71,7 +71,7 @@ final class ValidatorSetting implements ServiceInterface
             ->allowEmptyString('int_col')
             ->add('int_col', [
                 'domain' => [
-                    'rule' => function ($value) {
+                    'rule' => function (string $value): bool {
                         try {
                             new Vo\IntCol($value);
 
@@ -101,7 +101,7 @@ final class ValidatorSetting implements ServiceInterface
             ->allowEmptyString('bigint_col')
             ->add('bigint_col', [
                 'domain' => [
-                    'rule' => function ($value) {
+                    'rule' => function (string $value): bool {
                         try {
                             new Vo\BigintCol($value);
 
@@ -141,7 +141,7 @@ final class ValidatorSetting implements ServiceInterface
                 $message,
             )
             ->add('decimal_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
                         new Vo\DecimalCol($value);
 
@@ -180,7 +180,7 @@ final class ValidatorSetting implements ServiceInterface
                 $message,
             )
             ->add('float_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
                         new Vo\FloatCol($value);
 
@@ -220,7 +220,7 @@ final class ValidatorSetting implements ServiceInterface
                 $message,
             )
             ->add('double_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
                         new Vo\DoubleCol($value);
 
@@ -253,7 +253,7 @@ final class ValidatorSetting implements ServiceInterface
         $validator
             ->allowEmptyString('date_col')
             ->add('date_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
                         new Vo\DateCol($value);
 
@@ -286,7 +286,7 @@ final class ValidatorSetting implements ServiceInterface
         $validator
             ->allowEmptyString('time_col')
             ->add('time_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
                         new Vo\TimeCol($value);
 
@@ -312,16 +312,16 @@ final class ValidatorSetting implements ServiceInterface
         $message = __(
             '{0}は、{1}〜{2}の日時（Y-m-d H:i:s）を入力してください。',
             'DatetimeCol',
-            Vo\DatetimeCol::MIN,
-            Vo\DatetimeCol::MAX,
+            Vo\DateTimeCol::MIN,
+            Vo\DateTimeCol::MAX,
         );
 
         $validator
             ->allowEmptyString('datetime_col')
             ->add('datetime_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
-                        new Vo\DatetimeCol($value);
+                        new Vo\DateTimeCol($value);
 
                         return true;
                     } catch (DomainException $ex) {
@@ -350,7 +350,7 @@ final class ValidatorSetting implements ServiceInterface
         $validator
             ->allowEmptyString('char_col')
             ->add('char_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
                         new Vo\CharCol($value);
 
@@ -381,7 +381,7 @@ final class ValidatorSetting implements ServiceInterface
         $validator
             ->allowEmptyString('varchar_col')
             ->add('varchar_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
                         new Vo\VarcharCol($value);
 
@@ -413,7 +413,7 @@ final class ValidatorSetting implements ServiceInterface
         $validator
             ->allowEmptyString('text_col')
             ->add('text_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
                         new Vo\TextCol($value);
 
@@ -445,7 +445,7 @@ final class ValidatorSetting implements ServiceInterface
         $validator
             ->allowEmptyString('mediumtext_col')
             ->add('mediumtext_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
                         new Vo\MediumtextCol($value);
 
@@ -477,7 +477,7 @@ final class ValidatorSetting implements ServiceInterface
         $validator
             ->allowEmptyString('longtext_col')
             ->add('longtext_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
                         new Vo\LongtextCol($value);
 
@@ -508,7 +508,7 @@ final class ValidatorSetting implements ServiceInterface
         $validator
             ->allowEmptyString('json_col')
             ->add('json_col', 'domain', [
-                'rule' => function ($value): bool {
+                'rule' => function (string $value): bool {
                     try {
                         new Vo\JsonCol($value);
 

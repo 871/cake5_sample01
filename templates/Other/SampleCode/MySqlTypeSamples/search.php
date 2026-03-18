@@ -1,5 +1,9 @@
 <?php
 
+// Memo: 静的解析ツールのチェックとFW依存のページ機能を両立させるための措置として、CakePHPのViewファイル内で直接ドメインエンティティへのマッピングを行っています。 --- IGNORE ---
+use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSampleMapper;
+use App\Model\Entity\Sample\MySqlTypeSample as OrmEntity;
+
 // debug($this->Paginator->getTemplates());
 
 ?>
@@ -472,8 +476,10 @@
                 <th class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
-        <tbody>
-        <?php foreach ($rows as $row) : ?>
+        <tbody>                
+        <?php foreach (collection($rows)
+                ->map(fn(OrmEntity $e) => (new MySqlTypeSampleMapper)->toDomainEntity($e))
+                ->toList() as $row) : ?>
             <tr>
                 <td class="col_choice text-center">
                     <input type="checkbox" class="row-check">

@@ -10,7 +10,7 @@ use App\Service\Controller\Other\AdminAccount as CategoryService;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 final class Search implements ServiceInterface
 {
@@ -26,9 +26,9 @@ final class Search implements ServiceInterface
     }
 
     /**
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
      */
-    public function getSearchQuery(): Query
+    public function getSearchQuery(): SelectQuery
     {
         /** @var array<string, string> $data */
         $data = $this->request->getQuery();

@@ -200,7 +200,7 @@ final class Edit implements ServiceInterface
     private function getValidator(): Validator
     {
         $validator = new Validator();
-        /** @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting $validatorSetting */
+        /** @var \App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting $validatorSetting */
         $validatorSetting = $this->createService(ValidatorSetting::class);
         $validatorSetting
             ->id($validator)
