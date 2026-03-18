@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\SampleCode\MySqlTypeSamples;
+namespace App\Controller\Other\SampleCode\MySqlTypeSamples;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\SampleCode\MySqlTypeSamples\Delete as CtlService;
+use App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Delete as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\MethodNotAllowedException;
 use DateTimeImmutable;
@@ -13,7 +13,7 @@ use DateTimeImmutable;
 class DeleteController extends AppController
 {
     /**
-     * @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Delete
+     * @var \App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Delete
      */
     private CtlService $ctlService;
 

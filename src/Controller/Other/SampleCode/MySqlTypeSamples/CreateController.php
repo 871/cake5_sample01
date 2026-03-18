@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\SampleCode\MySqlTypeSamples;
+namespace App\Controller\Other\SampleCode\MySqlTypeSamples;
 
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\SampleCode\MySqlTypeSamples\Create as CtlService;
+use App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Create as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class CreateController extends AppController
 {
     /**
-     * @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Create
+     * @var \App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Create
      */
     private CtlService $ctlService;
 
@@ -85,7 +85,7 @@ class CreateController extends AppController
             'input' => $this->ctlService->getInputProcess(),
         ]);
 
-        return $this->render('/SampleCode/MySqlTypeSamples/input');
+        return $this->render('/Other/SampleCode/MySqlTypeSamples/input');
     }
 
     /**
@@ -124,7 +124,7 @@ class CreateController extends AppController
             'input' => $this->ctlService->getInputProcess(),
         ]);
 
-        return $this->render('/SampleCode/MySqlTypeSamples/conf');
+        return $this->render('/Other/SampleCode/MySqlTypeSamples/conf');
     }
 
     /**

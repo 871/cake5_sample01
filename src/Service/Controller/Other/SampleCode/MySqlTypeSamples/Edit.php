@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\SampleCode\MySqlTypeSamples;
+namespace App\Service\Controller\Other\SampleCode\MySqlTypeSamples;
 
 use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample;
 use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
@@ -10,7 +10,7 @@ use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
 use App\Lib\UUID\UUID;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting;
+use App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\Process\Process\InputProcess;

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\SampleCode\MySqlTypeSamples;
+namespace App\Controller\Other\SampleCode\MySqlTypeSamples;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\SampleCode\MySqlTypeSamples\Search as CtlService;
+use App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Search as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Log\Log;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class SearchController extends AppController
 {
     /**
-     * @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Search
+     * @var \App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Search
      */
     private CtlService $ctlService;
 
@@ -77,6 +77,6 @@ class SearchController extends AppController
             ]);
         }
 
-        return $this->render('/SampleCode/MySqlTypeSamples/search');
+        return $this->render('/Other/SampleCode/MySqlTypeSamples/search');
     }
 }

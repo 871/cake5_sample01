@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\SampleCode\MySqlTypeSamples;
+namespace App\Controller\Other\SampleCode\MySqlTypeSamples;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\SampleCode\MySqlTypeSamples\Detail as CtlService;
+use App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Detail as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 
 class DetailController extends AppController
 {
     /**
-     * @var \App\Service\Controller\SampleCode\MySqlTypeSamples\Detail
+     * @var \App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Detail
      */
     private CtlService $ctlService;
 
@@ -41,6 +41,6 @@ class DetailController extends AppController
             'entity' => $this->ctlService->getDomainEntity(),
         ]);
 
-        return $this->render('/SampleCode/MySqlTypeSamples/detail');
+        return $this->render('/Other/SampleCode/MySqlTypeSamples/detail');
     }
 }

@@ -34,7 +34,7 @@
                 <a 
                     class="nav-link text-white" 
                     href="<?= $this->Url->build([
-                        'prefix' => 'SampleCode/MySqlTypeSamples',
+                        'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                         'controller' => 'Create',
                         'action' => 'index',
                         '?' => $this->getRequest()->getQuery(),
@@ -45,7 +45,7 @@
                 <a 
                     class="nav-link text-white" 
                     href="<?= $this->Url->build([
-                        'prefix' => 'SampleCode/MySqlTypeSamples',
+                        'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                         'controller' => 'Search',
                         'action' => 'init',
                     ]) ?>"
@@ -62,7 +62,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
-                            'prefix' => 'SampleCode/MySqlTypeSamples',
+                            'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                             'controller' => 'Create',
                             'action' => 'index',
                             '?' => $this->getRequest()->getQuery(),
@@ -70,7 +70,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
-                            'prefix' => 'SampleCode/MySqlTypeSamples',
+                            'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                             'controller' => 'Search',
                             'action' => 'index',
                             '?' => $this->getRequest()->getQuery(),
@@ -79,6 +79,7 @@
                 <?php if ($this->getRequest()->getParam('my_sql_type_sample_id')): ?>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
+                            'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                             'controller' => 'Detail',
                             'action' => 'index',
                             'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
@@ -87,6 +88,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
+                            'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                             'controller' => 'Edit',
                             'action' => 'index',
                             'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
@@ -95,6 +97,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
+                            'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                             'controller' => 'Create',
                             'action' => 'copy',
                             'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
@@ -103,6 +106,7 @@
                     </li>
                     <li class="nav-item">
                         <?= $this->Form->postLink('削除', [
+                            'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                             'controller' => 'Delete',
                             'action' => 'index',
                             'my_sql_type_sample_id' => $entity->id()->toString(),
@@ -122,7 +126,7 @@
             <ol class="breadcrumb mb-3">
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
-                        'prefix' => 'SampleCode/MySqlTypeSamples',
+                        'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                         'controller' => 'Create',
                         'action' => 'index',
                         '?' => $this->getRequest()->getQuery(),
@@ -130,7 +134,7 @@
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
-                        'prefix' => 'SampleCode/MySqlTypeSamples',
+                        'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                         'controller' => 'Search',
                         'action' => 'index',
                         '?' => $this->getRequest()->getQuery(),
@@ -139,6 +143,7 @@
             <?php if ($this->getRequest()->getParam('my_sql_type_sample_id')): ?>
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
+                        'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                         'controller' => 'Detail',
                         'action' => 'index',
                         'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
@@ -147,6 +152,7 @@
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
+                        'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                         'controller' => 'Edit',
                         'action' => 'index',
                         'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
@@ -155,6 +161,7 @@
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
+                        'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                         'controller' => 'Create',
                         'action' => 'copy',
                         'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
@@ -163,6 +170,7 @@
                 </li>
                 <li class="breadcrumb-item">
                     <?= $this->Form->postLink('削除', [
+                        'prefix' => 'Other/SampleCode/MySqlTypeSamples',
                         'controller' => 'Delete',
                         'action' => 'index',
                         'my_sql_type_sample_id' => $this->getRequest()->getParam('my_sql_type_sample_id'),
