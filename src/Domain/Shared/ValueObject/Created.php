@@ -3,19 +3,20 @@ declare(strict_types=1);
 
 namespace App\Domain\Shared\ValueObject;
 
-use App\Domain\Shared\ValueObject\Trait\DatetimeTrait;
+use App\Domain\Shared\ValueObject\Trait\DateTimeTrait;
+use DateTimeInterface;
 use DateTimeImmutable;
 use DomainException;
 use Stringable;
 
 class Created implements Stringable
 {
-    use DatetimeTrait;
+    use DateTimeTrait;
 
     /**
-     * @var ?\DateTimeImmutable
+     * @var ?\DateTimeInterface
      */
-    private readonly ?DateTimeImmutable $value;
+    private readonly ?DateTimeInterface $value;
 
     /**
      * @param ?string $value

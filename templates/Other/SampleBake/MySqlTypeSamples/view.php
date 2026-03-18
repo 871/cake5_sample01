@@ -32,7 +32,7 @@
                 </tr>
                 <tr>
                     <th><?= __('Json Col') ?></th>
-                    <td><?= h($mySqlTypeSample->json_col) ?></td>
+                    <td><?= h(json_encode($mySqlTypeSample->json_col) ?: '' ) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Int Col') ?></th>

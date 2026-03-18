@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\SampleBake;
+namespace App\Controller\Other\SampleBake;
 
 use App\Controller\AppController;
 use App\Model\Table\Sample\MySqlTypeSamplesTable;

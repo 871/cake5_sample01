@@ -10,11 +10,23 @@ trait JsonTrait
      */
     public function toString(): string
     {
-        if ($this->value === null) {
+        if ($this->value === null || $this->value === '') {
             return '';
         }
 
         return json_encode($this->value) ? : '';
+    }
+
+    /**
+     * @return ?string
+     */
+    public function toStringOrNull(): ?string
+    {
+        if ($this->value === null || $this->value === '') {
+            return null;
+        }
+
+        return json_encode($this->value) ? : null;
     }
 
     /**

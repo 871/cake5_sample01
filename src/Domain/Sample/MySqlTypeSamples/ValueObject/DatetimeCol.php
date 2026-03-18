@@ -3,22 +3,23 @@ declare(strict_types=1);
 
 namespace App\Domain\Sample\MySqlTypeSamples\ValueObject;
 
-use App\Domain\Shared\ValueObject\Trait\DatetimeTrait;
+use App\Domain\Shared\ValueObject\Trait\DateTimeTrait;
+use DateTimeInterface;
 use DateTimeImmutable;
 use DomainException;
 use Stringable;
 
-class DatetimeCol implements Stringable
+class DateTimeCol implements Stringable
 {
-    use DatetimeTrait;
+    use DateTimeTrait;
 
     public const MIN = '1970-01-01T00:00:00';
     public const MAX = '2999-12-31T23:59:59';
 
     /**
-     * @var ?\DateTimeImmutable
+     * @var ?\DateTimeInterface
      */
-    private readonly ?DateTimeImmutable $value;
+    private readonly ?DateTimeInterface $value;
 
     /**
      * @param ?string $value

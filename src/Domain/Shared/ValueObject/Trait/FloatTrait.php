@@ -6,11 +6,19 @@ namespace App\Domain\Shared\ValueObject\Trait;
 trait FloatTrait
 {
     /**
+     * @return float
+     */
+    public function toFloat(): float
+    {
+        return (float)$this->value;
+    }
+
+    /**
      * @return ?float
      */
-    public function toFloat(): ?float
+    public function toFloatOrNull(): ?float
     {
-        return $this->value === null ? null : (float)$this->value;
+        return $this->value === null || $this->value === '' ? null : (float)$this->value;
     }
 
     /**
@@ -19,6 +27,14 @@ trait FloatTrait
     public function toString(): string
     {
         return (string)$this->value;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function toStringOrNull(): ?string
+    {
+        return $this->value === null || $this->value === '' ? null : (string)$this->value;
     }
 
     /**

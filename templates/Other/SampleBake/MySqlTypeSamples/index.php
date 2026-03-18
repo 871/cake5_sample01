@@ -40,7 +40,7 @@
                     <td><?= h($mySqlTypeSample->datetime_col) ?></td>
                     <td><?= h($mySqlTypeSample->char_col) ?></td>
                     <td><?= h($mySqlTypeSample->varchar_col) ?></td>
-                    <td><?= h($mySqlTypeSample->json_col) ?></td>
+                    <td><?= h(json_encode($mySqlTypeSample->json_col) ?: '' ) ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('View'), ['action' => 'view', $mySqlTypeSample->id]) ?>
                         <?= $this->Html->link(__('Edit'), ['action' => 'edit', $mySqlTypeSample->id]) ?>

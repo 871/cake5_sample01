@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace App\Domain\Shared\ValueObject\Trait;
 
 use DateTime;
-use DateTimeImmutable;
+use DateTimeInterface;
 
 trait DateTrait
 {
     /**
-     * @var ?\DateTimeImmutable
+     * @var ?\DateTimeInterface
      */
-    private readonly ?DateTimeImmutable $value;
+    private readonly ?DateTimeInterface $value;
 
     /**
      * @param string $format
@@ -20,6 +20,14 @@ trait DateTrait
     public function format(string $format = 'Y-m-d'): ?string
     {
         return $this->value?->format($format);
+    }
+
+    /**
+     * @return ?DateTimeInterface
+     */
+    public function toDateOrNull(): ?DateTimeInterface
+    {
+        return $this->value;
     }
 
     /**

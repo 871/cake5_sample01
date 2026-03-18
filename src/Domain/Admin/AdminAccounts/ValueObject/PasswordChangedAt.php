@@ -3,19 +3,20 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\AdminAccounts\ValueObject;
 
-use App\Domain\Shared\ValueObject\Trait\DatetimeTrait;
+use App\Domain\Shared\ValueObject\Trait\DateTimeTrait;
+use DateTimeInterface;
 use DateTimeImmutable;
 use DomainException;
 use Stringable;
 
 class PasswordChangedAt implements Stringable
 {
-    use DatetimeTrait;
+    use DateTimeTrait;
 
     /**
-     * @var ?\DateTimeImmutable
+     * @var ?\DateTimeInterface
      */
-    private readonly ?DateTimeImmutable $value;
+    private readonly ?DateTimeInterface $value;
 
     /**
      * @param ?string $value

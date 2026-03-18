@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\AdminBake;
+namespace App\Controller\Other\AdminBake;
 
 use App\Controller\AppController;
 use App\Model\Table\Admin\AdminAccountsTable;

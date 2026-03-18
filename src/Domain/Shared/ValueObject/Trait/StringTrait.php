@@ -6,6 +6,14 @@ namespace App\Domain\Shared\ValueObject\Trait;
 trait StringTrait
 {
     /**
+     * @return ?string
+     */
+    public function toStringOrNull(): ?string
+    {
+        return $this->value === null || $this->value === '' ? null : $this->value;
+    }
+
+    /**
      * @return string
      */
     public function toString(): string
