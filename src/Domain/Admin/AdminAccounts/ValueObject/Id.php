@@ -25,9 +25,9 @@ class Id implements Stringable
     public function __construct(
         ?string $value,
     ) {
-        
         if ($value === null || $value === '') {
             $this->value = null;
+
             return;
         }
 

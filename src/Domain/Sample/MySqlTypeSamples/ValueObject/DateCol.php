@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Domain\Sample\MySqlTypeSamples\ValueObject;
 
 use App\Domain\Shared\ValueObject\Trait\DateTrait;
-use DateTimeInterface;
 use DateTimeImmutable;
+use DateTimeInterface;
 use DomainException;
 use Stringable;
 

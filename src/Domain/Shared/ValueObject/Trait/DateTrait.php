@@ -23,7 +23,7 @@ trait DateTrait
     }
 
     /**
-     * @return ?DateTimeInterface
+     * @return ?\DateTimeInterface
      */
     public function toDateOrNull(): ?DateTimeInterface
     {

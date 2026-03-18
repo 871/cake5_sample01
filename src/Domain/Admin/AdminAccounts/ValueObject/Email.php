@@ -26,6 +26,7 @@ class Email implements Stringable
     ) {
         if ($value === null || $value === '') {
             $this->value = null;
+
             return;
         }
 
