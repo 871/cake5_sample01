@@ -53,6 +53,12 @@ final class Read
                 'AdminAccounts__is_email_verified' => 'AdminAccounts.is_email_verified',
                 'AdminAccounts__password_changed_at' => 'AdminAccounts.password_changed_at',
                 'AdminAccounts__password_expires_at' => 'AdminAccounts.password_expires_at',
+                'AdminAccounts__created' => 'AdminAccounts.created',
+                'AdminAccounts__created_by' => 'AdminAccounts.created_by',
+                'AdminAccounts__created_ip' => 'AdminAccounts.created_ip',
+                'AdminAccounts__modified' => 'AdminAccounts.modified',
+                'AdminAccounts__modified_by' => 'AdminAccounts.modified_by',
+                'AdminAccounts__modified_ip' => 'AdminAccounts.modified_ip',
             ])
             ->where([
                 'AdminAccounts.id' => $this->id->toInt(),

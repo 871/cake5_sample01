@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\AdminAccount;
+namespace App\Controller\Other\AdminAccount;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\AdminAccount\Search as CtlService;
+use App\Service\Controller\Other\AdminAccount\Search as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Log\Log;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class SearchController extends AppController
 {
     /**
-     * @var \App\Service\Controller\AdminAccount\Search
+     * @var \App\Service\Other\Controller\AdminAccount\Search
      */
     private CtlService $ctlService;
 
@@ -77,6 +77,6 @@ class SearchController extends AppController
             ]);
         }
 
-        return $this->render('/AdminAccount/search');
+        return $this->render('/Other/AdminAccount/search');
     }
 }

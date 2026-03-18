@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\AdminAccount;
+namespace App\Service\Controller\Other\AdminAccount;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;

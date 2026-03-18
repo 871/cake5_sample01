@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\AdminAccount;
+namespace App\Service\Controller\Other\AdminAccount;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
@@ -10,8 +10,8 @@ use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 use App\Lib\UUID\UUID;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\AdminAccount as CategoryService;
-use App\Service\Controller\AdminAccount\Shared\ValidatorSetting;
+use App\Service\Controller\Other\AdminAccount as CategoryService;
+use App\Service\Controller\Other\AdminAccount\Shared\ValidatorSetting;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\Process\Process\InputProcess;
@@ -23,7 +23,7 @@ use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Validation\Validator;
 
-final class Edit implements ServiceInterface
+final class Create implements ServiceInterface
 {
     use ServiceTrait;
 
@@ -55,6 +55,35 @@ final class Edit implements ServiceInterface
      */
     public function startInputProcess(): InputProcess
     {
+        /** @var \App\Service\Controller\Shared\Process\ProcessFactory $processFactory */
+        $processFactory = $this->createService(ProcessFactory::class);
+        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $process */
+        $process = $processFactory->start(
+            processClassName: InputProcess::class,
+            serviceClassName: self::class,
+            processParams: new ProcessParams([
+                '_errorMessages' => [],
+                '_errorFields' => [],
+                '_process_key' => UUID::uuid4(),
+                'email' => '',
+                'password' => '',
+                'name' => '',
+                'admin_note' => '',
+                'account_status_master_id' => '',
+                'is_email_verified' => '0',
+                'password_changed_at' => '',
+                'password_expires_at' => '',
+            ]),
+        );
+
+        return $process;
+    }
+
+    /**
+     * @return \App\Service\Controller\Shared\Process\Process\InputProcess
+     */
+    public function startInputProcessForCopy(): InputProcess
+    {
         $adminAccount = (new AdminAccountsRepository($this->datetime))->read(
             new Vo\Id(
                 StrictCast::toString($this->request->getParam('admin_account_id')),
@@ -71,8 +100,7 @@ final class Edit implements ServiceInterface
                 '_errorMessages' => [],
                 '_errorFields' => [],
                 '_process_key' => UUID::uuid4(),
-                'id' => $adminAccount->id()->toString(),
-                'email' => $adminAccount->email()->toString(),
+                'email' => '',
                 'password' => '',
                 'name' => $adminAccount->name()->toString(),
                 'admin_note' => $adminAccount->adminNote()->toString(),
@@ -192,9 +220,8 @@ final class Edit implements ServiceInterface
         /** @var \App\Service\Controller\AdminAccount\Shared\ValidatorSetting $validatorSetting */
         $validatorSetting = $this->createService(ValidatorSetting::class);
         $validatorSetting
-            ->id($validator)
             ->email($validator)
-            ->password($validator, required: false)
+            ->password($validator, required: true)
             ->name($validator)
             ->adminNote($validator)
             ->accountStatusMasterId($validator)
@@ -215,19 +242,19 @@ final class Edit implements ServiceInterface
             ->getProcessParams()
             ->toArray();
 
-        (new AdminAccountsRepository($this->datetime))->update(new AdminAccount(
-            id: Cast::toString($input['id']),
+        (new AdminAccountsRepository($this->datetime))->create(new AdminAccount(
+            id: null,
             email: Cast::toString($input['email']),
-            password: Cast::toString($input['password']) ?? '',
+            password: Cast::toString($input['password']),
             name: Cast::toString($input['name']),
             admin_note: Cast::toString($input['admin_note']),
             account_status_master_id: Cast::toString($input['account_status_master_id']),
             is_email_verified: Cast::toString($input['is_email_verified']),
             password_changed_at: Cast::toString($input['password_changed_at']),
             password_expires_at: Cast::toString($input['password_expires_at']),
-            created: null,
-            created_by: null,
-            created_ip: null,
+            created: Cast::toString($this->datetime->format('Y-m-d\TH:i:s')),
+            created_by: Cast::toString($this->authContext->getAccountId()),
+            created_ip: Cast::toString($this->request->clientIp()),
             modified: Cast::toString($this->datetime->format('Y-m-d\TH:i:s')),
             modified_by: Cast::toString($this->authContext->getAccountId()),
             modified_ip: Cast::toString($this->request->clientIp()),
@@ -281,7 +308,7 @@ final class Edit implements ServiceInterface
      */
     public function getAccountStatusOptions(): array
     {
-        /** @var \App\Service\Controller\AdminAccount $categoryService */
+        /** @var \App\Service\Controller\Other\AdminAccount $categoryService */
         $categoryService = $this->createService(CategoryService::class);
 
         return $categoryService->getAccountStatusOptions();

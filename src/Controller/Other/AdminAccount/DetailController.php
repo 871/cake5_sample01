@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\AdminAccount;
+namespace App\Controller\Other\AdminAccount;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\AdminAccount\Detail as CtlService;
+use App\Service\Controller\Other\AdminAccount\Detail as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 
 class DetailController extends AppController
 {
     /**
-     * @var \App\Service\Controller\AdminAccount\Detail
+     * @var \App\Service\Controller\Other\AdminAccount\Detail
      */
     private CtlService $ctlService;
 
@@ -42,6 +42,6 @@ class DetailController extends AppController
             'histories' => $this->ctlService->getHistories(),
         ]);
 
-        return $this->render('/AdminAccount/detail');
+        return $this->render('/Other/AdminAccount/detail');
     }
 }

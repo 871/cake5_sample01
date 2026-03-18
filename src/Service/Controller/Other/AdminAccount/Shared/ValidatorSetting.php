@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\AdminAccount\Shared;
+namespace App\Service\Controller\Other\AdminAccount\Shared;
 
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Model\Table\Admin\AdminAccountsTable;

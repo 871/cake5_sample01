@@ -34,7 +34,7 @@
                 <a 
                     class="nav-link text-white" 
                     href="<?= $this->Url->build([
-                        'prefix' => 'AdminAccount',
+                        'prefix' => 'Other/AdminAccount',
                         'controller' => 'Create',
                         'action' => 'index',
                         '?' => $this->getRequest()->getQuery(),
@@ -45,7 +45,7 @@
                 <a 
                     class="nav-link text-white" 
                     href="<?= $this->Url->build([
-                        'prefix' => 'AdminAccount',
+                        'prefix' => 'Other/AdminAccount',
                         'controller' => 'Search',
                         'action' => 'init',
                     ]) ?>"
@@ -62,7 +62,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
-                            'prefix' => 'AdminAccount',
+                            'prefix' => 'Other/AdminAccount',
                             'controller' => 'Create',
                             'action' => 'index',
                             '?' => $this->getRequest()->getQuery(),
@@ -70,7 +70,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
-                            'prefix' => 'AdminAccount',
+                            'prefix' => 'Other/AdminAccount',
                             'controller' => 'Search',
                             'action' => 'index',
                             '?' => $this->getRequest()->getQuery(),
@@ -79,7 +79,7 @@
                 <?php if ($this->getRequest()->getParam('admin_account_id')): ?>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
-                            'prefix' => 'AdminAccount',
+                            'prefix' => 'Other/AdminAccount',
                             'controller' => 'Detail',
                             'action' => 'index',
                             'admin_account_id' => $this->getRequest()->getParam('admin_account_id'),
@@ -88,7 +88,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
-                            'prefix' => 'AdminAccount',
+                            'prefix' => 'Other/AdminAccount',
                             'controller' => 'Edit',
                             'action' => 'index',
                             'admin_account_id' => $this->getRequest()->getParam('admin_account_id'),
@@ -97,7 +97,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
-                            'prefix' => 'AdminAccount',
+                            'prefix' => 'Other/AdminAccount',
                             'controller' => 'Create',
                             'action' => 'copy',
                             'admin_account_id' => $this->getRequest()->getParam('admin_account_id'),
@@ -106,7 +106,7 @@
                     </li>
                     <li class="nav-item">
                         <?= $this->Form->postLink('削除', [
-                            'prefix' => 'AdminAccount',
+                            'prefix' => 'Other/AdminAccount',
                             'controller' => 'Delete',
                             'action' => 'index',
                             'admin_account_id' => $entity->id()->toString(),
@@ -126,7 +126,7 @@
             <ol class="breadcrumb mb-3">
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
-                        'prefix' => 'AdminAccount',
+                        'prefix' => 'Other/AdminAccount',
                         'controller' => 'Create',
                         'action' => 'index',
                         '?' => $this->getRequest()->getQuery(),
@@ -134,7 +134,7 @@
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
-                        'prefix' => 'AdminAccount',
+                        'prefix' => 'Other/AdminAccount',
                         'controller' => 'Search',
                         'action' => 'index',
                         '?' => $this->getRequest()->getQuery(),
@@ -143,7 +143,7 @@
             <?php if ($this->getRequest()->getParam('admin_account_id')): ?>
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
-                        'prefix' => 'AdminAccount',
+                        'prefix' => 'Other/AdminAccount',
                         'controller' => 'Detail',
                         'action' => 'index',
                         'admin_account_id' => $this->getRequest()->getParam('admin_account_id'),
@@ -152,7 +152,7 @@
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
-                        'prefix' => 'AdminAccount',
+                        'prefix' => 'Other/AdminAccount',
                         'controller' => 'Edit',
                         'action' => 'index',
                         'admin_account_id' => $this->getRequest()->getParam('admin_account_id'),
@@ -161,7 +161,7 @@
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
-                        'prefix' => 'AdminAccount',
+                        'prefix' => 'Other/AdminAccount',
                         'controller' => 'Create',
                         'action' => 'copy',
                         'admin_account_id' => $this->getRequest()->getParam('admin_account_id'),
@@ -170,7 +170,7 @@
                 </li>
                 <li class="breadcrumb-item">
                     <?= $this->Form->postLink('削除', [
-                        'prefix' => 'AdminAccount',
+                        'prefix' => 'Other/AdminAccount',
                         'controller' => 'Delete',
                         'action' => 'index',
                         'admin_account_id' => $this->getRequest()->getParam('admin_account_id'),

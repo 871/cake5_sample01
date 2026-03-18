@@ -54,6 +54,7 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <span>検索結果</span>
         <a href="<?= $this->Url->build([
+            'prefix' => 'Other/AdminAccount',
             'controller' => 'Create',
             'action' => 'index',
             '?' => $this->getRequest()->getQuery(),
@@ -88,24 +89,28 @@
                             <td><?= h($row->passwordChangedAt()->format('Y/m/d H:i:s')) ?></td>
                             <td class="text-nowrap">
                                 <a href="<?= $this->Url->build([
+                                    'prefix' => 'Other/AdminAccount',
                                     'controller' => 'Detail',
                                     'action' => 'index',
                                     'admin_account_id' => $row->id()->toString(),
                                     '?' => $this->getRequest()->getQuery(),
                                 ]) ?>" class="btn btn-info btn-sm">詳細</a>
                                 <a href="<?= $this->Url->build([
+                                    'prefix' => 'Other/AdminAccount',
                                     'controller' => 'Edit',
                                     'action' => 'index',
                                     'admin_account_id' => $row->id()->toString(),
                                     '?' => $this->getRequest()->getQuery(),
                                 ]) ?>" class="btn btn-primary btn-sm">更新</a>
                                 <a href="<?= $this->Url->build([
+                                    'prefix' => 'Other/AdminAccount',
                                     'controller' => 'Create',
                                     'action' => 'copy',
                                     'admin_account_id' => $row->id()->toString(),
                                     '?' => $this->getRequest()->getQuery(),
                                 ]) ?>" class="btn btn-primary btn-sm">複製</a>
                                 <?= $this->Form->postLink('削除', [
+                                    'prefix' => 'Other/AdminAccount',
                                     'controller' => 'Delete',
                                     'action' => 'index',
                                     'admin_account_id' => $row->id()->toString(),

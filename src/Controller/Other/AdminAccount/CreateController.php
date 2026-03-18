@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\AdminAccount;
+namespace App\Controller\Other\AdminAccount;
 
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\AdminAccount\Create as CtlService;
+use App\Service\Controller\Other\AdminAccount\Create as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class CreateController extends AppController
 {
     /**
-     * @var \App\Service\Controller\AdminAccount\Create
+     * @var \App\Service\Controller\Other\AdminAccount\Create
      */
     private CtlService $ctlService;
 
@@ -86,7 +86,7 @@ class CreateController extends AppController
             'accountStatusOptions' => $this->ctlService->getAccountStatusOptions(),
         ]);
 
-        return $this->render('/AdminAccount/input');
+        return $this->render('/Other/AdminAccount/input');
     }
 
     /**
@@ -126,7 +126,7 @@ class CreateController extends AppController
             'accountStatusOptions' => $this->ctlService->getAccountStatusOptions(),
         ]);
 
-        return $this->render('/AdminAccount/conf');
+        return $this->render('/Other/AdminAccount/conf');
     }
 
     /**
@@ -143,6 +143,7 @@ class CreateController extends AppController
             $this->Flash->success(__('管理者アカウントの作成が完了しました。'));
 
             return $this->redirect([
+                'prefix' => 'Other/AdminAccount',
                 'controller' => 'Search',
                 'action' => 'index',
                 '?' => $this->request->getQuery(),

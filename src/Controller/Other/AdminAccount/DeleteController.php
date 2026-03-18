@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\AdminAccount;
+namespace App\Controller\Other\AdminAccount;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\AdminAccount\Delete as CtlService;
+use App\Service\Controller\Other\AdminAccount\Delete as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\MethodNotAllowedException;
 use DateTimeImmutable;
@@ -13,7 +13,7 @@ use DateTimeImmutable;
 class DeleteController extends AppController
 {
     /**
-     * @var \App\Service\Controller\AdminAccount\Delete
+     * @var \App\Service\Controller\Other\AdminAccount\Delete
      */
     private CtlService $ctlService;
 
@@ -49,6 +49,7 @@ class DeleteController extends AppController
         $this->Flash->success(__('管理者アカウントの削除が完了しました。'));
 
         return $this->redirect([
+            'prefix' => 'Other/AdminAccount',
             'controller' => 'Search',
             'action' => 'index',
             '?' => $this->request->getQuery(),

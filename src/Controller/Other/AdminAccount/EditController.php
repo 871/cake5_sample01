@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\AdminAccount;
+namespace App\Controller\Other\AdminAccount;
 
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\AdminAccount\Edit as CtlService;
+use App\Service\Controller\Other\AdminAccount\Edit as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class EditController extends AppController
 {
     /**
-     * @var \App\Service\Controller\AdminAccount\Edit
+     * @var \App\Service\Controller\Other\AdminAccount\Edit
      */
     private CtlService $ctlService;
 
@@ -75,7 +75,7 @@ class EditController extends AppController
             'accountStatusOptions' => $this->ctlService->getAccountStatusOptions(),
         ]);
 
-        return $this->render('/AdminAccount/input');
+        return $this->render('/Other/AdminAccount/input');
     }
 
     /**
@@ -115,7 +115,7 @@ class EditController extends AppController
             'accountStatusOptions' => $this->ctlService->getAccountStatusOptions(),
         ]);
 
-        return $this->render('/AdminAccount/conf');
+        return $this->render('/Other/AdminAccount/conf');
     }
 
     /**
@@ -132,6 +132,7 @@ class EditController extends AppController
             $this->Flash->success(__('管理者アカウントの更新が完了しました。'));
 
             return $this->redirect([
+                'prefix' => 'Other/AdminAccount',
                 'controller' => 'Search',
                 'action' => 'index',
                 '?' => $this->request->getQuery(),
@@ -141,6 +142,8 @@ class EditController extends AppController
                 ->inputProcessErrorUpdate($ex);
 
             return $this->redirect([
+                'prefix' => 'Other/AdminAccount',
+                'controller' => 'Edit',
                 'action' => 'input',
                 'process_id' => $this->request->getParam('process_id'),
                 '?' => $this->request->getQuery(),
