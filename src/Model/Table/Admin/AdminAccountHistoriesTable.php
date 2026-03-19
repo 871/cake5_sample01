@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Model\Table\Admin;
 
 use App\Model\Entity\Admin\AdminAccountHistory;
-use App\Model\Table\Admin\AdminAccountsTable;
 use App\Model\Table\Shared\AccountStatusMastersTable;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -15,7 +14,6 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Admin\AdminAccountsTable> $AdminAccounts
  * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Shared\AccountStatusMastersTable> $AccountStatusMasters
- *
  * @method \App\Model\Entity\Admin\AdminAccountHistory newEmptyEntity()
  * @method \App\Model\Entity\Admin\AdminAccountHistory newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
  * @method array<\App\Model\Entity\Admin\AdminAccountHistory> newEntities(array<string, mixed> $data, array<string, mixed> $options = [])

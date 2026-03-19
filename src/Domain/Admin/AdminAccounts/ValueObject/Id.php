@@ -31,7 +31,7 @@ class Id implements Stringable
             return;
         }
 
-        if ($value !== null && !preg_match('/^\d+$/', $value)) {
+        if (!preg_match('/^\d+$/', $value)) {
             throw new DomainException(
                 self::class . ' value integer format Error'
                 . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 
+use App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory as DomainHistoryEntity;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
 use App\Model\Entity\Admin\AdminAccountHistory as OrmHistoryEntity;
@@ -38,8 +39,8 @@ final class ReadHistories
      */
     public function run(): array
     {
-        /** @var array<\App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory> */
-        return $this->table
+        /** @var array<\App\Model\Entity\Admin\AdminAccountHistory> $results */
+        $results = $this->table
             ->find()
             ->select([
                 'AdminAccountHistories__id' => 'AdminAccountHistories.id',
@@ -65,12 +66,12 @@ final class ReadHistories
             ])
             ->orderBy(['AdminAccountHistories.history_created' => 'DESC'])
             ->limit(100)
-            ->formatResults(function ($results) {
-                return $results->map(function (OrmHistoryEntity $entity) {
-                    return $this->mapper->toDomainHistoryEntity($entity);
-                });
-            })
             ->all()
             ->toList();
+
+        return array_map(
+            fn(OrmHistoryEntity $entity): DomainHistoryEntity => $this->mapper->toDomainHistoryEntity($entity),
+            $results,
+        );
     }
 }

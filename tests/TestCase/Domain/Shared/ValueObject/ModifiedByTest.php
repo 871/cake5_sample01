@@ -15,7 +15,7 @@ final class ModifiedByTest extends TestCase
     {
         $vo = new ModifiedBy($value);
 
-        $this->assertSame($expected, $vo->toInt());
+        $this->assertSame($expected, $vo->toIntOrNull());
         $this->assertSame((string)$expected, $vo->toString());
         $this->assertSame((string)$expected, (string)$vo);
     }

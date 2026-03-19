@@ -7,7 +7,6 @@ use App\Domain\Exception\RepositoryException;
 use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample as DomainEntity;
 use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSampleMapper;
-use App\Model\Entity\Sample\MySqlTypeSample as OrmEntity;
 use App\Model\Table\Sample\MySqlTypeSamplesTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -40,8 +39,8 @@ final class Read
      */
     public function run(): DomainEntity
     {
-        /** @var \App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample */
-        return $this->table
+        /** @var \App\Model\Entity\Sample\MySqlTypeSample $ormEntity */
+        $ormEntity = $this->table
             ->find()
             ->select([
                 'MySqlTypeSamples__id' => 'MySqlTypeSamples.id',
@@ -63,15 +62,11 @@ final class Read
             ->where([
                 'MySqlTypeSamples.id' => $this->id->toString(),
             ])
-            ->formatResults(function ($results) {
-                return $results->map(function (OrmEntity $entity) {
-
-                    return $this->mapper->toDomainEntity($entity);
-                });
-            })
             ->first() ?? throw new RepositoryException(
                 'MySqlTypeSample data not fund'
                 . '[id: ' . $this->id->toString() . ']',
             );
+
+        return $this->mapper->toDomainEntity($ormEntity);
     }
 }

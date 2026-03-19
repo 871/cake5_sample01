@@ -20,7 +20,7 @@ trait IntTrait
      */
     public function toIntOrNull(): ?int
     {
-        return $this->value === null || $this->value === '' ? null : (int)$this->value;
+        return $this->value === null ? null : (int)$this->value;
     }
 
     /**
@@ -34,9 +34,9 @@ trait IntTrait
     /**
      * @return ?string
      */
-    public function toStringOrNull(): string
+    public function toStringOrNull(): ?string
     {
-        return $this->value === null || $this->value === '' ? null : (string)$this->value;
+        return $this->value === null ? null : (string)$this->value;
     }
 
     /**
@@ -49,7 +49,7 @@ trait IntTrait
 
     /**
      * @param ?string $value
-     * @return self;
+     * @return self
      */
     public static function fromString(?string $value): self
     {

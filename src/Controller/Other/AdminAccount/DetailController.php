@@ -17,7 +17,7 @@ class DetailController extends AppController
     private CtlService $ctlService;
 
     /**
-     * @param \Cake\Event\EventInterface $event
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
      */
     public function beforeFilter(EventInterface $event): void
     {

@@ -94,6 +94,7 @@ class AdminAccountsController extends AppController
      */
     public function edit(?string $id = null)
     {
+        /** @var \App\Model\Entity\Admin\AdminAccount $adminAccount */
         $adminAccount = $this->AdminAccounts->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $adminAccount = $this->AdminAccounts->patchEntity($adminAccount, (function () use ($adminAccount): array {

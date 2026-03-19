@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Model\Table\Admin;
 
 use App\Model\Entity\Admin\AdminAccount;
-use App\Model\Table\Admin\AdminAccountHistoriesTable;
 use App\Model\Table\Shared\AccountStatusMastersTable;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -15,13 +14,16 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Shared\AccountStatusMastersTable> $AccountStatusMasters
  * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Admin\AdminAccountHistoriesTable> $AdminAccountHistories
- *
- * @method AdminAccount newEmptyEntity()
- * @method AdminAccount newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
- * @method list<AdminAccount> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Admin\AdminAccount newEmptyEntity()
+ * @method \App\Model\Entity\Admin\AdminAccount newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method list<\App\Model\Entity\Admin\AdminAccount> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
  */
 final class AdminAccountsTable extends Table
 {
+    /**
+     * @param array<string, mixed> $config
+     * @return void
+     */
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -43,6 +45,12 @@ final class AdminAccountsTable extends Table
         ]);
     }
 
+    /**
+     * Default validation rules.
+     *
+     * @param \Cake\Validation\Validator $validator Validator instance.
+     * @return \Cake\Validation\Validator
+     */
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -107,6 +115,12 @@ final class AdminAccountsTable extends Table
         return $validator;
     }
 
+    /**
+     * Returns a rules checker object that will be used for validating application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['email']), ['errorField' => 'email']);

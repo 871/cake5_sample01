@@ -14,12 +14,12 @@ use DateTimeImmutable;
 class SearchController extends AppController
 {
     /**
-     * @var \App\Service\Other\Controller\AdminAccount\Search
+     * @var \App\Service\Controller\Other\AdminAccount\Search
      */
     private CtlService $ctlService;
 
     /**
-     * @param \Cake\Event\EventInterface $event
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
      * @return void
      */
     public function beforeFilter(EventInterface $event): void

@@ -37,7 +37,7 @@ final class InputProcess implements ProcessInterface
     }
 
     /**
-     * @return Fields\ProcessParams
+     * @return \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams
      */
     public function getProcessParams(): Fields\ProcessParams
     {

@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 
 use App\Domain\Admin\AdminAccounts\SearchCondition;
-use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
-use App\Model\Entity\Admin\AdminAccount as OrmEntity;
 use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query\SelectQuery;
@@ -20,22 +18,16 @@ final class Search
     private AdminAccountsTable $table;
 
     /**
-     * @var \App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper
-     */
-    private AdminAccountMapper $mapper;
-
-    /**
      * @param \App\Domain\Admin\AdminAccounts\SearchCondition $condition
      */
     public function __construct(
         private readonly SearchCondition $condition,
     ) {
         $this->table = $this->fetchTable(AdminAccountsTable::class);
-        $this->mapper = new AdminAccountMapper();
     }
 
     /**
-     * @return \Cake\ORM\Query\SelectQuery
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
      */
     public function run(): SelectQuery
     {

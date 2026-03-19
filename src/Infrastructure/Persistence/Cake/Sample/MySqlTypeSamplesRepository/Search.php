@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
 
 use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
-use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSampleMapper;
-use App\Model\Entity\Sample\MySqlTypeSample as OrmEntity;
 use App\Model\Table\Sample\MySqlTypeSamplesTable;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -21,18 +19,12 @@ final class Search
     private MySqlTypeSamplesTable $table;
 
     /**
-     * @var \App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSampleMapper
-     */
-    private MySqlTypeSampleMapper $mapper;
-
-    /**
      * @param \App\Domain\Sample\MySqlTypeSamples\SearchCondition $condition
      */
     public function __construct(
         private readonly SearchCondition $condition,
     ) {
         $this->table = $this->fetchTable(MySqlTypeSamplesTable::class);
-        $this->mapper = new MySqlTypeSampleMapper();
     }
 
     /**

@@ -11,14 +11,18 @@ use Cake\Validation\Validator;
 /**
  * MySqlTypeSamples Model
  *
- * @method MySqlTypeSample newEmptyEntity()
- * @method MySqlTypeSample newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
- * @method list<MySqlTypeSample> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Sample\MySqlTypeSample newEmptyEntity()
+ * @method \App\Model\Entity\Sample\MySqlTypeSample newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method list<\App\Model\Entity\Sample\MySqlTypeSample> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
  */
 final class MySqlTypeSamplesTable extends Table
 {
     use TableLocatorTrait;
 
+    /**
+     * @param array<string, mixed> $config
+     * @return void
+     */
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -29,6 +33,10 @@ final class MySqlTypeSamplesTable extends Table
         $this->setPrimaryKey('id');
     }
 
+    /**
+     * @param \Cake\Validation\Validator $validator
+     * @return \Cake\Validation\Validator
+     */
     public function validationDefault(Validator $validator): Validator
     {
         $validator

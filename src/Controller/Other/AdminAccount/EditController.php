@@ -19,7 +19,7 @@ class EditController extends AppController
     private CtlService $ctlService;
 
     /**
-     * @param \Cake\Event\EventInterface $event
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
      * @return ?\Cake\Http\Response
      */
     public function beforeFilter(EventInterface $event): ?Response

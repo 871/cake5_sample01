@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Other;
 
-use App\Model\Table\Shared\AccountStatusMastersTable;
 use App\Model\Entity\Shared\AccountStatusMaster;
+use App\Model\Table\Shared\AccountStatusMastersTable;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;

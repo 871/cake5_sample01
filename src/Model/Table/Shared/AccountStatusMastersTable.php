@@ -13,13 +13,16 @@ use Cake\Validation\Validator;
 /**
  * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Admin\AdminAccountsTable> $AdminAccounts
  * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Admin\AdminAccountHistoriesTable> $AdminAccountHistories
- * 
- * @method AccountStatusMaster newEmptyEntity()
- * @method AccountStatusMaster newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
- * @method list<AccountStatusMaster> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Shared\AccountStatusMaster newEmptyEntity()
+ * @method \App\Model\Entity\Shared\AccountStatusMaster newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method list<\App\Model\Entity\Shared\AccountStatusMaster> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
  */
 final class AccountStatusMastersTable extends Table
 {
+    /**
+     * @param array<string, mixed> $config
+     * @return void
+     */
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -37,7 +40,6 @@ final class AccountStatusMastersTable extends Table
             'className' => AdminAccountHistoriesTable::class,
             'foreignKey' => 'account_status_master_id',
         ]);
-        
     }
 
     /**
@@ -80,6 +82,12 @@ final class AccountStatusMastersTable extends Table
         return $validator;
     }
 
+    /**
+     * Returns a rules checker object that will be used for validating application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['code']), ['errorField' => 'code']);

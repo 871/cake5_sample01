@@ -7,7 +7,6 @@ use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Domain\Exception\RepositoryException;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
-use App\Model\Entity\Admin\AdminAccount as OrmEntity;
 use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -40,8 +39,8 @@ final class Read
      */
     public function run(): DomainEntity
     {
-        /** @var \App\Domain\Admin\AdminAccounts\Entity\AdminAccount */
-        return $this->table
+        /** @var \App\Model\Entity\Admin\AdminAccount $ormEntity */
+        $ormEntity = $this->table
             ->find()
             ->select([
                 'AdminAccounts__id' => 'AdminAccounts.id',
@@ -63,14 +62,11 @@ final class Read
             ->where([
                 'AdminAccounts.id' => $this->id->toInt(),
             ])
-            ->formatResults(function ($results) {
-                return $results->map(function (OrmEntity $entity) {
-                    return $this->mapper->toDomainEntity($entity);
-                });
-            })
             ->first() ?? throw new RepositoryException(
                 'AdminAccount data not found'
                 . '[id: ' . $this->id->toString() . ']',
             );
+
+        return $this->mapper->toDomainEntity($ormEntity);
     }
 }

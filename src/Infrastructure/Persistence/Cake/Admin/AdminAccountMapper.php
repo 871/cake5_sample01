@@ -52,7 +52,7 @@ final class AdminAccountMapper
             'name' => $domainEntity->name()->toString(),
             'admin_note' => $domainEntity->adminNote()->toString() ?: null,
             'account_status_master_id' => $domainEntity->accountStatusMasterId()->toInt(),
-            'is_email_verified' => $domainEntity->isEmailVerified()->toInt() ?? 0,
+            'is_email_verified' => $domainEntity->isEmailVerified()->toInt(),
             'password_changed_at' => $domainEntity->passwordChangedAt()->format('Y-m-d\TH:i:s'),
             'password_expires_at' => $domainEntity->passwordExpiresAt()->format('Y-m-d\TH:i:s'),
             'created' => $domainEntity->created()->format('Y-m-d\TH:i:s'),
@@ -74,6 +74,7 @@ final class AdminAccountMapper
      */
     public function toPatchOrmEntity(DomainEntity $domainEntity): OrmEntity
     {
+        /** @var \App\Model\Entity\Admin\AdminAccount $ormEntity */
         $ormEntity = $this->table->get($domainEntity->id()->toInt());
 
         $this->table->patchEntity($ormEntity, [
@@ -84,7 +85,7 @@ final class AdminAccountMapper
             'name' => $domainEntity->name()->toString(),
             'admin_note' => $domainEntity->adminNote()->toString() ?: null,
             'account_status_master_id' => $domainEntity->accountStatusMasterId()->toInt(),
-            'is_email_verified' => $domainEntity->isEmailVerified()->toInt() ?? 0,
+            'is_email_verified' => $domainEntity->isEmailVerified()->toInt(),
             'password_changed_at' => $domainEntity->passwordChangedAt()->format('Y-m-d\TH:i:s'),
             'password_expires_at' => $domainEntity->passwordExpiresAt()->format('Y-m-d\TH:i:s'),
             'modified' => $domainEntity->modified()->format('Y-m-d\TH:i:s'),

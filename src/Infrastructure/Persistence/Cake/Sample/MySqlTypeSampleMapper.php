@@ -60,6 +60,7 @@ final class MySqlTypeSampleMapper
      */
     public function toPatchOrmEntity(DomainEntity $domainEntity): OrmEntity
     {
+        /** @var \App\Model\Entity\Sample\MySqlTypeSample $ormEntity */
         $ormEntity = $this->table->get($domainEntity->id()->toString());
 
         $this->table->patchEntity($ormEntity, [

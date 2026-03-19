@@ -108,11 +108,11 @@ final class MySqlTypeSample
     }
 
     /**
-     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DatetimeCol
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateTimeCol
      */
-    public function datetimeCol(): ValueObject\DatetimeCol
+    public function datetimeCol(): ValueObject\DateTimeCol
     {
-        return ValueObject\DatetimeCol::fromString($this->datetime_col);
+        return ValueObject\DateTimeCol::fromString($this->datetime_col);
     }
 
     /**

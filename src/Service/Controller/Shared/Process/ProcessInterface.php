@@ -28,7 +28,7 @@ interface ProcessInterface
     public function getId(): Process\Fields\ProcessId;
 
     /**
-     * @return Process\Fields\ProcessParams
+     * @return \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams
      */
     public function getProcessParams(): Process\Fields\ProcessParams;
 }
