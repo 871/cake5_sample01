@@ -15,8 +15,10 @@ final class CreatedByTest extends TestCase
     {
         $vo = new CreatedBy($value);
 
+        $this->assertSame((int)$expected, $vo->toInt());
         $this->assertSame($expected, $vo->toIntOrNull());
         $this->assertSame((string)$expected, $vo->toString());
+        $this->assertSame($expected===null ? null : (string)$expected, $vo->toStringOrNull());
         $this->assertSame((string)$expected, (string)$vo);
     }
 
