@@ -47,12 +47,4 @@ class Id implements Stringable
 
         $this->value = $value;
     }
-
-    /**
-     * @return int|null
-     */
-    public function toInt(): ?int
-    {
-        return $this->value === null ? null : (int)$this->value;
-    }
 }

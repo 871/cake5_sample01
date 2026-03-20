@@ -42,25 +42,7 @@ final class ReadHistories
         /** @var array<\App\Model\Entity\Admin\AdminAccountHistory> $results */
         $results = $this->table
             ->find()
-            ->select([
-                'AdminAccountHistories__id' => 'AdminAccountHistories.id',
-                'AdminAccountHistories__admin_account_id' => 'AdminAccountHistories.admin_account_id',
-                'AdminAccountHistories__email' => 'AdminAccountHistories.email',
-                'AdminAccountHistories__name' => 'AdminAccountHistories.name',
-                'AdminAccountHistories__admin_note' => 'AdminAccountHistories.admin_note',
-                'AdminAccountHistories__account_status_master_id' => 'AdminAccountHistories.account_status_master_id',
-                'AdminAccountHistories__is_email_verified' => 'AdminAccountHistories.is_email_verified',
-                'AdminAccountHistories__password_changed_at' => 'AdminAccountHistories.password_changed_at',
-                'AdminAccountHistories__password_expires_at' => 'AdminAccountHistories.password_expires_at',
-                'AdminAccountHistories__created' => 'AdminAccountHistories.created',
-                'AdminAccountHistories__created_by' => 'AdminAccountHistories.created_by',
-                'AdminAccountHistories__created_ip' => 'AdminAccountHistories.created_ip',
-                'AdminAccountHistories__modified' => 'AdminAccountHistories.modified',
-                'AdminAccountHistories__modified_by' => 'AdminAccountHistories.modified_by',
-                'AdminAccountHistories__modified_ip' => 'AdminAccountHistories.modified_ip',
-                'AdminAccountHistories__operation_type' => 'AdminAccountHistories.operation_type',
-                'AdminAccountHistories__history_created' => 'AdminAccountHistories.history_created',
-            ])
+            ->contain(['AccountStatusMasters'])
             ->where([
                 'AdminAccountHistories.admin_account_id' => $this->adminAccountId->toInt(),
             ])

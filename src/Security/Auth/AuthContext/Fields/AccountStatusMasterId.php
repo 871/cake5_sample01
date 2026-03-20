@@ -5,7 +5,7 @@ namespace App\Security\Auth\AuthContext\Fields;
 
 use Stringable;
 
-interface AccountId extends Stringable
+interface AccountStatusMasterId extends Stringable
 {
     /**
      * @param string $value

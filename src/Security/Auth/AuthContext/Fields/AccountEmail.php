@@ -5,17 +5,12 @@ namespace App\Security\Auth\AuthContext\Fields;
 
 use Stringable;
 
-interface AccountId extends Stringable
+interface AccountEmail extends Stringable
 {
     /**
      * @param string $value
      */
     public function __construct(string $value);
-
-    /**
-     * @return int
-     */
-    public function toInt(): int;
 
     /**
      * @return string

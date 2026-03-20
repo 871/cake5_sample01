@@ -33,26 +33,13 @@ final class Search
     {
         return $this->table
             ->find()
-            ->select([
-                'AdminAccounts__id' => 'AdminAccounts.id',
-                'AdminAccounts__email' => 'AdminAccounts.email',
-                'AdminAccounts__name' => 'AdminAccounts.name',
-                'AdminAccounts__admin_note' => 'AdminAccounts.admin_note',
-                'AdminAccounts__account_status_master_id' => 'AdminAccounts.account_status_master_id',
-                'AdminAccounts__is_email_verified' => 'AdminAccounts.is_email_verified',
-                'AdminAccounts__password_changed_at' => 'AdminAccounts.password_changed_at',
-                'AdminAccounts__password_expires_at' => 'AdminAccounts.password_expires_at',
-                'AdminAccounts__created' => 'AdminAccounts.created',
-                'AdminAccounts__modified' => 'AdminAccounts.modified',
-                'AccountStatusMasters__name' => 'AccountStatusMasters.name',
-            ])
             ->contain(['AccountStatusMasters'])
             ->where(array_filter([
-                'AdminAccounts.id' => $this->condition->getId()->toString(),
-                'AdminAccounts.account_status_master_id' => $this->condition->getAccountStatusMasterId()->toString(),
+                'AdminAccounts.id' => $this->condition->getId()->toStringOrNull(),
+                'AdminAccounts.account_status_master_id' => $this->condition->getAccountStatusMasterId()->toStringOrNull(),
                 'OR' => array_filter([
-                    'AdminAccounts.email LIKE' => $this->condition->getKeyword()->toQueryLike(),
-                    'AdminAccounts.name LIKE' => $this->condition->getKeyword()->toQueryLike(),
+                    'AdminAccounts.email LIKE' => $this->condition->getKeyword()->toQueryLikeOrNull(),
+                    'AdminAccounts.name LIKE' => $this->condition->getKeyword()->toQueryLikeOrNull(),
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             ], fn($v) => !in_array($v, [null, '', []], true)));
     }

@@ -42,23 +42,7 @@ final class Read
         /** @var \App\Model\Entity\Admin\AdminAccount $ormEntity */
         $ormEntity = $this->table
             ->find()
-            ->select([
-                'AdminAccounts__id' => 'AdminAccounts.id',
-                'AdminAccounts__email' => 'AdminAccounts.email',
-                'AdminAccounts__password' => 'AdminAccounts.password',
-                'AdminAccounts__name' => 'AdminAccounts.name',
-                'AdminAccounts__admin_note' => 'AdminAccounts.admin_note',
-                'AdminAccounts__account_status_master_id' => 'AdminAccounts.account_status_master_id',
-                'AdminAccounts__is_email_verified' => 'AdminAccounts.is_email_verified',
-                'AdminAccounts__password_changed_at' => 'AdminAccounts.password_changed_at',
-                'AdminAccounts__password_expires_at' => 'AdminAccounts.password_expires_at',
-                'AdminAccounts__created' => 'AdminAccounts.created',
-                'AdminAccounts__created_by' => 'AdminAccounts.created_by',
-                'AdminAccounts__created_ip' => 'AdminAccounts.created_ip',
-                'AdminAccounts__modified' => 'AdminAccounts.modified',
-                'AdminAccounts__modified_by' => 'AdminAccounts.modified_by',
-                'AdminAccounts__modified_ip' => 'AdminAccounts.modified_ip',
-            ])
+            ->contain(['AccountStatusMasters'])
             ->where([
                 'AdminAccounts.id' => $this->id->toInt(),
             ])

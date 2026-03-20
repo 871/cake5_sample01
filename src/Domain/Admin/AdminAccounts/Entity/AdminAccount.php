@@ -15,6 +15,8 @@ final class AdminAccount
      * @param ?string $name
      * @param ?string $admin_note
      * @param ?string $account_status_master_id
+     * @param ?string $account_status_master_code
+     * @param ?string $account_status_master_name
      * @param ?string $is_email_verified
      * @param ?string $password_changed_at
      * @param ?string $password_expires_at
@@ -32,6 +34,8 @@ final class AdminAccount
         private readonly ?string $name,
         private readonly ?string $admin_note,
         private readonly ?string $account_status_master_id,
+        private readonly ?string $account_status_master_code,
+        private readonly ?string $account_status_master_name,
         private readonly ?string $is_email_verified,
         private readonly ?string $password_changed_at,
         private readonly ?string $password_expires_at,
@@ -90,6 +94,22 @@ final class AdminAccount
     public function accountStatusMasterId(): Vo\AccountStatusMasterId
     {
         return new Vo\AccountStatusMasterId($this->account_status_master_id);
+    }
+
+    /**
+     * @return \App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterCode
+     */
+    public function accountStatusMasterCode(): Vo\AccountStatusMasterCode
+    {
+        return new Vo\AccountStatusMasterCode($this->account_status_master_code);
+    }
+
+    /**
+     * @return \App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterName
+     */
+    public function accountStatusMasterName(): Vo\AccountStatusMasterName
+    {
+        return new Vo\AccountStatusMasterName($this->account_status_master_name);
     }
 
     /**

@@ -249,6 +249,8 @@ final class Create implements ServiceInterface
             name: Cast::toString($input['name']),
             admin_note: Cast::toString($input['admin_note']),
             account_status_master_id: Cast::toString($input['account_status_master_id']),
+            account_status_master_code: null,
+            account_status_master_name: null,
             is_email_verified: Cast::toString($input['is_email_verified']),
             password_changed_at: Cast::toString($input['password_changed_at']),
             password_expires_at: Cast::toString($input['password_expires_at']),

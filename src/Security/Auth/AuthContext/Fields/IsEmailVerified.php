@@ -3,17 +3,11 @@ declare(strict_types=1);
 
 namespace App\Security\Auth\AuthContext\Fields;
 
-use App\Security\Auth\AuthContext;
 use DomainException;
 use Stringable;
 
-class Type implements Stringable
+class IsEmailVerified implements Stringable
 {
-    public const TYPE_ANONYMOUS = 'anonymous';
-    public const TYPE_CUSTMER = 'custmer';
-    public const TYPE_USER = 'user';
-    public const TYPE_ADMIN = 'admin';
-
     /**
      * @param string $value
      */
@@ -21,18 +15,21 @@ class Type implements Stringable
         private readonly string $value,
     ) {
         if (
-            in_array($this->value, [
-                self::TYPE_ANONYMOUS,
-                self::TYPE_CUSTMER,
-                self::TYPE_USER,
-                self::TYPE_ADMIN,
-            ], true) === false
+            in_array($this->value, ['0', '1'], true) === false
         ) {
             throw new DomainException(
                 self::class . ' Generate Error'
                 . '[type: ' . $this->value . ']',
             );
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function toBool(): bool
+    {
+        return $this->value === '1';
     }
 
     /**

@@ -21,7 +21,7 @@ class Keyword implements Stringable
     /**
      * @return ?string
      */
-    public function toQueryLike(): ?string
+    public function toQueryLikeOrNull(): ?string
     {
         return $this->value !== null ? '%' . $this->value . '%' : null;
     }
