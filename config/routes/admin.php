@@ -3,7 +3,6 @@
 
 use Cake\Routing\RouteBuilder;
 
-// TODO 未実装
 $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $builder) {
     // エラー（未ログイン）
     $builder->get('/error', ['controller' => 'Error', 'action' => 'index']);
