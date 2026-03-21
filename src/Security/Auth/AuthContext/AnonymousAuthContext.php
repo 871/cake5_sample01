@@ -14,6 +14,7 @@ final class AnonymousAuthContext implements AuthContext
     public function __construct(ServerRequest $request)
     {
         // 処理なし
+        unset($request); // 静的解析対策
     }
 
     /**

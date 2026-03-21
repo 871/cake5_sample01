@@ -12,7 +12,8 @@ class AnonymousAccountId implements AccountId
      */
     public function __construct(string $value)
     {
-        // 匿名アカウントIDは常に0とする
+        // 処理なし
+        unset($value); // 静的解析対策
     }
 
     /**
