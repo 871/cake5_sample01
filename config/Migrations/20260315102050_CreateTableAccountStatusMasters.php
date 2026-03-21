@@ -18,8 +18,8 @@ class CreateTableAccountStatusMasters extends BaseMigration
                 description VARCHAR(255) NULL COMMENT '説明',
                 sort INT NOT NULL DEFAULT 0 COMMENT '表示順',
                 is_active INT NOT NULL DEFAULT 1 COMMENT '有効フラグ',
-                created DATETIME NOT NULL,
-                modified DATETIME NOT NULL,
+                created DATETIME(0) NOT NULL,
+                modified DATETIME(0) NOT NULL,
                 PRIMARY KEY (id),
                 UNIQUE KEY account_status_masters_idx01 (code)
             ) ENGINE=InnoDB

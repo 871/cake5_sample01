@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace App\Domain\Shared\ValueObject\Trait;
 
 use DateTime;
-use DateTimeImmutable;
+use DateTimeInterface;
 
 trait TimeTrait
 {
     /**
-     * @var ?\DateTimeImmutable
+     * @var ?\DateTimeInterface
      */
-    private readonly ?DateTimeImmutable $value;
+    private readonly ?DateTimeInterface $value;
 
     /**
      * @param string $format
@@ -20,6 +20,14 @@ trait TimeTrait
     public function format(string $format = 'H:i:s'): ?string
     {
         return $this->value?->format($format);
+    }
+
+    /**
+     * @return ?\DateTimeInterface
+     */
+    public function toTimeOrNull(): ?DateTimeInterface
+    {
+        return $this->value;
     }
 
     /**

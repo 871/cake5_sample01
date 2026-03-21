@@ -12,21 +12,21 @@ use Cake\Validation\Validator;
 /**
  * AdminAccountHistories Model
  *
- * @property \App\Model\Table\Admin\AdminAccountsTable&\Cake\ORM\Association\BelongsTo $AdminAccounts
- * @property \App\Model\Table\Shared\AccountStatusMastersTable&\Cake\ORM\Association\BelongsTo $AccountStatusMasters
+ * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Admin\AdminAccountsTable> $AdminAccounts
+ * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Shared\AccountStatusMastersTable> $AccountStatusMasters
  * @method \App\Model\Entity\Admin\AdminAccountHistory newEmptyEntity()
- * @method \App\Model\Entity\Admin\AdminAccountHistory newEntity(array $data, array $options = [])
- * @method array<\App\Model\Entity\Admin\AdminAccountHistory> newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Admin\AdminAccountHistory get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\Admin\AdminAccountHistory findOrCreate($search, ?callable $callback = null, array $options = [])
- * @method \App\Model\Entity\Admin\AdminAccountHistory patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method array<\App\Model\Entity\Admin\AdminAccountHistory> patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\Admin\AdminAccountHistory|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Admin\AdminAccountHistory saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method iterable<\App\Model\Entity\Admin\AdminAccountHistory>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccountHistory>|false saveMany(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Admin\AdminAccountHistory>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccountHistory> saveManyOrFail(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Admin\AdminAccountHistory>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccountHistory>|false deleteMany(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Admin\AdminAccountHistory>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccountHistory> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Admin\AdminAccountHistory newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Admin\AdminAccountHistory> newEntities(array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Admin\AdminAccountHistory get(mixed $primaryKey,array<string, mixed>|string $finder = 'all',\Psr\SimpleCache\CacheInterface|string|null $cache = null,\Closure|string|null $cacheKey = null,mixed ...$args)
+ * @method \App\Model\Entity\Admin\AdminAccountHistory findOrCreate($search, ?callable $callback = null, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Admin\AdminAccountHistory patchEntity(\Cake\Datasource\EntityInterface $entity, array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Admin\AdminAccountHistory> patchEntities(iterable<\App\Model\Entity\Admin\AdminAccountHistory> $entities, array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Admin\AdminAccountHistory|false save(\Cake\Datasource\EntityInterface $entity, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Admin\AdminAccountHistory saveOrFail(\Cake\Datasource\EntityInterface $entity, array<string, mixed> $options = [])
+ * @method iterable<\App\Model\Entity\Admin\AdminAccountHistory>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccountHistory>|false saveMany(iterable<\App\Model\Entity\Admin\AdminAccountHistory> $entities, array<string, mixed> $options = [])
+ * @method iterable<\App\Model\Entity\Admin\AdminAccountHistory>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccountHistory> saveManyOrFail(iterable<\App\Model\Entity\Admin\AdminAccountHistory> $entities, array<string, mixed> $options = [])
+ * @method iterable<\App\Model\Entity\Admin\AdminAccountHistory>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccountHistory>|false deleteMany(iterable<\App\Model\Entity\Admin\AdminAccountHistory> $entities, array<string, mixed> $options = [])
+ * @method iterable<\App\Model\Entity\Admin\AdminAccountHistory>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccountHistory> deleteManyOrFail(iterable<\App\Model\Entity\Admin\AdminAccountHistory> $entities, array<string, mixed> $options = [])
  */
 class AdminAccountHistoriesTable extends Table
 {

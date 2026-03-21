@@ -5,6 +5,7 @@ namespace App\Domain\Sample\MySqlTypeSamples\ValueObject;
 
 use App\Domain\Shared\ValueObject\Trait\DateTrait;
 use DateTimeImmutable;
+use DateTimeInterface;
 use DomainException;
 use Stringable;
 
@@ -16,9 +17,9 @@ class DateCol implements Stringable
     public const MAX = '2999-12-31';
 
     /**
-     * @var ?\DateTimeImmutable
+     * @var ?\DateTimeInterface
      */
-    private readonly ?DateTimeImmutable $value;
+    private readonly ?DateTimeInterface $value;
 
     /**
      * @param ?string $value

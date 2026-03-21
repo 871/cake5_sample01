@@ -7,7 +7,7 @@ use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample as DomainEntity;
 use App\Domain\Sample\MySqlTypeSamples\Repository\MySqlTypeSamplesRepository as DomainMySqlTypeSamplesRepository;
 use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
 use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 final class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesRepository
 {
@@ -15,9 +15,9 @@ final class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesReposito
      * 検索
      *
      * @param \App\Domain\Sample\MySqlTypeSamples\SearchCondition $condition
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Sample\MySqlTypeSample>
      */
-    public function search(SearchCondition $condition): Query
+    public function search(SearchCondition $condition): SelectQuery
     {
         return (new MySqlTypeSamplesRepository\Search($condition))->run();
     }

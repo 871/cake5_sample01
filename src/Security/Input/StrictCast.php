@@ -181,7 +181,7 @@ class StrictCast
      * @param string $format
      * @return string
      */
-    public static function toDateTimeString(mixed $value, string $format = 'Y-m-d H:i:s'): string
+    public static function toDateTimeString(mixed $value, string $format = 'Y-m-d\TH:i:s'): string
     {
         $result = Cast::toDateTimeString($value, $format);
         if ($result !== null) {

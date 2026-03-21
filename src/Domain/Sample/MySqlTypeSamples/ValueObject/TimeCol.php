@@ -5,6 +5,7 @@ namespace App\Domain\Sample\MySqlTypeSamples\ValueObject;
 
 use App\Domain\Shared\ValueObject\Trait\TimeTrait;
 use DateTimeImmutable;
+use DateTimeInterface;
 use DomainException;
 use Stringable;
 
@@ -16,9 +17,9 @@ class TimeCol implements Stringable
     public const MAX = '23:59:59';
 
     /**
-     * @var ?\DateTimeImmutable
+     * @var ?\DateTimeInterface
      */
-    private readonly ?DateTimeImmutable $value;
+    private readonly ?DateTimeInterface $value;
 
     /**
      * @param ?string $value

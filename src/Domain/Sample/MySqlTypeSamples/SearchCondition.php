@@ -21,8 +21,8 @@ class SearchCondition
      * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateCol $dateColTo
      * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\TimeCol $timeColFrom
      * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\TimeCol $timeColTo
-     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DatetimeCol $datetimeColFrom
-     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DatetimeCol $datetimeColTo
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateTimeCol $datetimeColFrom
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateTimeCol $datetimeColTo
      * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\Search\Keyword $keyword,
      */
     public function __construct(
@@ -41,8 +41,8 @@ class SearchCondition
         private readonly ValueObject\DateCol $dateColTo,
         private readonly ValueObject\TimeCol $timeColFrom,
         private readonly ValueObject\TimeCol $timeColTo,
-        private readonly ValueObject\DatetimeCol $datetimeColFrom,
-        private readonly ValueObject\DatetimeCol $datetimeColTo,
+        private readonly ValueObject\DateTimeCol $datetimeColFrom,
+        private readonly ValueObject\DateTimeCol $datetimeColTo,
         private readonly ValueObject\Search\Keyword $keyword,
     ) {
         // 処理なし
@@ -169,17 +169,17 @@ class SearchCondition
     }
 
     /**
-     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DatetimeCol
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateTimeCol
      */
-    public function getDatetimeColFrom(): ValueObject\DatetimeCol
+    public function getDatetimeColFrom(): ValueObject\DateTimeCol
     {
         return $this->datetimeColFrom;
     }
 
     /**
-     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DatetimeCol
+     * @return \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateTimeCol
      */
-    public function getDatetimeColTo(): ValueObject\DatetimeCol
+    public function getDatetimeColTo(): ValueObject\DateTimeCol
     {
         return $this->datetimeColTo;
     }

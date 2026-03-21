@@ -60,6 +60,7 @@ final class MySqlTypeSampleMapper
      */
     public function toPatchOrmEntity(DomainEntity $domainEntity): OrmEntity
     {
+        /** @var \App\Model\Entity\Sample\MySqlTypeSample $ormEntity */
         $ormEntity = $this->table->get($domainEntity->id()->toString());
 
         $this->table->patchEntity($ormEntity, [
@@ -99,7 +100,7 @@ final class MySqlTypeSampleMapper
             double_col: Cast::toString($ormEntity->double_col),
             date_col: Cast::toString($ormEntity->date_col?->format('Y-m-d')),
             time_col: Cast::toString($ormEntity->time_col?->format('H:i:s')),
-            datetime_col: Cast::toString($ormEntity->datetime_col?->format('Y-m-d H:i:s')),
+            datetime_col: Cast::toString($ormEntity->datetime_col?->format('Y-m-d\TH:i:s')),
             char_col: Cast::toString($ormEntity->char_col),
             varchar_col: Cast::toString($ormEntity->varchar_col),
             text_col: Cast::toString($ormEntity->text_col),

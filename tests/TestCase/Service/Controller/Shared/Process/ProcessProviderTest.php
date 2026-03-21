@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Service\Controller\Shared\Process;
 
-use App\Security\Auth\AuthContext;
-use App\Security\Auth\AuthContext\Fields;
+use App\Security\Auth\AuthContext\AnonymousAuthContext;
 use App\Service\Controller\Shared\Process\Process\InputProcess;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
@@ -24,18 +23,7 @@ final class ProcessProviderTest extends TestCase
     {
         parent::setUp();
 
-        // AuthContext スタブ
-        $authContext = new class() implements AuthContext {
-            public function getType(): Fields\Type
-            {
-                return new Fields\Type(AuthContext::TYPE_ANONYMOUS);
-            }
-
-            public function getAccountId(): Fields\AccountId
-            {
-                return new Fields\AccountId(null);
-            }
-        };
+        $authContext = new AnonymousAuthContext($this->createMock(ServerRequest::class));
 
         // Session モック
         $session = $this->createMock(Session::class);
@@ -74,23 +62,11 @@ final class ProcessProviderTest extends TestCase
 
         $request = $this->createMock(ServerRequest::class);
         $request->method('getSession')->willReturn($session);
-        // AuthContext スタブ
-        $authContext = new class() implements AuthContext {
-            public function getType(): Fields\Type
-            {
-                return new Fields\Type(AuthContext::TYPE_ANONYMOUS);
-            }
-
-            public function getAccountId(): Fields\AccountId
-            {
-                return new Fields\AccountId(null);
-            }
-        };
 
         $this->provider = new ProcessProvider(
             datetime: new \DateTimeImmutable(),
             request: $request,
-            authContext: $authContext,
+            authContext: new AnonymousAuthContext($this->createMock(ServerRequest::class)),
         );
 
         $processId = new ProcessId('123456');

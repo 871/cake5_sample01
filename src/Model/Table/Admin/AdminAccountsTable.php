@@ -12,28 +12,16 @@ use Cake\Validation\Validator;
 /**
  * AdminAccounts Model
  *
- * @property \App\Model\Table\Shared\AccountStatusMastersTable&\Cake\ORM\Association\BelongsTo $AccountStatusMasters
- * @property \App\Model\Table\Admin\AdminAccountHistoriesTable&\Cake\ORM\Association\HasMany $AdminAccountHistories
+ * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Shared\AccountStatusMastersTable> $AccountStatusMasters
+ * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Admin\AdminAccountHistoriesTable> $AdminAccountHistories
  * @method \App\Model\Entity\Admin\AdminAccount newEmptyEntity()
- * @method \App\Model\Entity\Admin\AdminAccount newEntity(array $data, array $options = [])
- * @method array<\App\Model\Entity\Admin\AdminAccount> newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Admin\AdminAccount get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\Admin\AdminAccount findOrCreate($search, ?callable $callback = null, array $options = [])
- * @method \App\Model\Entity\Admin\AdminAccount patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method array<\App\Model\Entity\Admin\AdminAccount> patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\Admin\AdminAccount|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Admin\AdminAccount saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method iterable<\App\Model\Entity\Admin\AdminAccount>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccount>|false saveMany(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Admin\AdminAccount>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccount> saveManyOrFail(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Admin\AdminAccount>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccount>|false deleteMany(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Admin\AdminAccount>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Admin\AdminAccount> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Admin\AdminAccount newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method list<\App\Model\Entity\Admin\AdminAccount> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
  */
-class AdminAccountsTable extends Table
+final class AdminAccountsTable extends Table
 {
     /**
-     * Initialize method
-     *
-     * @param array<string, mixed> $config The configuration for the Table.
+     * @param array<string, mixed> $config
      * @return void
      */
     public function initialize(array $config): void
@@ -50,6 +38,7 @@ class AdminAccountsTable extends Table
             'foreignKey' => 'account_status_master_id',
             'joinType' => 'INNER',
         ]);
+
         $this->hasMany('AdminAccountHistories', [
             'className' => AdminAccountHistoriesTable::class,
             'foreignKey' => 'admin_account_id',
@@ -68,7 +57,10 @@ class AdminAccountsTable extends Table
             ->email('email')
             ->requirePresence('email', 'create')
             ->notEmptyString('email')
-            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->add('email', 'unique', [
+                'rule' => 'validateUnique',
+                'provider' => 'table',
+            ]);
 
         $validator
             ->scalar('password')
@@ -91,7 +83,7 @@ class AdminAccountsTable extends Table
             ->notEmptyString('account_status_master_id');
 
         $validator
-            ->integer('is_email_verified')
+            ->boolean('is_email_verified')
             ->notEmptyString('is_email_verified');
 
         $validator
@@ -124,8 +116,7 @@ class AdminAccountsTable extends Table
     }
 
     /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
+     * Returns a rules checker object that will be used for validating application integrity.
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
@@ -133,11 +124,9 @@ class AdminAccountsTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['email']), ['errorField' => 'email']);
+
         $rules->add(
-            $rules->existsIn(
-                ['account_status_master_id'],
-                'AccountStatusMasters',
-            ),
+            $rules->existsIn(['account_status_master_id'], 'AccountStatusMasters'),
             ['errorField' => 'account_status_master_id'],
         );
 

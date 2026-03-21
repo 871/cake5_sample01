@@ -4,41 +4,103 @@ declare(strict_types=1);
 namespace App\Security\Auth;
 
 use App\Security\Auth\AuthContext\Fields;
+use Cake\Http\ServerRequest;
 
 interface AuthContext
 {
-    public const TYPE_ANONYMOUS = 'anonymous';
-    public const TYPE_CUSTMER = 'custmer';
-    public const TYPE_USER = 'user';
-    public const TYPE_ADMIN = 'admin';
+    /**
+     * @param \Cake\Http\ServerRequest $request
+     */
+    public function __construct(ServerRequest $request);
 
     /**
-     * 認証コンテキストのタイプを取得する
+     * 認証コンテキストのタイプ
      *
      * @return \App\Security\Auth\AuthContext\Fields\Type
      */
     public function getType(): Fields\Type;
 
     /**
-     * 認証アカウントIDを取得する
+     * 認証アカウントID
      *
      * @return \App\Security\Auth\AuthContext\Fields\AccountId
      */
     public function getAccountId(): Fields\AccountId;
 
-    /*
-        login_code
+    /**
+     * 認証アカウントメールアドレス
+     *
+     * @return \App\Security\Auth\AuthContext\Fields\AccountEmail
+     */
+    public function getAccountEmail(): Fields\AccountEmail;
 
-        email VARCHAR(255) NOT NULL COMMENT 'ログインメールアドレス',
-        name VARCHAR(100) NOT NULL COMMENT '表示名',
-        account_status_master_code
-        account_status_master_name
-        is_email_verified INT NOT NULL DEFAULT 0 COMMENT 'メール確認済フラグ',
-        password_changed_at DATETIME NOT NULL COMMENT 'パスワード最終変更日時',
-        password_expires_at DATETIME NOT NULL COMMENT 'パスワード有効期限',
+    /**
+     * 認証アカウント表示名
+     *
+     * @return \App\Security\Auth\AuthContext\Fields\AccountName
+     */
+    public function getAccountName(): Fields\AccountName;
 
-        created DATETIME NOT NULL COMMENT '作成日時',
-        modified DATETIME NOT NULL COMMENT '更新日時',
+    /**
+     * 認証アカウントステータスマスターID
+     *
+     * @return \App\Security\Auth\AuthContext\Fields\AccountStatusMasterId
+     */
+    public function getAccountStatusMasterId(): Fields\AccountStatusMasterId;
 
-    */
+    /**
+     * 認証アカウントステータスマスターネーム
+     *
+     * @return \App\Security\Auth\AuthContext\Fields\AccountStatusMasterName
+     */
+    public function getAccountStatusMasterName(): Fields\AccountStatusMasterName;
+
+    /**
+     * 認証アカウントステータスマスターコード
+     *
+     * @return \App\Security\Auth\AuthContext\Fields\AccountStatusMasterCode
+     */
+    public function getAccountStatusMasterCode(): Fields\AccountStatusMasterCode;
+
+    /**
+     * 認証アカウントメール確認済フラグ
+     *
+     * @return \App\Security\Auth\AuthContext\Fields\IsEmailVerified
+     */
+    public function getIsEmailVerified(): Fields\IsEmailVerified;
+
+    /**
+     * 認証アカウントパスワード最終変更日時
+     *
+     * @return \App\Security\Auth\AuthContext\Fields\PasswordChangedAt
+     */
+    public function getPasswordChangedAt(): Fields\PasswordChangedAt;
+
+    /**
+     * 認証アカウントパスワード有効期限
+     *
+     * @return \App\Security\Auth\AuthContext\Fields\PasswordExpiresAt
+     */
+    public function getPasswordExpiresAt(): Fields\PasswordExpiresAt;
+
+    /**
+     * 認証アカウント作成日時
+     *
+     * @return \App\Security\Auth\AuthContext\Fields\Created
+     */
+    public function getCreated(): Fields\Created;
+
+    /**
+     * 認証アカウント更新日時
+     *
+     * @return \App\Security\Auth\AuthContext\Fields\Modified
+     */
+    public function getModified(): Fields\Modified;
+
+    /**
+     * ログイン日時
+     *
+     * @return \App\Security\Auth\AuthContext\Fields\Logined
+     */
+    public function getLogined(): Fields\Logined;
 }

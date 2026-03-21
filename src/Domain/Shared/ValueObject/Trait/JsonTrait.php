@@ -6,6 +6,11 @@ namespace App\Domain\Shared\ValueObject\Trait;
 trait JsonTrait
 {
     /**
+     * @var ?array<mixed>
+     */
+    private readonly ?array $value;
+
+    /**
      * @return string
      */
     public function toString(): string
@@ -15,6 +20,18 @@ trait JsonTrait
         }
 
         return json_encode($this->value) ? : '';
+    }
+
+    /**
+     * @return ?string
+     */
+    public function toStringOrNull(): ?string
+    {
+        if ($this->value === null) {
+            return null;
+        }
+
+        return json_encode($this->value) ? : null;
     }
 
     /**

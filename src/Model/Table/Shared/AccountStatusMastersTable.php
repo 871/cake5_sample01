@@ -11,30 +11,16 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * AccountStatusMasters Model
- *
- * @property \App\Model\Table\Admin\AdminAccountHistoriesTable&\Cake\ORM\Association\HasMany $AdminAccountHistories
- * @property \App\Model\Table\Admin\AdminAccountsTable&\Cake\ORM\Association\HasMany $AdminAccounts
+ * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Admin\AdminAccountsTable> $AdminAccounts
+ * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Admin\AdminAccountHistoriesTable> $AdminAccountHistories
  * @method \App\Model\Entity\Shared\AccountStatusMaster newEmptyEntity()
- * @method \App\Model\Entity\Shared\AccountStatusMaster newEntity(array $data, array $options = [])
- * @method array<\App\Model\Entity\Shared\AccountStatusMaster> newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Shared\AccountStatusMaster get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\Shared\AccountStatusMaster findOrCreate($search, ?callable $callback = null, array $options = [])
- * @method \App\Model\Entity\Shared\AccountStatusMaster patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method array<\App\Model\Entity\Shared\AccountStatusMaster> patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\Shared\AccountStatusMaster|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Shared\AccountStatusMaster saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method iterable<\App\Model\Entity\Shared\AccountStatusMaster>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Shared\AccountStatusMaster>|false saveMany(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Shared\AccountStatusMaster>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Shared\AccountStatusMaster> saveManyOrFail(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Shared\AccountStatusMaster>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Shared\AccountStatusMaster>|false deleteMany(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Shared\AccountStatusMaster>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Shared\AccountStatusMaster> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Shared\AccountStatusMaster newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method list<\App\Model\Entity\Shared\AccountStatusMaster> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
  */
-class AccountStatusMastersTable extends Table
+final class AccountStatusMastersTable extends Table
 {
     /**
-     * Initialize method
-     *
-     * @param array<string, mixed> $config The configuration for the Table.
+     * @param array<string, mixed> $config
      * @return void
      */
     public function initialize(array $config): void
@@ -46,12 +32,12 @@ class AccountStatusMastersTable extends Table
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
-        $this->hasMany('AdminAccountHistories', [
-            'className' => AdminAccountHistoriesTable::class,
-            'foreignKey' => 'account_status_master_id',
-        ]);
         $this->hasMany('AdminAccounts', [
             'className' => AdminAccountsTable::class,
+            'foreignKey' => 'account_status_master_id',
+        ]);
+        $this->hasMany('AdminAccountHistories', [
+            'className' => AdminAccountHistoriesTable::class,
             'foreignKey' => 'account_status_master_id',
         ]);
     }
@@ -69,7 +55,10 @@ class AccountStatusMastersTable extends Table
             ->maxLength('code', 50)
             ->requirePresence('code', 'create')
             ->notEmptyString('code')
-            ->add('code', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->add('code', 'unique', [
+                'rule' => 'validateUnique',
+                'provider' => 'table',
+            ]);
 
         $validator
             ->scalar('name')
@@ -87,15 +76,14 @@ class AccountStatusMastersTable extends Table
             ->notEmptyString('sort');
 
         $validator
-            ->integer('is_active')
+            ->boolean('is_active')
             ->notEmptyString('is_active');
 
         return $validator;
     }
 
     /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
+     * Returns a rules checker object that will be used for validating application integrity.
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker

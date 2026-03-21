@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Service\Controller\Shared\Process;
 
-use App\Security\Auth\AuthContext;
-use App\Security\Auth\AuthContext\Fields;
+use App\Security\Auth\AuthContext\AnonymousAuthContext;
 use App\Service\Controller\Shared\Process\Process\InputProcess;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
@@ -29,17 +28,7 @@ final class ProcessRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        $authContext = new class() implements AuthContext {
-            public function getType(): Fields\Type
-            {
-                return new Fields\Type(AuthContext::TYPE_ANONYMOUS);
-            }
-
-            public function getAccountId(): Fields\AccountId
-            {
-                return new Fields\AccountId(10001);
-            }
-        };
+        $authContext = new AnonymousAuthContext($this->createMock(ServerRequest::class));
 
         $this->session = $this->createMock(Session::class);
 

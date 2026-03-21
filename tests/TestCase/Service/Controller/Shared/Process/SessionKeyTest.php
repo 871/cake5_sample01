@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Test\TestCase\Service\Controller\Shared\Process;
 
 use App\Security\Auth\AuthContext\Fields;
+use App\Security\Auth\AuthContext\Fields\AccountId\AdminAccountId;
+use App\Security\Auth\AuthContext\Fields\AccountId\AnonymousAccountId;
 use App\Service\Controller\Shared\Process\SessionKey;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use Cake\TestSuite\TestCase;
@@ -13,7 +15,7 @@ final class SessionKeyTest extends TestCase
     public function testToStringBuildsCorrectKey(): void
     {
         $type = new Fields\Type('anonymous');
-        $accountId = new Fields\AccountId(null);
+        $accountId = new AnonymousAccountId('0');
         $processId = new ProcessId('abc123');
 
         $sessionKey = new SessionKey(
@@ -24,7 +26,7 @@ final class SessionKeyTest extends TestCase
             processId: $processId,
         );
 
-        $expected = 'process.anonymous.App\Service\DummyService.000000000abc123';
+        $expected = 'process.anonymous.0.App\Service\DummyService.000000000abc123';
 
         $this->assertSame($expected, $sessionKey->toString());
     }
@@ -32,7 +34,7 @@ final class SessionKeyTest extends TestCase
     public function testToStringAndMagicMethodAreEqual(): void
     {
         $type = new Fields\Type('anonymous');
-        $accountId = new Fields\AccountId(1);
+        $accountId = new AdminAccountId('900001');
         $processId = new ProcessId('xyz');
 
         $sessionKey = new SessionKey(

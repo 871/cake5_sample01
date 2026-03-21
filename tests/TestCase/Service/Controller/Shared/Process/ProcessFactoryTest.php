@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Service\Controller\Shared\Process;
 
-use App\Security\Auth\AuthContext;
-use App\Security\Auth\AuthContext\Fields;
+use App\Security\Auth\AuthContext\AnonymousAuthContext;
 use App\Service\Controller\Shared\Process\ProcessFactory;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\Process\Process\InputProcess;
 use Cake\Http\ServerRequest;
+use Cake\Http\Session;
 use Cake\TestSuite\TestCase;
 use DomainException;
 
@@ -20,26 +20,18 @@ final class ProcessFactoryTest extends TestCase
     {
         parent::setUp();
 
-        // authContext と request のモックを注入
-        $authContext = new class() implements AuthContext {
+        $authContext = new AnonymousAuthContext($this->createMock(ServerRequest::class));
 
-            public function getType(): Fields\Type 
-            {
-                return new Fields\Type(AuthContext::TYPE_ANONYMOUS);
-            }
-
-            public function getAccountId(): Fields\AccountId
-            {
-                return new Fields\AccountId(null);
-            }
-        };
+        $session = $this->createMock(Session::class);
+        $session->method('check')->willReturn(false);
 
         $request = $this->createMock(ServerRequest::class);
+        $request->method('getSession')->willReturn($session);
 
         $this->factory = new ProcessFactory(
-            datetime : new \DateTimeImmutable(),
-            request : $request,
-            authContext : $authContext
+            datetime: new \DateTimeImmutable(),
+            request: $request,
+            authContext: $authContext,
         );
     }
 

@@ -3,12 +3,16 @@ declare(strict_types=1);
 
 namespace App\Security\Auth\AuthContext\Fields;
 
-use App\Security\Auth\AuthContext;
 use DomainException;
 use Stringable;
 
 class Type implements Stringable
 {
+    public const TYPE_ANONYMOUS = 'anonymous';
+    public const TYPE_CUSTMER = 'custmer';
+    public const TYPE_USER = 'user';
+    public const TYPE_ADMIN = 'admin';
+
     /**
      * @param string $value
      */
@@ -17,10 +21,10 @@ class Type implements Stringable
     ) {
         if (
             in_array($this->value, [
-            AuthContext::TYPE_ANONYMOUS,
-            AuthContext::TYPE_CUSTMER,
-            AuthContext::TYPE_USER,
-            AuthContext::TYPE_ADMIN,
+                self::TYPE_ANONYMOUS,
+                self::TYPE_CUSTMER,
+                self::TYPE_USER,
+                self::TYPE_ADMIN,
             ], true) === false
         ) {
             throw new DomainException(

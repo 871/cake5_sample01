@@ -37,7 +37,7 @@ final class InputProcess implements ProcessInterface
     }
 
     /**
-     * @return Fields\ProcessParams;
+     * @return \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams
      */
     public function getProcessParams(): Fields\ProcessParams
     {
@@ -49,6 +49,7 @@ final class InputProcess implements ProcessInterface
      */
     public function getInputs(): array
     {
+        /** @var array<string, mixed> */
         return Hash::expand(
             array_map(
                 fn($v) => is_string($v) ? (string)$v : $v,

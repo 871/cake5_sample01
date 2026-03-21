@@ -22,7 +22,7 @@ use Cake\ORM\Entity;
  * @property string|null $text_col
  * @property string|null $mediumtext_col
  * @property string|null $longtext_col
- * @property array|null $json_col
+ * @property array<string, mixed>|null $json_col
  * @property string|null $search_text
  */
 class MySqlTypeSample extends Entity

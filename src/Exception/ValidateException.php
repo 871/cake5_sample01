@@ -19,15 +19,19 @@ class ValidateException extends Exception
     }
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     public function getErrorMeesasges(): array
     {
-        return array_values(
-            array_unique(
-                Hash::flatten($this->errorInfos),
-            ),
-        );
+        $flatten = Hash::flatten($this->errorInfos);
+
+        /** @var list<string> $strings */
+        $strings = array_values(array_filter(
+            $flatten,
+            fn($v): bool => is_string($v),
+        ));
+
+        return array_values(array_unique($strings));
     }
 
     /**
