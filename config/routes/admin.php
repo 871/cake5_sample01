@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Middleware\Admin\AdminAuthMiddleware;
 use Cake\Routing\RouteBuilder;
 
 $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $builder) {
@@ -11,7 +12,9 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
     $builder->get('/login', ['controller' => 'Login', 'action' => 'index']);
     $builder->post('/login', ['controller' => 'Login', 'action' => 'indexPost']);
     // ログイン済ルート
+    $builder->registerMiddleware('adminAuth', new AdminAuthMiddleware());
     $builder->scope('/{account_id}', static function (RouteBuilder $builder) {
+        $builder->applyMiddleware('adminAuth');
         // エラー
         $builder->get('/error', ['controller' => 'Error', 'action' => 'index']);
         $builder->get('/error/{message_id}', ['controller' => 'Error', 'action' => 'index']);
