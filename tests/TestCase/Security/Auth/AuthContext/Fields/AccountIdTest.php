@@ -3,53 +3,76 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Security\Auth\AuthContext\Fields;
 
-use App\Security\Auth\AuthContext\Fields\AccountId;
+use App\Security\Auth\AuthContext\Fields\AccountId\AdminAccountId;
+use App\Security\Auth\AuthContext\Fields\AccountId\AnonymousAccountId;
 use Cake\TestSuite\TestCase;
 use DomainException;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 final class AccountIdTest extends TestCase
 {
-    #[DataProvider('validValues')]
-    public function testValidValues(?int $value): void
-    {
-        $accountId = new AccountId($value);
+    // --- AdminAccountId tests ---
 
-        $this->assertSame($value, $accountId->toInt());
-        $this->assertSame((string)$value, $accountId->toString());
-        $this->assertSame((string)$value, (string)$accountId);
+    #[DataProvider('validAdminValues')]
+    public function testAdminAccountIdValidValues(string $value, int $expected): void
+    {
+        $accountId = new AdminAccountId($value);
+
+        $this->assertSame($expected, $accountId->toInt());
+        $this->assertSame((string)$expected, $accountId->toString());
+        $this->assertSame((string)$expected, (string)$accountId);
     }
 
-    #[DataProvider('invalidValues')]
-    public function testInvalidValues(int $value): void
+    #[DataProvider('invalidAdminValues')]
+    public function testAdminAccountIdInvalidValues(string $value): void
     {
         $this->expectException(DomainException::class);
 
-        new AccountId($value);
+        new AdminAccountId($value);
     }
 
     /**
-     * @return array<string, array{0: ?int}>
+     * @return array<string, array{0: string, 1: int}>
      */
-    public static function validValues(): array
+    public static function validAdminValues(): array
     {
         return [
-            'null' => [null],
-            'min' => [1],
-            'middle' => [100],
-            'max' => [2147483647], // AccountId::MAX_INTの値
+            'min' => ['900000', 900000],
+            'middle' => ['950000', 950000],
+            'max' => ['999999', 999999],
         ];
     }
 
     /**
-     * @return array<string, array{0: ?int}>
+     * @return array<string, array{0: string}>
      */
-    public static function invalidValues(): array
+    public static function invalidAdminValues(): array
     {
         return [
-            'zero' => [0],
-            'negative' => [-1],
-            'over max' => [2147483647 + 1], // AccountId::MAX_INTの値 + 1
+            'below min' => ['899999'],
+            'above max' => ['1000000'],
+            'zero' => ['0'],
+            'negative' => ['-1'],
+            'non-numeric' => ['abc'],
         ];
+    }
+
+    // --- AnonymousAccountId tests ---
+
+    public function testAnonymousAccountIdAlwaysReturnsZero(): void
+    {
+        $accountId = new AnonymousAccountId('0');
+
+        $this->assertSame(0, $accountId->toInt());
+        $this->assertSame('0', $accountId->toString());
+        $this->assertSame('0', (string)$accountId);
+    }
+
+    public function testAnonymousAccountIdIgnoresInput(): void
+    {
+        $accountId = new AnonymousAccountId('anything');
+
+        $this->assertSame(0, $accountId->toInt());
+        $this->assertSame('0', $accountId->toString());
     }
 }

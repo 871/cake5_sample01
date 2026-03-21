@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Security\Auth\AuthContext\Fields;
 
-use App\Security\Auth\AuthContext;
 use App\Security\Auth\AuthContext\Fields\Type;
 use Cake\TestSuite\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -34,10 +33,10 @@ final class TypeTest extends TestCase
     public static function validTypes(): array
     {
         return [
-            'anonymous' => [AuthContext::TYPE_ANONYMOUS],
-            'customer'  => [AuthContext::TYPE_CUSTMER],
-            'user'      => [AuthContext::TYPE_USER],
-            'admin'     => [AuthContext::TYPE_ADMIN],
+            'anonymous' => [Type::TYPE_ANONYMOUS],
+            'customer'  => [Type::TYPE_CUSTMER],
+            'user'      => [Type::TYPE_USER],
+            'admin'     => [Type::TYPE_ADMIN],
         ];
     }
 
@@ -49,7 +48,7 @@ final class TypeTest extends TestCase
         return [
             'empty' => [''],
             'unknown' => ['hacker'],
-            'case mismatch' => [strtoupper(AuthContext::TYPE_USER)],
+            'case mismatch' => [strtoupper(Type::TYPE_USER)],
             'whitespace' => [' '],
         ];
     }
