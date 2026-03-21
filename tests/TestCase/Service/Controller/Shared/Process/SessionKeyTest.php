@@ -26,7 +26,7 @@ final class SessionKeyTest extends TestCase
             processId: $processId,
         );
 
-        $expected = 'process.anonymous.App\Service\DummyService.000000000abc123';
+        $expected = 'process.anonymous.0.App\Service\DummyService.000000000abc123';
 
         $this->assertSame($expected, $sessionKey->toString());
     }
