@@ -3,18 +3,20 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Admin;
 
-use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
+use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as AccountEntity;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
+use App\Exception\AuthException;
+use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
+use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 use App\Security\Auth\AuthContext;
+use App\Security\Auth\AuthContext\Fields\Type;
+use App\Security\Auth\AuthSession;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
-use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as AccountEntity;
-use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\Http\ServerRequest;
-use DateTimeInterface;
-use App\Exception\AuthException;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
-
+use Cake\Http\ServerRequest;
+use Cake\ORM\Locator\LocatorAwareTrait;
+use DateTimeInterface;
 
 final class Login implements ServiceInterface
 {
@@ -113,8 +115,16 @@ final class Login implements ServiceInterface
      */
     private function checkPasswordExpiresAt(): self
     {
-        $this->accountEntity;
-        // TODO: パスワード有効期限の判定
+        $expiresTimestamp = $this->accountEntity
+            ->passwordExpiresAt()
+            ->toDateTimeOrNull()
+            ?->getTimestamp() ?? 0;
+
+        $nowTimestamp = $this->datetime->getTimestamp();
+        if ($expiresTimestamp < $nowTimestamp) {
+            throw new AuthException(__('パスワードの有効期限が切れています。'));
+        }
+
         return $this;
     }
 
@@ -123,10 +133,14 @@ final class Login implements ServiceInterface
      */
     private function checkAccountStatus(): self
     {
-        $this->accountEntity;
-        // TODO: アカウントステータスの判定
-        
-        return $this;
+        return match ($this->accountEntity->accountStatusMasterCode()->toString()) {
+            Vo\AccountStatusMasterCode::ACTIVE => $this,
+            Vo\AccountStatusMasterCode::PENDING => $this,
+            Vo\AccountStatusMasterCode::SUSPENDED => throw new AuthException(__('アカウントが無効です。')),
+            Vo\AccountStatusMasterCode::LOCKED => throw new AuthException(__('アカウントがロックされました。')),
+            Vo\AccountStatusMasterCode::DELETED => throw new AuthException(__('アカウントが削除されました。')),
+            default => throw new AuthException(__('アカウントが無効です。')),
+        };
     }
 
     /**
@@ -134,9 +148,16 @@ final class Login implements ServiceInterface
      */
     private function createLoginSession(): self
     {
-        $this->accountEntity;
-        // TODO: ログインセッションの作成
-        
+        $this->account_id = $this->accountEntity->id()->toString();
+        $authSession = new AuthSession(
+            request: $this->request,
+            type: Type::TYPE_ADMIN,
+            account_id: $this->account_id,
+        );
+        $authSession->write(
+            (new AdminAccountMapper())->toAuthSessionParams($this->accountEntity, $this->datetime)
+        );
+
         return $this;
     }
 

@@ -174,4 +174,32 @@ final class AdminAccountMapper
             history_created: Cast::toString($ormEntity->history_created->format('Y-m-d\TH:i:s')),
         );
     }
+
+    /**
+     * @param \App\Domain\Admin\AdminAccounts\Entity\AdminAccount $domainEntity
+     * @return array<string, string>
+     */
+    public function toAuthSessionParams(
+        DomainEntity $domainEntity,
+        DateTimeInterface $nowDatetime,
+    ): array {
+        return [
+            'account_id' => $domainEntity->id()->toString(),
+            'account_email' => $domainEntity->email()->toString(),
+            'account_name' => $domainEntity->name()->toString(),
+            'account_status_master_id' => $domainEntity->accountStatusMasterId()->toString(),
+            'account_status_master_code' => $domainEntity->accountStatusMasterCode()->toString(),
+            'account_status_master_name' => $domainEntity->accountStatusMasterName()->toString(),
+            'is_email_verified' => $domainEntity->isEmailVerified()->toString(),
+            'password_changed_at' => $domainEntity->passwordChangedAt()->format('Y-m-d\TH:i:s'),
+            'password_expires_at' => $domainEntity->passwordExpiresAt()->format('Y-m-d\TH:i:s'),
+            'created' => $domainEntity->created()->format('Y-m-d\TH:i:s'),
+            'created_by' => $domainEntity->createdBy()->toString(),
+            'created_ip' => $domainEntity->createdIp()->toString(),
+            'modified' => $domainEntity->modified()->format('Y-m-d\TH:i:s'),
+            'modified_by' => $domainEntity->modifiedBy()->toString(),
+            'modified_ip' => $domainEntity->modifiedIp()->toString(),
+            'logined' => $nowDatetime->format('Y-m-d\TH:i:s'),
+        ];
+    }
 }

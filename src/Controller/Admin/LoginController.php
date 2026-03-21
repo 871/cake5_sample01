@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use App\Exception\AuthException;
 use App\Security\Auth\AuthContextResolver;
 use App\Security\Input\StrictCast;
-use App\Exception\AuthException;
 use App\Service\Controller\Admin\Login as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
@@ -56,7 +56,7 @@ class LoginController extends AppController
                     password: StrictCast::toString($this->request->getData('password')),
                 )
                 ->getAccountId();
-    
+
             return $this->redirect([
                 'prefix' => 'Admin',
                 'controller' => 'Top',
@@ -64,7 +64,6 @@ class LoginController extends AppController
                 'account_id' => $account_id,
             ]);
         } catch (AuthException $e) {
-
             $this->Flash->error($e->getMessage());
 
             return $this->redirect([
