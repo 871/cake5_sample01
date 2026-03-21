@@ -53,7 +53,7 @@
                         <?= $this->Form->postLink('ログアウト', [
                             'prefix' => 'Admin',
                             'controller' => 'Logout',
-                            'action' => 'indexPost',
+                            'action' => 'index',
                             'account_id' => $this->getRequest()->getParam('account_id'),
                         ], [
                             'class' => 'nav-link',

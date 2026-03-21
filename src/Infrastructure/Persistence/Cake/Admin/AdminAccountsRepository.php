@@ -86,4 +86,13 @@ final class AdminAccountsRepository implements DomainAdminAccountsRepository
     {
         return (new AdminAccountsRepository\ReadHistories($adminAccountId))->run();
     }
+
+    /**
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\Email $email
+     * @return ?\App\Domain\Admin\AdminAccounts\Entity\AdminAccount
+     */
+    public function findByEmail(Vo\Email $email): ?DomainEntity
+    {
+        return (new AdminAccountsRepository\FindByEmail($email))->run();
+    }
 }

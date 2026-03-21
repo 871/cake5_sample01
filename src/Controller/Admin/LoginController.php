@@ -4,10 +4,20 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\AppController;
+use App\Security\Auth\AuthContextResolver;
+use App\Security\Input\StrictCast;
+use App\Exception\AuthException;
+use App\Service\Controller\Admin\Login as CtlService;
 use Cake\Event\EventInterface;
+use DateTimeImmutable;
 
 class LoginController extends AppController
 {
+    /**
+     * @var \App\Service\Controller\Admin\Login
+     */
+    private CtlService $ctlService;
+
     /**
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
      * @return void
@@ -17,6 +27,12 @@ class LoginController extends AppController
         parent::beforeFilter($event);
 
         $this->viewBuilder()->setLayout('admin_login');
+
+        $this->ctlService = new CtlService(
+            datetime: new DateTimeImmutable(),
+            request: $this->request,
+            authContext: AuthContextResolver::resolve($this->request),
+        );
     }
 
     /**
@@ -24,7 +40,7 @@ class LoginController extends AppController
      */
     public function index()
     {
-        return $this->render('/Admin/Login/index');
+        return $this->render('/Admin/login');
     }
 
     /**
@@ -32,6 +48,28 @@ class LoginController extends AppController
      */
     public function indexPost()
     {
-        return $this->render('/Admin/Login/index');
+        try {
+            /** @var string $account_id */
+            $account_id = $this->ctlService
+                ->login(
+                    login_id: StrictCast::toString($this->request->getData('email')),
+                    password: StrictCast::toString($this->request->getData('password')),
+                )
+                ->getAccountId();
+    
+            return $this->redirect([
+                'prefix' => 'Admin',
+                'controller' => 'Top',
+                'action' => 'index',
+                'account_id' => $account_id,
+            ]);
+        } catch (AuthException $e) {
+
+            $this->Flash->error($e->getMessage());
+
+            return $this->redirect([
+                'action' => 'index',
+            ]);
+        }
     }
 }

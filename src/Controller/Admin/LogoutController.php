@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\AppController;
 use Cake\Event\EventInterface;
+use Cake\Http\Exception\MethodNotAllowedException;
 
 class LogoutController extends AppController
 {
@@ -24,7 +25,7 @@ class LogoutController extends AppController
      */
     public function index()
     {
-        return $this->render('/Admin/Logout/index');
+        throw new MethodNotAllowedException();
     }
 
     /**

@@ -16,7 +16,7 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
         $builder->get('/error', ['controller' => 'Error', 'action' => 'index']);
         $builder->get('/error/{message_id}', ['controller' => 'Error', 'action' => 'index']);
         // TOP
-        $builder->get('/', ['controller' => 'Main', 'action' => 'index']);
+        $builder->get('/', ['controller' => 'Top', 'action' => 'index']);
         // ログアウト
         $builder->get('/logout', ['controller' => 'Logout', 'action' => 'index']);
         $builder->post('/logout', ['controller' => 'Logout', 'action' => 'indexPost']);

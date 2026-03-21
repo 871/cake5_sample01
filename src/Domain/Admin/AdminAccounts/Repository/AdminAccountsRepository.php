@@ -45,4 +45,10 @@ interface AdminAccountsRepository
      * @return \App\Domain\Admin\AdminAccounts\Entity\AdminAccount
      */
     public function delete(Vo\Id $id): AdminAccount;
+
+    /**
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\Email $email
+     * @return ?\App\Domain\Admin\AdminAccounts\Entity\AdminAccount
+     */
+    public function findByEmail(Vo\Email $email): ?AdminAccount;
 }

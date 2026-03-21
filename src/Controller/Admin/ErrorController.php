@@ -24,6 +24,6 @@ class ErrorController extends AppController
      */
     public function index()
     {
-        return $this->render('/Admin/Error/index');
+        return $this->render('/Admin/error');
     }
 }
