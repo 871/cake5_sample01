@@ -9,9 +9,9 @@ use Cake\Http\ServerRequest;
 final class AnonymousAuthContext implements AuthContext
 {
     /**
-     * @param \Cake\Http\ServerRequest $request
+     * @param \Cake\Http\ServerRequest $_
      */
-    public function __construct(ServerRequest $request)
+    public function __construct(ServerRequest $_)
     {
         // 処理なし
     }
