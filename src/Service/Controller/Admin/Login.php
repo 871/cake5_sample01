@@ -155,7 +155,7 @@ final class Login implements ServiceInterface
             account_id: $this->account_id,
         );
         $authSession->write(
-            (new AdminAccountMapper())->toAuthSessionParams($this->accountEntity, $this->datetime)
+            (new AdminAccountMapper())->toAuthSessionParams($this->accountEntity, $this->datetime),
         );
 
         return $this;
