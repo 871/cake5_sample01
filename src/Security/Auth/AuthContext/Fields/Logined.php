@@ -3,34 +3,46 @@ declare(strict_types=1);
 
 namespace App\Security\Auth\AuthContext\Fields;
 
-use App\Domain\Shared\ValueObject as Svo;
-use Stringable;
+use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DomainException;
+use Stringable;
 
 class Logined implements Stringable
 {
     /**
-     * @var \DateTimeInterface
+     * @var ?\DateTimeInterface
      */
-    private readonly DateTimeInterface $value;
+    private readonly ?DateTimeInterface $value;
 
     /**
-     * @param string $value
+     * @param ?string $value
      */
-    public function __construct(string $value, string $format = 'Y-m-d\TH:i:s') 
-    { 
-        $this->value = (new Svo\Created($value, $format))->toDateTimeOrNull() ?? throw new DomainException(
-            self::class . ' Generate Error'
-            . '[value: ' . $value . ']'
-            . '[format: ' . $format . ']',
-        );
+    public function __construct(?string $value, string $format = 'Y-m-d\TH:i:s')
+    {
+        if ($value === null) {
+            $this->value = null;
+
+            return;
+        }
+
+        if (!static::checkFormat($value, $format)) {
+            throw new DomainException(
+                self::class . ' value datetime format Error'
+                . '[value: ' . $value . ']'
+                . '[format: ' . $format . ']',
+            );
+        }
+
+        $resultValue = DateTimeImmutable::createFromFormat($format, $value);
+        $this->value = $resultValue ?: null;
     }
 
     /**
-     * @return \DateTimeInterface
+     * @return ?\DateTimeInterface
      */
-    public function toDateTime(): DateTimeInterface
+    public function toDateTimeOrNull(): ?DateTimeInterface
     {
         return $this->value;
     }
@@ -40,7 +52,7 @@ class Logined implements Stringable
      */
     public function toString(): string
     {
-        return $this->value->format('Y-m-d\TH:i:s');
+        return $this->value?->format('Y-m-d\TH:i:s') ?? '';
     }
 
     /**
@@ -49,5 +61,16 @@ class Logined implements Stringable
     public function __toString(): string
     {
         return $this->toString();
+    }
+
+    /**
+     * @param string $value
+     * @param string $format
+     */
+    protected static function checkFormat(string $value, string $format): bool
+    {
+        $dt = DateTime::createFromFormat($format, $value);
+
+        return $dt !== false && $dt->format($format) === $value;
     }
 }

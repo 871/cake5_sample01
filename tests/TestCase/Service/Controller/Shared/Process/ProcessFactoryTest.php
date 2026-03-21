@@ -21,16 +21,18 @@ final class ProcessFactoryTest extends TestCase
         parent::setUp();
 
         // authContext と request のモックを注入
-        $authContext = new class() implements AuthContext {
+        $authContext = new AuthContext\AnonymousAuthContext();
+        
+        new class() implements AuthContext {
 
             public function getType(): Fields\Type 
             {
-                return new Fields\Type(AuthContext::TYPE_ANONYMOUS);
+                return new Fields\Type(Fields\Type::TYPE_ANONYMOUS);
             }
 
             public function getAccountId(): Fields\AccountId
             {
-                return new Fields\AccountId(null);
+                return new Fields\AccountId\AnonymousAccountId('0');
             }
         };
 

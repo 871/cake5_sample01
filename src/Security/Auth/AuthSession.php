@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace App\Security\Auth;
 
-use App\Security\Input\StrictCast;
 use Cake\Http\ServerRequest;
 
 final class AuthSession
 {
-    const PREFIX = 'Auth';
+    public const PREFIX = 'Auth';
 
     /**
      * @var string

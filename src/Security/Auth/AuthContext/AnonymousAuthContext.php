@@ -4,19 +4,15 @@ declare(strict_types=1);
 namespace App\Security\Auth\AuthContext;
 
 use App\Security\Auth\AuthContext;
-use App\Security\Auth\AuthContext\Fields;
-use BadMethodCallException;
+use Cake\Http\ServerRequest;
 
 final class AnonymousAuthContext implements AuthContext
 {
     /**
-     * @param \App\Security\Auth\AuthContext\Fields\Type $type
-     * @param \App\Security\Auth\AuthContext\Fields\AccountName $accountName
+     * @param \Cake\Http\ServerRequest $request
      */
-    public function __construct(
-        private readonly Fields\Type $type,
-        private readonly Fields\AccountName $accountName,
-    ) {
+    public function __construct(ServerRequest $request)
+    {
         // 処理なし
     }
 
@@ -25,25 +21,25 @@ final class AnonymousAuthContext implements AuthContext
      */
     public function getType(): Fields\Type
     {
-        return $this->type;
+        return new Fields\Type(Fields\Type::TYPE_ANONYMOUS);
     }
 
     /**
-     * @return ?\App\Security\Auth\AuthContext\Fields\AccountId
+     * @return \App\Security\Auth\AuthContext\Fields\AccountId
      */
-    public function getAccountId(): ?Fields\AccountId
+    public function getAccountId(): Fields\AccountId
     {
-        return null;
+        return new Fields\AccountId\AnonymousAccountId('0');
     }
 
     /**
      * 認証アカウントメールアドレス
      *
-     * @return ?\App\Security\Auth\AuthContext\Fields\AccountEmail
+     * @return \App\Security\Auth\AuthContext\Fields\AccountEmail
      */
-    public function getAccountEmail(): ?Fields\AccountEmail
+    public function getAccountEmail(): Fields\AccountEmail
     {
-        return null;
+        return new Fields\AccountEmail(null);
     }
 
     /**
@@ -53,96 +49,96 @@ final class AnonymousAuthContext implements AuthContext
      */
     public function getAccountName(): Fields\AccountName
     {
-        return $this->accountName;
+        return new Fields\AccountName('Anonymous');
     }
 
     /**
      * 認証アカウントステータスマスターID
      *
-     * @return ?\App\Security\Auth\AuthContext\Fields\AccountStatusMasterId
+     * @return \App\Security\Auth\AuthContext\Fields\AccountStatusMasterId
      */
-    public function getAccountStatusMasterId(): ?Fields\AccountStatusMasterId
+    public function getAccountStatusMasterId(): Fields\AccountStatusMasterId
     {
-        return null;
+        return new Fields\AccountStatusMasterId(null);
     }
 
     /**
      * 認証アカウントステータスマスターネーム
      *
-     * @return ?\App\Security\Auth\AuthContext\Fields\AccountStatusMasterName
+     * @return \App\Security\Auth\AuthContext\Fields\AccountStatusMasterName
      */
-    public function getAccountStatusMasterName(): ?Fields\AccountStatusMasterName
+    public function getAccountStatusMasterName(): Fields\AccountStatusMasterName
     {
-        return null;
+        return new Fields\AccountStatusMasterName(null);
     }
 
     /**
      * 認証アカウントステータスマスターコード
      *
-     * @return ?\App\Security\Auth\AuthContext\Fields\AccountStatusMasterCode
+     * @return \App\Security\Auth\AuthContext\Fields\AccountStatusMasterCode
      */
-    public function getAccountStatusMasterCode(): ?Fields\AccountStatusMasterCode
+    public function getAccountStatusMasterCode(): Fields\AccountStatusMasterCode
     {
-        return null;
+        return new Fields\AccountStatusMasterCode(null);
     }
 
     /**
      * 認証アカウントメール確認済フラグ
      *
-     * @return ?\App\Security\Auth\AuthContext\Fields\IsEmailVerified
+     * @return \App\Security\Auth\AuthContext\Fields\IsEmailVerified
      */
-    public function getIsEmailVerified(): ?Fields\IsEmailVerified
+    public function getIsEmailVerified(): Fields\IsEmailVerified
     {
-        return null;
+        return new Fields\IsEmailVerified(false);
     }
 
     /**
      * 認証アカウントパスワード最終変更日時
      *
-     * @return ?\App\Security\Auth\AuthContext\Fields\PasswordChangedAt
+     * @return \App\Security\Auth\AuthContext\Fields\PasswordChangedAt
      */
-    public function getPasswordChangedAt(): ?Fields\PasswordChangedAt
+    public function getPasswordChangedAt(): Fields\PasswordChangedAt
     {
-        return null;
+        return new Fields\PasswordChangedAt(null);
     }
 
     /**
      * 認証アカウントパスワード有効期限
      *
-     * @return ?\App\Security\Auth\AuthContext\Fields\PasswordExpiresAt
-     */    
-    public function getPasswordExpiresAt(): ?Fields\PasswordExpiresAt
+     * @return \App\Security\Auth\AuthContext\Fields\PasswordExpiresAt
+     */
+    public function getPasswordExpiresAt(): Fields\PasswordExpiresAt
     {
-        return null;
+        return new Fields\PasswordExpiresAt(null);
     }
 
     /**
      * 認証アカウント作成日時
      *
-     * @return ?\App\Security\Auth\AuthContext\Fields\Created
+     * @return \App\Security\Auth\AuthContext\Fields\Created
      */
-    public function getCreated(): ?Fields\Created
+    public function getCreated(): Fields\Created
     {
-        return null;
+        return new Fields\Created(null);
     }
 
     /**
      * 認証アカウント更新日時
      *
-     * @return ?\App\Security\Auth\AuthContext\Fields\Modified
+     * @return \App\Security\Auth\AuthContext\Fields\Modified
      */
-    public function getModified(): ?Fields\Modified
+    public function getModified(): Fields\Modified
     {
-        return null;
+        return new Fields\Modified(null);
     }
 
     /**
      * ログイン日時
      *
-     * @return ?\App\Security\Auth\AuthContext\Fields\Logined
+     * @return \App\Security\Auth\AuthContext\Fields\Logined
      */
-    public function getLogined(): ?Fields\Logined
+    public function getLogined(): Fields\Logined
     {
-        return null;
+        return new Fields\Logined(null);
     }
 }

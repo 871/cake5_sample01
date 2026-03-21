@@ -11,7 +11,7 @@ class AccountStatusMasterName implements Stringable
 {
     use StringTrait;
 
-    const MAX_LENGTH = 100;
+    public const MAX_LENGTH = 100;
 
     private ?string $value;
 

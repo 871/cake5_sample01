@@ -3,25 +3,16 @@ declare(strict_types=1);
 
 namespace App\Security\Auth\AuthContext\Fields;
 
-use DomainException;
 use Stringable;
 
 class IsEmailVerified implements Stringable
 {
     /**
-     * @param string $value
+     * @param bool $value
      */
     public function __construct(
-        private readonly string $value,
+        private readonly bool $value,
     ) {
-        if (
-            in_array($this->value, ['0', '1'], true) === false
-        ) {
-            throw new DomainException(
-                self::class . ' Generate Error'
-                . '[type: ' . $this->value . ']',
-            );
-        }
     }
 
     /**
@@ -29,7 +20,7 @@ class IsEmailVerified implements Stringable
      */
     public function toBool(): bool
     {
-        return $this->value === '1';
+        return $this->value;
     }
 
     /**
@@ -37,7 +28,7 @@ class IsEmailVerified implements Stringable
      */
     public function toString(): string
     {
-        return $this->value;
+        return $this->value ? '1' : '0';
     }
 
     /**

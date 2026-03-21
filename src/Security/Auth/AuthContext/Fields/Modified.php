@@ -4,22 +4,28 @@ declare(strict_types=1);
 namespace App\Security\Auth\AuthContext\Fields;
 
 use App\Domain\Shared\ValueObject as Svo;
-use Stringable;
 use DateTimeInterface;
 use DomainException;
+use Stringable;
 
 class Modified implements Stringable
 {
     /**
-     * @var \DateTimeInterface
+     * @var ?\DateTimeInterface
      */
-    private readonly DateTimeInterface $value;
+    private readonly ?DateTimeInterface $value;
 
     /**
-     * @param string $value
+     * @param ?string $value
      */
-    public function __construct(string $value, string $format = 'Y-m-d\TH:i:s') 
-    { 
+    public function __construct(?string $value, string $format = 'Y-m-d\TH:i:s')
+    {
+        if ($value === null) {
+            $this->value = null;
+
+            return;
+        }
+
         $this->value = (new Svo\Modified($value, $format))->toDateTimeOrNull() ?? throw new DomainException(
             self::class . ' Generate Error'
             . '[value: ' . $value . ']'
@@ -28,9 +34,9 @@ class Modified implements Stringable
     }
 
     /**
-     * @return \DateTimeInterface
+     * @return ?\DateTimeInterface
      */
-    public function toDateTime(): DateTimeInterface
+    public function toDateTimeOrNull(): ?DateTimeInterface
     {
         return $this->value;
     }
@@ -40,7 +46,7 @@ class Modified implements Stringable
      */
     public function toString(): string
     {
-        return $this->value->format('Y-m-d\TH:i:s');
+        return $this->value?->format('Y-m-d\TH:i:s') ?? '';
     }
 
     /**

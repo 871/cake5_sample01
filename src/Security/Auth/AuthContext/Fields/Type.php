@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Security\Auth\AuthContext\Fields;
 
-use App\Security\Auth\AuthContext;
 use DomainException;
 use Stringable;
 

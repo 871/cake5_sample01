@@ -3,20 +3,20 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\AdminAccounts\ValueObject;
 
-use App\Domain\Shared\ValueObject\Trait\IntTrait;
+use App\Domain\Shared\ValueObject\Trait\StringTrait;
 use DomainException;
 use Stringable;
 
 class AccountStatusMasterCode implements Stringable
 {
-    use IntTrait;
+    use StringTrait;
 
-    const PENDING = 'PENDING';
-    const ACTIVE = 'ACTIVE';
-    const SUSPENDED = 'SUSPENDED';
-    const LOCKED = 'LOCKED';
-    const DELETED = 'DELETED';
-    
+    public const PENDING = 'PENDING';
+    public const ACTIVE = 'ACTIVE';
+    public const SUSPENDED = 'SUSPENDED';
+    public const LOCKED = 'LOCKED';
+    public const DELETED = 'DELETED';
+
     private ?string $value;
 
     /**
@@ -30,13 +30,15 @@ class AccountStatusMasterCode implements Stringable
             return;
         }
 
-        if (in_array($value, [
-            self::PENDING, 
-            self::ACTIVE, 
-            self::SUSPENDED, 
-            self::LOCKED, 
-            self::DELETED
-        ], true) === false) {
+        if (
+            in_array($value, [
+            self::PENDING,
+            self::ACTIVE,
+            self::SUSPENDED,
+            self::LOCKED,
+            self::DELETED,
+            ], true) === false
+        ) {
             throw new DomainException(
                 self::class . ' value type Error'
                 . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',

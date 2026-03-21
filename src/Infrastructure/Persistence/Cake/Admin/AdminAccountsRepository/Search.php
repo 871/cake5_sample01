@@ -36,7 +36,8 @@ final class Search
             ->contain(['AccountStatusMasters'])
             ->where(array_filter([
                 'AdminAccounts.id' => $this->condition->getId()->toStringOrNull(),
-                'AdminAccounts.account_status_master_id' => $this->condition->getAccountStatusMasterId()->toStringOrNull(),
+                'AdminAccounts.account_status_master_id'
+                    => $this->condition->getAccountStatusMasterId()->toStringOrNull(),
                 'OR' => array_filter([
                     'AdminAccounts.email LIKE' => $this->condition->getKeyword()->toQueryLikeOrNull(),
                     'AdminAccounts.name LIKE' => $this->condition->getKeyword()->toQueryLikeOrNull(),

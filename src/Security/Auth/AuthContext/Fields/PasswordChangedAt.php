@@ -3,23 +3,30 @@ declare(strict_types=1);
 
 namespace App\Security\Auth\AuthContext\Fields;
 
-use Stringable;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DomainException;
-use DateTimeImmutable;
+use Stringable;
 
 class PasswordChangedAt implements Stringable
 {
     /**
-     * @var \DateTimeInterface
+     * @var ?\DateTimeInterface
      */
-    private readonly DateTimeInterface $value;
+    private readonly ?DateTimeInterface $value;
 
     /**
-     * @param string $value
+     * @param ?string $value
+     * @param string $format
      */
-    public function __construct(string $value, string $format = 'Y-m-d\TH:i:s') 
-    { 
+    public function __construct(?string $value, string $format = 'Y-m-d\TH:i:s')
+    {
+        if ($value === null) {
+            $this->value = null;
+
+            return;
+        }
+
         $datetime = DateTimeImmutable::createFromFormat($format, $value);
         if ($datetime === false || $datetime->format($format) !== $value) {
             throw new DomainException(
@@ -33,9 +40,9 @@ class PasswordChangedAt implements Stringable
     }
 
     /**
-     * @return \DateTimeInterface
+     * @return ?\DateTimeInterface
      */
-    public function toDateTimeOrNull(): DateTimeInterface
+    public function toDateTimeOrNull(): ?DateTimeInterface
     {
         return $this->value;
     }
@@ -45,7 +52,7 @@ class PasswordChangedAt implements Stringable
      */
     public function toString(): string
     {
-        return $this->value->format('Y-m-d\TH:i:s');
+        return $this->value?->format('Y-m-d\TH:i:s') ?? '';
     }
 
     /**
