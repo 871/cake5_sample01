@@ -26,4 +26,14 @@ class TopController extends AppController
     {
         return $this->render('/Admin/top');
     }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function errorTest()
+    {
+        throw new \Exception('テスト例外');
+
+        // return $this->render('/Admin/top');
+    }
 }

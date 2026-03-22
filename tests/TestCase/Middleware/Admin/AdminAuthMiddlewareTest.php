@@ -28,15 +28,6 @@ final class AdminAuthMiddlewareTest extends TestCase
         return $request;
     }
 
-    private function makeHandler(): RequestHandlerInterface
-    {
-        $handler = $this->createMock(RequestHandlerInterface::class);
-        $handler->method('handle')
-            ->willReturn(new Response());
-
-        return $handler;
-    }
-
     public function testRedirectsToLoginWhenNotAuthenticated(): void
     {
         $middleware = new AdminAuthMiddleware();

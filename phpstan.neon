@@ -5,3 +5,4 @@ parameters:
         - config/bootstrap.php
     paths:
         - src/
+        - tests/
