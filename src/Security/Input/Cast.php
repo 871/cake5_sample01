@@ -13,7 +13,7 @@ class Cast
      * @param mixed $value
      * @return int|null
      */
-    public static function toInt(mixed $value): ?int
+    public static function toIntOrNull(mixed $value): ?int
     {
         if ($value === null) {
             return null;
@@ -34,7 +34,7 @@ class Cast
      * @param mixed $value
      * @return float|null
      */
-    public static function toFloat(mixed $value): ?float
+    public static function toFloatOrNull(mixed $value): ?float
     {
         if ($value === null) {
             return null;
@@ -55,7 +55,7 @@ class Cast
      * @param mixed $value
      * @return string|null
      */
-    public static function toString(mixed $value): ?string
+    public static function toStringOrNull(mixed $value): ?string
     {
         if ($value === null || $value === '') {
             return null;
@@ -69,7 +69,7 @@ class Cast
      * @param mixed $value
      * @return bool|null
      */
-    public static function toBool(mixed $value): ?bool
+    public static function toBoolOrNull(mixed $value): ?bool
     {
         if ($value === null) {
             return null;
@@ -100,7 +100,7 @@ class Cast
      * @param mixed $value
      * @return \DateTimeInterface|null
      */
-    public static function toDateTime(mixed $value): ?DateTimeInterface
+    public static function toDateTimeOrNull(mixed $value): ?DateTimeInterface
     {
         if ($value === null) {
             return null;
@@ -125,7 +125,7 @@ class Cast
      * @param mixed $value
      * @return \DateTimeInterface|null
      */
-    public static function toDate(mixed $value): ?DateTimeInterface
+    public static function toDateOrNull(mixed $value): ?DateTimeInterface
     {
         if ($value === null) {
             return null;
@@ -152,7 +152,7 @@ class Cast
      * @param mixed $value
      * @return \DateTimeInterface|null
      */
-    public static function toTime(mixed $value): ?DateTimeInterface
+    public static function toTimeOrNull(mixed $value): ?DateTimeInterface
     {
         if ($value === null) {
             return null;
@@ -180,9 +180,9 @@ class Cast
      * @param string $format
      * @return ?string
      */
-    public static function toDateTimeString(mixed $value, string $format = 'Y-m-d H:i:s'): ?string
+    public static function toDateTimeStringOrNull(mixed $value, string $format = 'Y-m-d H:i:s'): ?string
     {
-        $dateTime = self::toDateTime($value);
+        $dateTime = self::toDateTimeOrNull($value);
         if ($dateTime === null) {
             return null;
         }
@@ -195,9 +195,9 @@ class Cast
      * @param string $format
      * @return ?string
      */
-    public static function toDateString(mixed $value, string $format = 'Y-m-d'): ?string
+    public static function toDateStringOrNull(mixed $value, string $format = 'Y-m-d'): ?string
     {
-        $date = self::toDate($value);
+        $date = self::toDateOrNull($value);
         if ($date === null) {
             return null;
         }
@@ -210,9 +210,9 @@ class Cast
      * @param string $format
      * @return ?string
      */
-    public static function toTimeString(mixed $value, string $format = 'H:i:s'): ?string
+    public static function toTimeStringOrNull(mixed $value, string $format = 'H:i:s'): ?string
     {
-        $time = self::toTime($value);
+        $time = self::toTimeOrNull($value);
         if ($time === null) {
             return null;
         }

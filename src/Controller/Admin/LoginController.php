@@ -49,32 +49,19 @@ class LoginController extends AppController
     public function indexPost()
     {
         try {
-            /** @var string $account_id */
-            $account_id = $this->ctlService
+            /** @var array<string, string>|string $redirect */
+            $redirect = $this->ctlService
                 ->login(
                     login_id: StrictCast::toString($this->request->getData('email')),
                     password: StrictCast::toString($this->request->getData('password')),
                 )
-                ->getAccountId();
+                ->getRedirect();
 
-            $redirect = StrictCast::toString($this->request->getQuery('redirect'));
-            $parsedRedirect = parse_url($redirect);
-            if ($redirect !== '' && $parsedRedirect !== false && empty($parsedRedirect['scheme']) && empty($parsedRedirect['host'])) {
-                return $this->redirect($redirect);
-            }
-
-            return $this->redirect([
-                'prefix' => 'Admin',
-                'controller' => 'Top',
-                'action' => 'index',
-                'account_id' => $account_id,
-            ]);
+            return $this->redirect($redirect);
         } catch (AuthException $e) {
             $this->Flash->error($e->getMessage());
 
-            return $this->redirect([
-                'action' => 'index',
-            ]);
+            return $this->render('/Admin/login');
         }
     }
 }

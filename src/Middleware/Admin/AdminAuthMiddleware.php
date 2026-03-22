@@ -36,6 +36,15 @@ class AdminAuthMiddleware implements MiddlewareInterface
             $currentQuery = $uri->getQuery();
             $currentUrl = $currentQuery !== '' ? $currentPath . '?' . $currentQuery : $currentPath;
 
+            $request->getSession()->write('Flash.flash', [
+                [
+                    'message' => 'ログアウトしました。',
+                    'key' => 'flash',
+                    'element' => 'Flash/error',
+                    'params' => [],
+                ],
+            ]);
+
             return (new Response())->withLocation('/v1/ad/login?redirect=' . urlencode($currentUrl));
         }
 

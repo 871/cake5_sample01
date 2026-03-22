@@ -8,22 +8,16 @@ use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Exception\AuthException;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
-use App\Security\Auth\AuthContext;
 use App\Security\Auth\AuthContext\Fields\Type;
 use App\Security\Auth\AuthSession;
+use App\Security\Input\Cast;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
-use Cake\Http\ServerRequest;
-use Cake\ORM\Locator\LocatorAwareTrait;
-use DateTimeInterface;
 
 final class Login implements ServiceInterface
 {
-    use ServiceTrait {
-        ServiceTrait::__construct as private traitConstruct;
-    }
-    use LocatorAwareTrait;
+    use ServiceTrait;
 
     /**
      * @var \App\Domain\Admin\AdminAccounts\Entity\AdminAccount
@@ -44,23 +38,6 @@ final class Login implements ServiceInterface
      * @var string
      */
     private string $account_id;
-
-    /**
-     * @param \DateTimeInterface $datetime
-     * @param \Cake\Http\ServerRequest $request
-     * @param \App\Security\Auth\AuthContext $authContext
-     */
-    public function __construct(
-        DateTimeInterface $datetime,
-        ServerRequest $request,
-        AuthContext $authContext,
-    ) {
-        $this->traitConstruct(
-            datetime: $datetime,
-            request: $request,
-            authContext: $authContext,
-        );
-    }
 
     /**
      * @param string $login_id
@@ -161,10 +138,21 @@ final class Login implements ServiceInterface
     }
 
     /**
-     * @return string
+     * @return array<string, string>|string
      */
-    public function getAccountId(): string
+    public function getRedirect(): string|array
     {
-        return $this->account_id;
+        $redirect = Cast::toStringOrNull($this->request->getQuery('redirect')) ?? '';
+        if (preg_match('/^\/v1\/ad\/\d+\/.*$/', $redirect)) {
+            /** @var string */
+            return preg_replace('/^(\/v1\/ad\/)\d+(\/.*)$/', '$1' . $this->account_id . '$2', $redirect);
+        }
+
+        return [
+            'prefix' => 'Admin',
+            'controller' => 'Top',
+            'action' => 'index',
+            'account_id' => $this->account_id,
+        ];
     }
 }
