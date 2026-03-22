@@ -216,23 +216,23 @@ final class Edit implements ServiceInterface
             ->toArray();
 
         (new AdminAccountsRepository($this->datetime))->update(new AdminAccount(
-            id: Cast::toString($input['id']),
-            email: Cast::toString($input['email']),
-            password: Cast::toString($input['password']) ?? '',
-            name: Cast::toString($input['name']),
-            admin_note: Cast::toString($input['admin_note']),
-            account_status_master_id: Cast::toString($input['account_status_master_id']),
+            id: Cast::toStringOrNull($input['id']),
+            email: Cast::toStringOrNull($input['email']),
+            password: Cast::toStringOrNull($input['password']) ?? '',
+            name: Cast::toStringOrNull($input['name']),
+            admin_note: Cast::toStringOrNull($input['admin_note']),
+            account_status_master_id: Cast::toStringOrNull($input['account_status_master_id']),
             account_status_master_code: null,
             account_status_master_name: null,
-            is_email_verified: Cast::toString($input['is_email_verified']),
-            password_changed_at: Cast::toString($input['password_changed_at']),
-            password_expires_at: Cast::toString($input['password_expires_at']),
+            is_email_verified: Cast::toStringOrNull($input['is_email_verified']),
+            password_changed_at: Cast::toStringOrNull($input['password_changed_at']),
+            password_expires_at: Cast::toStringOrNull($input['password_expires_at']),
             created: null,
             created_by: null,
             created_ip: null,
-            modified: Cast::toString($this->datetime->format('Y-m-d\TH:i:s')),
-            modified_by: Cast::toString($this->authContext->getAccountId()),
-            modified_ip: Cast::toString($this->request->clientIp()),
+            modified: Cast::toStringOrNull($this->datetime->format('Y-m-d\TH:i:s')),
+            modified_by: Cast::toStringOrNull($this->authContext->getAccountId()),
+            modified_ip: Cast::toStringOrNull($this->request->clientIp()),
         ));
 
         return $this;

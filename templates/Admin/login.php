@@ -7,11 +7,9 @@
         </div>
 
         <div class="card-body p-4">
-
             <?= $this->Flash->render() ?>
-
-            <?= $this->Form->create(null, ['url' => ['action' => 'indexPost']]) ?>
-
+            <form method="post">
+                <input type="hidden" name="_csrfToken" value="<?= $this->request->getAttribute('csrfToken') ?>">
                 <!-- メールアドレス -->
                 <div class="mb-3">
                     <label class="form-label">メールアドレス</label>
@@ -19,7 +17,9 @@
                         name="email"
                         class="form-control"
                         placeholder="example@example.com"
-                        required>
+                        value="<?= h($this->request->getData('email')) ?>"
+                        required
+                    >
                 </div>
 
                 <!-- パスワード -->
@@ -28,18 +28,16 @@
                     <input type="password"
                         name="password"
                         class="form-control"
-                        required>
+                        required
+                    >
                 </div>
-
                 <!-- ボタン -->
                 <div class="d-grid mb-3">
                     <button type="submit" class="btn btn-primary">
                         ログイン
                     </button>
                 </div>
-
-            <?= $this->Form->end() ?>
-
+            </form>
         </div>
     </div>
 </div>

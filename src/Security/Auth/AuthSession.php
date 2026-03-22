@@ -30,11 +30,11 @@ final class AuthSession
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, string|null>
      */
     public function read(): array
     {
-        /** @var array<string, string> */
+        /** @var array<string, string|null> */
         return $this->request->getSession()->read($this->sessionKey) ?? [];
     }
 
@@ -47,7 +47,7 @@ final class AuthSession
     }
 
     /**
-     * @param array<string, string> $data
+     * @param array<string, string|null> $data
      * @return void
      */
     public function write(array $data): void

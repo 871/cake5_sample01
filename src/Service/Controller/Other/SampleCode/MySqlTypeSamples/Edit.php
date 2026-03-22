@@ -233,21 +233,21 @@ final class Edit implements ServiceInterface
             ->toArray();
 
         (new MySqlTypeSamplesRepository())->update(new MySqlTypeSample(
-            id: Cast::toString($input['id']),
-            int_col: Cast::toString($input['int_col']),
-            bigint_col: Cast::toString($input['bigint_col']),
-            decimal_col: Cast::toString($input['decimal_col']),
-            float_col: Cast::toString($input['float_col']),
-            double_col: Cast::toString($input['double_col']),
-            date_col: Cast::toString($input['date_col']),
-            time_col: Cast::toString($input['time_col']),
-            datetime_col: Cast::toString($input['datetime_col']),
-            char_col: Cast::toString($input['char_col']),
-            varchar_col: Cast::toString($input['varchar_col']),
-            text_col: Cast::toString($input['text_col']),
-            mediumtext_col: Cast::toString($input['mediumtext_col']),
-            longtext_col: Cast::toString($input['longtext_col']),
-            json_col: Cast::toString($input['json_col']),
+            id: Cast::toStringOrNull($input['id']),
+            int_col: Cast::toStringOrNull($input['int_col']),
+            bigint_col: Cast::toStringOrNull($input['bigint_col']),
+            decimal_col: Cast::toStringOrNull($input['decimal_col']),
+            float_col: Cast::toStringOrNull($input['float_col']),
+            double_col: Cast::toStringOrNull($input['double_col']),
+            date_col: Cast::toStringOrNull($input['date_col']),
+            time_col: Cast::toStringOrNull($input['time_col']),
+            datetime_col: Cast::toStringOrNull($input['datetime_col']),
+            char_col: Cast::toStringOrNull($input['char_col']),
+            varchar_col: Cast::toStringOrNull($input['varchar_col']),
+            text_col: Cast::toStringOrNull($input['text_col']),
+            mediumtext_col: Cast::toStringOrNull($input['mediumtext_col']),
+            longtext_col: Cast::toStringOrNull($input['longtext_col']),
+            json_col: Cast::toStringOrNull($input['json_col']),
         ));
 
         return $this;

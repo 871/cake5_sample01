@@ -14,7 +14,7 @@ final class AuthContextResolver
     public static function resolve(ServerRequest $request): AuthContext
     {
         $type = StrictCast::toString(
-            preg_replace('/^\/([^\/]+)\/([^\/]+)\/([^\/]+)\/.*$/', '$2', $request->getPath()),
+            preg_replace('/^\/([^\/]+)\/([^\/]+)\/([\d]+)\/.*$/', '$2', $request->getPath()),
         );
 
         return match ($type) {

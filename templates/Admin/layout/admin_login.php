@@ -30,7 +30,7 @@
     <main class="main-content">
         <!-- Message Area -->
         <div class="message-area mb-3">
-            <?= $this->Flash->render() ?>
+            
         </div>
         <div class="mb-3">
             <?= $this->fetch('content') ?>

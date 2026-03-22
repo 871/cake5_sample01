@@ -5,8 +5,9 @@ namespace App\Controller\Admin;
 
 use App\Controller\AppController;
 use Cake\Event\EventInterface;
+use Exception;
 
-class MainController extends AppController
+class TopController extends AppController
 {
     /**
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
@@ -24,6 +25,16 @@ class MainController extends AppController
      */
     public function index()
     {
-        return $this->render('/Admin/Main/index');
+        return $this->render('/Admin/top');
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function errorTest()
+    {
+        throw new Exception('テスト例外');
+
+        // return $this->render('/Admin/top');
     }
 }

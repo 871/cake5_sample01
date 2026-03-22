@@ -34,7 +34,7 @@
                     class="nav-link text-white"
                     href="<?= $this->Url->build([
                         'prefix' => 'Admin',
-                        'controller' => 'Main',
+                        'controller' => 'Top',
                         'action' => 'index',
                         'account_id' => $this->getRequest()->getParam('account_id'),
                     ]) ?>"
@@ -53,7 +53,7 @@
                         <?= $this->Form->postLink('ログアウト', [
                             'prefix' => 'Admin',
                             'controller' => 'Logout',
-                            'action' => 'indexPost',
+                            'action' => 'index',
                             'account_id' => $this->getRequest()->getParam('account_id'),
                         ], [
                             'class' => 'nav-link',
