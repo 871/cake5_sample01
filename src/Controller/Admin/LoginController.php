@@ -57,6 +57,12 @@ class LoginController extends AppController
                 )
                 ->getAccountId();
 
+            $redirect = StrictCast::toString($this->request->getQuery('redirect'));
+            $parsedRedirect = parse_url($redirect);
+            if ($redirect !== '' && $parsedRedirect !== false && empty($parsedRedirect['scheme']) && empty($parsedRedirect['host'])) {
+                return $this->redirect($redirect);
+            }
+
             return $this->redirect([
                 'prefix' => 'Admin',
                 'controller' => 'Top',

@@ -13,13 +13,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class AdminAuthMiddlewareTest extends TestCase
 {
-    private function makeRequest(string $account_id, bool $hasSession): ServerRequest
+    private function makeRequest(string $account_id, bool $hasSession, string $url = '/v1/ad/test_account/'): ServerRequest
     {
         $session = $this->createMock(Session::class);
         $session->method('check')
             ->willReturn($hasSession);
 
         $request = new ServerRequest([
+            'url' => $url,
             'params' => ['account_id' => $account_id],
             'session' => $session,
         ]);
@@ -39,13 +40,31 @@ final class AdminAuthMiddlewareTest extends TestCase
     public function testRedirectsToLoginWhenNotAuthenticated(): void
     {
         $middleware = new AdminAuthMiddleware();
-        $request = $this->makeRequest('test_account', false);
+        $request = $this->makeRequest('test_account', false, '/v1/ad/test_account/');
         $handler = $this->createMock(RequestHandlerInterface::class);
         $handler->expects($this->never())->method('handle');
 
         $response = $middleware->process($request, $handler);
 
-        $this->assertSame('/v1/ad/login', $response->getHeaderLine('Location'));
+        $this->assertSame(
+            '/v1/ad/login?redirect=' . urlencode('/v1/ad/test_account/'),
+            $response->getHeaderLine('Location'),
+        );
+    }
+
+    public function testRedirectsToLoginWithQueryStringWhenNotAuthenticated(): void
+    {
+        $middleware = new AdminAuthMiddleware();
+        $request = $this->makeRequest('test_account', false, '/v1/ad/test_account/?foo=bar');
+        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler->expects($this->never())->method('handle');
+
+        $response = $middleware->process($request, $handler);
+
+        $this->assertSame(
+            '/v1/ad/login?redirect=' . urlencode('/v1/ad/test_account/?foo=bar'),
+            $response->getHeaderLine('Location'),
+        );
     }
 
     public function testPassesThroughWhenAuthenticated(): void
