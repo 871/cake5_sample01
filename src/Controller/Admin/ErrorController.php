@@ -26,4 +26,20 @@ class ErrorController extends AppController
     {
         return $this->render('/Admin/error');
     }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function error400()
+    {
+        return $this->render('/Admin/error');
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function error500()
+    {
+        return $this->render('/Admin/error');
+    }
 }
