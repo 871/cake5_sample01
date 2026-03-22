@@ -103,4 +103,18 @@ interface AuthContext
      * @return \App\Security\Auth\AuthContext\Fields\Logined
      */
     public function getLogined(): Fields\Logined;
+
+    /**
+     * 代理ログインフラグ
+     *
+     * @return bool
+     */
+    public function isImpersonatorLogin(): bool;
+
+    /**
+     * 代理ログイン元アカウント
+     *
+     * @return self|null
+     */
+    public function impersonatorAccount(): ?self;
 }
