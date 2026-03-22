@@ -177,7 +177,8 @@ final class AdminAccountMapper
 
     /**
      * @param \App\Domain\Admin\AdminAccounts\Entity\AdminAccount $domainEntity
-     * @return array<string, string>
+     * @param \DateTimeInterface $nowDatetime
+     * @return array<string, string|null>
      */
     public function toAuthSessionParams(
         DomainEntity $domainEntity,

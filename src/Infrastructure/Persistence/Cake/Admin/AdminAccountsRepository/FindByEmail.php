@@ -34,11 +34,11 @@ final class FindByEmail
     }
 
     /**
-     * @return \App\Domain\Admin\AdminAccounts\Entity\AdminAccount
+     * @return ?\App\Domain\Admin\AdminAccounts\Entity\AdminAccount
      */
-    public function run(): DomainEntity
+    public function run(): ?DomainEntity
     {
-        /** @var \App\Model\Entity\Admin\AdminAccount $ormEntity */
+        /** @var \App\Model\Entity\Admin\AdminAccount|null $ormEntity */
         $ormEntity = $this->table
             ->find()
             ->contain(['AccountStatusMasters'])

@@ -71,7 +71,6 @@ final class Login implements ServiceInterface
         string $login_id,
         string $password,
     ): self {
-
         $this->login_id = $login_id;
         $this->password = $password;
 
