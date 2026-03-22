@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\AppController;
 use Cake\Event\EventInterface;
+use Exception;
 
 class TopController extends AppController
 {
@@ -32,7 +33,7 @@ class TopController extends AppController
      */
     public function errorTest()
     {
-        throw new \Exception('テスト例外');
+        throw new Exception('テスト例外');
 
         // return $this->render('/Admin/top');
     }
