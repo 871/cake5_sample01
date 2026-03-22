@@ -31,7 +31,12 @@ class AdminAuthMiddleware implements MiddlewareInterface
         );
 
         if (!$authSession->check()) {
-            return (new Response())->withLocation('/v1/ad/login');
+            $uri = $request->getUri();
+            $currentPath = $uri->getPath();
+            $currentQuery = $uri->getQuery();
+            $currentUrl = $currentQuery !== '' ? $currentPath . '?' . $currentQuery : $currentPath;
+
+            return (new Response())->withLocation('/v1/ad/login?redirect=' . urlencode($currentUrl));
         }
 
         return $handler->handle($request);
