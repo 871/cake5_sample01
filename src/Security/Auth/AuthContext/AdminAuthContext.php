@@ -153,4 +153,24 @@ final class AdminAuthContext implements AuthContext
     {
         return new Fields\Logined(StrictCast::toDateTimeString($this->auth['logined']));
     }
+
+    /**
+     * 代理ログインフラグ
+     *
+     * @return bool
+     */
+    public function isImpersonatorLogin(): bool
+    {
+        return false;
+    }
+
+    /**
+     * 代理ログイン元アカウント
+     *
+     * @return self|null
+     */
+    public function impersonatorAccount(): ?self
+    {
+        return null;
+    }
 }

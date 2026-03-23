@@ -55,11 +55,14 @@ class LoginController extends AppController
                     login_id: StrictCast::toString($this->request->getData('email')),
                     password: StrictCast::toString($this->request->getData('password')),
                 )
+                ->recordLoginSuccess() // ログイン成功ログ出力
                 ->getRedirect();
 
             return $this->redirect($redirect);
         } catch (AuthException $e) {
             $this->Flash->error($e->getMessage());
+
+            $this->ctlService->recordLoginFailure($e); // ログイン失敗ログ出力
 
             return $this->render('/Admin/login');
         }

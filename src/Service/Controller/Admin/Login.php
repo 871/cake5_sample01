@@ -5,9 +5,13 @@ namespace App\Service\Controller\Admin;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as AccountEntity;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
+use App\Domain\Log\LoginLogs\Entity\LoginLog as LoginLogEntity;
+use App\Domain\Log\LoginLogs\ValueObject as LoginLogVo;
 use App\Exception\AuthException;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
+use App\Infrastructure\Persistence\Cake\Log\LoginLogs\LoginLogsRepository;
+use App\Lib\UUID\UUID;
 use App\Security\Auth\AuthContext\Fields\Type;
 use App\Security\Auth\AuthSession;
 use App\Security\Input\Cast;
@@ -66,7 +70,10 @@ final class Login implements ServiceInterface
     {
         $this->accountEntity = (new AdminAccountsRepository($this->datetime))
             ->findByEmail(Vo\Email::fromString($this->login_id))
-            ?? throw new AuthException(__('ログインIDまたはパスワードが違います。'));
+            ?? throw new AuthException(
+                __('ログインIDまたはパスワードが違います。'),
+                AuthException::LOGIN_ID_NOT_FOUND,
+            );
 
         return $this;
     }
@@ -80,7 +87,10 @@ final class Login implements ServiceInterface
             ->check($this->password, $this->accountEntity->password()->toString());
 
         if (!$check) {
-            throw new AuthException(__('ログインIDまたはパスワードが違います。'));
+            throw new AuthException(
+                __('ログインIDまたはパスワードが違います。'),
+                AuthException::INVALID_PASSWORD,
+            );
         }
 
         return $this;
@@ -98,7 +108,10 @@ final class Login implements ServiceInterface
 
         $nowTimestamp = $this->datetime->getTimestamp();
         if ($expiresTimestamp < $nowTimestamp) {
-            throw new AuthException(__('パスワードの有効期限が切れています。'));
+            throw new AuthException(
+                __('パスワードの有効期限が切れています。'),
+                AuthException::PASSWORD_EXPIRED,
+            );
         }
 
         return $this;
@@ -112,10 +125,22 @@ final class Login implements ServiceInterface
         return match ($this->accountEntity->accountStatusMasterCode()->toString()) {
             Vo\AccountStatusMasterCode::ACTIVE => $this,
             Vo\AccountStatusMasterCode::PENDING => $this,
-            Vo\AccountStatusMasterCode::SUSPENDED => throw new AuthException(__('アカウントが無効です。')),
-            Vo\AccountStatusMasterCode::LOCKED => throw new AuthException(__('アカウントがロックされました。')),
-            Vo\AccountStatusMasterCode::DELETED => throw new AuthException(__('アカウントが削除されました。')),
-            default => throw new AuthException(__('アカウントが無効です。')),
+            Vo\AccountStatusMasterCode::SUSPENDED => throw new AuthException(
+                __('アカウントが無効です。'),
+                AuthException::ACCOUNT_SUSPENDED,
+            ),
+            Vo\AccountStatusMasterCode::LOCKED => throw new AuthException(
+                __('アカウントが無効です。'),
+                AuthException::ACCOUNT_LOCKED,
+            ),
+            Vo\AccountStatusMasterCode::DELETED => throw new AuthException(
+                __('アカウントが無効です。'),
+                AuthException::ACCOUNT_DELETED,
+            ),
+            default => throw new AuthException(
+                __('アカウントが無効です。'),
+                AuthException::AUTHENTICATION_FAILED,
+            ),
         };
     }
 
@@ -138,6 +163,28 @@ final class Login implements ServiceInterface
     }
 
     /**
+     * @return self
+     */
+    public function recordLoginSuccess(): self
+    {
+        (new LoginLogsRepository())->create(new LoginLogEntity(
+            id: UUID::uuid7(),
+            login_id: $this->login_id,
+            login_actor_type: LoginLogVo\LoginActorType::ADMIN,
+            account_id: isset($this->accountEntity) ? $this->accountEntity->id()->toString() : null, // ログインIDをaccount_idとして記録
+            impersonator_account_id: null,
+            login_result: LoginLogVo\LoginResult::SUCCESS,
+            ip_address: $this->request->clientIp(),
+            user_agent: $this->request->getHeaderLine('User-Agent'),
+            failure_reason_code: null,
+            logged_in_at: $this->datetime->format('Y-m-d\TH:i:s'),
+            created: $this->datetime->format('Y-m-d\TH:i:s'),
+        ));
+
+        return $this;
+    }
+
+    /**
      * @return array<string, string>|string
      */
     public function getRedirect(): string|array
@@ -154,5 +201,27 @@ final class Login implements ServiceInterface
             'action' => 'index',
             'account_id' => $this->account_id,
         ];
+    }
+
+    /**
+     * @param \App\Exception\AuthException $e
+     */
+    public function recordLoginFailure(AuthException $e): self
+    {
+        (new LoginLogsRepository())->create(new LoginLogEntity(
+            id: UUID::uuid7(),
+            login_id: $this->login_id,
+            login_actor_type: LoginLogVo\LoginActorType::ADMIN,
+            account_id: isset($this->accountEntity) ? $this->accountEntity->id()->toString() : null,
+            impersonator_account_id: null,
+            login_result: LoginLogVo\LoginResult::FAILURE,
+            ip_address: $this->request->clientIp(),
+            user_agent: $this->request->getHeaderLine('User-Agent'),
+            failure_reason_code: $e->getFailureReasonCode(),
+            logged_in_at: $this->datetime->format('Y-m-d\TH:i:s'),
+            created: $this->datetime->format('Y-m-d\TH:i:s'),
+        ));
+
+        return $this;
     }
 }
