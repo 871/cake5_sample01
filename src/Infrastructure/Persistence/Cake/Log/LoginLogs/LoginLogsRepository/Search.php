@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Log\LoginLogs\LoginLogsRepository;
 
 use App\Domain\Log\LoginLogs\SearchCondition;
+use App\Domain\Log\LoginLogs\ValueObject as Vo;
 use App\Model\Table\Log\LoginLogsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query\SelectQuery;
@@ -40,16 +41,40 @@ final class Search
             ])
             ->where(
                 array_filter([
-                    'LoginLogs.id' => $this->condition->getLoginId()->toStringOrNull(),
-                    'LoginLogs.login_result' => $this->condition->getLoginResult()->toStringOrNull(),
                     'LoginLogs.logged_in_at >='
-                        => $this->condition->getLoggedInAtFrom()->toDateTimeOrNull()?->format('Y-m-d H:i:s'),
+                        => $this->condition->getLoggedInAtFrom()->toDateTimeOrNull()?->format('Y-m-d\TH:i:s'),
                     'LoginLogs.logged_in_at <='
-                        => $this->condition->getLoggedInAtTo()->toDateTimeOrNull()?->format('Y-m-d H:i:s'),
+                        => $this->condition->getLoggedInAtTo()->toDateTimeOrNull()?->format('Y-m-d\TH:i:s'),
+                    'LoginLogs.login_actor_type IN' => array_map(
+                        fn(Vo\LoginActorType $vo): string => $vo->toString(),
+                        $this->condition->getLoginActorType(),
+                    ),
+                    'LoginLogs.account_id' => $this->condition->getAccountId()->toStringOrNull(),
                     'LoginLogs.impersonator_account_id'
                         => $this->condition->getImpersonatorAccountId()->toStringOrNull(),
-                    'LoginLogs.login_actor_type' => $this->condition->getLoginActorType()->toStringOrNull(),
-                ], fn($v) => $v !== null),
+                    'LoginLogs.login_result IN' => array_map(
+                        fn(Vo\LoginResult $vo): string => $vo->toString(),
+                        $this->condition->getLoginResult(),
+                    ),
+                    'LoginLogs.failure_reason_code IN' => array_map(
+                        fn(Vo\FailureReasonCode $vo): string => $vo->toString(),
+                        $this->condition->getFailureReasonCode(),
+                    ),
+                    array_filter([
+                        'OR' => array_map(function(string $likeWord) {
+                            return [
+                                'OR' => [
+                                    'LoginLogs.login_id LIKE' => $likeWord,
+                                    'LoginLogs.ip_address LIKE' => $likeWord,
+                                    'LoginLogs.user_agent LIKE' => $likeWord,
+                                    // TODO 未実装 'UserAccounts.account_name LIKE' => $likeWord,
+                                    'AdminAccounts.account_name LIKE' => $likeWord,
+                                    'ImpersonatorAdminAccounts.account_name LIKE' => $likeWord,
+                                ],
+                            ];
+                        }, $this->condition->getKeyword()->toQueryLikeList()),
+                    ], fn($v) => !in_array($v, [null, '', []], true))                    
+                ], fn($v) => !in_array($v, [null, '', []], true)),
             );
     }
 }

@@ -54,7 +54,12 @@ class SearchController extends AppController
     public function index()
     {
         try {
+            $categoryService = $this->ctlService->createCategoryService();
+            
             $this->set([
+                'loginActorTypeOptions' => $categoryService->getLoginActorTypeOptions(),
+                'loginResultOptions' => $categoryService->getLoginResultOptions(),
+                'failureReasonCodeOptions' => $categoryService->getFailureReasonCodeOptions(),
                 'rows' => $this->paginate(
                     $this->ctlService->getSearchQuery(),
                     $this->ctlService->getPaginateSettings(),

@@ -6,40 +6,67 @@ namespace App\Domain\Log\LoginLogs;
 class SearchCondition
 {
     /**
-     * @param \App\Domain\Log\LoginLogs\ValueObject\LoginId $login_id
-     * @param \App\Domain\Log\LoginLogs\ValueObject\LoginResult $loginResult
+     * @param array <\App\Domain\Log\LoginLogs\ValueObject\LoginActorType> $login_actor_type
+     * @aram \App\Domain\Log\LoginLogs\ValueObject\AccountId $accountId
+     * @param \App\Domain\Log\LoginLogs\ValueObject\ImpersonatorAccountId $impersonatorAccountId
+     * @param array<\App\Domain\Log\LoginLogs\ValueObject\LoginResult> $loginResult
+     * @param array<\App\Domain\Log\LoginLogs\ValueObject\FailureReasonCode> $failureReasonCode
      * @param \App\Domain\Log\LoginLogs\ValueObject\LoggedInAt $loggedInAtFrom
      * @param \App\Domain\Log\LoginLogs\ValueObject\LoggedInAt $loggedInAtTo
      * @param \App\Domain\Log\LoginLogs\ValueObject\ImpersonatorAccountId $impersonatorAccountId
      * @param \App\Domain\Log\LoginLogs\ValueObject\Search\Keyword $keyword
-     * @param \App\Domain\Log\LoginLogs\ValueObject\LoginActorType $loginActorType
      */
     public function __construct(
-        private readonly ValueObject\LoginId $login_id,
-        private readonly ValueObject\LoginResult $loginResult,
+        private readonly array $loginActorType,
+        private readonly ValueObject\AccountId $accountId,
+        private readonly ValueObject\ImpersonatorAccountId $impersonatorAccountId,
+        private readonly array $loginResult,
+        private readonly array $failureReasonCode,
         private readonly ValueObject\LoggedInAt $loggedInAtFrom,
         private readonly ValueObject\LoggedInAt $loggedInAtTo,
-        private readonly ValueObject\ImpersonatorAccountId $impersonatorAccountId,
         private readonly ValueObject\Search\Keyword $keyword,
-        private readonly ValueObject\LoginActorType $loginActorType,
     ) {
         // 処理なし
     }
 
     /**
-     * @return \App\Domain\Log\LoginLogs\ValueObject\LoginId
+     * @return array <\App\Domain\Log\LoginLogs\ValueObject\LoginActorType>
      */
-    public function getLoginId(): ValueObject\LoginId
+    public function getLoginActorType(): array
     {
-        return $this->login_id;
+        return $this->loginActorType;
     }
 
     /**
-     * @return \App\Domain\Log\LoginLogs\ValueObject\LoginResult
+     * @return \App\Domain\Log\LoginLogs\ValueObject\AccountId
      */
-    public function getLoginResult(): ValueObject\LoginResult
+    public function getAccountId(): ValueObject\AccountId
+    {
+        return $this->accountId;
+    }
+
+    /**
+     * @return \App\Domain\Log\LoginLogs\ValueObject\ImpersonatorAccountId
+     */
+    public function getImpersonatorAccountId(): ValueObject\ImpersonatorAccountId
+    {
+        return $this->impersonatorAccountId;
+    }
+
+    /**
+     * @return array<\App\Domain\Log\LoginLogs\ValueObject\LoginResult>
+     */
+    public function getLoginResult(): array
     {
         return $this->loginResult;
+    }
+
+    /**
+     * @return array<\App\Domain\Log\LoginLogs\ValueObject\FailureReasonCode>
+     */
+    public function getFailureReasonCode(): array
+    {
+        return $this->failureReasonCode;
     }
 
     /**
@@ -64,21 +91,5 @@ class SearchCondition
     public function getKeyword(): ValueObject\Search\Keyword
     {
         return $this->keyword;
-    }
-
-    /**
-     * @return \App\Domain\Log\LoginLogs\ValueObject\ImpersonatorAccountId
-     */
-    public function getImpersonatorAccountId(): ValueObject\ImpersonatorAccountId
-    {
-        return $this->impersonatorAccountId;
-    }
-
-    /**
-     * @return \App\Domain\Log\LoginLogs\ValueObject\LoginActorType
-     */
-    public function getLoginActorType(): ValueObject\LoginActorType
-    {
-        return $this->loginActorType;
     }
 }

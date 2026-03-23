@@ -25,4 +25,18 @@ class Keyword implements Stringable
     {
         return $this->value !== null ? '%' . $this->value . '%' : null;
     }
+
+    /**
+     * @return array<string>
+     */
+    public function toQueryLikeList(): array
+    {
+        return array_map(
+            fn ($word) => '%' . $word . '%', 
+            array_filter(
+                preg_split('/\s+/', $this->value ?? '') ?? [],
+                fn ($word) => $word !== '',
+            ),
+        );
+    }
 }
