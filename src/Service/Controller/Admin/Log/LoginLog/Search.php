@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Admin\Log\LoginLog;
 
-use App\Model\Table\Log\LoginLogsTable;
-use App\Security\Input\StrictCast;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -20,6 +18,7 @@ final class Search implements ServiceInterface
      */
     public function getInitParams(): array
     {
+        // TODO 未実装
         return [];
     }
 
@@ -28,31 +27,8 @@ final class Search implements ServiceInterface
      */
     public function getSearchQuery(): SelectQuery
     {
-        /** @var \App\Model\Table\Log\LoginLogsTable $table */
-        $table = $this->fetchTable(LoginLogsTable::class);
-
-        $query = $table->find()->orderByDesc('logged_in_at');
-
-        /** @var array<string, string> $data */
-        $data = $this->request->getQuery();
-
-        if (!empty($data['login_id'])) {
-            $query = $query->where(['LoginLogs.login_id' => StrictCast::toString($data['login_id'])]);
-        }
-
-        if (!empty($data['login_actor_type'])) {
-            $query = $query->where(['LoginLogs.login_actor_type' => StrictCast::toString($data['login_actor_type'])]);
-        }
-
-        if (!empty($data['login_result'])) {
-            $query = $query->where(['LoginLogs.login_result' => StrictCast::toString($data['login_result'])]);
-        }
-
-        if (!empty($data['ip_address'])) {
-            $query = $query->where(['LoginLogs.ip_address LIKE' => '%' . StrictCast::toString($data['ip_address']) . '%']);
-        }
-
-        return $query;
+        // TODO 未実装
+        throw new \RuntimeException('未実装');
     }
 
     /**
@@ -60,21 +36,7 @@ final class Search implements ServiceInterface
      */
     public function getPaginateSettings(): array
     {
-        return [
-            'limit' => 20,
-            'maxLimit' => 200,
-            'sortableFields' => [
-                'id',
-                'login_id',
-                'login_actor_type',
-                'login_result',
-                'ip_address',
-                'logged_in_at',
-                'created',
-            ],
-            'order' => [
-                'logged_in_at' => 'DESC',
-            ],
-        ];
+        // TODO 未実装
+        return [];
     }
 }
