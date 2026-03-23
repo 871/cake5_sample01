@@ -6,7 +6,7 @@ namespace App\Infrastructure\Persistence\Cake\Log\LoginLogs\LoginLogsRepository;
 use App\Domain\Exception\RepositoryException;
 use App\Domain\Log\LoginLogs\Entity\LoginLog as DomainEntity;
 use App\Domain\Log\LoginLogs\ValueObject as Vo;
-use App\Infrastructure\Persistence\Cake\Log\LoginLogMapper;
+use App\Infrastructure\Persistence\Cake\Log\LoginLogs\LoginLogMapper;
 use App\Model\Table\Log\LoginLogsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -20,7 +20,7 @@ final class Read
     private LoginLogsTable $table;
 
     /**
-     * @var \App\Infrastructure\Persistence\Cake\Log\LoginLogMapper
+     * @var \App\Infrastructure\Persistence\Cake\Log\LoginLogs\LoginLogMapper
      */
     private LoginLogMapper $mapper;
 

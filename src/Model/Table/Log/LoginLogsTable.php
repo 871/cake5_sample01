@@ -13,18 +13,18 @@ use Cake\Validation\Validator;
  * LoginLogs Model
  *
  * @method \App\Model\Entity\Log\LoginLog newEmptyEntity()
- * @method \App\Model\Entity\Log\LoginLog newEntity(array $data, array $options = [])
- * @method array<\App\Model\Entity\Log\LoginLog> newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Log\LoginLog get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\Log\LoginLog findOrCreate($search, ?callable $callback = null, array $options = [])
- * @method \App\Model\Entity\Log\LoginLog patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method array<\App\Model\Entity\Log\LoginLog> patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\Log\LoginLog|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Log\LoginLog saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method iterable<\App\Model\Entity\Log\LoginLog>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Log\LoginLog>|false saveMany(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Log\LoginLog>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Log\LoginLog> saveManyOrFail(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Log\LoginLog>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Log\LoginLog>|false deleteMany(iterable $entities, array $options = [])
- * @method iterable<\App\Model\Entity\Log\LoginLog>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Log\LoginLog> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Log\LoginLog newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Log\LoginLog> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Log\LoginLog get(mixed $primaryKey, array<string, mixed>|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \App\Model\Entity\Log\LoginLog findOrCreate(array<string, mixed> $search, ?callable $callback = null, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Log\LoginLog patchEntity(\Cake\Datasource\EntityInterface $entity, array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Log\LoginLog> patchEntities(iterable<\App\Model\Entity\Log\LoginLog> $entities, array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Log\LoginLog|false save(\Cake\Datasource\EntityInterface $entity, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Log\LoginLog saveOrFail(\Cake\Datasource\EntityInterface $entity, array<string, mixed> $options = [])
+ * @method iterable<\App\Model\Entity\Log\LoginLog>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Log\LoginLog>|false saveMany(iterable<\App\Model\Entity\Log\LoginLog> $entities, array<string, mixed> $options = [])
+ * @method iterable<\App\Model\Entity\Log\LoginLog>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Log\LoginLog> saveManyOrFail(iterable<\App\Model\Entity\Log\LoginLog> $entities, array<string, mixed> $options = [])
+ * @method iterable<\App\Model\Entity\Log\LoginLog>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Log\LoginLog>|false deleteMany(iterable<\App\Model\Entity\Log\LoginLog> $entities, array<string, mixed> $options = [])
+ * @method iterable<\App\Model\Entity\Log\LoginLog>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Log\LoginLog> deleteManyOrFail(iterable<\App\Model\Entity\Log\LoginLog> $entities, array<string, mixed> $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class LoginLogsTable extends Table

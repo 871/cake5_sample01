@@ -67,8 +67,8 @@ final class LoginLogMapper
             ip_address: Cast::toStringOrNull($ormEntity->ip_address),
             user_agent: Cast::toStringOrNull($ormEntity->user_agent),
             failure_reason_code: Cast::toStringOrNull($ormEntity->failure_reason_code),
-            logged_in_at: Cast::toStringOrNull($ormEntity->logged_in_at?->format('Y-m-d\TH:i:s')),
-            created: Cast::toStringOrNull($ormEntity->created?->format('Y-m-d\TH:i:s')),
+            logged_in_at: Cast::toStringOrNull($ormEntity->logged_in_at->format('Y-m-d\TH:i:s')),
+            created: Cast::toStringOrNull($ormEntity->created->format('Y-m-d\TH:i:s')),
         );
     }
 }

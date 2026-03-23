@@ -7,15 +7,9 @@ use App\Domain\Log\LoginLogs\Entity\LoginLog;
 use App\Domain\Log\LoginLogs\SearchCondition;
 use App\Domain\Log\LoginLogs\ValueObject as Vo;
 use Cake\ORM\Query\SelectQuery;
-use DateTimeInterface;
 
 interface LoginLogsRepository
 {
-    /**
-     * @param \DateTimeInterface $datetime
-     */
-    public function __construct(DateTimeInterface $datetime);
-
     /**
      * Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。 --- IGNORE ---
      * 完全なDDDへ再設計する場合は、ドメインサービス内でページネーションやソートの処理も完結させる形にすることも検討してください。 --- IGNORE ---

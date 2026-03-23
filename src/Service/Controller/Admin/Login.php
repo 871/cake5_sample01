@@ -167,7 +167,7 @@ final class Login implements ServiceInterface
      */
     public function recordLoginSuccess(): self
     {
-        (new LoginLogsRepository($this->datetime))->create(new LoginLogEntity(
+        (new LoginLogsRepository())->create(new LoginLogEntity(
             id: UUID::uuid7(),
             login_id: $this->login_id,
             login_actor_type: LoginLogVo\LoginActorType::ADMIN,
@@ -208,7 +208,7 @@ final class Login implements ServiceInterface
      */
     public function recordLoginFailure(AuthException $e): self
     {
-        (new LoginLogsRepository($this->datetime))->create(new LoginLogEntity(
+        (new LoginLogsRepository())->create(new LoginLogEntity(
             id: UUID::uuid7(),
             login_id: $this->login_id,
             login_actor_type: LoginLogVo\LoginActorType::ADMIN,

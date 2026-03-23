@@ -16,7 +16,7 @@ final class Create
     use LocatorAwareTrait;
 
     /**
-     * @var \App\Model\Table\Log\LoginLog\LoginLogsTable
+     * @var \App\Model\Table\Log\LoginLogsTable
      */
     private LoginLogsTable $table;
 
