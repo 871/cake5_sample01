@@ -56,7 +56,8 @@ final class Login implements ServiceInterface
             ->verifyPassword() // PW照合
             ->checkPasswordExpiresAt() // 有効期限
             ->checkAccountStatus() // ステータス判定
-            ->createLoginSession(); // ログインセッション作成
+            ->createLoginSession() // ログインセッション作成
+            ;
     }
 
     /**
@@ -138,6 +139,17 @@ final class Login implements ServiceInterface
     }
 
     /**
+     * 
+     */
+    public function recordLoginSuccess(): self
+    {
+        // TODO ログイン成功ログ
+        
+
+        return $this;
+    }
+
+    /**
      * @return array<string, string>|string
      */
     public function getRedirect(): string|array
@@ -154,5 +166,16 @@ final class Login implements ServiceInterface
             'action' => 'index',
             'account_id' => $this->account_id,
         ];
+    }
+
+    /**
+     * @param \App\Exception\AuthException $e
+     */
+    public function recordLoginFailure(AuthException $e): self
+    {
+        // TODO ログイン失敗ログ
+        
+
+        return $this;
     }
 }
