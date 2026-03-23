@@ -27,5 +27,17 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
         $builder->get('/', ['controller' => 'Top', 'action' => 'index']);
         $builder->get('/error_test', ['controller' => 'Top', 'action' => 'errorTest']);
 
+        // ログ
+        $builder->prefix('Log', ['path' => '/log'], static function (RouteBuilder $builder) {
+            // ログイン試行ログ
+            $builder->prefix('LoginLog', ['path' => '/login_log'], static function (RouteBuilder $builder) {
+                // 検索
+                $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
+                $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+                // 詳細
+                $builder->get('/detail/{login_log_id}', ['controller' => 'Detail', 'action' => 'index']);
+            });
+        });
+
     });
 });
