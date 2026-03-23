@@ -6,46 +6,32 @@ namespace App\Domain\Log\LoginLogs;
 class SearchCondition
 {
     /**
-     * @param \App\Domain\Log\LoginLogs\ValueObject\Id $id
-     * @param \App\Domain\Log\LoginLogs\ValueObject\Search\Keyword $keyword
-     * @param \App\Domain\Log\LoginLogs\ValueObject\LoginActorType $loginActorType
+     * @param \App\Domain\Log\LoginLogs\ValueObject\LoginId $login_id
      * @param \App\Domain\Log\LoginLogs\ValueObject\LoginResult $loginResult
      * @param \App\Domain\Log\LoginLogs\ValueObject\LoggedInAt $loggedInAtFrom
      * @param \App\Domain\Log\LoginLogs\ValueObject\LoggedInAt $loggedInAtTo
+     * @param \App\Domain\Log\LoginLogs\ValueObject\ImpersonatorAccountId $impersonatorAccountId
+     * @param \App\Domain\Log\LoginLogs\ValueObject\Search\Keyword $keyword
+     * @param \App\Domain\Log\LoginLogs\ValueObject\LoginActorType $loginActorType
      */
     public function __construct(
-        private readonly ValueObject\Id $id,
-        private readonly ValueObject\Search\Keyword $keyword,
-        private readonly ValueObject\LoginActorType $loginActorType,
+        private readonly ValueObject\LoginId $login_id,
         private readonly ValueObject\LoginResult $loginResult,
         private readonly ValueObject\LoggedInAt $loggedInAtFrom,
         private readonly ValueObject\LoggedInAt $loggedInAtTo,
+        private readonly ValueObject\ImpersonatorAccountId $impersonatorAccountId,
+        private readonly ValueObject\Search\Keyword $keyword,
+        private readonly ValueObject\LoginActorType $loginActorType,
     ) {
         // 処理なし
     }
 
     /**
-     * @return \App\Domain\Log\LoginLogs\ValueObject\Id
+     * @return \App\Domain\Log\LoginLogs\ValueObject\LoginId
      */
-    public function getId(): ValueObject\Id
+    public function getLoginId(): ValueObject\LoginId
     {
-        return $this->id;
-    }
-
-    /**
-     * @return \App\Domain\Log\LoginLogs\ValueObject\Search\Keyword
-     */
-    public function getKeyword(): ValueObject\Search\Keyword
-    {
-        return $this->keyword;
-    }
-
-    /**
-     * @return \App\Domain\Log\LoginLogs\ValueObject\LoginActorType
-     */
-    public function getLoginActorType(): ValueObject\LoginActorType
-    {
-        return $this->loginActorType;
+        return $this->login_id;
     }
 
     /**
@@ -70,5 +56,29 @@ class SearchCondition
     public function getLoggedInAtTo(): ValueObject\LoggedInAt
     {
         return $this->loggedInAtTo;
+    }
+
+    /**
+     * @return \App\Domain\Log\LoginLogs\ValueObject\Search\Keyword
+     */
+    public function getKeyword(): ValueObject\Search\Keyword
+    {
+        return $this->keyword;
+    }
+
+    /**
+     * @return \App\Domain\Log\LoginLogs\ValueObject\ImpersonatorAccountId
+     */
+    public function getImpersonatorAccountId(): ValueObject\ImpersonatorAccountId
+    {
+        return $this->impersonatorAccountId;
+    }
+
+    /**
+     * @return \App\Domain\Log\LoginLogs\ValueObject\LoginActorType
+     */
+    public function getLoginActorType(): ValueObject\LoginActorType
+    {
+        return $this->loginActorType;
     }
 }

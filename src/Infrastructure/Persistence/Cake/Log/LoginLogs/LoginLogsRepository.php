@@ -1,20 +1,25 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Domain\Log\LoginLogs\Repository;
+namespace App\Infrastructure\Persistence\Cake\Log\LoginLogs;
 
-use App\Domain\Log\LoginLogs\Entity\LoginLog;
+use App\Domain\Log\LoginLogs\Entity\LoginLog as DomainEntity;
+use App\Domain\Log\LoginLogs\Repository\LoginLogsRepository as DomainRepository;
 use App\Domain\Log\LoginLogs\SearchCondition;
 use App\Domain\Log\LoginLogs\ValueObject as Vo;
 use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
 
-interface LoginLogsRepository
+class LoginLogsRepository implements DomainRepository
 {
     /**
      * @param \DateTimeInterface $datetime
      */
-    public function __construct(DateTimeInterface $datetime);
+    public function __construct(
+        private readonly DateTimeInterface $datetime,
+    ) {
+        // do nothing
+    }
 
     /**
      * Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。 --- IGNORE ---
@@ -23,7 +28,10 @@ interface LoginLogsRepository
      * @param \App\Domain\Log\LoginLogs\SearchCondition $condition
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Log\LoginLog>
      */
-    public function search(SearchCondition $condition): SelectQuery;
+    public function search(SearchCondition $condition): SelectQuery
+    {
+        return (new LoginLogsRepository\Search($condition))->run();
+    }
 
     /**
      * 作成
@@ -31,7 +39,10 @@ interface LoginLogsRepository
      * @param \App\Domain\Log\LoginLogs\Entity\LoginLog $entity
      * @return \App\Domain\Log\LoginLogs\Entity\LoginLog
      */
-    public function create(LoginLog $entity): LoginLog;
+    public function create(DomainEntity $entity): DomainEntity
+    {
+        return (new LoginLogsRepository\Create($entity))->run();
+    }
 
     /**
      * 取得
@@ -39,5 +50,8 @@ interface LoginLogsRepository
      * @param \App\Domain\Log\LoginLogs\ValueObject\Id $id
      * @return \App\Domain\Log\LoginLogs\Entity\LoginLog
      */
-    public function read(Vo\Id $id): LoginLog;
+    public function read(Vo\Id $id): DomainEntity
+    {
+        return (new LoginLogsRepository\Read($id))->run();
+    }
 }

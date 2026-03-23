@@ -7,6 +7,7 @@ use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query\SelectQuery;
+use RuntimeException;
 
 final class Search implements ServiceInterface
 {
@@ -28,7 +29,7 @@ final class Search implements ServiceInterface
     public function getSearchQuery(): SelectQuery
     {
         // TODO 未実装
-        throw new \RuntimeException('未実装');
+        throw new RuntimeException('未実装');
     }
 
     /**

@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace App\Model\Table\Log;
 
+use App\Domain\Log\LoginLogs\ValueObject\LoginActorType;
 use App\Model\Entity\Log\LoginLog;
 use App\Model\Table\Admin\AdminAccountsTable;
-use Cake\ORM\Query\SelectQuery;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -26,7 +25,6 @@ use Cake\Validation\Validator;
  * @method iterable<\App\Model\Entity\Log\LoginLog>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Log\LoginLog> saveManyOrFail(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Log\LoginLog>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Log\LoginLog>|false deleteMany(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Log\LoginLog>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Log\LoginLog> deleteManyOrFail(iterable $entities, array $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class LoginLogsTable extends Table
@@ -41,18 +39,28 @@ class LoginLogsTable extends Table
     {
         parent::initialize($config);
 
-
         $this->setEntityClass(LoginLog::class);
         $this->setTable('login_logs');
         $this->setDisplayField('login_id');
         $this->setPrimaryKey('id');
+
+        /* TODO 未実装
+        $this->belongsTo('UserAccounts', [
+            'className' => UserAccountsTable::class,
+            'foreignKey' => 'account_id',
+            'joinType' => 'LEFT',
+            'conditions' => [
+                'LoginLogs.login_actor_type' => LoginActorType::USER,
+            ],
+        ]);
+        */
 
         $this->belongsTo('AdminAccounts', [
             'className' => AdminAccountsTable::class,
             'foreignKey' => 'account_id',
             'joinType' => 'LEFT',
             'conditions' => [
-                'LoginLogs.login_actor_type' => 'ADMIN',
+                'LoginLogs.login_actor_type' => LoginActorType::ADMIN,
             ],
         ]);
 
