@@ -72,8 +72,8 @@ final class Search implements ServiceInterface
                 static fn ($value): Vo\FailureReasonCode => new Vo\FailureReasonCode(StrictCast::toString($value)),
                 $data['failure_reason_code'] ?? [],
             ),
-            loggedInAtFrom: new Vo\LoggedInAt(Cast::toDateTimeOrNull($data['logged_in_at_from'] ?? null)),
-            loggedInAtTo: new Vo\LoggedInAt(Cast::toDateTimeOrNull($data['logged_in_at_to'] ?? null)),
+            loggedInAtFrom: new Vo\LoggedInAt(Cast::toStringOrNull($data['logged_in_at_from'] ?? null)),
+            loggedInAtTo: new Vo\LoggedInAt(Cast::toStringOrNull($data['logged_in_at_to'] ?? null)),
             keyword: new Vo\Search\Keyword(Cast::toStringOrNull($data['keyword'] ?? null)),
         ));
     }

@@ -10,58 +10,204 @@ use App\Model\Entity\Log\LoginLog;
         ログイン試行ログ検索
     </div>
     <div class="card-body">
-        <form method="get" action="<?= $this->Url->build(['action' => 'index']) ?>">
+        <form method="get">
             <div class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label">ログインID</label>
+                <div class="col-md-6">
+                    <label class="form-label">ログイン日時（自）</label>
                     <input
-                        type="text"
-                        name="login_id"
+                        type="datetime-local"
+                        name="logged_in_at_from"
                         class="form-control"
-                        value="<?= h($this->getRequest()->getQuery('login_id')) ?>"
+                        step="1"
+                        min="1970-01-01T00:00:00"
+                        max="2999-12-31T23:59:59"
+                        value="<?= h($this->getRequest()->getQuery('logged_in_at_from')) ?>"
                     >
                 </div>
-                <div class="col-md-2">
-                    <label class="form-label">アクター種別</label>
-                    <select name="login_actor_type" class="form-select">
-                        <option value="">（全て）</option>
-                        <option value="ADMIN"
-                            <?= $this->getRequest()->getQuery('login_actor_type') === 'ADMIN' ? 'selected' : '' ?>>
-                            ADMIN
-                        </option>
-                        <option value="USER"
-                            <?= $this->getRequest()->getQuery('login_actor_type') === 'USER' ? 'selected' : '' ?>>
-                            USER
-                        </option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">ログイン結果</label>
-                    <select name="login_result" class="form-select">
-                        <option value="">（全て）</option>
-                        <option value="SUCCESS"
-                            <?= $this->getRequest()->getQuery('login_result') === 'SUCCESS' ? 'selected' : '' ?>>
-                            SUCCESS
-                        </option>
-                        <option value="FAILURE"
-                            <?= $this->getRequest()->getQuery('login_result') === 'FAILURE' ? 'selected' : '' ?>>
-                            FAILURE
-                        </option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">IPアドレス</label>
+                <div class="col-md-6">
+                    <label class="form-label">ログイン日時（至）</label>
                     <input
-                        type="text"
-                        name="ip_address"
+                        type="datetime-local"
+                        name="logged_in_at_to"
                         class="form-control"
-                        value="<?= h($this->getRequest()->getQuery('ip_address')) ?>"
-                        placeholder="部分一致"
+                        step="1"
+                        min="1970-01-01T00:00:00"
+                        max="2999-12-31T23:59:59"
+                        value="<?= h($this->getRequest()->getQuery('logged_in_at_to')) ?>"
                     >
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">検索</button>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <label class="form-label">キーワード</label>
+                    <input
+                        type="text"
+                        name="keyword"
+                        class="form-control"
+                        value="<?= h($this->getRequest()->getQuery('keyword')) ?>"
+                    >
                 </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">アカウントID</label>
+                    <input
+                        type="number"
+                        name="account_id"
+                        class="form-control"
+                        min="900000"
+                        max="199999999"
+                        value="<?= h($this->getRequest()->getQuery('account_id')) ?>"
+                    >
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">代理ログインアカウントID</label>
+                    <input
+                        type="number"
+                        name="impersonator_account_id"
+                        class="form-control"
+                        min="900000"
+                        max="199999999"
+                        value="<?= h($this->getRequest()->getQuery('impersonator_account_id')) ?>"
+                    >
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">アカウント種別</label>
+                    <div class="form-control">
+                        <label class="form-check-label">
+                            <input 
+                                class="form-check-input column-toggle all_login_actor_type" 
+                                type="checkbox" 
+                            >全て
+                        </label>
+                    <?php foreach ($loginActorTypeOptions as $value => $label) : ?>
+                        <label class="form-check-label">
+                            <input 
+                                class="form-check-input column-toggle" 
+                                type="checkbox" 
+                                name="login_actor_type[]"
+                                value="<?= h($value) ?>"
+                                <?= h(in_array($value, $this->getRequest()->getQuery('login_actor_type', [])) ? 'checked' : '') ?>
+                            ><?= h($label) ?>
+                        </label>
+                    <?php endforeach; ?>
+                        <script>(function() {
+                            // 全てのフィールド表示チェックボックスの制御
+                            document.querySelector('.all_login_actor_type').addEventListener('change', function() {
+                                const checkboxes = document.querySelectorAll('[name="login_actor_type[]"]');
+                                checkboxes.forEach(cb => cb.checked = this.checked);
+                            });
+                            
+                            document.querySelectorAll('[name="login_actor_type[]"]').forEach(cb => {
+                                cb.addEventListener('change', function() {
+                                    const allCheckbox = document.querySelector('.all_login_actor_type');
+                                    const checkboxes = document.querySelectorAll('[name="login_actor_type[]"]');
+                                    allCheckbox.checked = Array.from(checkboxes).every(cb => cb.checked);
+                                });
+                            });
+
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const allCheckbox = document.querySelector('.all_login_actor_type');
+                                const checkboxes = document.querySelectorAll('[name="login_actor_type[]"]');
+                                allCheckbox.checked = Array.from(checkboxes).every(cb => cb.checked);
+                            });
+                        })();</script>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">アカウント種別</label>
+                    <div class="form-control">
+                        <label class="form-check-label">
+                            <input 
+                                class="form-check-input column-toggle all_login_result" 
+                                type="checkbox" 
+                            >全て
+                        </label>
+                    <?php foreach ($loginResultOptions as $value => $label) : ?>
+                        <label class="form-check-label">
+                            <input 
+                                class="form-check-input column-toggle" 
+                                type="checkbox" 
+                                name="login_result[]"
+                                value="<?= h($value) ?>"
+                                <?= h(in_array($value, $this->getRequest()->getQuery('login_result', [])) ? 'checked' : '') ?>
+                            ><?= h($label) ?>
+                        </label>
+                    <?php endforeach; ?>
+                        <script>(function() {
+                            // 全てのフィールド表示チェックボックスの制御
+                            document.querySelector('.all_login_result').addEventListener('change', function() {
+                                const checkboxes = document.querySelectorAll('[name="login_result[]"]');
+                                checkboxes.forEach(cb => cb.checked = this.checked);
+                            });
+                            
+                            document.querySelectorAll('[name="login_result[]"]').forEach(cb => {
+                                cb.addEventListener('change', function() {
+                                    const allCheckbox = document.querySelector('.all_login_result');
+                                    const checkboxes = document.querySelectorAll('[name="login_result[]"]');
+                                    allCheckbox.checked = Array.from(checkboxes).every(cb => cb.checked);
+                                });
+                            });
+
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const allCheckbox = document.querySelector('.all_login_result');
+                                const checkboxes = document.querySelectorAll('[name="login_result[]"]');
+                                allCheckbox.checked = Array.from(checkboxes).every(cb => cb.checked);
+                            });
+                        })();</script>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <label class="form-label">失敗理由コード</label>
+                    <div class="form-control">
+                        <label class="form-check-label">
+                            <input 
+                                class="form-check-input column-toggle all_failure_reason_code" 
+                                type="checkbox" 
+                            >全て
+                        </label>
+                    <?php foreach ($failureReasonCodeOptions as $value => $label) : ?>
+                        <label class="form-check-label">
+                            <input 
+                                class="form-check-input column-toggle" 
+                                type="checkbox" 
+                                name="failure_reason_code[]"
+                                value="<?= h($value) ?>"
+                                <?= h(in_array($value, $this->getRequest()->getQuery('failure_reason_code', [])) ? 'checked' : '') ?>
+                            ><?= h($label) ?>
+                        </label>
+                    <?php endforeach; ?>
+                        <script>(function() {
+                            // 全てのフィールド表示チェックボックスの制御
+                            document.querySelector('.all_failure_reason_code').addEventListener('change', function() {
+                                const checkboxes = document.querySelectorAll('[name="failure_reason_code[]"]');
+                                checkboxes.forEach(cb => cb.checked = this.checked);
+                            });
+                            
+                            document.querySelectorAll('[name="failure_reason_code[]"]').forEach(cb => {
+                                cb.addEventListener('change', function() {
+                                    const allCheckbox = document.querySelector('.all_failure_reason_code');
+                                    const checkboxes = document.querySelectorAll('[name="failure_reason_code[]"]');
+                                    allCheckbox.checked = Array.from(checkboxes).every(cb => cb.checked);
+                                });
+                            });
+
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const allCheckbox = document.querySelector('.all_failure_reason_code');
+                                const checkboxes = document.querySelectorAll('[name="failure_reason_code[]"]');
+                                allCheckbox.checked = Array.from(checkboxes).every(cb => cb.checked);
+                            });
+                        })();</script>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <button class="btn btn-primary me-2">検索</button>
             </div>
         </form>
     </div>
@@ -76,11 +222,18 @@ use App\Model\Entity\Log\LoginLog;
         <table class="table table-hover table-bordered mb-0">
             <thead class="table-dark">
                 <tr>
-                    <th><?= $this->Paginator->sort('login_id', 'ログインID') ?></th>
-                    <th><?= $this->Paginator->sort('login_actor_type', 'アクター種別') ?></th>
-                    <th><?= $this->Paginator->sort('login_result', 'ログイン結果') ?></th>
-                    <th><?= $this->Paginator->sort('ip_address', 'IPアドレス') ?></th>
-                    <th><?= $this->Paginator->sort('logged_in_at', 'ログイン日時') ?></th>
+                    <?php
+                        $pageOptions = [
+                            'url' => [
+                                'account_id' => $this->getRequest()->getParam('account_id'),
+                            ],
+                        ];
+                    ?>
+                    <th><?= $this->Paginator->sort('login_id', 'ログインID', $pageOptions) ?></th>
+                    <th><?= $this->Paginator->sort('login_actor_type', 'アカウント種別', $pageOptions) ?></th>
+                    <th><?= $this->Paginator->sort('login_result', 'ログイン結果', $pageOptions) ?></th>
+                    <th><?= $this->Paginator->sort('ip_address', 'IPアドレス', $pageOptions) ?></th>
+                    <th><?= $this->Paginator->sort('logged_in_at', 'ログイン日時', $pageOptions) ?></th>
                     <th>操作</th>
                 </tr>
             </thead>

@@ -44,6 +44,7 @@ class SearchController extends AppController
     {
         $this->redirect([
             'action' => 'index',
+            'account_id' => $this->request->getParam('account_id'),
             '?' => $this->ctlService->getInitParams(),
         ]);
     }
@@ -75,6 +76,7 @@ class SearchController extends AppController
             $this->Flash->warning('無効なページが指定されました。1ページ目を表示します。');
 
             return $this->redirect([
+                'account_id' => $this->request->getParam('account_id'),
                 '?' => array_merge((array)$this->request->getQuery(), [
                     'page' => 1,
                 ]),

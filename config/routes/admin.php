@@ -38,6 +38,5 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
                 $builder->get('/detail/{login_log_id}', ['controller' => 'Detail', 'action' => 'index']);
             });
         });
-
     });
 });
