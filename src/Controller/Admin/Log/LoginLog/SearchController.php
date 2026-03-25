@@ -44,6 +44,7 @@ class SearchController extends AppController
     {
         $this->redirect([
             'action' => 'index',
+            'account_id' => $this->request->getParam('account_id'),
             '?' => $this->ctlService->getInitParams(),
         ]);
     }
@@ -54,7 +55,12 @@ class SearchController extends AppController
     public function index()
     {
         try {
+            $categoryService = $this->ctlService->createCategoryService();
+
             $this->set([
+                'loginActorTypeOptions' => $categoryService->getLoginActorTypeOptions(),
+                'loginResultOptions' => $categoryService->getLoginResultOptions(),
+                'failureReasonCodeOptions' => $categoryService->getFailureReasonCodeOptions(),
                 'rows' => $this->paginate(
                     $this->ctlService->getSearchQuery(),
                     $this->ctlService->getPaginateSettings(),
@@ -70,6 +76,7 @@ class SearchController extends AppController
             $this->Flash->warning('無効なページが指定されました。1ページ目を表示します。');
 
             return $this->redirect([
+                'account_id' => $this->request->getParam('account_id'),
                 '?' => array_merge((array)$this->request->getQuery(), [
                     'page' => 1,
                 ]),
