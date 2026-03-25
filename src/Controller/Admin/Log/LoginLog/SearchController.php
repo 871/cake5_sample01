@@ -56,7 +56,7 @@ class SearchController extends AppController
     {
         try {
             $categoryService = $this->ctlService->createCategoryService();
-            
+
             $this->set([
                 'loginActorTypeOptions' => $categoryService->getLoginActorTypeOptions(),
                 'loginResultOptions' => $categoryService->getLoginResultOptions(),

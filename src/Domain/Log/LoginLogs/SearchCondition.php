@@ -3,25 +3,33 @@ declare(strict_types=1);
 
 namespace App\Domain\Log\LoginLogs;
 
+use App\Domain\Log\LoginLogs\ValueObject;
+
 class SearchCondition
 {
     /**
-     * @param array <\App\Domain\Log\LoginLogs\ValueObject\LoginActorType> $login_actor_type
-     * @aram \App\Domain\Log\LoginLogs\ValueObject\AccountId $accountId
-     * @param \App\Domain\Log\LoginLogs\ValueObject\ImpersonatorAccountId $impersonatorAccountId
-     * @param array<\App\Domain\Log\LoginLogs\ValueObject\LoginResult> $loginResult
-     * @param array<\App\Domain\Log\LoginLogs\ValueObject\FailureReasonCode> $failureReasonCode
-     * @param \App\Domain\Log\LoginLogs\ValueObject\LoggedInAt $loggedInAtFrom
-     * @param \App\Domain\Log\LoginLogs\ValueObject\LoggedInAt $loggedInAtTo
-     * @param \App\Domain\Log\LoginLogs\ValueObject\ImpersonatorAccountId $impersonatorAccountId
-     * @param \App\Domain\Log\LoginLogs\ValueObject\Search\Keyword $keyword
+     * @param array<ValueObject\LoginActorType> $loginActorType
+     * @param ValueObject\AccountId $accountId
+     * @param ValueObject\ImpersonatorAccountId $impersonatorAccountId
+     * @param array<ValueObject\LoginResult> $loginResult
+     * @param array<ValueObject\FailureReasonCode> $failureReasonCode
+     * @param ValueObject\LoggedInAt $loggedInAtFrom
+     * @param ValueObject\LoggedInAt $loggedInAtTo
+     * @param ValueObject\Search\Keyword $keyword
      */
     public function __construct(
+        /** @var array<ValueObject\LoginActorType> */
         private readonly array $loginActorType,
+
         private readonly ValueObject\AccountId $accountId,
         private readonly ValueObject\ImpersonatorAccountId $impersonatorAccountId,
+
+        /** @var array<ValueObject\LoginResult> */
         private readonly array $loginResult,
+
+        /** @var array<ValueObject\FailureReasonCode> */
         private readonly array $failureReasonCode,
+
         private readonly ValueObject\LoggedInAt $loggedInAtFrom,
         private readonly ValueObject\LoggedInAt $loggedInAtTo,
         private readonly ValueObject\Search\Keyword $keyword,
@@ -30,7 +38,7 @@ class SearchCondition
     }
 
     /**
-     * @return array <\App\Domain\Log\LoginLogs\ValueObject\LoginActorType>
+     * @return array<ValueObject\LoginActorType>
      */
     public function getLoginActorType(): array
     {
@@ -54,7 +62,7 @@ class SearchCondition
     }
 
     /**
-     * @return array<\App\Domain\Log\LoginLogs\ValueObject\LoginResult>
+     * @return array<ValueObject\LoginResult>
      */
     public function getLoginResult(): array
     {
@@ -62,7 +70,7 @@ class SearchCondition
     }
 
     /**
-     * @return array<\App\Domain\Log\LoginLogs\ValueObject\FailureReasonCode>
+     * @return array<ValueObject\FailureReasonCode>
      */
     public function getFailureReasonCode(): array
     {

@@ -6,14 +6,13 @@ namespace App\Service\Controller\Admin\Log\LoginLog;
 use App\Domain\Log\LoginLogs\SearchCondition;
 use App\Domain\Log\LoginLogs\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Log\LoginLogs\LoginLogsRepository;
+use App\Security\Input\Cast;
+use App\Security\Input\StrictCast;
+use App\Service\Controller\Admin\Log\LoginLog as CategoryService;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
-use \App\Service\Controller\Admin\Log\LoginLog as CategoryService;
-use App\Security\Input\StrictCast;
-use App\Security\Input\Cast;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query\SelectQuery;
-use RuntimeException;
 
 final class Search implements ServiceInterface
 {
@@ -57,20 +56,22 @@ final class Search implements ServiceInterface
         /** @var array<string, string|array<string>> $data */
         $data = $this->request->getQuery();
 
-        return (new LoginLogsRepository($this->datetime))->search(new SearchCondition(
+        return (new LoginLogsRepository())->search(new SearchCondition(
             loginActorType: array_map(
-                static fn ($value): Vo\LoginActorType => new Vo\LoginActorType(StrictCast::toString($value)),
-                $data['login_actor_type'] ?? [],
+                static fn($value): Vo\LoginActorType => new Vo\LoginActorType(StrictCast::toString($value)),
+                (array)($data['login_actor_type'] ?? []),
             ),
             accountId: new Vo\AccountId(Cast::toStringOrNull($data['account_id'] ?? null)),
-            impersonatorAccountId: new Vo\ImpersonatorAccountId(Cast::toStringOrNull($data['impersonator_account_id'] ?? null)),
+            impersonatorAccountId: new Vo\ImpersonatorAccountId(
+                Cast::toStringOrNull($data['impersonator_account_id'] ?? null),
+            ),
             loginResult: array_map(
-                static fn ($value): Vo\LoginResult => new Vo\LoginResult(StrictCast::toString($value)),
-                $data['login_result'] ?? [],
+                static fn($value): Vo\LoginResult => new Vo\LoginResult(StrictCast::toString($value)),
+                (array)($data['login_result'] ?? []),
             ),
             failureReasonCode: array_map(
-                static fn ($value): Vo\FailureReasonCode => new Vo\FailureReasonCode(StrictCast::toString($value)),
-                $data['failure_reason_code'] ?? [],
+                static fn($value): Vo\FailureReasonCode => new Vo\FailureReasonCode(StrictCast::toString($value)),
+                (array)($data['failure_reason_code'] ?? []),
             ),
             loggedInAtFrom: new Vo\LoggedInAt(Cast::toDateTimeStringOrNull($data['logged_in_at_from'] ?? null)),
             loggedInAtTo: new Vo\LoggedInAt(Cast::toDateTimeStringOrNull($data['logged_in_at_to'] ?? null)),
@@ -109,6 +110,7 @@ final class Search implements ServiceInterface
      */
     public function createCategoryService(): CategoryService
     {
+        /** @var \App\Service\Controller\Admin\Log\LoginLog */
         return $this->createService(CategoryService::class);
     }
 }

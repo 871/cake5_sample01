@@ -61,7 +61,7 @@ final class Search
                         $this->condition->getFailureReasonCode(),
                     ),
                     array_filter([
-                        'OR' => array_map(function(string $likeWord) {
+                        'OR' => array_map(function (string $likeWord) {
                             return [
                                 'OR' => [
                                     'LoginLogs.login_id LIKE' => $likeWord,
@@ -73,7 +73,7 @@ final class Search
                                 ],
                             ];
                         }, $this->condition->getKeyword()->toQueryLikeList()),
-                    ], fn($v) => !in_array($v, [null, '', []], true))                    
+                    ], fn($v) => !in_array($v, [null, '', []], true)),
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             );
     }

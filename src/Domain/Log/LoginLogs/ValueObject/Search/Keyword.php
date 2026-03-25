@@ -32,10 +32,10 @@ class Keyword implements Stringable
     public function toQueryLikeList(): array
     {
         return array_map(
-            fn ($word) => '%' . $word . '%', 
+            fn($word) => '%' . $word . '%',
             array_filter(
-                preg_split('/\s+/', $this->value ?? '') ?? [],
-                fn ($word) => $word !== '',
+                preg_split('/\s+/', $this->value ?? '') ?: [],
+                fn($word) => $word !== '',
             ),
         );
     }
