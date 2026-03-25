@@ -180,7 +180,7 @@ class Cast
      * @param string $format
      * @return ?string
      */
-    public static function toDateTimeStringOrNull(mixed $value, string $format = 'Y-m-d H:i:s'): ?string
+    public static function toDateTimeStringOrNull(mixed $value, string $format = 'Y-m-d\TH:i:s'): ?string
     {
         $dateTime = self::toDateTimeOrNull($value);
         if ($dateTime === null) {

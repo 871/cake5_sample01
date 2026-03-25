@@ -3,21 +3,26 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Admin\Log\LoginLog;
 
-use App\Model\Entity\Log\LoginLog;
+use App\Domain\Log\LoginLogs\ValueObject as Vo;
+use App\Infrastructure\Persistence\Cake\Log\LoginLogs\LoginLogsRepository;
+use App\Domain\Log\LoginLogs\Entity\LoginLog as DomainEntity;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
-use RuntimeException;
+use App\Security\Input\StrictCast;
 
 final class Detail implements ServiceInterface
 {
     use ServiceTrait;
 
     /**
-     * @return \App\Model\Entity\Log\LoginLog
+     * @return \App\Domain\Log\LoginLogs\Entity\LoginLog;
      */
-    public function getEntity(): LoginLog
+    public function getEntity(): DomainEntity
     {
-        // TODO 未実装
-        throw new RuntimeException('未実装');
+        return (new LoginLogsRepository())->read(
+            id: new Vo\Id(
+                StrictCast::toString($this->request->getParam('login_log_id')),
+            ),
+        );
     }
 }

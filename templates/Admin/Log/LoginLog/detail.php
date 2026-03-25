@@ -1,6 +1,7 @@
 <?php
 /* @var \Cake\View\View $this */
-/* @var \App\Model\Entity\Log\LoginLog $entity */
+/* @var \App\Domain\Log\LoginLogs\Entity\LoginLog $entity */
+
 ?>
 <div class="card shadow-sm mb-3">
     <div class="card-header bg-info text-white">
@@ -11,55 +12,55 @@
         <table class="table table-bordered">
             <tr>
                 <th style="width:30%">ID</th>
-                <td><?= h($entity->id) ?></td>
+                <td><?= h($entity->id()) ?></td>
             </tr>
             <tr>
                 <th>ログインID</th>
-                <td><?= h($entity->login_id) ?></td>
+                <td><?= h($entity->loginId()) ?></td>
             </tr>
             <tr>
-                <th>アクター種別</th>
-                <td><?= h($entity->login_actor_type) ?></td>
+                <th>アカウント種別</th>
+                <td><?= h($entity->loginActorType()) ?></td>
             </tr>
             <tr>
                 <th>アカウントID</th>
-                <td><?= h($entity->account_id) ?></td>
+                <td><?= h($entity->accountId()) ?></td>
             </tr>
             <tr>
-                <th>なりすまし管理者アカウントID</th>
-                <td><?= h($entity->impersonator_account_id) ?></td>
+                <th>代理ログイン管理者アカウントID</th>
+                <td><?= h($entity->impersonatorAccountId()) ?></td>
             </tr>
             <tr>
                 <th>ログイン結果</th>
                 <td>
-                    <?php if ($entity->login_result === 'SUCCESS') { ?>
+                    <?php if ($entity->loginResult() === 'SUCCESS') { ?>
                         <span class="badge bg-success">SUCCESS</span>
-                    <?php } elseif ($entity->login_result === 'FAILURE') { ?>
+                    <?php } elseif ($entity->loginResult() === 'FAILURE') { ?>
                         <span class="badge bg-danger">FAILURE</span>
                     <?php } else { ?>
-                        <?= h($entity->login_result) ?>
+                        <?= h($entity->loginResult()) ?>
                     <?php } ?>
                 </td>
             </tr>
             <tr>
                 <th>IPアドレス</th>
-                <td><?= h($entity->ip_address) ?></td>
+                <td><?= h($entity->ipAddress()) ?></td>
             </tr>
             <tr>
                 <th>ユーザーエージェント</th>
-                <td style="white-space:pre-wrap"><?= h($entity->user_agent) ?></td>
+                <td style="white-space:pre-wrap"><?= h($entity->userAgent()) ?></td>
             </tr>
             <tr>
-                <th>失敗理由コード</th>
-                <td><?= h($entity->failure_reason_code) ?></td>
+                <th>ログイン失敗理由コード</th>
+                <td><?= h($entity->failureReasonCode()) ?></td>
             </tr>
             <tr>
                 <th>ログイン日時</th>
-                <td><?= h($entity->logged_in_at?->format('Y/m/d H:i:s') ?? '----/--/-- --:--:--') ?></td>
+                <td><?= h($entity->loggedInAt()?->format('Y/m/d H:i:s') ?? '----/--/-- --:--:--') ?></td>
             </tr>
             <tr>
                 <th>作成日時</th>
-                <td><?= h($entity->created?->format('Y/m/d H:i:s') ?? '----/--/-- --:--:--') ?></td>
+                <td><?= h($entity->created()?->format('Y/m/d H:i:s') ?? '----/--/-- --:--:--') ?></td>
             </tr>
         </table>
 
