@@ -23,7 +23,7 @@ class LoggedInAt implements Stringable
      */
     public function __construct(?string $value, string $format = 'Y-m-d\TH:i:s')
     {
-        if ($value === null) {
+        if ($value === null || $value === '') {
             $this->value = null;
 
             return;
