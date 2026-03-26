@@ -68,8 +68,8 @@ final class Search
                                     'LoginLogs.ip_address LIKE' => $likeWord,
                                     'LoginLogs.user_agent LIKE' => $likeWord,
                                     // TODO 未実装 'UserAccounts.account_name LIKE' => $likeWord,
-                                    'AdminAccounts.account_name LIKE' => $likeWord,
-                                    'ImpersonatorAdminAccounts.account_name LIKE' => $likeWord,
+                                    'AdminAccounts.name LIKE' => $likeWord,
+                                    'ImpersonatorAdminAccounts.name LIKE' => $likeWord,
                                 ],
                             ];
                         }, $this->condition->getKeyword()->toQueryLikeList()),

@@ -15,7 +15,7 @@ class Cast
      */
     public static function toIntOrNull(mixed $value): ?int
     {
-        if ($value === null) {
+        if ($value === null || $value === '') {
             return null;
         }
 
@@ -36,7 +36,7 @@ class Cast
      */
     public static function toFloatOrNull(mixed $value): ?float
     {
-        if ($value === null) {
+        if ($value === null || $value === '') {
             return null;
         }
 
@@ -71,7 +71,7 @@ class Cast
      */
     public static function toBoolOrNull(mixed $value): ?bool
     {
-        if ($value === null) {
+        if ($value === null || $value === '') {
             return null;
         }
 
@@ -102,7 +102,7 @@ class Cast
      */
     public static function toDateTimeOrNull(mixed $value): ?DateTimeInterface
     {
-        if ($value === null) {
+        if ($value === null || $value === '') {
             return null;
         }
 
@@ -127,7 +127,7 @@ class Cast
      */
     public static function toDateOrNull(mixed $value): ?DateTimeInterface
     {
-        if ($value === null) {
+        if ($value === null || $value === '') {
             return null;
         }
 
@@ -154,7 +154,7 @@ class Cast
      */
     public static function toTimeOrNull(mixed $value): ?DateTimeInterface
     {
-        if ($value === null) {
+        if ($value === null || $value === '') {
             return null;
         }
 

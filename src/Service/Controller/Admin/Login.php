@@ -192,7 +192,7 @@ final class Login implements ServiceInterface
         $redirect = Cast::toStringOrNull($this->request->getQuery('redirect')) ?? '';
         if (preg_match('/^\/v1\/ad\/\d+\/.*$/', $redirect)) {
             /** @var string */
-            return preg_replace('/^(\/v1\/ad\/)\d+(\/.*)$/', '$1' . $this->account_id . '$2', $redirect);
+            return preg_replace('/^(\/v1\/ad)\/\d+\/(.*)$/', '$1/' . $this->account_id . '/$2', $redirect);
         }
 
         return [
