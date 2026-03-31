@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Table\Log;
 
 use App\Model\Entity\Log\PageAccessLog;
+use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -41,6 +42,15 @@ class PageAccessLogsTable extends Table
         $this->setTable('page_access_logs');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->belongsTo('AdminAccounts', [
+            'className' => AdminAccountsTable::class,
+            'foreignKey' => 'account_id',
+            'joinType' => 'LEFT',
+            'conditions' => [
+                'PageAccessLogs.account_type' => 'ADMIN',
+            ],
+        ]);
     }
 
     /**
