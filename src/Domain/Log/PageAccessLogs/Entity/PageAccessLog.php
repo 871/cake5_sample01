@@ -25,11 +25,11 @@ final class PageAccessLog
      */
     public function __construct(
         private readonly ?string $id,
-        private readonly ?string $accessed,
-        private readonly ?string $account_type,
-        private readonly ?string $account_id,
-        private readonly ?string $method,
-        private readonly ?string $path,
+        private readonly string $accessed,
+        private readonly string $account_type,
+        private readonly string $account_id,
+        private readonly string $method,
+        private readonly string $path,
         private readonly ?string $query_string,
         private readonly ?string $post_keys,
         private readonly ?string $route_name,

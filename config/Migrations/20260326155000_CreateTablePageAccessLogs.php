@@ -15,7 +15,7 @@ class CreateTablePageAccessLogs extends BaseMigration
                 id CHAR(36) NOT NULL COMMENT 'ログID(UUID7)',
                 accessed DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)  COMMENT 'アクセス日時',
                 account_type VARCHAR(20) NOT NULL COMMENT 'アカウント種別:ADMIN / USER',
-                account_id BIGINT UNSIGNED NULL COMMENT '対象アカウントID',
+                account_id BIGINT UNSIGNED NOT NULL COMMENT '対象アカウントID',
                 method VARCHAR(10) NOT NULL COMMENT 'アクセスメソッド',
                 path VARCHAR(2048) NOT NULL COMMENT ' パス',
                 query_string TEXT NULL COMMENT ' GETパラメータ',

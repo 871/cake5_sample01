@@ -14,12 +14,12 @@ class Method implements Stringable
     public const MAX_LENGTH = 10;
 
     /**
-     * @param ?string $value
+     * @param string $value
      */
     public function __construct(
-        private readonly ?string $value,
+        private readonly string $value,
     ) {
-        if ($value !== null && mb_strlen($value) > self::MAX_LENGTH) {
+        if (mb_strlen($value) > self::MAX_LENGTH) {
             throw new DomainException(
                 self::class . ' value length Error'
                 . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',

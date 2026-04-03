@@ -5,7 +5,7 @@ namespace App\Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogsR
 
 use App\Domain\Log\PageAccessLogs\Entity\PageAccessLog as DomainEntity;
 use App\Domain\Log\PageAccessLogs\SearchCondition;
-use App\Domain\Log\PageAccessLogs\ValueObject\NavigationType;
+use App\Domain\Log\PageAccessLogs\ValueObject\Search\NavigationType;
 use App\Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogMapper;
 use App\Model\Table\Log\PageAccessLogsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -39,18 +39,31 @@ final class Search
      */
     public function run(): array
     {
-        $navigationType = $this->condition->getNavigationType()->toString();
-        $isReverse = in_array($navigationType, [NavigationType::LAST, NavigationType::PREV], true);
+        return match ($this->condition->getNavigationType()->toString()) {
+            NavigationType::FIRST => $this->searchFirst(),
+            NavigationType::LAST => $this->searchLast(),
+            NavigationType::NEXT => $this->searchNext(),
+            NavigationType::PREV => $this->searchPrev(),
+            default => throw new \LogicException('Unknown navigation type: ' . $this->condition->getNavigationType()->toString()),
+        };
+    }
 
-        $query = $this->table
+    /**
+     * @return array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog>
+     */
+    private function searchFirst(): array
+    {
+        /** @var array<\App\Model\Entity\Log\PageAccessLog> $ormEntities */
+        $ormEntities = $this->table
             ->find()
             ->contain(['AdminAccounts'])
             ->where(
                 array_filter([
+                    // Memo: 検索条件
                     'PageAccessLogs.accessed >='
-                        => $this->condition->getAccessedFrom()->format('Y-m-d\TH:i:s.u'),
+                        => $this->condition->getAccessedFrom()->format('Y-m-d\TH:i:s'),
                     'PageAccessLogs.accessed <='
-                        => $this->condition->getAccessedTo()->format('Y-m-d\TH:i:s.u'),
+                        => $this->condition->getAccessedTo()->format('Y-m-d\TH:i:s'),
                     'PageAccessLogs.account_type'
                         => $this->condition->getAccountType()->toStringOrNull(),
                     'PageAccessLogs.account_id'
@@ -69,53 +82,176 @@ final class Search
                         }, $this->condition->getKeyword()->toQueryLikeList()),
                     ], fn($v) => !in_array($v, [null, '', []], true)),
                 ], fn($v) => !in_array($v, [null, '', []], true)),
-            );
+            )
+            ->orderBy([
+                'PageAccessLogs.accessed' => 'DESC', 
+                'PageAccessLogs.id' => 'DESC'
+            ])
+            ->limit($this->condition->getLimit() + 1) // 1件多く取得して、次ページの有無を判断する
+            ->all()
+            ->toArray();
 
-        $cursorId = $this->condition->getCursorId()->toStringOrNull();
-        $cursorAccessed = $this->condition->getCursorAccessed()->format('Y-m-d\TH:i:s.u');
-
-        if ($navigationType === NavigationType::NEXT && $cursorId !== null && $cursorAccessed !== null) {
-            $query->where([
-                'OR' => [
-                    ['PageAccessLogs.accessed >' => $cursorAccessed],
-                    [
-                        'PageAccessLogs.accessed' => $cursorAccessed,
-                        'PageAccessLogs.id >' => $cursorId,
-                    ],
-                ],
-            ]);
-        } elseif ($navigationType === NavigationType::PREV && $cursorId !== null && $cursorAccessed !== null) {
-            $query->where([
-                'OR' => [
-                    ['PageAccessLogs.accessed <' => $cursorAccessed],
-                    [
-                        'PageAccessLogs.accessed' => $cursorAccessed,
-                        'PageAccessLogs.id <' => $cursorId,
-                    ],
-                ],
-            ]);
-        }
-
-        if ($isReverse) {
-            $query->orderBy(['PageAccessLogs.accessed' => 'DESC', 'PageAccessLogs.id' => 'DESC']);
-        } else {
-            $query->orderBy(['PageAccessLogs.accessed' => 'ASC', 'PageAccessLogs.id' => 'ASC']);
-        }
-
-        $query->limit($this->condition->getLimit());
-
-        /** @var array<\App\Model\Entity\Log\PageAccessLog> $ormEntities */
-        $ormEntities = $query->all()->toArray();
-
-        $domainEntities = array_map(
+        return array_map(
             fn($ormEntity): DomainEntity => $this->mapper->toDomainEntity($ormEntity),
             $ormEntities,
         );
+    }
 
-        if ($isReverse) {
-            $domainEntities = array_reverse($domainEntities);
-        }
+    /**
+     * @return array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog>
+     */
+    private function searchLast(): array
+    {
+        /** @var array<\App\Model\Entity\Log\PageAccessLog> $ormEntities */
+        $ormEntities = $this->table
+            ->find()
+            ->contain(['AdminAccounts'])
+            ->where(
+                array_filter([
+                    // Memo: 検索条件
+                    'PageAccessLogs.accessed >='
+                        => $this->condition->getAccessedFrom()->format('Y-m-d\TH:i:s'),
+                    'PageAccessLogs.accessed <='
+                        => $this->condition->getAccessedTo()->format('Y-m-d\TH:i:s'),
+                    'PageAccessLogs.account_type'
+                        => $this->condition->getAccountType()->toStringOrNull(),
+                    'PageAccessLogs.account_id'
+                        => $this->condition->getAccountId()->toStringOrNull(),
+                    array_filter([
+                        'OR' => array_map(function (string $likeWord) {
+                            return [
+                                'OR' => [
+                                    'PageAccessLogs.path LIKE' => $likeWord,
+                                    'PageAccessLogs.route_name LIKE' => $likeWord,
+                                    'PageAccessLogs.ip_address LIKE' => $likeWord,
+                                    'PageAccessLogs.user_agent LIKE' => $likeWord,
+                                    'AdminAccounts.name LIKE' => $likeWord,
+                                ],
+                            ];
+                        }, $this->condition->getKeyword()->toQueryLikeList()),
+                    ], fn($v) => !in_array($v, [null, '', []], true)),
+                ], fn($v) => !in_array($v, [null, '', []], true)),
+            )
+            ->orderBy([
+                'PageAccessLogs.accessed' => 'ASC', 
+                'PageAccessLogs.id' => 'ASC'
+            ])
+            ->limit($this->condition->getLimit() + 1) // 1件多く取得して、次ページの有無を判断する
+            ->all()
+            ->toArray();
 
-        return $domainEntities;
+        return array_reverse(
+            array_map(
+                fn($ormEntity): DomainEntity => $this->mapper->toDomainEntity($ormEntity),
+                $ormEntities,
+            )
+        );
+    }
+
+    /**
+     * @return array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog>
+     */
+    private function searchNext(): array
+    {
+        /** @var array<\App\Model\Entity\Log\PageAccessLog> $ormEntities */
+        $ormEntities = $this->table
+            ->find()
+            ->contain(['AdminAccounts'])
+            ->where(
+                array_filter([
+                    'PageAccessLogs.accessed >='
+                        => $this->condition->getCursorAccessed()->format('Y-m-d\TH:i:s'),
+                    'PageAccessLogs.accessed >='
+                        => $this->condition->getAccessedFrom()->format('Y-m-d\TH:i:s'),
+                    'PageAccessLogs.accessed <='
+                        => $this->condition->getAccessedTo()->format('Y-m-d\TH:i:s'),
+                    'PageAccessLogs.account_id'
+                        => $this->condition->getAccountId()->toStringOrNull(),
+                    'PageAccessLogs.id >='
+                        => $this->condition->getCursorId()->toStringOrNull(),
+                    'PageAccessLogs.account_type'
+                        => $this->condition->getAccountType()->toStringOrNull(),
+                    array_filter([
+                        'OR' => array_map(function (string $likeWord) {
+                            return [
+                                'OR' => [
+                                    'PageAccessLogs.path LIKE' => $likeWord,
+                                    'PageAccessLogs.route_name LIKE' => $likeWord,
+                                    'PageAccessLogs.ip_address LIKE' => $likeWord,
+                                    'PageAccessLogs.user_agent LIKE' => $likeWord,
+                                    'AdminAccounts.name LIKE' => $likeWord,
+                                ],
+                            ];
+                        }, $this->condition->getKeyword()->toQueryLikeList()),
+                    ], fn($v) => !in_array($v, [null, '', []], true)),
+                ], fn($v) => !in_array($v, [null, '', []], true)),
+            )
+            ->orderBy([
+                'PageAccessLogs.accessed' => 'DESC', 
+                'PageAccessLogs.id' => 'DESC'
+            ])
+            ->limit($this->condition->getLimit() + 2) // 2件多く取得して、次ページの有無を判断する
+            ->all()
+            ->toArray();
+
+        return array_map(
+            fn($ormEntity): DomainEntity => $this->mapper->toDomainEntity($ormEntity),
+            $ormEntities,
+        );
+    }
+
+    /**
+     * @return array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog>
+     */
+    private function searchPrev(): array
+    {
+        /** @var array<\App\Model\Entity\Log\PageAccessLog> $ormEntities */
+        $ormEntities = $this->table
+            ->find()
+            ->contain(['AdminAccounts'])
+            ->where(
+                array_filter([
+                    // Memo: 検索条件
+                    'PageAccessLogs.accessed >='
+                        => $this->condition->getAccessedFrom()->format('Y-m-d\TH:i:s'),
+                    'PageAccessLogs.accessed <='
+                        => $this->condition->getAccessedTo()->format('Y-m-d\TH:i:s'),
+                    'PageAccessLogs.accessed <='
+                        => $this->condition->getCursorAccessed()->format('Y-m-d\TH:i:s'),
+                    'PageAccessLogs.id <='
+                        => $this->condition->getCursorId()->toStringOrNull(),
+                    'PageAccessLogs.account_id'
+                        => $this->condition->getAccountId()->toStringOrNull(),
+                    'PageAccessLogs.account_type'
+                        => $this->condition->getAccountType()->toStringOrNull(),
+                    array_filter([
+                        'OR' => array_map(function (string $likeWord) {
+                            return [
+                                'OR' => [
+                                    'PageAccessLogs.path LIKE' => $likeWord,
+                                    'PageAccessLogs.route_name LIKE' => $likeWord,
+                                    'PageAccessLogs.ip_address LIKE' => $likeWord,
+                                    'PageAccessLogs.user_agent LIKE' => $likeWord,
+                                    'AdminAccounts.name LIKE' => $likeWord,
+                                ],
+                            ];
+                        }, $this->condition->getKeyword()->toQueryLikeList()),
+                    ], fn($v) => !in_array($v, [null, '', []], true)),
+                ], fn($v) => !in_array($v, [null, '', []], true)),
+            )
+            ->orderBy([
+                'PageAccessLogs.accessed' => 'ASC', 
+                'PageAccessLogs.id' => 'ASC'
+            ])
+            ->limit($this->condition->getLimit() + 2) // 2件多く取得して、前ページの有無を判断する
+            ->all()
+            ->toArray();
+
+        return array_reverse(
+            array_map(
+                fn($ormEntity): DomainEntity => $this->mapper->toDomainEntity($ormEntity),
+                $ormEntities,
+            )
+        );
     }
 }

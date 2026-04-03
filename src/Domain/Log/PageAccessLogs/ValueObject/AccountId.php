@@ -16,14 +16,15 @@ class AccountId implements Stringable
     private ?int $value;
 
     /**
-     * @param ?string $value
+     * @param string $value
      */
-    public function __construct(?string $value)
+    public function __construct(string $value)
     {
-        if ($value === null || $value === '') {
-            $this->value = null;
-
-            return;
+        if ($value === '') {
+            throw new DomainException(
+                self::class . ' value format Error'
+                . '[value: ' . $value . ']',
+            );
         }
 
         if (!preg_match('/^\d+$/', $value) || (int)$value < self::MIN) {

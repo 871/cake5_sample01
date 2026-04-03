@@ -13,9 +13,8 @@ class SearchCondition
      * @param \App\Domain\Log\PageAccessLogs\ValueObject\AccountType $accountType
      * @param \App\Domain\Log\PageAccessLogs\ValueObject\AccountId $accountId
      * @param \App\Domain\Log\PageAccessLogs\ValueObject\Search\Keyword $keyword
-     * @param \App\Domain\Log\PageAccessLogs\ValueObject\NavigationType $navigationType
-     * @param \App\Domain\Log\PageAccessLogs\ValueObject\Id $cursorId
-     * @param \App\Domain\Log\PageAccessLogs\ValueObject\Accessed $cursorAccessed
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\Search\NavigationType $navigationType
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\Search\CursorAccessed $cursorAccessed
      * @param int $limit
      */
     public function __construct(
@@ -24,9 +23,9 @@ class SearchCondition
         private readonly ValueObject\AccountType $accountType,
         private readonly ValueObject\AccountId $accountId,
         private readonly ValueObject\Search\Keyword $keyword,
-        private readonly ValueObject\NavigationType $navigationType,
+        private readonly ValueObject\Search\NavigationType $navigationType,
+        private readonly ValueObject\Search\CursorAccessed $cursorAccessed,
         private readonly ValueObject\Id $cursorId,
-        private readonly ValueObject\Accessed $cursorAccessed,
         private readonly int $limit = self::DEFAULT_LIMIT,
     ) {
         // 処理なし
@@ -73,11 +72,19 @@ class SearchCondition
     }
 
     /**
-     * @return \App\Domain\Log\PageAccessLogs\ValueObject\NavigationType
+     * @return \App\Domain\Log\PageAccessLogs\ValueObject\Search\NavigationType
      */
-    public function getNavigationType(): ValueObject\NavigationType
+    public function getNavigationType(): ValueObject\Search\NavigationType
     {
         return $this->navigationType;
+    }
+
+    /**
+     * @return \App\Domain\Log\PageAccessLogs\ValueObject\Search\CursorAccessed
+     */
+    public function getCursorAccessed(): ValueObject\Search\CursorAccessed
+    {
+        return $this->cursorAccessed;
     }
 
     /**
@@ -86,14 +93,6 @@ class SearchCondition
     public function getCursorId(): ValueObject\Id
     {
         return $this->cursorId;
-    }
-
-    /**
-     * @return \App\Domain\Log\PageAccessLogs\ValueObject\Accessed
-     */
-    public function getCursorAccessed(): ValueObject\Accessed
-    {
-        return $this->cursorAccessed;
     }
 
     /**

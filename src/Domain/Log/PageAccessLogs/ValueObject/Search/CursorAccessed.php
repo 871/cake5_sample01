@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Domain\Log\PageAccessLogs\ValueObject;
+namespace App\Domain\Log\PageAccessLogs\ValueObject\Search;
 
 use App\Domain\Shared\ValueObject\Trait\DateTimeTrait;
 use DateTimeImmutable;
@@ -9,7 +9,7 @@ use DateTimeInterface;
 use DomainException;
 use Stringable;
 
-class Accessed implements Stringable
+class CursorAccessed implements Stringable
 {
     use DateTimeTrait;
 
@@ -19,15 +19,15 @@ class Accessed implements Stringable
     private readonly ?DateTimeInterface $value;
 
     /**
-     * @param string $value
+     * @param ?string $value
      */
-    public function __construct(string $value)
+    public function __construct(?string $value)
     {
         $dt = DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', $value)
             ?: DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s', $value)
             ?: null;
 
-        if ($dt === null) {
+        if ($dt === null && $value !== null) {
             throw new DomainException(
                 self::class . ' value datetime format Error'
                 . '[value: ' . $value . ']',

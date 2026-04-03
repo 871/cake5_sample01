@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Domain\Log\PageAccessLogs\ValueObject;
+namespace App\Domain\Log\PageAccessLogs\ValueObject\Search;
 
 use App\Domain\Shared\ValueObject\Trait\StringTrait;
 use DomainException;

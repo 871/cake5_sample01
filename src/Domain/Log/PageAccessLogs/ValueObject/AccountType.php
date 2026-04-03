@@ -13,15 +13,18 @@ class AccountType implements Stringable
 
     public const ADMIN = 'ADMIN';
     public const USER = 'USER';
-    public const VALUES = [self::ADMIN, self::USER];
+    public const VALUES = [
+        self::ADMIN, 
+        self::USER,
+    ];
 
     /**
-     * @param ?string $value
+     * @param string $value
      */
     public function __construct(
-        private readonly ?string $value,
+        private readonly string $value,
     ) {
-        if ($value !== null && !in_array($value, self::VALUES, true)) {
+        if (!in_array($value, self::VALUES, true)) {
             throw new DomainException(
                 self::class . ' value out of range Error'
                 . '[value: ' . $value . ']'
