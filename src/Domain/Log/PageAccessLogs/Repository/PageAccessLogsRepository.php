@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Log\PageAccessLogs\Repository;
 
+use App\Domain\Log\PageAccessLogs\AdminSearchCondition;
 use App\Domain\Log\PageAccessLogs\Entity\PageAccessLog;
 use App\Domain\Log\PageAccessLogs\SearchCondition;
+use Cake\ORM\Query\SelectQuery;
 
 interface PageAccessLogsRepository
 {
@@ -15,6 +17,15 @@ interface PageAccessLogsRepository
      * @return array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog>
      */
     public function search(SearchCondition $condition): array;
+
+    /**
+     * Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。 --- IGNORE ---
+     * 完全なDDDへ再設計する場合は、ドメインサービス内でページネーションやソートの処理も完結させる形にすることも検討してください。 --- IGNORE ---
+     *
+     * @param \App\Domain\Log\PageAccessLogs\AdminSearchCondition $condition
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Log\PageAccessLog>
+     */
+    public function adminSearch(AdminSearchCondition $condition): SelectQuery;
 
     /**
      * 作成
