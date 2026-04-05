@@ -85,8 +85,8 @@ final class Search implements ServiceInterface
         $cursorAccessed = Cast::toDateTimeStringOrNull($data['cursor_accessed'] ?? null, 'Y-m-d\TH:i:s');
 
         // NEXT/PREV指定がなければLAST（最新レコード取得）
-        if ($navigationType === null || !in_array($navigationType, Vo\NavigationType::VALUES, true)) {
-            $navigationType = Vo\NavigationType::LAST;
+        if ($navigationType === null || !in_array($navigationType, Vo\Search\NavigationType::VALUES, true)) {
+            $navigationType = Vo\Search\NavigationType::LAST;
             $cursorId = null;
             $cursorAccessed = null;
         }
@@ -96,12 +96,12 @@ final class Search implements ServiceInterface
         $condition = new SearchCondition(
             accessedFrom: new Vo\Accessed($accessedFrom),
             accessedTo: new Vo\Accessed($accessedTo),
-            accountType: new Vo\AccountType(Cast::toStringOrNull($data['account_type'] ?? null)),
-            accountId: new Vo\AccountId(Cast::toStringOrNull($data['account_id'] ?? null)),
+            accountType: new Vo\Search\AccountType(Cast::toStringOrNull($data['account_type'] ?? null)),
+            accountId: new Vo\Search\AccountId(Cast::toStringOrNull($data['account_id'] ?? null)),
             keyword: new Vo\Search\Keyword(Cast::toStringOrNull($data['keyword'] ?? null)),
-            navigationType: new Vo\NavigationType($navigationType),
+            navigationType: new Vo\Search\NavigationType($navigationType),
+            cursorAccessed: new Vo\Search\CursorAccessed($cursorAccessed),
             cursorId: new Vo\Id($cursorId),
-            cursorAccessed: new Vo\Accessed($cursorAccessed),
         );
 
         $rows = (new PageAccessLogsRepository())->search($condition);
@@ -127,7 +127,7 @@ final class Search implements ServiceInterface
         $navigationType = Cast::toStringOrNull($data['navigation_type'] ?? null);
 
         // 初期ページ（LAST）の場合は前ページなし
-        if ($navigationType === null || $navigationType === Vo\NavigationType::LAST) {
+        if ($navigationType === null || $navigationType === Vo\Search\NavigationType::LAST) {
             return null;
         }
 
@@ -141,7 +141,7 @@ final class Search implements ServiceInterface
         }
 
         return [
-            'navigation_type' => Vo\NavigationType::NEXT,
+            'navigation_type' => Vo\Search\NavigationType::NEXT,
             'cursor_id' => $newestId,
             'cursor_accessed' => $newestAccessed,
         ];
@@ -169,7 +169,7 @@ final class Search implements ServiceInterface
         }
 
         return [
-            'navigation_type' => Vo\NavigationType::PREV,
+            'navigation_type' => Vo\Search\NavigationType::PREV,
             'cursor_id' => $oldestId,
             'cursor_accessed' => $oldestAccessed,
         ];

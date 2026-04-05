@@ -1,0 +1,35 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Domain\Log\PageAccessLogs\ValueObject\Search;
+
+use App\Domain\Shared\ValueObject\Trait\StringTrait;
+use DomainException;
+use Stringable;
+
+class AccountType implements Stringable
+{
+    use StringTrait;
+
+    public const ADMIN = 'ADMIN';
+    public const USER = 'USER';
+    public const VALUES = [
+        self::ADMIN, 
+        self::USER,
+    ];
+
+    /**
+     * @param ?string $value
+     */
+    public function __construct(
+        private readonly ?string $value,
+    ) {
+        if ($value !== null && !in_array($value, self::VALUES, true)) {
+            throw new DomainException(
+                self::class . ' value out of range Error'
+                . '[value: ' . $value . ']'
+                . '[allowed: ' . implode(', ', self::VALUES) . ']',
+            );
+        }
+    }
+}

@@ -23,6 +23,12 @@ class CursorAccessed implements Stringable
      */
     public function __construct(?string $value)
     {
+        if ($value === null || $value === '') {
+
+            $this->value = null;
+            return;
+        }
+
         $dt = DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', $value)
             ?: DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s', $value)
             ?: null;

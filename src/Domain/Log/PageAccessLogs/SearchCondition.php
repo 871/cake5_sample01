@@ -10,8 +10,8 @@ class SearchCondition
     /**
      * @param \App\Domain\Log\PageAccessLogs\ValueObject\Accessed $accessedFrom
      * @param \App\Domain\Log\PageAccessLogs\ValueObject\Accessed $accessedTo
-     * @param \App\Domain\Log\PageAccessLogs\ValueObject\AccountType $accountType
-     * @param \App\Domain\Log\PageAccessLogs\ValueObject\AccountId $accountId
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\Search\AccountType $accountType
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\Search\AccountId $accountId
      * @param \App\Domain\Log\PageAccessLogs\ValueObject\Search\Keyword $keyword
      * @param \App\Domain\Log\PageAccessLogs\ValueObject\Search\NavigationType $navigationType
      * @param \App\Domain\Log\PageAccessLogs\ValueObject\Search\CursorAccessed $cursorAccessed
@@ -20,8 +20,8 @@ class SearchCondition
     public function __construct(
         private readonly ValueObject\Accessed $accessedFrom,
         private readonly ValueObject\Accessed $accessedTo,
-        private readonly ValueObject\AccountType $accountType,
-        private readonly ValueObject\AccountId $accountId,
+        private readonly ValueObject\Search\AccountType $accountType,
+        private readonly ValueObject\Search\AccountId $accountId,
         private readonly ValueObject\Search\Keyword $keyword,
         private readonly ValueObject\Search\NavigationType $navigationType,
         private readonly ValueObject\Search\CursorAccessed $cursorAccessed,
@@ -48,17 +48,17 @@ class SearchCondition
     }
 
     /**
-     * @return \App\Domain\Log\PageAccessLogs\ValueObject\AccountType
+     * @return \App\Domain\Log\PageAccessLogs\ValueObject\Search\AccountType
      */
-    public function getAccountType(): ValueObject\AccountType
+    public function getAccountType(): ValueObject\Search\AccountType
     {
         return $this->accountType;
     }
 
     /**
-     * @return \App\Domain\Log\PageAccessLogs\ValueObject\AccountId
+     * @return \App\Domain\Log\PageAccessLogs\ValueObject\Search\AccountId
      */
-    public function getAccountId(): ValueObject\AccountId
+    public function getAccountId(): ValueObject\Search\AccountId
     {
         return $this->accountId;
     }
