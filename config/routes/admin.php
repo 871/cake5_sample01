@@ -37,6 +37,12 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
                 // 詳細
                 $builder->get('/detail/{login_log_id}', ['controller' => 'Detail', 'action' => 'index']);
             });
+            // ページアクセスログ
+            $builder->prefix('PageAccessLog', ['path' => '/page_access_log'], static function (RouteBuilder $builder) {
+                // 検索
+                $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
+                $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+            });
         });
     });
 });
