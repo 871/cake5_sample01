@@ -23,6 +23,8 @@ final class Search implements ServiceInterface
         $datetime = DateTimeImmutable::createFromInterface($this->datetime);
 
         return [
+            // 仕様: accessed_fromは現在日の23:59:59、accessed_toは前日の00:00:00
+            // resolveAccessedRange()内でfrom > toの場合にスワップして検索条件に使用する
             'accessed_from' => $datetime->format('Y-m-d\T23:59:59'),
             'accessed_to' => $datetime->modify('-1 day')->format('Y-m-d\T00:00:00'),
         ];
