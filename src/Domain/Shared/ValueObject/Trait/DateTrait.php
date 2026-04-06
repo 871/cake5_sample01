@@ -23,6 +23,16 @@ trait DateTrait
     }
 
     /**
+     * @return \DateTimeInterface
+     */
+    public function toDate(): DateTimeInterface
+    {
+        return $this->value ?? throw new \DomainException(
+            self::class . ' value is null',
+        );
+    }
+
+    /**
      * @return ?\DateTimeInterface
      */
     public function toDateOrNull(): ?DateTimeInterface

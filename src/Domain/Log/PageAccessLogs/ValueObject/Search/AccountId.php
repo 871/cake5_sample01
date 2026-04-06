@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Log\PageAccessLogs\ValueObject\Search;
 
+use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
 use App\Domain\Shared\ValueObject\Trait\IntTrait;
 use DomainException;
 use Stringable;
@@ -10,8 +11,6 @@ use Stringable;
 class AccountId implements Stringable
 {
     use IntTrait;
-
-    public const MIN = 1;
 
     private ?int $value;
 
@@ -26,13 +25,6 @@ class AccountId implements Stringable
             return;
         }
 
-        if ((!preg_match('/^\d+$/', $value) || (int)$value < self::MIN)) {
-            throw new DomainException(
-                self::class . ' value range Error'
-                . '[value: ' . $value . ']',
-            );
-        }
-
-        $this->value = (int)$value;
+        $this->value = (new Vo\AccountId($value))->toInt();
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Log\PageAccessLogs\ValueObject\Search;
 
+use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
 use App\Domain\Shared\ValueObject\Trait\DateTimeTrait;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -24,22 +25,10 @@ class CursorAccessed implements Stringable
     public function __construct(?string $value)
     {
         if ($value === null || $value === '') {
-
             $this->value = null;
             return;
         }
 
-        $dt = DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', $value)
-            ?: DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s', $value)
-            ?: null;
-
-        if ($dt === null && $value !== null) {
-            throw new DomainException(
-                self::class . ' value datetime format Error'
-                . '[value: ' . $value . ']',
-            );
-        }
-
-        $this->value = $dt;
+        $this->value = (new Vo\Accessed($value))->toDateTime();
     }
 }
