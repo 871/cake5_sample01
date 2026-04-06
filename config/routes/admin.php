@@ -2,6 +2,7 @@
 
 
 use App\Middleware\Admin\AdminAuthMiddleware;
+use App\Middleware\Admin\PageAccessLogMiddleware;
 use Cake\Routing\RouteBuilder;
 
 $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $builder) {
@@ -14,12 +15,13 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
     $builder->post('/login', ['controller' => 'Login', 'action' => 'indexPost']);
     // ログイン済ルート
     $builder->registerMiddleware('adminAuth', new AdminAuthMiddleware());
+    $builder->registerMiddleware('pageAccessLog', new PageAccessLogMiddleware());
     $builder->scope('/{account_id}', static function (RouteBuilder $builder) {
         // ログアウト Memo: 認証ミドルウェアより前に置かないとログアウト後のリダイレクトで不備が出るため注意
         $builder->get('/logout', ['controller' => 'Logout', 'action' => 'index']);
         $builder->post('/logout', ['controller' => 'Logout', 'action' => 'indexPost']);
         // 認証チェック
-        $builder->applyMiddleware('adminAuth');
+        $builder->applyMiddleware('adminAuth', 'pageAccessLog');
         // エラー
         $builder->get('/error', ['controller' => 'Error', 'action' => 'index']);
         $builder->get('/error/{message_id}', ['controller' => 'Error', 'action' => 'index']);
