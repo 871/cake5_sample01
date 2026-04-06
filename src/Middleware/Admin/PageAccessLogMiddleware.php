@@ -34,46 +34,43 @@ class PageAccessLogMiddleware implements MiddlewareInterface
 
         try {
             /** @var \Cake\Http\ServerRequest $request */
-            $account_id = StrictCast::toString($request->getParam('account_id'));
-
             $uri = $request->getUri();
-            $path = $uri->getPath();
-            $query_string = $uri->getQuery() !== '' ? $uri->getQuery() : null;
-
-            $parsedBody = $request->getParsedBody();
-            $post_keys = null;
-            if (is_array($parsedBody) && $parsedBody !== []) {
-                $post_keys = json_encode(array_keys($parsedBody));
-            }
-
-            $prefix = StrictCast::toString($request->getParam('prefix'));
-            $controller = StrictCast::toString($request->getParam('controller'));
-            $action = StrictCast::toString($request->getParam('action'));
-            $route_name = null;
-            if ($controller !== '' && $action !== '') {
-                $route_name = ($prefix !== '' ? $prefix . '/' : '') . $controller . '::' . $action;
-            }
-
-            $referer = $request->getHeaderLine('Referer') !== '' ? $request->getHeaderLine('Referer') : null;
-            $ip_address = $request->clientIp() !== '' ? $request->clientIp() : null;
-            $user_agent = $request->getHeaderLine('User-Agent') !== '' ? $request->getHeaderLine('User-Agent') : null;
-
-            $accessed = (new DateTimeImmutable())->format('Y-m-d\TH:i:s.u');
-
+            $accessed = new DateTimeImmutable();
             $entity = new PageAccessLog(
-                id: null,
-                accessed: $accessed,
-                account_type: 'ADMIN',
-                account_id: $account_id,
+                id: \App\Lib\UUID\UUID::uuid7(),
+                accessed: $accessed->format('Y-m-d\TH:i:s.u'),
+                account_type: \App\Domain\Log\PageAccessLogs\ValueObject\AccountType::ADMIN,
+                account_id: StrictCast::toString($request->getParam('account_id')),
                 method: $request->getMethod(),
-                path: $path,
-                query_string: $query_string,
-                post_keys: $post_keys,
-                route_name: $route_name,
-                referer: $referer,
-                ip_address: $ip_address,
-                user_agent: $user_agent,
-                created: null,
+                path: $uri->getPath(),
+                query_string: $uri->getQuery() !== '' ? $uri->getQuery() : null,
+                post_keys: (function() use ($request) {
+                    $parsedBody = $request->getParsedBody();
+
+                    return is_array($parsedBody) && $parsedBody !== []
+                        ? json_encode(array_keys($parsedBody))
+                        : null;
+                })(),
+                route_name: (function() use ($request) {
+                    $prefix = StrictCast::toString($request->getParam('prefix'));
+                    $controller = StrictCast::toString($request->getParam('controller'));
+                    $action = StrictCast::toString($request->getParam('action'));
+
+                    if ($controller === '' || $action === '') {
+                        return null;
+                    }
+
+                    return 'App\\Controller\\' 
+                        . ($prefix !== '' ? $prefix . '\\' : '') 
+                        . $controller . '::' . $action . '()';
+                })(),
+                referer: $request->getHeaderLine('Referer') !== '' 
+                    ? $request->getHeaderLine('Referer') : null,
+                ip_address: $request->clientIp() !== '' 
+                    ? $request->clientIp() : null,
+                user_agent: $request->getHeaderLine('User-Agent') !== '' 
+                    ? $request->getHeaderLine('User-Agent') : null,
+                created: $accessed->format('Y-m-d\TH:i:s'),
             );
 
             $this->repository->create($entity);
