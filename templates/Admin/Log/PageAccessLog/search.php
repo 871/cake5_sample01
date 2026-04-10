@@ -1,6 +1,6 @@
 <?php
 use App\Domain\Log\PageAccessLogs\Entity\PageAccessLog;
-use App\Domain\Log\PageAccessLogs\ValueObject\AccountType;
+use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
 
 /* @var \Cake\View\View $this */
 /* @var array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog> $rows */
@@ -14,6 +14,11 @@ use App\Domain\Log\PageAccessLogs\ValueObject\AccountType;
     </div>
     <div class="card-body">
         <form method="get">
+            <input 
+                type="hidden" 
+                name="navigation_type" 
+                value="<?= h($this->getRequest()->getQuery('navigation_type')) ?? Vo\Search\NavigationType::FIRST ?>"
+            >
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">アクセス日時（自）</label>
@@ -47,8 +52,8 @@ use App\Domain\Log\PageAccessLogs\ValueObject\AccountType;
                     <label class="form-label">アカウント種別</label>
                     <select name="account_type" class="form-select">
                         <option value="">-- 指定なし --</option>
-                        <option value="<?= h(AccountType::ADMIN) ?>" <?= $this->getRequest()->getQuery('account_type') === AccountType::ADMIN ? 'selected' : '' ?>>ADMIN</option>
-                        <option value="<?= h(AccountType::USER) ?>" <?= $this->getRequest()->getQuery('account_type') === AccountType::USER ? 'selected' : '' ?>>USER</option>
+                        <option value="<?= h(Vo\AccountType::ADMIN) ?>" <?= $this->getRequest()->getQuery('account_type') === Vo\AccountType::ADMIN ? 'selected' : '' ?>>ADMIN</option>
+                        <option value="<?= h(Vo\AccountType::USER) ?>" <?= $this->getRequest()->getQuery('account_type') === Vo\AccountType::USER ? 'selected' : '' ?>>USER</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -100,19 +105,19 @@ use App\Domain\Log\PageAccessLogs\ValueObject\AccountType;
                 </tr>
             </thead>
             <tbody>
-            <?php if (count($rows) === 0) { ?>
+            <?php if (count($rows) === 0): ?>
                 <tr>
                     <td colspan="7" class="text-center text-muted py-3">データがありません</td>
                 </tr>
-            <?php } else { ?>
-                <?php foreach ($rows as $row): ?>
+            <?php endif; ?>
+            <?php foreach ($rows as $row): ?>
                 <?php /** @var \App\Domain\Log\PageAccessLogs\Entity\PageAccessLog $row */ ?>
                 <tr>
                     <td class="text-nowrap"><?= h($row->accessed()->format('Y/m/d H:i:s') ?? '') ?></td>
                     <td>
-                        <?php if ($row->accountType()->toStringOrNull() === AccountType::ADMIN) { ?>
+                        <?php if ($row->accountType()->toStringOrNull() === Vo\AccountType::ADMIN) { ?>
                             <span class="badge bg-primary">ADMIN</span>
-                        <?php } elseif ($row->accountType()->toStringOrNull() === AccountType::USER) { ?>
+                        <?php } elseif ($row->accountType()->toStringOrNull() === Vo\AccountType::USER) { ?>
                             <span class="badge bg-success">USER</span>
                         <?php } else { ?>
                             <?= h($row->accountType()->toStringOrNull() ?? '') ?>
@@ -124,8 +129,7 @@ use App\Domain\Log\PageAccessLogs\ValueObject\AccountType;
                     <td><?= h($row->ipAddress()->toStringOrNull() ?? '') ?></td>
                     <td class="text-break"><?= h($row->routeName()->toStringOrNull() ?? '') ?></td>
                 </tr>
-                <?php endforeach; ?>
-            <?php } ?>
+            <?php endforeach; ?>
             </tbody>
         </table>
     </div>

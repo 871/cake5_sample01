@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin\Log\PageAccessLog;
 
 use App\Controller\AppController;
+use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
 use App\Service\Controller\Admin\Log\PageAccessLog\Search as CtlService;
 use Cake\Event\EventInterface;
@@ -39,25 +40,36 @@ class SearchController extends AppController
     }
 
     /**
-     * 検索・一覧表示
+     * 大規模データ検索・一覧表示
      */
     public function index()
     {
-        $errors = $this->ctlService->validate();
+        try {
+            $this->ctlService
+                ->validate()
+                ->search();
 
-        if (!empty($errors)) {
-            foreach ($errors as $error) {
-                $this->Flash->error($error);
-            }
+            $this->set([
+                'rows' => $this->ctlService->getRows(),
+                'firstCursor' => $this->ctlService->getFirstCursor(),
+                'prevCursor' => $this->ctlService->getPrevCursor(),
+                'nextCursor' => $this->ctlService->getNextCursor(),
+                'lastCursor' => $this->ctlService->getLastCursor(),
+                'errorMeesasges' => [],
+                'errorFields' => []
+            ]);
+        } catch (ValidateException $ex) {
+
+            $this->set([
+                'rows' => [],
+                'firstCursor' => null,
+                'prevCursor' => null,
+                'nextCursor' => null,
+                'lastCursor' => null,
+                'errorMeesasges' => $ex->getErrorMeesasges(),
+                'errorFields' => $ex->getErrorFields(),
+            ]);
         }
-
-        $rows = empty($errors) ? $this->ctlService->getRows() : [];
-
-        $this->set([
-            'rows' => $rows,
-            'prevCursor' => $this->ctlService->getPrevCursor($rows),
-            'nextCursor' => $this->ctlService->getNextCursor($rows),
-        ]);
 
         return $this->render('/Admin/Log/PageAccessLog/search');
     }

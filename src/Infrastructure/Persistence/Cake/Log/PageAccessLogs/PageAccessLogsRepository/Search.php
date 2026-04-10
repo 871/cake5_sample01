@@ -159,7 +159,7 @@ final class Search
             ->contain(['AdminAccounts'])
             ->where(
                 array_filter([
-                    'PageAccessLogs.accessed >='
+                    'PageAccessLogs.accessed >'
                         => $this->condition->getCursorAccessed()->format('Y-m-d\TH:i:s'),
                     'PageAccessLogs.accessed >='
                         => $this->condition->getAccessedFrom()->format('Y-m-d\TH:i:s'),
@@ -167,7 +167,7 @@ final class Search
                         => $this->condition->getAccessedTo()->format('Y-m-d\TH:i:s'),
                     'PageAccessLogs.account_id'
                         => $this->condition->getAccountId()->toStringOrNull(),
-                    'PageAccessLogs.id >='
+                    'PageAccessLogs.id >'
                         => $this->condition->getCursorId()->toStringOrNull(),
                     'PageAccessLogs.account_type'
                         => $this->condition->getAccountType()->toStringOrNull(),
@@ -190,7 +190,7 @@ final class Search
                 'PageAccessLogs.accessed' => 'DESC', 
                 'PageAccessLogs.id' => 'DESC'
             ])
-            ->limit($this->condition->getLimit() + 2) // 2件多く取得して、次ページの有無を判断する
+            ->limit($this->condition->getLimit() + 1) // 1件多く取得して、次ページの有無を判断する
             ->all()
             ->toArray();
 
@@ -216,9 +216,9 @@ final class Search
                         => $this->condition->getAccessedFrom()->format('Y-m-d\TH:i:s'),
                     'PageAccessLogs.accessed <='
                         => $this->condition->getAccessedTo()->format('Y-m-d\TH:i:s'),
-                    'PageAccessLogs.accessed <='
+                    'PageAccessLogs.accessed <'
                         => $this->condition->getCursorAccessed()->format('Y-m-d\TH:i:s'),
-                    'PageAccessLogs.id <='
+                    'PageAccessLogs.id <'
                         => $this->condition->getCursorId()->toStringOrNull(),
                     'PageAccessLogs.account_id'
                         => $this->condition->getAccountId()->toStringOrNull(),
@@ -243,7 +243,7 @@ final class Search
                 'PageAccessLogs.accessed' => 'ASC', 
                 'PageAccessLogs.id' => 'ASC'
             ])
-            ->limit($this->condition->getLimit() + 2) // 2件多く取得して、前ページの有無を判断する
+            ->limit($this->condition->getLimit() + 1) // 1件多く取得して、前ページの有無を判断する
             ->all()
             ->toArray();
 
