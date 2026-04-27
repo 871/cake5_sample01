@@ -1,6 +1,7 @@
 <?php
 use App\Domain\Log\PageAccessLogs\Entity\PageAccessLog;
 use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
+use App\Domain\Log\PageAccessLogs\SearchCondition;
 
 /* @var \Cake\View\View $this */
 /* @var array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog> $rows */
@@ -9,6 +10,11 @@ use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
 ?>
 <!-- 検索フォーム -->
 <div class="card mb-3">
+<?php foreach ($errorMeesasges as $message) { ?>
+    <div class="alert alert-error-custom" onclick="this.style.display='none'">
+        <?= h($message) ?>
+    </div>
+<?php } ?>
     <div class="card-header bg-secondary text-white">
         ページアクセスログ検索
     </div>
@@ -17,7 +23,12 @@ use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
             <input 
                 type="hidden" 
                 name="navigation_type" 
-                value="<?= h($this->getRequest()->getQuery('navigation_type')) ?? Vo\Search\NavigationType::FIRST ?>"
+                value="<?= h(Vo\Search\NavigationType::FIRST) ?>"
+            >
+            <input 
+                type="hidden" 
+                name="limit" 
+                value="<?= h($this->getRequest()->getQuery('limit') ?? SearchCondition::DEFAULT_LIMIT) ?>"
             >
             <div class="row g-3">
                 <div class="col-md-6">
@@ -112,7 +123,7 @@ use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
             <?php endif; ?>
             <?php foreach ($rows as $row): ?>
                 <?php /** @var \App\Domain\Log\PageAccessLogs\Entity\PageAccessLog $row */ ?>
-                <tr>
+                <tr title="<?= h($row->id()->toStringOrNull() ?? '') ?>">
                     <td class="text-nowrap"><?= h($row->accessed()->format('Y/m/d H:i:s') ?? '') ?></td>
                     <td>
                         <?php if ($row->accountType()->toStringOrNull() === Vo\AccountType::ADMIN) { ?>
@@ -136,7 +147,7 @@ use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
     <div class="card-footer">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <?php if ($prevCursor !== null): ?>
+                <?php if ($isPrevExists): ?>
                     <a href="<?= $this->Url->build([
                         'prefix' => 'Admin/Log/PageAccessLog',
                         'controller' => 'Search',
@@ -145,15 +156,14 @@ use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
                         '?' => array_merge(
                             array_diff_key(
                                 (array)$this->getRequest()->getQuery(),
-                                array_flip(['navigation_type', 'cursor_id', 'cursor_accessed']),
-                            ),
-                            $prevCursor,
+                                array_flip(['navigation_type', 'search_key']),
+                            ), [
+                                'navigation_type' => Vo\Search\NavigationType::FIRST,
+                            ],
                         ),
-                    ]) ?>" class="btn btn-outline-secondary btn-sm">« 前へ（新しい）</a>
+                    ]) ?>" class="btn btn-outline-secondary btn-sm"><< 最初へ</a>
                 <?php endif ?>
-            </div>
-            <div>
-                <?php if ($nextCursor !== null): ?>
+                <?php if ($isPrevExists): ?>
                     <a href="<?= $this->Url->build([
                         'prefix' => 'Admin/Log/PageAccessLog',
                         'controller' => 'Search',
@@ -162,11 +172,46 @@ use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
                         '?' => array_merge(
                             array_diff_key(
                                 (array)$this->getRequest()->getQuery(),
-                                array_flip(['navigation_type', 'cursor_id', 'cursor_accessed']),
-                            ),
-                            $nextCursor,
+                                array_flip(['navigation_type', 'search_key']),
+                            ), [
+                                'navigation_type' => Vo\Search\NavigationType::PREV,
+                                'search_key' => $rows[0]->searchKey()->toString(),
+                            ],
                         ),
-                    ]) ?>" class="btn btn-outline-secondary btn-sm">次へ（古い） »</a>
+                    ]) ?>" class="btn btn-outline-secondary btn-sm">< 前へ</a>
+                <?php endif ?>
+                <?php if ($isNextExists): ?>
+                    <a href="<?= $this->Url->build([
+                        'prefix' => 'Admin/Log/PageAccessLog',
+                        'controller' => 'Search',
+                        'action' => 'index',
+                        'account_id' => $this->getRequest()->getParam('account_id'),
+                        '?' => array_merge(
+                            array_diff_key(
+                                (array)$this->getRequest()->getQuery(),
+                                array_flip(['navigation_type', 'search_key']),
+                            ), [
+                                'navigation_type' => Vo\Search\NavigationType::NEXT,
+                                'search_key' => $rows[count($rows) - 1]->searchKey()->toString(),
+                            ],
+                        ),
+                    ]) ?>" class="btn btn-outline-secondary btn-sm">次へ ></a>
+                <?php endif ?>
+                <?php if ($isNextExists): ?>
+                    <a href="<?= $this->Url->build([
+                        'prefix' => 'Admin/Log/PageAccessLog',
+                        'controller' => 'Search',
+                        'action' => 'index',
+                        'account_id' => $this->getRequest()->getParam('account_id'),
+                        '?' => array_merge(
+                            array_diff_key(
+                                (array)$this->getRequest()->getQuery(),
+                                array_flip(['navigation_type', 'search_key']),
+                            ), [
+                                'navigation_type' => Vo\Search\NavigationType::LAST,
+                            ],
+                        ),
+                    ]) ?>" class="btn btn-outline-secondary btn-sm">最後へ >></a>
                 <?php endif ?>
             </div>
         </div>

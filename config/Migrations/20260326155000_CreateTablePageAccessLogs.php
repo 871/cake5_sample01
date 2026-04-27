@@ -25,8 +25,14 @@ class CreateTablePageAccessLogs extends BaseMigration
                 ip_address VARCHAR(45) NULL COMMENT ' IPアドレス',
                 user_agent TEXT NULL COMMENT ' ユーザエージェント',
                 created DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+                search_key VARCHAR(50) GENERATED ALWAYS AS (
+                    CONCAT_WS('-',
+                        DATE_FORMAT(accessed, '%Y%m%d%H%i%s%f'),
+                        account_id
+                    )
+                ) STORED COMMENT '検索用結合キー',
                 PRIMARY KEY (id),
-                INDEX page_access_logs_idx01 (accessed, account_id)
+                UNIQUE INDEX page_access_logs_idx01 (search_key)
             );
 
         SQL;

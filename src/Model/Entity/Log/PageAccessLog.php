@@ -21,6 +21,7 @@ use Cake\ORM\Entity;
  * @property string|null $ip_address
  * @property string|null $user_agent
  * @property \Cake\I18n\DateTime $created
+ * @property string|null $search_key
  */
 class PageAccessLog extends Entity
 {
@@ -46,5 +47,6 @@ class PageAccessLog extends Entity
         'ip_address' => true,
         'user_agent' => true,
         'created' => true,
+        'search_key' => true,
     ];
 }

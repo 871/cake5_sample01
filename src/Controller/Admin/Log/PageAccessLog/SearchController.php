@@ -51,10 +51,8 @@ class SearchController extends AppController
 
             $this->set([
                 'rows' => $this->ctlService->getRows(),
-                'firstCursor' => $this->ctlService->getFirstCursor(),
-                'prevCursor' => $this->ctlService->getPrevCursor(),
-                'nextCursor' => $this->ctlService->getNextCursor(),
-                'lastCursor' => $this->ctlService->getLastCursor(),
+                'isPrevExists' => $this->ctlService->isPrevExists(),
+                'isNextExists' => $this->ctlService->isNextExists(),
                 'errorMeesasges' => [],
                 'errorFields' => []
             ]);
@@ -62,10 +60,8 @@ class SearchController extends AppController
 
             $this->set([
                 'rows' => [],
-                'firstCursor' => null,
-                'prevCursor' => null,
-                'nextCursor' => null,
-                'lastCursor' => null,
+                'isPrevExists' => false,
+                'isNextExists' => false,
                 'errorMeesasges' => $ex->getErrorMeesasges(),
                 'errorFields' => $ex->getErrorFields(),
             ]);

@@ -22,6 +22,7 @@ final class PageAccessLog
      * @param ?string $ip_address
      * @param ?string $user_agent
      * @param ?string $created
+     * @param ?string $search_key
      */
     public function __construct(
         private readonly ?string $id,
@@ -37,6 +38,7 @@ final class PageAccessLog
         private readonly ?string $ip_address,
         private readonly ?string $user_agent,
         private readonly ?string $created,
+        private readonly ?string $search_key = null,
     ) {
     }
 
@@ -142,5 +144,13 @@ final class PageAccessLog
     public function created(): SVo\Created
     {
         return new SVo\Created($this->created);
+    }
+
+    /**
+     * @return \App\Domain\Log\PageAccessLogs\ValueObject\SearchKey
+     */
+    public function searchKey(): Vo\SearchKey
+    {
+        return Vo\SearchKey::fromString($this->search_key);
     }
 }

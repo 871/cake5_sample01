@@ -73,6 +73,7 @@ final class PageAccessLogMapper
             ip_address: Cast::toStringOrNull($ormEntity->ip_address),
             user_agent: Cast::toStringOrNull($ormEntity->user_agent),
             created: Cast::toStringOrNull($ormEntity->created?->format('Y-m-d\TH:i:s')),
+            search_key: Cast::toStringOrNull($ormEntity->search_key),
         );
     }
 }

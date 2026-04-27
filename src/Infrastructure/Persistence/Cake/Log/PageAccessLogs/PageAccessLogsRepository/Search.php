@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogsRepository;
 
 use App\Domain\Log\PageAccessLogs\Entity\PageAccessLog as DomainEntity;
+use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
 use App\Domain\Log\PageAccessLogs\SearchCondition;
 use App\Domain\Log\PageAccessLogs\ValueObject\Search\NavigationType;
 use App\Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogMapper;
@@ -84,10 +85,10 @@ final class Search
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             )
             ->orderBy([
-                'PageAccessLogs.accessed' => 'DESC', 
-                'PageAccessLogs.id' => 'DESC'
+                'PageAccessLogs.accessed' => 'ASC', 
+                'PageAccessLogs.account_id' => 'ASC'
             ])
-            ->limit($this->condition->getLimit() + 1) // 1件多く取得して、次ページの有無を判断する
+            ->limit($this->condition->getLimit())
             ->all()
             ->toArray();
 
@@ -133,14 +134,14 @@ final class Search
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             )
             ->orderBy([
-                'PageAccessLogs.accessed' => 'ASC', 
-                'PageAccessLogs.id' => 'ASC'
+                'PageAccessLogs.accessed' => 'DESC', 
+                'PageAccessLogs.account_id' => 'DESC'
             ])
-            ->limit($this->condition->getLimit() + 1) // 1件多く取得して、次ページの有無を判断する
+            ->limit($this->condition->getLimit())
             ->all()
             ->toArray();
 
-        return array_reverse(
+        return array_reverse( // Memo: LASTのときは逆順で取得しているため、元の順序に戻す
             array_map(
                 fn($ormEntity): DomainEntity => $this->mapper->toDomainEntity($ormEntity),
                 $ormEntities,
@@ -159,16 +160,15 @@ final class Search
             ->contain(['AdminAccounts'])
             ->where(
                 array_filter([
-                    'PageAccessLogs.accessed >'
-                        => $this->condition->getCursorAccessed()->format('Y-m-d\TH:i:s'),
+                    'PageAccessLogs.search_key >'
+                        => $this->condition->getSearchKey()->toString(),
+                    // Memo: 検索条件
                     'PageAccessLogs.accessed >='
                         => $this->condition->getAccessedFrom()->format('Y-m-d\TH:i:s'),
                     'PageAccessLogs.accessed <='
                         => $this->condition->getAccessedTo()->format('Y-m-d\TH:i:s'),
                     'PageAccessLogs.account_id'
                         => $this->condition->getAccountId()->toStringOrNull(),
-                    'PageAccessLogs.id >'
-                        => $this->condition->getCursorId()->toStringOrNull(),
                     'PageAccessLogs.account_type'
                         => $this->condition->getAccountType()->toStringOrNull(),
                     array_filter([
@@ -187,10 +187,10 @@ final class Search
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             )
             ->orderBy([
-                'PageAccessLogs.accessed' => 'DESC', 
-                'PageAccessLogs.id' => 'DESC'
+                'PageAccessLogs.accessed' => 'ASC', 
+                'PageAccessLogs.account_id' => 'ASC'
             ])
-            ->limit($this->condition->getLimit() + 1) // 1件多く取得して、次ページの有無を判断する
+            ->limit($this->condition->getLimit())
             ->all()
             ->toArray();
 
@@ -211,15 +211,13 @@ final class Search
             ->contain(['AdminAccounts'])
             ->where(
                 array_filter([
+                    'PageAccessLogs.search_key <'
+                        => $this->condition->getSearchKey()->toString(),
                     // Memo: 検索条件
                     'PageAccessLogs.accessed >='
                         => $this->condition->getAccessedFrom()->format('Y-m-d\TH:i:s'),
                     'PageAccessLogs.accessed <='
                         => $this->condition->getAccessedTo()->format('Y-m-d\TH:i:s'),
-                    'PageAccessLogs.accessed <'
-                        => $this->condition->getCursorAccessed()->format('Y-m-d\TH:i:s'),
-                    'PageAccessLogs.id <'
-                        => $this->condition->getCursorId()->toStringOrNull(),
                     'PageAccessLogs.account_id'
                         => $this->condition->getAccountId()->toStringOrNull(),
                     'PageAccessLogs.account_type'
@@ -240,14 +238,14 @@ final class Search
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             )
             ->orderBy([
-                'PageAccessLogs.accessed' => 'ASC', 
-                'PageAccessLogs.id' => 'ASC'
+                'PageAccessLogs.accessed' => 'DESC', 
+                'PageAccessLogs.account_id' => 'DESC'
             ])
-            ->limit($this->condition->getLimit() + 1) // 1件多く取得して、前ページの有無を判断する
+            ->limit($this->condition->getLimit())
             ->all()
             ->toArray();
 
-        return array_reverse(
+        return array_reverse( // Memo: PREVのときは逆順で取得しているため、元の順序に戻す
             array_map(
                 fn($ormEntity): DomainEntity => $this->mapper->toDomainEntity($ormEntity),
                 $ormEntities,

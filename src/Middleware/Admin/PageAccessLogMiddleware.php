@@ -16,6 +16,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 class PageAccessLogMiddleware implements MiddlewareInterface
 {
     /**
+     * @var int
+     */
+    private int $errorCoutn = 0;
+
+    /**
      * @param \App\Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogsRepository $repository
      */
     public function __construct(
@@ -61,7 +66,7 @@ class PageAccessLogMiddleware implements MiddlewareInterface
                     }
 
                     return 'App\\Controller\\' 
-                        . ($prefix !== '' ? $prefix . '\\' : '') 
+                        . ($prefix !== '' ? preg_replace('/\//', '\\', $prefix) . '\\' : '') 
                         . $controller . '::' . $action . '()';
                 })(),
                 referer: $request->getHeaderLine('Referer') !== '' 
@@ -75,6 +80,13 @@ class PageAccessLogMiddleware implements MiddlewareInterface
 
             $this->repository->create($entity);
         } catch (\Throwable $e) {
+
+            $this->errorCoutn++;
+            if ($this->errorCoutn < 5) {
+
+                return $this->process($request, $handler);
+            }
+            
             // ログ記録の失敗はリクエストの処理に影響させない
             Log::error(sprintf(
                 'PageAccessLogMiddleware: failed to create log. %s: %s',

@@ -6,6 +6,7 @@ namespace App\Infrastructure\Persistence\Cake\Log\PageAccessLogs;
 use App\Domain\Log\PageAccessLogs\Entity\PageAccessLog as DomainEntity;
 use App\Domain\Log\PageAccessLogs\Repository\PageAccessLogsRepository as DomainRepository;
 use App\Domain\Log\PageAccessLogs\SearchCondition;
+use Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogsRepository\SearchResults;
 
 class PageAccessLogsRepository implements DomainRepository
 {
