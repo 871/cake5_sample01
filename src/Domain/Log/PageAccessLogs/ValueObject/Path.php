@@ -3,14 +3,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Log\PageAccessLogs\ValueObject;
 
-use App\Domain\Shared\ValueObject\Trait\StringTrait;
 use DomainException;
 use Stringable;
 
 class Path implements Stringable
 {
-    use StringTrait;
-
     public const MAX_LENGTH = 2048;
 
     /**
@@ -25,5 +22,30 @@ class Path implements Stringable
                 . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
             );
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function toString(): string
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->toString();
+    }
+
+    /**
+     * @param string $value
+     * @return self
+     */
+    public static function fromString(string $value): self
+    {
+        return new self($value);
     }
 }

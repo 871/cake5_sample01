@@ -9,12 +9,12 @@ use App\Domain\Shared\ValueObject as SVo;
 final class PageAccessLog
 {
     /**
-     * @param ?string $id
-     * @param ?string $accessed
-     * @param ?string $account_type
-     * @param ?string $account_id
-     * @param ?string $method
-     * @param ?string $path
+     * @param string $id
+     * @param string $accessed
+     * @param string $account_type
+     * @param string $account_id
+     * @param string $method
+     * @param string $path
      * @param ?string $query_string
      * @param ?string $post_keys
      * @param ?string $route_name
@@ -25,7 +25,7 @@ final class PageAccessLog
      * @param ?string $search_key
      */
     public function __construct(
-        private readonly ?string $id,
+        private readonly string $id,
         private readonly string $accessed,
         private readonly string $account_type,
         private readonly string $account_id,

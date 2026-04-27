@@ -55,9 +55,11 @@ class PageAccessLogMiddleware implements MiddlewareInterface
                 post_keys: (function () use ($request) {
                     $parsedBody = $request->getParsedBody();
 
-                    return is_array($parsedBody) && $parsedBody !== []
+                    $result = is_array($parsedBody) && $parsedBody !== []
                         ? json_encode(array_keys($parsedBody))
                         : null;
+
+                    return $result === false ? null : $result;
                 })(),
                 route_name: (function () use ($request) {
                     $prefix = StrictCast::toString($request->getParam('prefix'));

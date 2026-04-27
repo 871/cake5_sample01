@@ -3,14 +3,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Log\PageAccessLogs\ValueObject;
 
-use App\Domain\Shared\ValueObject\Trait\StringTrait;
 use DomainException;
 use Stringable;
 
 class AccountType implements Stringable
 {
-    use StringTrait;
-
     public const ADMIN = 'ADMIN';
     public const USER = 'USER';
     public const VALUES = [
@@ -31,5 +28,30 @@ class AccountType implements Stringable
                 . '[allowed: ' . implode(', ', self::VALUES) . ']',
             );
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function toString(): string
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->toString();
+    }
+
+    /**
+     * @param string $value
+     * @return self
+     */
+    public static function fromString(string $value): self
+    {
+        return new self($value);
     }
 }

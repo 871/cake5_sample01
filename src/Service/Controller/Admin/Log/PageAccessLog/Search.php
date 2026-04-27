@@ -19,7 +19,7 @@ final class Search implements ServiceInterface
     use ServiceTrait;
 
     /**
-     * @return array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog>
+     * @var array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog>
      */
     private array $searchResults = [];
 
@@ -54,8 +54,10 @@ final class Search implements ServiceInterface
      */
     public function validate(): self
     {
+        /** @var array<string, mixed> $data */
+        $data = $this->request->getQuery();
         $error = $this->getValidator()
-            ->validate($this->request->getQuery());
+            ->validate($data);
 
         if ($error !== []) {
             throw new ValidateException($error);
@@ -73,21 +75,23 @@ final class Search implements ServiceInterface
             ->notEmptyDateTime('accessed_from', __('アクセス日時（自）を入力してください。'))
             ->add('accessed_from', 'validFormat', [
                 'rule' => function ($value) {
-                    return Cast::toDateTimeOrNull($value, 'Y-m-d\TH:i:s') !== null;
+                    return Cast::toDateTimeOrNull($value) !== null;
                 },
                 'message' => __('アクセス日時（自）は正しい日時形式で入力してください。'),
             ])
             ->notEmptyDateTime('accessed_to', __('アクセス日時（至）を入力してください。'))
             ->add('accessed_to', 'validFormat', [
                 'rule' => function ($value) {
-                    return Cast::toDateTimeOrNull($value, 'Y-m-d\TH:i:s') !== null;
+                    return Cast::toDateTimeOrNull($value) !== null;
                 },
                 'message' => __('アクセス日時（至）は正しい日時形式で入力してください。'),
             ])
             ->add('accessed_to', 'withinSevenDays', [
-                'rule' => function ($value, $context) {
+                'rule' => function ($value, array $context) {
+                    /** @var array<string, mixed> $data */
+                    $data = $context['data'] ?? [];
                     /** @var \DateTimeImmutable|null $from */
-                    $from = Cast::toDateTimeOrNull($context['data']['accessed_from'] ?? null);
+                    $from = Cast::toDateTimeOrNull($data['accessed_from'] ?? null);
                     /** @var \DateTimeImmutable|null $to */
                     $to = Cast::toDateTimeOrNull($value);
                     if ($from === null || $to === null) {
@@ -108,7 +112,7 @@ final class Search implements ServiceInterface
         $this->searchResults = (new PageAccessLogsRepository())->search($this->createSearchCondition());
 
         $this->isPrevExists = (function (): bool {
-            $searchKey = $this->searchResults[0]?->searchKey()->toString() ?? '';
+            $searchKey = $this->searchResults[0]->searchKey()->toString() ?? '';
             if ($searchKey === '') {
                 return false;
             }
@@ -120,7 +124,7 @@ final class Search implements ServiceInterface
             )) !== [];
         })();
         $this->isNextExists = (function (): bool {
-            $searchKey = $this->searchResults[count($this->searchResults) - 1]?->searchKey()->toString() ?? '';
+            $searchKey = $this->searchResults[count($this->searchResults) - 1]->searchKey()->toString() ?? '';
             if ($searchKey === '') {
                 return false;
             }

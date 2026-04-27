@@ -14,17 +14,17 @@ class Accessed implements Stringable
     use DateTimeTrait;
 
     /**
-     * @var ?\DateTimeInterface
+     * @var \DateTimeInterface
      */
-    private readonly ?DateTimeInterface $value;
+    private readonly DateTimeInterface $value;
 
     /**
      * @param string $value
+     * @param string $format
      */
-    public function __construct(string $value)
+    public function __construct(string $value, string $format = 'Y-m-d\TH:i:s.u')
     {
-        $dt = DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', $value)
-            ?: DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s', $value)
+        $dt = DateTimeImmutable::createFromFormat($format, $value)
             ?: null;
 
         if ($dt === null) {
@@ -35,5 +35,24 @@ class Accessed implements Stringable
         }
 
         $this->value = $dt;
+    }
+
+    /**
+     * @param string $format
+     * @return ?string
+     */
+    public function format(string $format = 'Y-m-d\TH:i:s'): ?string
+    {
+        return $this->value->format($format);
+    }
+
+    /**
+     * @param string $value
+     * @param string $format
+     * @return self
+     */
+    public static function fromString(string $value, string $format = 'Y-m-d\TH:i:s'): self
+    {
+        return new self($value, $format);
     }
 }
