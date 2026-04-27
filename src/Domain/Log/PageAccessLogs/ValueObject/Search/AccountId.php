@@ -5,7 +5,6 @@ namespace App\Domain\Log\PageAccessLogs\ValueObject\Search;
 
 use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
 use App\Domain\Shared\ValueObject\Trait\IntTrait;
-use DomainException;
 use Stringable;
 
 class AccountId implements Stringable
@@ -20,8 +19,8 @@ class AccountId implements Stringable
     public function __construct(?string $value)
     {
         if ($value === null || $value === '') {
-
             $this->value = null;
+
             return;
         }
 

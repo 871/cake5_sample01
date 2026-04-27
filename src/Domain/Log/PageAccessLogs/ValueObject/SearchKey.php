@@ -14,8 +14,8 @@ class SearchKey implements Stringable
      * @param ?string $value
      */
     public function __construct(
-        private readonly ?string $value)
-    {
+        private readonly ?string $value,
+    ) {
         // 処理なし
     }
 }

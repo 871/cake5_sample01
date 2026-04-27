@@ -5,7 +5,6 @@ namespace App\Domain\Log\PageAccessLogs\ValueObject\Search;
 
 use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
 use App\Domain\Shared\ValueObject\Trait\StringTrait;
-use DomainException;
 use Stringable;
 
 class AccountType implements Stringable
@@ -21,6 +20,7 @@ class AccountType implements Stringable
     {
         if ($value === null || $value === '') {
             $this->value = null;
+
             return;
         }
 

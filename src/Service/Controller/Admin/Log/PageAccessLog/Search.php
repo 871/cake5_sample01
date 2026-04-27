@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Service\Controller\Admin\Log\PageAccessLog;
 
 use App\Domain\Log\PageAccessLogs\SearchCondition;
-use App\Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogsRepository\SearchResults;
 use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
 use App\Exception\ValidateException;
 use App\Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogsRepository;
@@ -18,7 +17,7 @@ use DateTimeImmutable;
 final class Search implements ServiceInterface
 {
     use ServiceTrait;
-    
+
     /**
      * @return array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog>
      */
@@ -87,9 +86,9 @@ final class Search implements ServiceInterface
             ])
             ->add('accessed_to', 'withinSevenDays', [
                 'rule' => function ($value, $context) {
-                    /** @var DateTimeImmutable|null $from */
+                    /** @var \DateTimeImmutable|null $from */
                     $from = Cast::toDateTimeOrNull($context['data']['accessed_from'] ?? null);
-                    /** @var DateTimeImmutable|null $to */
+                    /** @var \DateTimeImmutable|null $to */
                     $to = Cast::toDateTimeOrNull($value);
                     if ($from === null || $to === null) {
                         return true; // フォーマットエラーは別のルールでキャッチするためここではスルー
@@ -108,22 +107,24 @@ final class Search implements ServiceInterface
     {
         $this->searchResults = (new PageAccessLogsRepository())->search($this->createSearchCondition());
 
-        $this->isPrevExists = (function(): bool {
+        $this->isPrevExists = (function (): bool {
             $searchKey = $this->searchResults[0]?->searchKey()->toString() ?? '';
             if ($searchKey === '') {
                 return false;
             }
+
             return (new PageAccessLogsRepository())->search($this->createSearchCondition(
                 navigation_type: Vo\Search\NavigationType::PREV,
                 search_key: $searchKey,
                 limit: 1,
             )) !== [];
         })();
-        $this->isNextExists = (function(): bool {
+        $this->isNextExists = (function (): bool {
             $searchKey = $this->searchResults[count($this->searchResults) - 1]?->searchKey()->toString() ?? '';
             if ($searchKey === '') {
                 return false;
             }
+
             return (new PageAccessLogsRepository())->search($this->createSearchCondition(
                 navigation_type: Vo\Search\NavigationType::NEXT,
                 search_key: $searchKey,
@@ -175,16 +176,16 @@ final class Search implements ServiceInterface
             ),
             navigationType: new Vo\Search\NavigationType(
                 Cast::toStringOrNull(
-                    $navigation_type ?? $this->request->getQuery('navigation_type')
+                    $navigation_type ?? $this->request->getQuery('navigation_type'),
                 ) ?? Vo\Search\NavigationType::FIRST,
             ),
             searchKey: new Vo\SearchKey(
                 Cast::toStringOrNull(
-                    $search_key ?? $this->request->getQuery('search_key')
+                    $search_key ?? $this->request->getQuery('search_key'),
                 ),
             ),
             limit: Cast::toIntOrNull(
-                $limit ?? $this->request->getQuery('limit')
+                $limit ?? $this->request->getQuery('limit'),
             ) ?? SearchCondition::DEFAULT_LIMIT,
         );
     }

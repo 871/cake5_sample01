@@ -14,6 +14,10 @@ class SearchController extends AppController
 {
     private CtlService $ctlService;
 
+    /**
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
+     * @return void
+     */
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
@@ -30,7 +34,7 @@ class SearchController extends AppController
     /**
      * 初期アクセスでの検索パラメータ設定
      */
-    public function init()
+    public function init(): void
     {
         $this->redirect([
             'action' => 'index',
@@ -41,6 +45,8 @@ class SearchController extends AppController
 
     /**
      * 大規模データ検索・一覧表示
+     *
+     * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
     {
@@ -54,10 +60,9 @@ class SearchController extends AppController
                 'isPrevExists' => $this->ctlService->isPrevExists(),
                 'isNextExists' => $this->ctlService->isNextExists(),
                 'errorMeesasges' => [],
-                'errorFields' => []
+                'errorFields' => [],
             ]);
         } catch (ValidateException $ex) {
-
             $this->set([
                 'rows' => [],
                 'isPrevExists' => false,

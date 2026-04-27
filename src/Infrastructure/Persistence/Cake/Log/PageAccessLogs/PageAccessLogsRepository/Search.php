@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogsRepository;
 
 use App\Domain\Log\PageAccessLogs\Entity\PageAccessLog as DomainEntity;
-use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
 use App\Domain\Log\PageAccessLogs\SearchCondition;
 use App\Domain\Log\PageAccessLogs\ValueObject\Search\NavigationType;
 use App\Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogMapper;
 use App\Model\Table\Log\PageAccessLogsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use LogicException;
 
 final class Search
 {
@@ -45,7 +45,9 @@ final class Search
             NavigationType::LAST => $this->searchLast(),
             NavigationType::NEXT => $this->searchNext(),
             NavigationType::PREV => $this->searchPrev(),
-            default => throw new \LogicException('Unknown navigation type: ' . $this->condition->getNavigationType()->toString()),
+            default => throw new LogicException(
+                'Unknown navigation type: ' . $this->condition->getNavigationType()->toString(),
+            ),
         };
     }
 
@@ -85,8 +87,8 @@ final class Search
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             )
             ->orderBy([
-                'PageAccessLogs.accessed' => 'ASC', 
-                'PageAccessLogs.account_id' => 'ASC'
+                'PageAccessLogs.accessed' => 'ASC',
+                'PageAccessLogs.account_id' => 'ASC',
             ])
             ->limit($this->condition->getLimit())
             ->all()
@@ -134,8 +136,8 @@ final class Search
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             )
             ->orderBy([
-                'PageAccessLogs.accessed' => 'DESC', 
-                'PageAccessLogs.account_id' => 'DESC'
+                'PageAccessLogs.accessed' => 'DESC',
+                'PageAccessLogs.account_id' => 'DESC',
             ])
             ->limit($this->condition->getLimit())
             ->all()
@@ -145,7 +147,7 @@ final class Search
             array_map(
                 fn($ormEntity): DomainEntity => $this->mapper->toDomainEntity($ormEntity),
                 $ormEntities,
-            )
+            ),
         );
     }
 
@@ -187,8 +189,8 @@ final class Search
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             )
             ->orderBy([
-                'PageAccessLogs.accessed' => 'ASC', 
-                'PageAccessLogs.account_id' => 'ASC'
+                'PageAccessLogs.accessed' => 'ASC',
+                'PageAccessLogs.account_id' => 'ASC',
             ])
             ->limit($this->condition->getLimit())
             ->all()
@@ -238,8 +240,8 @@ final class Search
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             )
             ->orderBy([
-                'PageAccessLogs.accessed' => 'DESC', 
-                'PageAccessLogs.account_id' => 'DESC'
+                'PageAccessLogs.accessed' => 'DESC',
+                'PageAccessLogs.account_id' => 'DESC',
             ])
             ->limit($this->condition->getLimit())
             ->all()
@@ -249,7 +251,7 @@ final class Search
             array_map(
                 fn($ormEntity): DomainEntity => $this->mapper->toDomainEntity($ormEntity),
                 $ormEntities,
-            )
+            ),
         );
     }
 }

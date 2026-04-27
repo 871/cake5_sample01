@@ -14,7 +14,7 @@ class AccountType implements Stringable
     public const ADMIN = 'ADMIN';
     public const USER = 'USER';
     public const VALUES = [
-        self::ADMIN, 
+        self::ADMIN,
         self::USER,
     ];
 

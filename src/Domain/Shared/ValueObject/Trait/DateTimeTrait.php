@@ -5,6 +5,7 @@ namespace App\Domain\Shared\ValueObject\Trait;
 
 use DateTime;
 use DateTimeInterface;
+use DomainException;
 
 trait DateTimeTrait
 {
@@ -27,7 +28,7 @@ trait DateTimeTrait
      */
     public function toDateTime(): DateTimeInterface
     {
-        return $this->value ?? throw new \DomainException(
+        return $this->value ?? throw new DomainException(
             self::class . ' value is null',
         );
     }

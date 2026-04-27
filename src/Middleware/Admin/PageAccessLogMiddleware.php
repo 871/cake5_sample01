@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Middleware\Admin;
 
 use App\Domain\Log\PageAccessLogs\Entity\PageAccessLog;
+use App\Domain\Log\PageAccessLogs\ValueObject\AccountType;
 use App\Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogsRepository;
+use App\Lib\UUID\UUID;
 use App\Security\Input\StrictCast;
 use Cake\Log\Log;
 use DateTimeImmutable;
@@ -12,6 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Throwable;
 
 class PageAccessLogMiddleware implements MiddlewareInterface
 {
@@ -42,21 +45,21 @@ class PageAccessLogMiddleware implements MiddlewareInterface
             $uri = $request->getUri();
             $accessed = new DateTimeImmutable();
             $entity = new PageAccessLog(
-                id: \App\Lib\UUID\UUID::uuid7(),
+                id: UUID::uuid7(),
                 accessed: $accessed->format('Y-m-d\TH:i:s.u'),
-                account_type: \App\Domain\Log\PageAccessLogs\ValueObject\AccountType::ADMIN,
+                account_type: AccountType::ADMIN,
                 account_id: StrictCast::toString($request->getParam('account_id')),
                 method: $request->getMethod(),
                 path: $uri->getPath(),
                 query_string: $uri->getQuery() !== '' ? $uri->getQuery() : null,
-                post_keys: (function() use ($request) {
+                post_keys: (function () use ($request) {
                     $parsedBody = $request->getParsedBody();
 
                     return is_array($parsedBody) && $parsedBody !== []
                         ? json_encode(array_keys($parsedBody))
                         : null;
                 })(),
-                route_name: (function() use ($request) {
+                route_name: (function () use ($request) {
                     $prefix = StrictCast::toString($request->getParam('prefix'));
                     $controller = StrictCast::toString($request->getParam('controller'));
                     $action = StrictCast::toString($request->getParam('action'));
@@ -65,28 +68,26 @@ class PageAccessLogMiddleware implements MiddlewareInterface
                         return null;
                     }
 
-                    return 'App\\Controller\\' 
-                        . ($prefix !== '' ? preg_replace('/\//', '\\', $prefix) . '\\' : '') 
+                    return 'App\\Controller\\'
+                        . ($prefix !== '' ? preg_replace('/\//', '\\', $prefix) . '\\' : '')
                         . $controller . '::' . $action . '()';
                 })(),
-                referer: $request->getHeaderLine('Referer') !== '' 
+                referer: $request->getHeaderLine('Referer') !== ''
                     ? $request->getHeaderLine('Referer') : null,
-                ip_address: $request->clientIp() !== '' 
+                ip_address: $request->clientIp() !== ''
                     ? $request->clientIp() : null,
-                user_agent: $request->getHeaderLine('User-Agent') !== '' 
+                user_agent: $request->getHeaderLine('User-Agent') !== ''
                     ? $request->getHeaderLine('User-Agent') : null,
                 created: $accessed->format('Y-m-d\TH:i:s'),
             );
 
             $this->repository->create($entity);
-        } catch (\Throwable $e) {
-
+        } catch (Throwable $e) {
             $this->errorCoutn++;
             if ($this->errorCoutn < 5) {
-
                 return $this->process($request, $handler);
             }
-            
+
             // ログ記録の失敗はリクエストの処理に影響させない
             Log::error(sprintf(
                 'PageAccessLogMiddleware: failed to create log. %s: %s',
