@@ -12,3 +12,17 @@ parameters:
     excludePaths:
         analyseAndScan:
             - src/Console/Installer.php
+    ignoreErrors:
+        # StringTrait is designed for nullable $value, but some VOs declare non-nullable
+        # string $value. The redundant null checks and coalescing in the trait are intentional
+        # for the general case; suppress those false-positives here rather than touching
+        # domain-layer type logic.
+        -
+            identifier: nullCoalesce.property
+            path: src/Domain/Shared/ValueObject/Trait/StringTrait.php
+        -
+            identifier: identical.alwaysFalse
+            path: src/Domain/Shared/ValueObject/Trait/StringTrait.php
+        -
+            identifier: argument.type
+            path: src/Domain/Shared/ValueObject/Trait/StringTrait.php

@@ -36,7 +36,7 @@ final class PageAccessLogMapper
             'id' => $domainEntity->id()->toString(),
             'accessed' => $domainEntity->accessed()->format('Y-m-d\TH:i:s.u'),
             'account_type' => $domainEntity->accountType()->toString(),
-            'account_id' => $domainEntity->accountId()?->toInt(),
+            'account_id' => $domainEntity->accountId()->toIntOrNull(),
             'method' => $domainEntity->method()->toString(),
             'path' => $domainEntity->path()->toString(),
             'query_string' => $domainEntity->queryString()->toStringOrNull(),

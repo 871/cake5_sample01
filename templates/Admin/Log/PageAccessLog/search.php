@@ -134,7 +134,7 @@ use App\Domain\Log\PageAccessLogs\SearchCondition;
                             <?= h($row->accountType()->toStringOrNull() ?? '') ?>
                         <?php } ?>
                     </td>
-                    <td><?= h($row->accountId()?->toStringOrNull() ?? '') ?></td>
+                    <td><?= h($row->accountId()->toStringOrNull() ?? '') ?></td>
                     <td><?= h($row->method()->toStringOrNull() ?? '') ?></td>
                     <td class="text-break"><?= h($row->path()->toStringOrNull() ?? '') ?></td>
                     <td><?= h($row->ipAddress()->toStringOrNull() ?? '') ?></td>

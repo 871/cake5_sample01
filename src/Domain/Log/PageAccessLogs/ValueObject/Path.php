@@ -26,35 +26,4 @@ class Path implements Stringable
             );
         }
     }
-
-    /**
-     * @param ?string $value
-     * @return self
-     */
-    public static function fromString(?string $value): self
-    {
-        if ($value === null || $value === '') {
-            throw new DomainException(
-                self::class . ' value is required',
-            );
-        }
-
-        return new self($value);
-    }
-
-    /**
-     * @return ?string
-     */
-    public function toStringOrNull(): ?string
-    {
-        return $this->value;
-    }
-
-    /**
-     * @return string
-     */
-    public function toString(): string
-    {
-        return $this->value;
-    }
 }

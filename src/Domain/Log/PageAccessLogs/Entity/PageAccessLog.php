@@ -67,14 +67,10 @@ final class PageAccessLog
     }
 
     /**
-     * @return ?\App\Domain\Log\PageAccessLogs\ValueObject\AccountId
+     * @return \App\Domain\Log\PageAccessLogs\ValueObject\AccountId
      */
-    public function accountId(): ?Vo\AccountId
+    public function accountId(): Vo\AccountId
     {
-        if ($this->account_id === null) {
-            return null;
-        }
-
         return new Vo\AccountId($this->account_id);
     }
 

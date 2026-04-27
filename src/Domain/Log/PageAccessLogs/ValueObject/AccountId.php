@@ -13,18 +13,17 @@ class AccountId implements Stringable
 
     public const MIN = 1;
 
-    private int $value;
+    private ?int $value;
 
     /**
-     * @param string $value
+     * @param ?string $value
      */
-    public function __construct(string $value)
+    public function __construct(?string $value)
     {
-        if ($value === '') {
-            throw new DomainException(
-                self::class . ' value format Error'
-                . '[value: ' . $value . ']',
-            );
+        if ($value === null || $value === '') {
+            $this->value = null;
+
+            return;
         }
 
         if (!preg_match('/^\d+$/', $value) || (int)$value < self::MIN) {
@@ -35,36 +34,5 @@ class AccountId implements Stringable
         }
 
         $this->value = (int)$value;
-    }
-
-    /**
-     * @param ?string $value
-     * @return self
-     */
-    public static function fromString(?string $value): self
-    {
-        if ($value === null || $value === '') {
-            throw new DomainException(
-                self::class . ' value is required',
-            );
-        }
-
-        return new self($value);
-    }
-
-    /**
-     * @return ?int
-     */
-    public function toIntOrNull(): ?int
-    {
-        return $this->value;
-    }
-
-    /**
-     * @return ?string
-     */
-    public function toStringOrNull(): ?string
-    {
-        return (string)$this->value;
     }
 }
