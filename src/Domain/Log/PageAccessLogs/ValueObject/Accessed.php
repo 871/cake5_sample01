@@ -33,7 +33,6 @@ class Accessed implements Stringable
 
     /**
      * @param ?string $value
-     * @param string $format
      * @return self
      */
     public static function fromString(?string $value, string $format = 'Y-m-d\TH:i:s'): self
