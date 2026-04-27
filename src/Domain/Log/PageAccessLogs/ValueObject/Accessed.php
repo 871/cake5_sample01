@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Log\PageAccessLogs\ValueObject;
 
-use App\Domain\Shared\ValueObject\Trait\DateTimeTrait;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DomainException;
@@ -11,8 +10,6 @@ use Stringable;
 
 class Accessed implements Stringable
 {
-    use DateTimeTrait;
-
     /**
      * @var \DateTimeInterface
      */
@@ -39,11 +36,19 @@ class Accessed implements Stringable
 
     /**
      * @param string $format
-     * @return ?string
+     * @return string
      */
-    public function format(string $format = 'Y-m-d\TH:i:s'): ?string
+    public function format(string $format = 'Y-m-d\TH:i:s'): string
     {
         return $this->value->format($format);
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->format();
     }
 
     /**

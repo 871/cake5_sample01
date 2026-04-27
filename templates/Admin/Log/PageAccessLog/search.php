@@ -126,17 +126,17 @@ use App\Domain\Log\PageAccessLogs\SearchCondition;
                 <tr title="<?= h($row->id()->toStringOrNull() ?? '') ?>">
                     <td class="text-nowrap"><?= h($row->accessed()->format('Y/m/d H:i:s') ?? '') ?></td>
                     <td>
-                        <?php if ($row->accountType()->toStringOrNull() === Vo\AccountType::ADMIN) { ?>
+                        <?php if ($row->accountType()->toString() === Vo\AccountType::ADMIN) { ?>
                             <span class="badge bg-primary">ADMIN</span>
-                        <?php } elseif ($row->accountType()->toStringOrNull() === Vo\AccountType::USER) { ?>
+                        <?php } elseif ($row->accountType()->toString() === Vo\AccountType::USER) { ?>
                             <span class="badge bg-success">USER</span>
                         <?php } else { ?>
-                            <?= h($row->accountType()->toStringOrNull() ?? '') ?>
+                            <?= h($row->accountType()->toString()) ?>
                         <?php } ?>
                     </td>
-                    <td><?= h($row->accountId()->toStringOrNull() ?? '') ?></td>
-                    <td><?= h($row->method()->toStringOrNull() ?? '') ?></td>
-                    <td class="text-break"><?= h($row->path()->toStringOrNull() ?? '') ?></td>
+                    <td><?= h($row->accountId()->toString()) ?></td>
+                    <td><?= h($row->method()->toString()) ?></td>
+                    <td class="text-break"><?= h($row->path()->toString()) ?></td>
                     <td><?= h($row->ipAddress()->toStringOrNull() ?? '') ?></td>
                     <td class="text-break"><?= h($row->routeName()->toStringOrNull() ?? '') ?></td>
                 </tr>

@@ -156,12 +156,14 @@ final class Search implements ServiceInterface
                     $this->request->getQuery('accessed_from'),
                     'Y-m-d\TH:i:s',
                 ),
+                'Y-m-d\TH:i:s',
             ),
             accessedTo: new Vo\Accessed(
                 StrictCast::toDateTimeString(
                     $this->request->getQuery('accessed_to'),
                     'Y-m-d\TH:i:s',
                 ),
+                'Y-m-d\TH:i:s',
             ),
             accountType: new Vo\Search\AccountType(
                 Cast::toStringOrNull(
