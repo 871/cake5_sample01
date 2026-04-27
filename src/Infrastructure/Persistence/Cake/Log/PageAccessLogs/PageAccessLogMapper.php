@@ -36,7 +36,7 @@ final class PageAccessLogMapper
             'id' => $domainEntity->id()->toString(),
             'accessed' => $domainEntity->accessed()->format('Y-m-d\TH:i:s.u'),
             'account_type' => $domainEntity->accountType()->toString(),
-            'account_id' => $domainEntity->accountId()->toInt(),
+            'account_id' => $domainEntity->accountId()?->toInt(),
             'method' => $domainEntity->method()->toString(),
             'path' => $domainEntity->path()->toString(),
             'query_string' => $domainEntity->queryString()->toStringOrNull(),
@@ -61,18 +61,18 @@ final class PageAccessLogMapper
     {
         return new DomainEntity(
             id: Cast::toStringOrNull($ormEntity->id),
-            accessed: Cast::toStringOrNull($ormEntity->accessed?->format('Y-m-d\TH:i:s.u')),
-            account_type: Cast::toStringOrNull($ormEntity->account_type),
+            accessed: $ormEntity->accessed->format('Y-m-d\TH:i:s.u'),
+            account_type: $ormEntity->account_type,
             account_id: Cast::toStringOrNull($ormEntity->account_id),
-            method: Cast::toStringOrNull($ormEntity->method),
-            path: Cast::toStringOrNull($ormEntity->path),
+            method: $ormEntity->method,
+            path: $ormEntity->path,
             query_string: Cast::toStringOrNull($ormEntity->query_string),
             post_keys: Cast::toStringOrNull($ormEntity->post_keys),
             route_name: Cast::toStringOrNull($ormEntity->route_name),
             referer: Cast::toStringOrNull($ormEntity->referer),
             ip_address: Cast::toStringOrNull($ormEntity->ip_address),
             user_agent: Cast::toStringOrNull($ormEntity->user_agent),
-            created: Cast::toStringOrNull($ormEntity->created?->format('Y-m-d\TH:i:s')),
+            created: $ormEntity->created->format('Y-m-d\TH:i:s'),
             search_key: Cast::toStringOrNull($ormEntity->search_key),
         );
     }

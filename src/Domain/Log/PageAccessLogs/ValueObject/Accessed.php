@@ -5,18 +5,12 @@ namespace App\Domain\Log\PageAccessLogs\ValueObject;
 
 use App\Domain\Shared\ValueObject\Trait\DateTimeTrait;
 use DateTimeImmutable;
-use DateTimeInterface;
 use DomainException;
 use Stringable;
 
 class Accessed implements Stringable
 {
     use DateTimeTrait;
-
-    /**
-     * @var ?\DateTimeInterface
-     */
-    private readonly ?DateTimeInterface $value;
 
     /**
      * @param string $value
@@ -35,5 +29,21 @@ class Accessed implements Stringable
         }
 
         $this->value = $dt;
+    }
+
+    /**
+     * @param ?string $value
+     * @param string $format
+     * @return self
+     */
+    public static function fromString(?string $value, string $format = 'Y-m-d\TH:i:s'): self
+    {
+        if ($value === null || $value === '') {
+            throw new DomainException(
+                self::class . ' value is required',
+            );
+        }
+
+        return new self($value);
     }
 }

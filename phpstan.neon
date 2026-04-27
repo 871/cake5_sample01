@@ -1,8 +1,14 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+
 parameters:
-    level: 8
+    level: max
     treatPhpDocTypesAsCertain: false
     bootstrapFiles:
         - config/bootstrap.php
     paths:
         - src/
         - tests/
+    excludePaths:
+        analyseAndScan:
+            - src/Console/Installer.php

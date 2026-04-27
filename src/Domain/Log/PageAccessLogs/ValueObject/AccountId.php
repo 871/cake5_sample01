@@ -13,7 +13,7 @@ class AccountId implements Stringable
 
     public const MIN = 1;
 
-    private ?int $value;
+    private int $value;
 
     /**
      * @param string $value
@@ -35,5 +35,36 @@ class AccountId implements Stringable
         }
 
         $this->value = (int)$value;
+    }
+
+    /**
+     * @param ?string $value
+     * @return self
+     */
+    public static function fromString(?string $value): self
+    {
+        if ($value === null || $value === '') {
+            throw new DomainException(
+                self::class . ' value is required',
+            );
+        }
+
+        return new self($value);
+    }
+
+    /**
+     * @return ?int
+     */
+    public function toIntOrNull(): ?int
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function toStringOrNull(): ?string
+    {
+        return (string)$this->value;
     }
 }

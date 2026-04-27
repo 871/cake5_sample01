@@ -70,10 +70,10 @@ jobs:
 
       # Ensure PHPStan is installed
       - name: Ensure PHPStan is installed
-        run: composer require --dev phpstan/phpstan:^1.12 --no-interaction
+        run: composer install --no-interaction --prefer-dist
 
       - name: Run PHP CodeSniffer
         run: vendor/bin/phpcs
 
       - name: Run PHPStan
-        run: vendor/bin/phpstan analyse src tests --level max
+        run: vendor/bin/phpstan analyse --memory-limit=1G

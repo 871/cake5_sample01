@@ -10,11 +10,11 @@ final class PageAccessLog
 {
     /**
      * @param ?string $id
-     * @param ?string $accessed
-     * @param ?string $account_type
+     * @param string $accessed
+     * @param string $account_type
      * @param ?string $account_id
-     * @param ?string $method
-     * @param ?string $path
+     * @param string $method
+     * @param string $path
      * @param ?string $query_string
      * @param ?string $post_keys
      * @param ?string $route_name
@@ -28,7 +28,7 @@ final class PageAccessLog
         private readonly ?string $id,
         private readonly string $accessed,
         private readonly string $account_type,
-        private readonly string $account_id,
+        private readonly ?string $account_id,
         private readonly string $method,
         private readonly string $path,
         private readonly ?string $query_string,
@@ -67,10 +67,14 @@ final class PageAccessLog
     }
 
     /**
-     * @return \App\Domain\Log\PageAccessLogs\ValueObject\AccountId
+     * @return ?\App\Domain\Log\PageAccessLogs\ValueObject\AccountId
      */
-    public function accountId(): Vo\AccountId
+    public function accountId(): ?Vo\AccountId
     {
+        if ($this->account_id === null) {
+            return null;
+        }
+
         return new Vo\AccountId($this->account_id);
     }
 

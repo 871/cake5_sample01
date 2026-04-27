@@ -50,3 +50,5 @@ nbproject/*
 # yarn
 yarn-debug.log
 yarn-error.log
+phpstan.phar
+auth.json
