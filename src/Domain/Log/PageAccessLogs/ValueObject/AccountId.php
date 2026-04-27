@@ -20,10 +20,17 @@ class AccountId implements Stringable
      */
     public function __construct(?string $value)
     {
-        if ($value === null || $value === '') {
+        if ($value === null) {
             $this->value = null;
 
             return;
+        }
+
+        if ($value === '') {
+            throw new DomainException(
+                self::class . ' value format Error'
+                . '[value: ' . $value . ']',
+            );
         }
 
         if (!preg_match('/^\d+$/', $value) || (int)$value < self::MIN) {
