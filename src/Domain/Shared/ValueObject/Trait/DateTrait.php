@@ -5,6 +5,7 @@ namespace App\Domain\Shared\ValueObject\Trait;
 
 use DateTime;
 use DateTimeInterface;
+use DomainException;
 
 trait DateTrait
 {
@@ -20,6 +21,16 @@ trait DateTrait
     public function format(string $format = 'Y-m-d'): ?string
     {
         return $this->value?->format($format);
+    }
+
+    /**
+     * @return \DateTimeInterface
+     */
+    public function toDate(): DateTimeInterface
+    {
+        return $this->value ?? throw new DomainException(
+            self::class . ' value is null',
+        );
     }
 
     /**
