@@ -67,8 +67,6 @@ final class Login implements ServiceInterface
         } catch (AuthException $e) {
             $this->recordLoginFailure($e); // ログイン失敗ログ出力
 
-            sleep(3); // ブルートフォース攻撃対策のため、あえてレスポンスを遅くする
-
             throw $e;
         }
     }
