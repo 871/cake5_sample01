@@ -60,9 +60,8 @@ class LoginController extends AppController
 
             return $this->redirect($redirect);
         } catch (AuthException $e) {
+            sleep(3); // ブルートフォース攻撃対策のため、あえてレスポンスを遅くする
             $this->Flash->error($e->getMessage());
-
-            $this->ctlService->recordLoginFailure($e); // ログイン失敗ログ出力
 
             return $this->render('/Admin/login');
         }

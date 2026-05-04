@@ -55,12 +55,34 @@ final class Login implements ServiceInterface
         $this->login_id = $login_id;
         $this->password = $password;
 
-        return $this
-            ->loadAccountEntity() // 管理者情報取得
-            ->verifyPassword() // PW照合
-            ->checkPasswordExpiresAt() // 有効期限
-            ->checkAccountStatus() // ステータス判定
-            ->createLoginSession(); // ログインセッション作成
+        try {
+            return $this
+                ->checkLoginFailureCount() // ログイン失敗回数超過チェック
+                ->loadAccountEntity() // 管理者情報取得
+                ->verifyPassword() // PW照合
+                ->checkPasswordExpiresAt() // 有効期限
+                ->checkAccountStatus() // ステータス判定
+                ->createLoginSession(); // ログインセッション作成
+        } catch (AuthException $e) {
+            $this->recordLoginFailure($e); // ログイン失敗ログ出力
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @return self
+     */
+    private function checkLoginFailureCount(): self
+    {
+        if (!(new LoginLogsRepository())->checkFailureLoginLimit(LoginLogVo\LoginId::fromString($this->login_id))) {
+            throw new AuthException(
+                __('ログイン失敗回数が上限に達したため、アカウントがロックされました。しばらくしてから再度お試しください。'),
+                AuthException::LOGIN_FAIL_COUNT_OVER,
+            );
+        }
+
+        return $this;
     }
 
     /**
@@ -189,6 +211,8 @@ final class Login implements ServiceInterface
      */
     public function getRedirect(): string|array
     {
+        // ログイン前のURLが特定のパターンにマッチする場合は、そのURLにリダイレクト。それ以外は管理画面トップへリダイレクト。
+        // 例）/v1/ad/{account_id}/... → /v1/ad/{ログインしたアカウントのaccount_id}/...
         $redirect = Cast::toStringOrNull($this->request->getQuery('redirect')) ?? '';
         if (preg_match('/^\/v1\/ad\/\d+\/.*$/', $redirect)) {
             /** @var string */
@@ -208,6 +232,10 @@ final class Login implements ServiceInterface
      */
     public function recordLoginFailure(AuthException $e): self
     {
+        if ($e->getFailureReasonCode() === AuthException::LOGIN_FAIL_COUNT_OVER) {
+            return $this; // ログイン失敗回数超過の場合は、ログイン失敗ログの記録は行わない（すでにログイン失敗回数超過の状態であるため）
+        }
+
         (new LoginLogsRepository())->create(new LoginLogEntity(
             id: UUID::uuid7(),
             login_id: $this->login_id,
