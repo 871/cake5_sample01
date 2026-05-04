@@ -34,4 +34,12 @@ interface LoginLogsRepository
      * @return \App\Domain\Log\LoginLogs\Entity\LoginLog
      */
     public function read(Vo\Id $id): LoginLog;
+
+    /**
+     * ログイン失敗回数超過チェック
+     * 
+     * @param \App\Domain\Log\LoginLogs\ValueObject\LoginId $loginId
+     * @return bool
+     */
+    public function checkFailureLoginLimit(Vo\LoginId $loginId): bool;
 }

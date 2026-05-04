@@ -44,4 +44,15 @@ class LoginLogsRepository implements DomainRepository
     {
         return (new LoginLogsRepository\Read($id))->run();
     }
+
+    /**
+     * ログイン失敗回数超過チェック
+     * 
+     * @param \App\Domain\Log\LoginLogs\ValueObject\LoginId $loginId
+     * @return bool
+     */
+    public function checkFailureLoginLimit(Vo\LoginId $loginId): bool
+    {
+        return (new LoginLogsRepository\CheckFailureLoginLimit($loginId))->run();
+    }
 }

@@ -62,8 +62,6 @@ class LoginController extends AppController
         } catch (AuthException $e) {
             $this->Flash->error($e->getMessage());
 
-            $this->ctlService->recordLoginFailure($e); // ログイン失敗ログ出力
-
             return $this->render('/Admin/login');
         }
     }
