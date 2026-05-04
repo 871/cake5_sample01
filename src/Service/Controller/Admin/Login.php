@@ -63,7 +63,6 @@ final class Login implements ServiceInterface
                 ->checkPasswordExpiresAt() // 有効期限
                 ->checkAccountStatus() // ステータス判定
                 ->createLoginSession(); // ログインセッション作成
-
         } catch (AuthException $e) {
             $this->recordLoginFailure($e); // ログイン失敗ログ出力
 
@@ -233,7 +232,7 @@ final class Login implements ServiceInterface
      */
     public function recordLoginFailure(AuthException $e): self
     {
-       if ($e->getFailureReasonCode() === AuthException::LOGIN_FAIL_COUNT_OVER) {
+        if ($e->getFailureReasonCode() === AuthException::LOGIN_FAIL_COUNT_OVER) {
             return $this; // ログイン失敗回数超過の場合は、ログイン失敗ログの記録は行わない（すでにログイン失敗回数超過の状態であるため）
         }
 

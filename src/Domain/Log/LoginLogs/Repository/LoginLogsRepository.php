@@ -37,7 +37,7 @@ interface LoginLogsRepository
 
     /**
      * ログイン失敗回数超過チェック
-     * 
+     *
      * @param \App\Domain\Log\LoginLogs\ValueObject\LoginId $loginId
      * @return bool
      */
