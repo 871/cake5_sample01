@@ -28,7 +28,10 @@ class CreateTableLoginLogs extends BaseMigration
                 INDEX login_logs_idx02 (account_id, logged_in_at),
                 INDEX login_logs_idx03 (impersonator_account_id, logged_in_at),
                 INDEX login_logs_idx04 (login_id, logged_in_at)
-            );
+            ) ENGINE=InnoDB
+            DEFAULT CHARSET=utf8mb4
+            COMMENT='ログイン試行ログ'
+            COLLATE=utf8mb4_0900_ai_ci;
 
         SQL;
 
