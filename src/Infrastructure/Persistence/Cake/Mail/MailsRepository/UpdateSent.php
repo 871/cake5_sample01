@@ -63,7 +63,12 @@ final class UpdateSent
                         ->firstOrFail();
 
                     $this->table->patchEntity($mail, [
-                        'send_status' => SendStatus::SENT,
+                        'send_status' => in_array($mail->send_status, [
+                            SendStatus::WAITING, 
+                        ], true) ? SendStatus::SENT : $mail->send_status,
+                        'modified' => $this->logEntity->created()->toDateTime(),
+                        'modified_by' => $this->logEntity->createdBy()->toStringOrNull(),
+                        'modified_ip' => $this->logEntity->createdIp()->toStringOrNull(),
                     ], [
                         'validate' => false,
                     ]);

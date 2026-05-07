@@ -62,7 +62,13 @@ final class UpdateBounced
                         ->firstOrFail();
 
                     $this->table->patchEntity($mail, [
-                        'send_status' => SendStatus::BOUNCED,
+                        'send_status' => in_array($mail->send_status, [
+                            SendStatus::SENT, 
+                            SendStatus::RECEIVED, 
+                        ], true) ? SendStatus::BOUNCED : $mail->send_status,
+                        'modified' => $this->logEntity->created()->toDateTime(),
+                        'modified_by' => $this->logEntity->createdBy()->toStringOrNull(),
+                        'modified_ip' => $this->logEntity->createdIp()->toStringOrNull(),
                     ], [
                         'validate' => false,
                     ]);
