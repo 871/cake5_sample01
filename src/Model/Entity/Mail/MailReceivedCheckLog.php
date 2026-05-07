@@ -5,6 +5,16 @@ namespace App\Model\Entity\Mail;
 
 use Cake\ORM\Entity;
 
+/**
+ * MailReceivedCheckLog Entity
+ *
+ * @property string $id
+ * @property int $mail_id
+ * @property \Cake\I18n\DateTime $checked_at
+ * @property \Cake\I18n\DateTime $created
+ * @property int|null $created_by
+ * @property string|null $created_ip
+ */
 class MailReceivedCheckLog extends Entity
 {
     /**

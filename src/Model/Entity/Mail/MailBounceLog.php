@@ -5,6 +5,18 @@ namespace App\Model\Entity\Mail;
 
 use Cake\ORM\Entity;
 
+/**
+ * MailBounceLog Entity
+ *
+ * @property string $id
+ * @property int $mail_id
+ * @property string $bounced_address
+ * @property string|null $bounce_reason
+ * @property \Cake\I18n\DateTime $bounced_at
+ * @property \Cake\I18n\DateTime $created
+ * @property int|null $created_by
+ * @property string|null $created_ip
+ */
 class MailBounceLog extends Entity
 {
     /**

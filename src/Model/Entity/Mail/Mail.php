@@ -5,6 +5,27 @@ namespace App\Model\Entity\Mail;
 
 use Cake\ORM\Entity;
 
+/**
+ * Mail Entity
+ *
+ * @property int $id
+ * @property string $related_data_key
+ * @property string $send_status
+ * @property \Cake\I18n\DateTime $send_scheduled_at
+ * @property string $title
+ * @property string $body
+ * @property string $mail_to
+ * @property string|null $mail_cc
+ * @property string|null $mail_bcc
+ * @property string $mail_received_check
+ * @property string $mail_return_path
+ * @property \Cake\I18n\DateTime $created
+ * @property int|null $created_by
+ * @property string|null $created_ip
+ * @property \Cake\I18n\DateTime $modified
+ * @property int|null $modified_by
+ * @property string|null $modified_ip
+ */
 class Mail extends Entity
 {
     /**
