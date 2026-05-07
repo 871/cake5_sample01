@@ -25,6 +25,9 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\DateTime $modified
  * @property int|null $modified_by
  * @property string|null $modified_ip
+ * @property array<\App\Model\Entity\Mail\MailSentLog>|null $mail_sent_logs
+ * @property array<\App\Model\Entity\Mail\MailReceivedCheckLog>|null $mail_received_check_logs
+ * @property array<\App\Model\Entity\Mail\MailBounceLog>|null $mail_bounce_logs
  */
 class Mail extends Entity
 {
@@ -48,5 +51,8 @@ class Mail extends Entity
         'modified' => true,
         'modified_by' => true,
         'modified_ip' => true,
+        'mail_sent_logs' => true,
+        'mail_received_check_logs' => true,
+        'mail_bounce_logs' => true,
     ];
 }
