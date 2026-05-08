@@ -52,7 +52,11 @@ final class Create implements ServiceInterface
             return $requestedId;
         }
 
-        return $this->datetime->format('Uu');
+        return sprintf(
+            '%d%06d',
+            (int)$this->datetime->format('U'),
+            (int)$this->datetime->format('u'),
+        );
     }
 
     /**

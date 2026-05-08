@@ -8,6 +8,7 @@ use App\Security\Auth\AuthContextResolver;
 use App\Service\Controller\Admin\MailManage\Create as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\MethodNotAllowedException;
+use Cake\Log\Log;
 use DateTimeImmutable;
 use Throwable;
 
@@ -52,7 +53,12 @@ class CreateController extends AppController
             $this->ctlService->create();
 
             $this->Flash->success(__('メール情報の登録が完了しました。'));
-        } catch (Throwable) {
+        } catch (Throwable $ex) {
+            Log::error(
+                'メール情報の登録に失敗しました。'
+                . '[message: ' . $ex->getMessage() . ']'
+                . '[Uri: ' . $this->request->getRequestTarget() . ']',
+            );
             $this->Flash->error(__('メール情報の登録に失敗しました。'));
         }
 
