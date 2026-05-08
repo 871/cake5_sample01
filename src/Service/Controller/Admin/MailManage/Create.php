@@ -22,7 +22,7 @@ final class Create implements ServiceInterface
     public function create(): Mail
     {
         return (new MailsRepository())->create(new Mail(
-            id: StrictCast::toString($this->request->getData('id')),
+            id: $this->resolveId(),
             related_data_key: StrictCast::toString($this->request->getData('related_data_key')),
             send_status: Vo\SendStatus::WAITING,
             send_scheduled_at: Cast::toDateTimeStringOrNull($this->request->getData('send_scheduled_at'))
@@ -41,5 +41,22 @@ final class Create implements ServiceInterface
             modified_by: Cast::toStringOrNull($this->authContext->getAccountId()),
             modified_ip: Cast::toStringOrNull($this->request->clientIp()),
         ));
+    }
+
+    /**
+     * @return string
+     */
+    private function resolveId(): string
+    {
+        $requestedId = Cast::toStringOrNull($this->request->getData('id'));
+        if ($requestedId !== null) {
+            return $requestedId;
+        }
+
+        return sprintf(
+            '%d%06d',
+            (int)$this->datetime->format('U'),
+            random_int(0, 999999),
+        );
     }
 }
