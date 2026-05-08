@@ -14,6 +14,7 @@ class MailTo implements Stringable
     public const MAX_LENGTH = 16383;
     public const ERROR_CODE_LENGTH = 1001;
     public const ERROR_CODE_EMAIL_FORMAT = 1002;
+    public const ERROR_CODE_VALUE_PROCESSING = 1003;
 
     /**
      * @param ?string $value
@@ -42,7 +43,7 @@ class MailTo implements Stringable
 
         $splitLines = preg_split('/\R/u', $value);
         if ($splitLines === false) {
-            throw new DomainException(self::class . ' value email format Error', self::ERROR_CODE_EMAIL_FORMAT);
+            throw new DomainException(self::class . ' value parsing Error', self::ERROR_CODE_VALUE_PROCESSING);
         }
         $emails = array_values(
             array_filter(
