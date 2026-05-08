@@ -29,6 +29,13 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
         $builder->get('/', ['controller' => 'Top', 'action' => 'index']);
         $builder->get('/error_test', ['controller' => 'Top', 'action' => 'errorTest']);
 
+        // メール管理
+        $builder->prefix('MailManage', ['path' => '/mail_manage'], static function (RouteBuilder $builder) {
+            // 登録
+            $builder->get('/create', ['controller' => 'Create', 'action' => 'index']);
+            $builder->post('/create', ['controller' => 'Create', 'action' => 'indexPost']);
+        });
+
         // ログ
         $builder->prefix('Log', ['path' => '/log'], static function (RouteBuilder $builder) {
             // ログイン試行ログ
