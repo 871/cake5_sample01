@@ -53,9 +53,10 @@ final class Create implements ServiceInterface
         }
 
         return sprintf(
-            '%d%06d',
+            '%d%06d%02d',
             (int)$this->datetime->format('U'),
             (int)$this->datetime->format('u'),
+            random_int(0, 99),
         );
     }
 
