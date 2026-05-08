@@ -104,6 +104,7 @@
             </div>
 
             <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary px-5 me-3">確認へ</button>
                 <a href="<?= $this->Url->build([
                     'prefix' => 'Admin',
                     'controller' => 'Top',
@@ -111,7 +112,6 @@
                     'account_id' => $this->getRequest()->getParam('account_id'),
                     '?' => $this->getRequest()->getQuery(),
                 ]) ?>" class="btn btn-secondary px-5">戻る</a>
-                <button type="submit" class="btn btn-primary px-5 me-3">確認へ</button>
             </div>
         </form>
     </div>
