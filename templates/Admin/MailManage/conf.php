@@ -56,6 +56,7 @@
                 </button>
                 <a href="<?= $this->Url->build([
                     'action' => 'input',
+                    'account_id' => $this->getRequest()->getParam('account_id'),
                     'process_id' => $this->getRequest()->getParam('process_id'),
                     '?' => $this->getRequest()->getQuery(),
                 ]) ?>" class="btn btn-secondary px-5">修正する</a>

@@ -57,6 +57,7 @@ class CreateController extends AppController
 
         return $this->redirect([
             'action' => 'input',
+            'account_id' => $this->request->getParam('account_id'),
             'process_id' => $inputProcess->getId(),
             '?' => $this->request->getQuery(),
         ]);
@@ -86,6 +87,7 @@ class CreateController extends AppController
 
             return $this->redirect([
                 'action' => 'conf',
+                'account_id' => $this->request->getParam('account_id'),
                 'process_id' => $this->request->getParam('process_id'),
                 '?' => $this->request->getQuery(),
             ]);
@@ -95,6 +97,7 @@ class CreateController extends AppController
 
             return $this->redirect([
                 'action' => 'input',
+                'account_id' => $this->request->getParam('account_id'),
                 'process_id' => $this->request->getParam('process_id'),
                 '?' => $this->request->getQuery(),
             ]);
@@ -129,6 +132,7 @@ class CreateController extends AppController
 
             return $this->redirect([
                 'action' => 'input',
+                'account_id' => $this->request->getParam('account_id'),
                 'process_id' => $inputProcess->getId(),
                 '?' => $this->request->getQuery(),
             ]);
@@ -138,6 +142,7 @@ class CreateController extends AppController
 
             return $this->redirect([
                 'action' => 'input',
+                'account_id' => $this->request->getParam('account_id'),
                 'process_id' => $this->request->getParam('process_id'),
                 '?' => $this->request->getQuery(),
             ]);

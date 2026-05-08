@@ -12,7 +12,7 @@ class CreateTableMailSends extends BaseMigration
 
             DROP TABLE IF EXISTS mails;
             CREATE TABLE mails (
-                id BIGINT NOT NULL COMMENT 'メールID',
+                id BIGINT NOT NULL AUTO_INCREMENT COMMENT 'メールID',
                 related_data_key VARCHAR(255) NOT NULL COMMENT '関連データキー',
                 send_status VARCHAR(20) NOT NULL COMMENT 'ステータス: WAITING / SENT / FAILED / RECEIVED / BOUNCED',
                 -- WAITING: 送信待ち
