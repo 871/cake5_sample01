@@ -9,6 +9,7 @@ use App\Service\Controller\Admin\MailManage\Create as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\MethodNotAllowedException;
 use DateTimeImmutable;
+use Throwable;
 
 class CreateController extends AppController
 {
@@ -47,9 +48,13 @@ class CreateController extends AppController
      */
     public function indexPost()
     {
-        $this->ctlService->create();
+        try {
+            $this->ctlService->create();
 
-        $this->Flash->success(__('メール情報の登録が完了しました。'));
+            $this->Flash->success(__('メール情報の登録が完了しました。'));
+        } catch (Throwable) {
+            $this->Flash->error(__('メール情報の登録に失敗しました。'));
+        }
 
         return $this->redirect([
             'prefix' => 'Admin',

@@ -25,8 +25,7 @@ final class Create implements ServiceInterface
             id: $this->resolveId(),
             related_data_key: StrictCast::toString($this->request->getData('related_data_key')),
             send_status: Vo\SendStatus::WAITING,
-            send_scheduled_at: Cast::toDateTimeStringOrNull($this->request->getData('send_scheduled_at'))
-                ?? $this->datetime->format(self::DATE_TIME_FORMAT),
+            send_scheduled_at: $this->resolveSendScheduledAt(),
             title: StrictCast::toString($this->request->getData('title')),
             body: StrictCast::toString($this->request->getData('body')),
             mail_to: StrictCast::toString($this->request->getData('mail_to')),
@@ -53,10 +52,19 @@ final class Create implements ServiceInterface
             return $requestedId;
         }
 
-        return sprintf(
-            '%d%06d',
-            (int)$this->datetime->format('U'),
-            random_int(0, 999999),
-        );
+        return $this->datetime->format('Uu');
+    }
+
+    /**
+     * @return string
+     */
+    private function resolveSendScheduledAt(): string
+    {
+        $requested = $this->request->getData('send_scheduled_at');
+        if (Cast::toStringOrNull($requested) === null) {
+            return $this->datetime->format(self::DATE_TIME_FORMAT);
+        }
+
+        return StrictCast::toDateTimeString($requested);
     }
 }
