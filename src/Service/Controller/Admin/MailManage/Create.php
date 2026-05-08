@@ -288,7 +288,11 @@ final class Create implements ServiceInterface
         try {
             $validator(Cast::toStringOrNull($value));
         } catch (DomainException $e) {
-            return $e->getCode() !== $formatErrorCode;
+            if ($e->getCode() === $formatErrorCode) {
+                return false;
+            }
+
+            return $e->getCode() === Vo\MailTo::ERROR_CODE_LENGTH;
         }
 
         return true;
