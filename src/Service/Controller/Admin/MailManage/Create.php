@@ -265,11 +265,15 @@ final class Create implements ServiceInterface
             return !$required;
         }
 
+        $splitLines = preg_split('/\R/u', $raw);
+        if ($splitLines === false) {
+            return false;
+        }
         $emails = array_values(
             array_filter(
                 array_map(
                     static fn (string $line): string => trim($line),
-                    preg_split('/\R/u', $raw) ?: [],
+                    $splitLines,
                 ),
                 static fn (string $line): bool => $line !== '',
             ),
