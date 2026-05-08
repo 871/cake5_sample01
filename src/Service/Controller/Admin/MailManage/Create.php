@@ -191,39 +191,108 @@ final class Create implements ServiceInterface
                 '関連データキーは{0}文字以内で入力してください。',
                 Vo\RelatedDataKey::MAX_LENGTH,
             ))
+            ->add('related_data_key', 'voValidation', [
+                'rule' => static function (mixed $value): bool|string {
+                    try {
+                        Vo\RelatedDataKey::fromString(Cast::toStringOrNull($value));
+                    } catch (DomainException $e) {
+                        return match ($e->getCode()) {
+                            Vo\RelatedDataKey::ERROR_CODE_LENGTH => __('関連データキーは{0}文字以内で入力してください。', Vo\RelatedDataKey::MAX_LENGTH),
+                            default => __('関連データキーは不正な入力です'),
+                        };
+                    }
+
+                    return true;
+                },
+            ])
             ->requirePresence('title', true)
             ->notEmptyString('title', __('タイトルを入力してください。'))
             ->maxLength('title', Vo\Title::MAX_LENGTH, __('タイトルは{0}文字以内で入力してください。', Vo\Title::MAX_LENGTH))
+            ->add('title', 'voValidation', [
+                'rule' => static function (mixed $value): bool|string {
+                    try {
+                        Vo\Title::fromString(Cast::toStringOrNull($value));
+                    } catch (DomainException $e) {
+                        return match ($e->getCode()) {
+                            Vo\Title::ERROR_CODE_LENGTH => __('タイトルは{0}文字以内で入力してください。', Vo\Title::MAX_LENGTH),
+                            default => __('タイトルは不正な入力です'),
+                        };
+                    }
+
+                    return true;
+                },
+            ])
             ->requirePresence('body', true)
             ->notEmptyString('body', __('本文を入力してください。'))
             ->maxLength('body', Vo\Body::MAX_LENGTH, __('本文は{0}文字以内で入力してください。', Vo\Body::MAX_LENGTH))
+            ->add('body', 'voValidation', [
+                'rule' => static function (mixed $value): bool|string {
+                    try {
+                        Vo\Body::fromString(Cast::toStringOrNull($value));
+                    } catch (DomainException $e) {
+                        return match ($e->getCode()) {
+                            Vo\Body::ERROR_CODE_LENGTH => __('本文は{0}文字以内で入力してください。', Vo\Body::MAX_LENGTH),
+                            default => __('本文は不正な入力です'),
+                        };
+                    }
+
+                    return true;
+                },
+            ])
             ->requirePresence('mail_to', true)
-            ->notEmptyString('mail_to', __('Toを入力してください。'))
-            ->maxLength('mail_to', Vo\MailTo::MAX_LENGTH, __('Toは{0}文字以内で入力してください。', Vo\MailTo::MAX_LENGTH))
-            ->add('mail_to', 'voFormat', [
-                'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
-                    $value,
-                    static fn (?string $mail): Vo\MailTo => Vo\MailTo::fromString($mail),
-                ),
-                'message' => __('Toは改行区切りで正しいメールアドレスを入力してください。'),
+            ->notEmptyString('mail_to', __('TOを入力してください。'))
+            ->maxLength('mail_to', Vo\MailTo::MAX_LENGTH, __('TOは{0}文字以内で入力してください。', Vo\MailTo::MAX_LENGTH))
+            ->add('mail_to', 'voValidation', [
+                'rule' => static function (mixed $value): bool|string {
+                    try {
+                        Vo\MailTo::fromString(Cast::toStringOrNull($value));
+                    } catch (DomainException $e) {
+                        return match ($e->getCode()) {
+                            Vo\MailTo::ERROR_CODE_LENGTH => __('TOは{0}文字以内で入力してください。', Vo\MailTo::MAX_LENGTH),
+                            Vo\MailTo::ERROR_CODE_EMAIL_FORMAT => __('TOは改行区切りで正しいメールアドレスを入力してください。'),
+                            Vo\MailTo::ERROR_CODE_VALUE_PROCESSING => __('TOの入力形式が不正です。'),
+                            default => __('TOは不正な入力です'),
+                        };
+                    }
+
+                    return true;
+                },
             ])
             ->allowEmptyString('mail_cc')
-            ->maxLength('mail_cc', Vo\MailCc::MAX_LENGTH, __('Ccは{0}文字以内で入力してください。', Vo\MailCc::MAX_LENGTH))
-            ->add('mail_cc', 'voFormat', [
-                'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
-                    $value,
-                    static fn (?string $mail): Vo\MailCc => Vo\MailCc::fromString($mail),
-                ),
-                'message' => __('Ccは改行区切りで正しいメールアドレスを入力してください。'),
+            ->maxLength('mail_cc', Vo\MailCc::MAX_LENGTH, __('CCは{0}文字以内で入力してください。', Vo\MailCc::MAX_LENGTH))
+            ->add('mail_cc', 'voValidation', [
+                'rule' => static function (mixed $value): bool|string {
+                    try {
+                        Vo\MailCc::fromString(Cast::toStringOrNull($value));
+                    } catch (DomainException $e) {
+                        return match ($e->getCode()) {
+                            Vo\MailCc::ERROR_CODE_LENGTH => __('CCは{0}文字以内で入力してください。', Vo\MailCc::MAX_LENGTH),
+                            Vo\MailCc::ERROR_CODE_EMAIL_FORMAT => __('CCは改行区切りで正しいメールアドレスを入力してください。'),
+                            Vo\MailCc::ERROR_CODE_VALUE_PROCESSING => __('CCの入力形式が不正です。'),
+                            default => __('CCは不正な入力です'),
+                        };
+                    }
+
+                    return true;
+                },
             ])
             ->allowEmptyString('mail_bcc')
-            ->maxLength('mail_bcc', Vo\MailBcc::MAX_LENGTH, __('Bccは{0}文字以内で入力してください。', Vo\MailBcc::MAX_LENGTH))
-            ->add('mail_bcc', 'voFormat', [
-                'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
-                    $value,
-                    static fn (?string $mail): Vo\MailBcc => Vo\MailBcc::fromString($mail),
-                ),
-                'message' => __('Bccは改行区切りで正しいメールアドレスを入力してください。'),
+            ->maxLength('mail_bcc', Vo\MailBcc::MAX_LENGTH, __('BCCは{0}文字以内で入力してください。', Vo\MailBcc::MAX_LENGTH))
+            ->add('mail_bcc', 'voValidation', [
+                'rule' => static function (mixed $value): bool|string {
+                    try {
+                        Vo\MailBcc::fromString(Cast::toStringOrNull($value));
+                    } catch (DomainException $e) {
+                        return match ($e->getCode()) {
+                            Vo\MailBcc::ERROR_CODE_LENGTH => __('BCCは{0}文字以内で入力してください。', Vo\MailBcc::MAX_LENGTH),
+                            Vo\MailBcc::ERROR_CODE_EMAIL_FORMAT => __('BCCは改行区切りで正しいメールアドレスを入力してください。'),
+                            Vo\MailBcc::ERROR_CODE_VALUE_PROCESSING => __('BCCの入力形式が不正です。'),
+                            default => __('BCCは不正な入力です'),
+                        };
+                    }
+
+                    return true;
+                },
             ])
             ->requirePresence('mail_received_check', true)
             ->notEmptyString('mail_received_check', __('受信確認アドレスを入力してください。'))
@@ -232,12 +301,20 @@ final class Create implements ServiceInterface
                 Vo\MailReceivedCheck::MAX_LENGTH,
                 __('受信確認アドレスは{0}文字以内で入力してください。', Vo\MailReceivedCheck::MAX_LENGTH),
             )
-            ->add('mail_received_check', 'voFormat', [
-                'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
-                    $value,
-                    static fn (?string $mail): Vo\MailReceivedCheck => Vo\MailReceivedCheck::fromString($mail),
-                ),
-                'message' => __('受信確認アドレスは正しいメールアドレス形式で入力してください。'),
+            ->add('mail_received_check', 'voValidation', [
+                'rule' => static function (mixed $value): bool|string {
+                    try {
+                        Vo\MailReceivedCheck::fromString(Cast::toStringOrNull($value));
+                    } catch (DomainException $e) {
+                        return match ($e->getCode()) {
+                            Vo\MailReceivedCheck::ERROR_CODE_LENGTH => __('受信確認アドレスは{0}文字以内で入力してください。', Vo\MailReceivedCheck::MAX_LENGTH),
+                            Vo\MailReceivedCheck::ERROR_CODE_EMAIL_FORMAT => __('受信確認アドレスは正しいメールアドレス形式で入力してください。'),
+                            default => __('受信確認アドレスは不正な入力です'),
+                        };
+                    }
+
+                    return true;
+                },
             ])
             ->requirePresence('mail_return_path', true)
             ->notEmptyString('mail_return_path', __('バウンス確認アドレスを入力してください。'))
@@ -246,12 +323,20 @@ final class Create implements ServiceInterface
                 Vo\MailReturnPath::MAX_LENGTH,
                 __('バウンス確認アドレスは{0}文字以内で入力してください。', Vo\MailReturnPath::MAX_LENGTH),
             )
-            ->add('mail_return_path', 'voFormat', [
-                'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
-                    $value,
-                    static fn (?string $mail): Vo\MailReturnPath => Vo\MailReturnPath::fromString($mail),
-                ),
-                'message' => __('バウンス確認アドレスは正しいメールアドレス形式で入力してください。'),
+            ->add('mail_return_path', 'voValidation', [
+                'rule' => static function (mixed $value): bool|string {
+                    try {
+                        Vo\MailReturnPath::fromString(Cast::toStringOrNull($value));
+                    } catch (DomainException $e) {
+                        return match ($e->getCode()) {
+                            Vo\MailReturnPath::ERROR_CODE_LENGTH => __('バウンス確認アドレスは{0}文字以内で入力してください。', Vo\MailReturnPath::MAX_LENGTH),
+                            Vo\MailReturnPath::ERROR_CODE_EMAIL_FORMAT => __('バウンス確認アドレスは正しいメールアドレス形式で入力してください。'),
+                            default => __('バウンス確認アドレスは不正な入力です'),
+                        };
+                    }
+
+                    return true;
+                },
             ])
             ->allowEmptyString('send_scheduled_at')
             ->add('send_scheduled_at', 'dateTime', [
@@ -272,21 +357,6 @@ final class Create implements ServiceInterface
             ]);
 
         return $validator;
-    }
-
-    /**
-     * @param mixed $value
-     * @return bool
-     */
-    private function validateMailAddressByVo(mixed $value, callable $voFactory): bool
-    {
-        try {
-            $voFactory(Cast::toStringOrNull($value));
-        } catch (DomainException $e) {
-            return false;
-        }
-
-        return true;
     }
 
     /**

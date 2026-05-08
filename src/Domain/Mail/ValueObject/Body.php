@@ -12,6 +12,7 @@ class Body implements Stringable
     use StringTrait;
 
     public const MAX_LENGTH = 4194303;
+    public const ERROR_CODE_LENGTH = 1001;
 
     /**
      * @param ?string $value
@@ -24,6 +25,7 @@ class Body implements Stringable
                 self::class . ' value length Error'
                 . '[max length: ' . (string)self::MAX_LENGTH . ']'
                 . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
+                self::ERROR_CODE_LENGTH,
             );
         }
     }
