@@ -55,31 +55,31 @@
                 </div>
                 <div class="col-md-12 mb-2">
                     <label class="form-label">To <span class="text-danger">*</span></label>
-                    <input
-                        type="text"
+                    <textarea
                         name="mail_to"
                         class="form-control <?= h($input->getInput('_errorFields.mail_to')) ?>"
-                        value="<?= h($input->getInput('mail_to')) ?>"
+                        rows="3"
                         required
-                    >
+                    ><?= h($input->getInput('mail_to')) ?></textarea>
+                    <div class="form-text">複数指定する場合は改行で区切ってください。</div>
                 </div>
                 <div class="col-md-12 mb-2">
                     <label class="form-label">Cc</label>
-                    <input
-                        type="text"
+                    <textarea
                         name="mail_cc"
                         class="form-control <?= h($input->getInput('_errorFields.mail_cc')) ?>"
-                        value="<?= h($input->getInput('mail_cc')) ?>"
-                    >
+                        rows="3"
+                    ><?= h($input->getInput('mail_cc')) ?></textarea>
+                    <div class="form-text">複数指定する場合は改行で区切ってください。</div>
                 </div>
                 <div class="col-md-12 mb-2">
                     <label class="form-label">Bcc</label>
-                    <input
-                        type="text"
+                    <textarea
                         name="mail_bcc"
                         class="form-control <?= h($input->getInput('_errorFields.mail_bcc')) ?>"
-                        value="<?= h($input->getInput('mail_bcc')) ?>"
-                    >
+                        rows="3"
+                    ><?= h($input->getInput('mail_bcc')) ?></textarea>
+                    <div class="form-text">複数指定する場合は改行で区切ってください。</div>
                 </div>
                 <div class="col-md-12 mb-2">
                     <label class="form-label">受信確認アドレス <span class="text-danger">*</span></label>

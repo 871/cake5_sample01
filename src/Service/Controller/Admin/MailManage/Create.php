@@ -185,19 +185,39 @@ final class Create implements ServiceInterface
         $validator = new Validator();
         $validator
             ->requirePresence('related_data_key', true)
-            ->notEmptyString('related_data_key')
+            ->notEmptyString('related_data_key', __('関連データキーを入力してください。'))
             ->requirePresence('title', true)
-            ->notEmptyString('title')
+            ->notEmptyString('title', __('タイトルを入力してください。'))
             ->requirePresence('body', true)
-            ->notEmptyString('body')
+            ->notEmptyString('body', __('本文を入力してください。'))
             ->requirePresence('mail_to', true)
-            ->notEmptyString('mail_to')
+            ->notEmptyString('mail_to', __('Toを入力してください。'))
+            ->add('mail_to', 'newlineEmails', [
+                'rule' => fn (mixed $value): bool => $this->validateNewlineSeparatedEmails($value, true),
+                'message' => __('Toは改行区切りで正しいメールアドレスを入力してください。'),
+            ])
             ->allowEmptyString('mail_cc')
+            ->add('mail_cc', 'newlineEmails', [
+                'rule' => fn (mixed $value): bool => $this->validateNewlineSeparatedEmails($value, false),
+                'message' => __('Ccは改行区切りで正しいメールアドレスを入力してください。'),
+            ])
             ->allowEmptyString('mail_bcc')
+            ->add('mail_bcc', 'newlineEmails', [
+                'rule' => fn (mixed $value): bool => $this->validateNewlineSeparatedEmails($value, false),
+                'message' => __('Bccは改行区切りで正しいメールアドレスを入力してください。'),
+            ])
             ->requirePresence('mail_received_check', true)
-            ->notEmptyString('mail_received_check')
+            ->notEmptyString('mail_received_check', __('受信確認アドレスを入力してください。'))
+            ->add('mail_received_check', 'format', [
+                'rule' => fn (mixed $value): bool => $this->validateSingleEmail($value),
+                'message' => __('受信確認アドレスは正しいメールアドレス形式で入力してください。'),
+            ])
             ->requirePresence('mail_return_path', true)
-            ->notEmptyString('mail_return_path')
+            ->notEmptyString('mail_return_path', __('バウンス確認アドレスを入力してください。'))
+            ->add('mail_return_path', 'format', [
+                'rule' => fn (mixed $value): bool => $this->validateSingleEmail($value),
+                'message' => __('バウンス確認アドレスは正しいメールアドレス形式で入力してください。'),
+            ])
             ->allowEmptyString('send_scheduled_at')
             ->add('send_scheduled_at', 'dateTime', [
                 'rule' => static function (mixed $value): bool {
@@ -217,6 +237,54 @@ final class Create implements ServiceInterface
             ]);
 
         return $validator;
+    }
+
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    private function validateSingleEmail(mixed $value): bool
+    {
+        $email = Cast::toStringOrNull($value);
+        if ($email === null) {
+            return false;
+        }
+
+        return filter_var(trim($email), FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    /**
+     * @param mixed $value
+     * @param bool $required
+     * @return bool
+     */
+    private function validateNewlineSeparatedEmails(mixed $value, bool $required): bool
+    {
+        $raw = Cast::toStringOrNull($value);
+        if ($raw === null) {
+            return !$required;
+        }
+
+        $emails = array_values(
+            array_filter(
+                array_map(
+                    static fn (string $line): string => trim($line),
+                    preg_split('/\R/u', $raw) ?: [],
+                ),
+                static fn (string $line): bool => $line !== '',
+            ),
+        );
+        if ($emails === []) {
+            return !$required;
+        }
+
+        foreach ($emails as $email) {
+            if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

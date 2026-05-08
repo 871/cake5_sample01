@@ -30,15 +30,15 @@
                 </tr>
                 <tr>
                     <th>To</th>
-                    <td><?= h($input->getInput('mail_to')) ?></td>
+                    <td style="white-space:pre-wrap"><?= h($input->getInput('mail_to')) ?></td>
                 </tr>
                 <tr>
                     <th>Cc</th>
-                    <td><?= h($input->getInput('mail_cc')) ?></td>
+                    <td style="white-space:pre-wrap"><?= h($input->getInput('mail_cc')) ?></td>
                 </tr>
                 <tr>
                     <th>Bcc</th>
-                    <td><?= h($input->getInput('mail_bcc')) ?></td>
+                    <td style="white-space:pre-wrap"><?= h($input->getInput('mail_bcc')) ?></td>
                 </tr>
                 <tr>
                     <th>受信確認アドレス</th>
