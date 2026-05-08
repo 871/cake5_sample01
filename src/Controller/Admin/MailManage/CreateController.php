@@ -4,13 +4,12 @@ declare(strict_types=1);
 namespace App\Controller\Admin\MailManage;
 
 use App\Controller\AppController;
+use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
 use App\Service\Controller\Admin\MailManage\Create as CtlService;
 use Cake\Event\EventInterface;
-use Cake\Http\Exception\MethodNotAllowedException;
-use Cake\Log\Log;
+use Cake\Http\Response;
 use DateTimeImmutable;
-use Throwable;
 
 class CreateController extends AppController
 {
@@ -21,9 +20,9 @@ class CreateController extends AppController
 
     /**
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
-     * @return void
+     * @return ?\Cake\Http\Response
      */
-    public function beforeFilter(EventInterface $event): void
+    public function beforeFilter(EventInterface $event): ?Response
     {
         parent::beforeFilter($event);
 
@@ -34,6 +33,19 @@ class CreateController extends AppController
             request: $this->request,
             authContext: AuthContextResolver::resolve($this->request),
         );
+
+        if (
+            !$this->ctlService->existsInputProcess(
+                ignoreActions: ['index'],
+            )
+        ) {
+            return $this->redirect([
+                'action' => 'index',
+                '?' => $this->request->getQuery(),
+            ]);
+        }
+
+        return null;
     }
 
     /**
@@ -41,33 +53,94 @@ class CreateController extends AppController
      */
     public function index()
     {
-        throw new MethodNotAllowedException();
+        $inputProcess = $this->ctlService->startInputProcess();
+
+        return $this->redirect([
+            'action' => 'input',
+            'process_id' => $inputProcess->getId(),
+            '?' => $this->request->getQuery(),
+        ]);
     }
 
     /**
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function indexPost()
+    public function input()
+    {
+        $this->set([
+            'input' => $this->ctlService->getInputProcess(),
+        ]);
+
+        return $this->render('/Admin/MailManage/input');
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function inputPost()
     {
         try {
-            $this->ctlService->create();
+            $this->ctlService
+                ->inputProcessUpdate()
+                ->inputProcessValidation();
+
+            return $this->redirect([
+                'action' => 'conf',
+                'process_id' => $this->request->getParam('process_id'),
+                '?' => $this->request->getQuery(),
+            ]);
+        } catch (ValidateException $ex) {
+            $this->ctlService
+                ->inputProcessErrorUpdate($ex);
+
+            return $this->redirect([
+                'action' => 'input',
+                'process_id' => $this->request->getParam('process_id'),
+                '?' => $this->request->getQuery(),
+            ]);
+        }
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function conf()
+    {
+        $this->set([
+            'input' => $this->ctlService->getInputProcess(),
+        ]);
+
+        return $this->render('/Admin/MailManage/conf');
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function confPost()
+    {
+        try {
+            $this->ctlService
+                ->inputProcessValidation()
+                ->saveInputProcess()
+                ->endInputProcess();
 
             $this->Flash->success(__('メール情報の登録が完了しました。'));
-        } catch (Throwable $ex) {
-            Log::error(
-                'メール情報の登録に失敗しました。'
-                . '[exception: ' . get_class($ex) . ']'
-                . '[Uri: ' . $this->request->getRequestTarget() . ']',
-            );
-            $this->Flash->error(__('メール情報の登録に失敗しました。'));
-        }
+            $inputProcess = $this->ctlService->startInputProcess();
 
-        return $this->redirect([
-            'prefix' => 'Admin',
-            'controller' => 'Top',
-            'action' => 'index',
-            'account_id' => $this->request->getParam('account_id'),
-            '?' => $this->request->getQuery(),
-        ]);
+            return $this->redirect([
+                'action' => 'input',
+                'process_id' => $inputProcess->getId(),
+                '?' => $this->request->getQuery(),
+            ]);
+        } catch (ValidateException $ex) {
+            $this->ctlService
+                ->inputProcessErrorUpdate($ex);
+
+            return $this->redirect([
+                'action' => 'input',
+                'process_id' => $this->request->getParam('process_id'),
+                '?' => $this->request->getQuery(),
+            ]);
+        }
     }
 }
