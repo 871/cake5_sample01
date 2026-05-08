@@ -4,17 +4,66 @@ declare(strict_types=1);
 namespace App\Domain\Mail\ValueObject;
 
 use App\Domain\Shared\ValueObject\Trait\StringTrait;
+use DomainException;
 use Stringable;
 
 class MailCc implements Stringable
 {
     use StringTrait;
 
+    public const MAX_LENGTH = 16383;
+
+    /**
+     * @param ?string $value
+     */
+    private ?string $value;
+
     /**
      * @param ?string $value
      */
     public function __construct(
-        private readonly ?string $value,
+        ?string $value,
     ) {
+        if ($value === null || $value === '') {
+            $this->value = null;
+
+            return;
+        }
+        if (mb_strlen($value) > self::MAX_LENGTH) {
+            throw new DomainException(
+                self::class . ' value length Error'
+                . '[max length: ' . (string)self::MAX_LENGTH . ']'
+                . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
+            );
+        }
+
+        $splitLines = preg_split('/\R/u', $value);
+        if ($splitLines === false) {
+            throw new DomainException(self::class . ' value email format Error');
+        }
+        $emails = array_values(
+            array_filter(
+                array_map(
+                    static fn (string $line): string => trim($line),
+                    $splitLines,
+                ),
+                static fn (string $line): bool => $line !== '',
+            ),
+        );
+        if ($emails === []) {
+            $this->value = null;
+
+            return;
+        }
+        foreach ($emails as $email) {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                throw new DomainException(
+                    self::class . ' value email format Error'
+                    . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
+                );
+            }
+        }
+
+        $this->value = implode("\n", $emails);
     }
 }

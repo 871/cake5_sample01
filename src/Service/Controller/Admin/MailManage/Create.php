@@ -20,6 +20,7 @@ use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Validation\Validator;
+use DomainException;
 
 final class Create implements ServiceInterface
 {
@@ -186,36 +187,70 @@ final class Create implements ServiceInterface
         $validator
             ->requirePresence('related_data_key', true)
             ->notEmptyString('related_data_key', __('関連データキーを入力してください。'))
+            ->maxLength('related_data_key', Vo\RelatedDataKey::MAX_LENGTH, __(
+                '関連データキーは{0}文字以内で入力してください。',
+                Vo\RelatedDataKey::MAX_LENGTH,
+            ))
             ->requirePresence('title', true)
             ->notEmptyString('title', __('タイトルを入力してください。'))
+            ->maxLength('title', Vo\Title::MAX_LENGTH, __('タイトルは{0}文字以内で入力してください。', Vo\Title::MAX_LENGTH))
             ->requirePresence('body', true)
             ->notEmptyString('body', __('本文を入力してください。'))
+            ->maxLength('body', Vo\Body::MAX_LENGTH, __('本文は{0}文字以内で入力してください。', Vo\Body::MAX_LENGTH))
             ->requirePresence('mail_to', true)
             ->notEmptyString('mail_to', __('Toを入力してください。'))
-            ->add('mail_to', 'newlineEmails', [
-                'rule' => fn (mixed $value): bool => $this->validateNewlineSeparatedEmails($value, true),
+            ->maxLength('mail_to', Vo\MailTo::MAX_LENGTH, __('Toは{0}文字以内で入力してください。', Vo\MailTo::MAX_LENGTH))
+            ->add('mail_to', 'voFormat', [
+                'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
+                    $value,
+                    static fn (?string $mail): Vo\MailTo => Vo\MailTo::fromString($mail),
+                ),
                 'message' => __('Toは改行区切りで正しいメールアドレスを入力してください。'),
             ])
             ->allowEmptyString('mail_cc')
-            ->add('mail_cc', 'newlineEmails', [
-                'rule' => fn (mixed $value): bool => $this->validateNewlineSeparatedEmails($value, false),
+            ->maxLength('mail_cc', Vo\MailCc::MAX_LENGTH, __('Ccは{0}文字以内で入力してください。', Vo\MailCc::MAX_LENGTH))
+            ->add('mail_cc', 'voFormat', [
+                'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
+                    $value,
+                    static fn (?string $mail): Vo\MailCc => Vo\MailCc::fromString($mail),
+                ),
                 'message' => __('Ccは改行区切りで正しいメールアドレスを入力してください。'),
             ])
             ->allowEmptyString('mail_bcc')
-            ->add('mail_bcc', 'newlineEmails', [
-                'rule' => fn (mixed $value): bool => $this->validateNewlineSeparatedEmails($value, false),
+            ->maxLength('mail_bcc', Vo\MailBcc::MAX_LENGTH, __('Bccは{0}文字以内で入力してください。', Vo\MailBcc::MAX_LENGTH))
+            ->add('mail_bcc', 'voFormat', [
+                'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
+                    $value,
+                    static fn (?string $mail): Vo\MailBcc => Vo\MailBcc::fromString($mail),
+                ),
                 'message' => __('Bccは改行区切りで正しいメールアドレスを入力してください。'),
             ])
             ->requirePresence('mail_received_check', true)
             ->notEmptyString('mail_received_check', __('受信確認アドレスを入力してください。'))
-            ->add('mail_received_check', 'format', [
-                'rule' => fn (mixed $value): bool => $this->validateSingleEmail($value),
+            ->maxLength(
+                'mail_received_check',
+                Vo\MailReceivedCheck::MAX_LENGTH,
+                __('受信確認アドレスは{0}文字以内で入力してください。', Vo\MailReceivedCheck::MAX_LENGTH),
+            )
+            ->add('mail_received_check', 'voFormat', [
+                'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
+                    $value,
+                    static fn (?string $mail): Vo\MailReceivedCheck => Vo\MailReceivedCheck::fromString($mail),
+                ),
                 'message' => __('受信確認アドレスは正しいメールアドレス形式で入力してください。'),
             ])
             ->requirePresence('mail_return_path', true)
             ->notEmptyString('mail_return_path', __('バウンス確認アドレスを入力してください。'))
-            ->add('mail_return_path', 'format', [
-                'rule' => fn (mixed $value): bool => $this->validateSingleEmail($value),
+            ->maxLength(
+                'mail_return_path',
+                Vo\MailReturnPath::MAX_LENGTH,
+                __('バウンス確認アドレスは{0}文字以内で入力してください。', Vo\MailReturnPath::MAX_LENGTH),
+            )
+            ->add('mail_return_path', 'voFormat', [
+                'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
+                    $value,
+                    static fn (?string $mail): Vo\MailReturnPath => Vo\MailReturnPath::fromString($mail),
+                ),
                 'message' => __('バウンス確認アドレスは正しいメールアドレス形式で入力してください。'),
             ])
             ->allowEmptyString('send_scheduled_at')
@@ -243,49 +278,12 @@ final class Create implements ServiceInterface
      * @param mixed $value
      * @return bool
      */
-    private function validateSingleEmail(mixed $value): bool
+    private function validateMailAddressByVo(mixed $value, callable $validator): bool
     {
-        $email = Cast::toStringOrNull($value);
-        if ($email === null) {
-            return false;
-        }
-
-        return filter_var(trim($email), FILTER_VALIDATE_EMAIL) !== false;
-    }
-
-    /**
-     * @param mixed $value
-     * @param bool $required
-     * @return bool
-     */
-    private function validateNewlineSeparatedEmails(mixed $value, bool $required): bool
-    {
-        $raw = Cast::toStringOrNull($value);
-        if ($raw === null) {
-            return !$required;
-        }
-
-        $splitLines = preg_split('/\R/u', $raw);
-        if ($splitLines === false) {
-            return false;
-        }
-        $emails = array_values(
-            array_filter(
-                array_map(
-                    static fn (string $line): string => trim($line),
-                    $splitLines,
-                ),
-                static fn (string $line): bool => $line !== '',
-            ),
-        );
-        if ($emails === []) {
-            return !$required;
-        }
-
-        foreach ($emails as $email) {
-            if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-                return false;
-            }
+        try {
+            $validator(Cast::toStringOrNull($value));
+        } catch (DomainException $e) {
+            return !str_contains($e->getMessage(), 'email format Error');
         }
 
         return true;
@@ -303,18 +301,18 @@ final class Create implements ServiceInterface
 
         (new MailsRepository())->create(new Mail(
             id: null,
-            related_data_key: Cast::toStringOrNull($input['related_data_key']),
+            related_data_key: Vo\RelatedDataKey::fromString(Cast::toStringOrNull($input['related_data_key']))->toStringOrNull(),
             send_status: Vo\SendStatus::WAITING,
             send_scheduled_at: Cast::toDateTimeStringOrNull($input['send_scheduled_at']) ?? $this->datetime->format(
                 self::DATE_TIME_FORMAT,
             ),
-            title: Cast::toStringOrNull($input['title']),
-            body: Cast::toStringOrNull($input['body']),
-            mail_to: $this->normalizeNewlineSeparatedEmails($input['mail_to']),
-            mail_cc: $this->normalizeNewlineSeparatedEmails($input['mail_cc']),
-            mail_bcc: $this->normalizeNewlineSeparatedEmails($input['mail_bcc']),
-            mail_received_check: $this->normalizeSingleEmail($input['mail_received_check']),
-            mail_return_path: $this->normalizeSingleEmail($input['mail_return_path']),
+            title: Vo\Title::fromString(Cast::toStringOrNull($input['title']))->toStringOrNull(),
+            body: Vo\Body::fromString(Cast::toStringOrNull($input['body']))->toStringOrNull(),
+            mail_to: Vo\MailTo::fromString(Cast::toStringOrNull($input['mail_to']))->toStringOrNull(),
+            mail_cc: Vo\MailCc::fromString(Cast::toStringOrNull($input['mail_cc']))->toStringOrNull(),
+            mail_bcc: Vo\MailBcc::fromString(Cast::toStringOrNull($input['mail_bcc']))->toStringOrNull(),
+            mail_received_check: Vo\MailReceivedCheck::fromString(Cast::toStringOrNull($input['mail_received_check']))->toStringOrNull(),
+            mail_return_path: Vo\MailReturnPath::fromString(Cast::toStringOrNull($input['mail_return_path']))->toStringOrNull(),
             created: Cast::toStringOrNull($this->datetime->format(self::DATE_TIME_FORMAT)),
             created_by: Cast::toStringOrNull($this->authContext->getAccountId()),
             created_ip: Cast::toStringOrNull($this->request->clientIp()),
@@ -366,48 +364,4 @@ final class Create implements ServiceInterface
         return $this;
     }
 
-    /**
-     * @param mixed $value
-     * @return ?string
-     */
-    private function normalizeSingleEmail(mixed $value): ?string
-    {
-        $email = Cast::toStringOrNull($value);
-        if ($email === null) {
-            return null;
-        }
-
-        return trim($email);
-    }
-
-    /**
-     * @param mixed $value
-     * @return ?string
-     */
-    private function normalizeNewlineSeparatedEmails(mixed $value): ?string
-    {
-        $raw = Cast::toStringOrNull($value);
-        if ($raw === null) {
-            return null;
-        }
-
-        $splitLines = preg_split('/\R/u', $raw);
-        if ($splitLines === false) {
-            return null;
-        }
-        $emails = array_values(
-            array_filter(
-                array_map(
-                    static fn (string $line): string => trim($line),
-                    $splitLines,
-                ),
-                static fn (string $line): bool => $line !== '',
-            ),
-        );
-        if ($emails === []) {
-            return null;
-        }
-
-        return implode("\n", $emails);
-    }
 }
