@@ -393,7 +393,7 @@ final class Create implements ServiceInterface
 
         $splitLines = preg_split('/\R/u', $raw);
         if ($splitLines === false) {
-            return trim($raw);
+            return null;
         }
         $emails = array_values(
             array_filter(
