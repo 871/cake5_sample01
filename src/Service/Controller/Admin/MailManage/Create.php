@@ -204,7 +204,6 @@ final class Create implements ServiceInterface
                 'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
                     $value,
                     static fn (?string $mail): Vo\MailTo => Vo\MailTo::fromString($mail),
-                    Vo\MailTo::ERROR_CODE_EMAIL_FORMAT,
                 ),
                 'message' => __('Toは改行区切りで正しいメールアドレスを入力してください。'),
             ])
@@ -214,7 +213,6 @@ final class Create implements ServiceInterface
                 'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
                     $value,
                     static fn (?string $mail): Vo\MailCc => Vo\MailCc::fromString($mail),
-                    Vo\MailCc::ERROR_CODE_EMAIL_FORMAT,
                 ),
                 'message' => __('Ccは改行区切りで正しいメールアドレスを入力してください。'),
             ])
@@ -224,7 +222,6 @@ final class Create implements ServiceInterface
                 'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
                     $value,
                     static fn (?string $mail): Vo\MailBcc => Vo\MailBcc::fromString($mail),
-                    Vo\MailBcc::ERROR_CODE_EMAIL_FORMAT,
                 ),
                 'message' => __('Bccは改行区切りで正しいメールアドレスを入力してください。'),
             ])
@@ -239,7 +236,6 @@ final class Create implements ServiceInterface
                 'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
                     $value,
                     static fn (?string $mail): Vo\MailReceivedCheck => Vo\MailReceivedCheck::fromString($mail),
-                    Vo\MailReceivedCheck::ERROR_CODE_EMAIL_FORMAT,
                 ),
                 'message' => __('受信確認アドレスは正しいメールアドレス形式で入力してください。'),
             ])
@@ -254,7 +250,6 @@ final class Create implements ServiceInterface
                 'rule' => fn (mixed $value): bool => $this->validateMailAddressByVo(
                     $value,
                     static fn (?string $mail): Vo\MailReturnPath => Vo\MailReturnPath::fromString($mail),
-                    Vo\MailReturnPath::ERROR_CODE_EMAIL_FORMAT,
                 ),
                 'message' => __('バウンス確認アドレスは正しいメールアドレス形式で入力してください。'),
             ])
@@ -283,16 +278,12 @@ final class Create implements ServiceInterface
      * @param mixed $value
      * @return bool
      */
-    private function validateMailAddressByVo(mixed $value, callable $validator, int $formatErrorCode): bool
+    private function validateMailAddressByVo(mixed $value, callable $voFactory): bool
     {
         try {
-            $validator(Cast::toStringOrNull($value));
+            $voFactory(Cast::toStringOrNull($value));
         } catch (DomainException $e) {
-            if ($e->getCode() === $formatErrorCode) {
-                return false;
-            }
-
-            return $e->getCode() === Vo\MailTo::ERROR_CODE_LENGTH;
+            return false;
         }
 
         return true;

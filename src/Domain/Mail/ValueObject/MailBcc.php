@@ -43,7 +43,7 @@ class MailBcc implements Stringable
 
         $splitLines = preg_split('/\R/u', $value);
         if ($splitLines === false) {
-            throw new DomainException(self::class . ' value parsing Error', self::ERROR_CODE_VALUE_PROCESSING);
+            throw new DomainException(self::class . ' value parsing error', self::ERROR_CODE_VALUE_PROCESSING);
         }
         $emails = array_values(
             array_filter(
