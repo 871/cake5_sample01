@@ -14,6 +14,7 @@ use App\Service\Controller\Shared\ServiceTrait;
 final class Create implements ServiceInterface
 {
     use ServiceTrait;
+    private const DATE_TIME_FORMAT = 'Y-m-d\TH:i:s';
 
     /**
      * @return \App\Domain\Mail\Entity\Mail
@@ -25,7 +26,7 @@ final class Create implements ServiceInterface
             related_data_key: StrictCast::toString($this->request->getData('related_data_key')),
             send_status: Vo\SendStatus::WAITING,
             send_scheduled_at: Cast::toDateTimeStringOrNull($this->request->getData('send_scheduled_at'))
-                ?? $this->datetime->format('Y-m-d\TH:i:s'),
+                ?? $this->datetime->format(self::DATE_TIME_FORMAT),
             title: StrictCast::toString($this->request->getData('title')),
             body: StrictCast::toString($this->request->getData('body')),
             mail_to: StrictCast::toString($this->request->getData('mail_to')),
@@ -33,10 +34,10 @@ final class Create implements ServiceInterface
             mail_bcc: Cast::toStringOrNull($this->request->getData('mail_bcc')),
             mail_received_check: StrictCast::toString($this->request->getData('mail_received_check')),
             mail_return_path: StrictCast::toString($this->request->getData('mail_return_path')),
-            created: $this->datetime->format('Y-m-d\TH:i:s'),
+            created: $this->datetime->format(self::DATE_TIME_FORMAT),
             created_by: Cast::toStringOrNull($this->authContext->getAccountId()),
             created_ip: Cast::toStringOrNull($this->request->clientIp()),
-            modified: $this->datetime->format('Y-m-d\TH:i:s'),
+            modified: $this->datetime->format(self::DATE_TIME_FORMAT),
             modified_by: Cast::toStringOrNull($this->authContext->getAccountId()),
             modified_ip: Cast::toStringOrNull($this->request->clientIp()),
         ));
