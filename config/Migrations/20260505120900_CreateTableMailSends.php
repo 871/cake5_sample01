@@ -37,10 +37,22 @@ class CreateTableMailSends extends BaseMigration
                 modified DATETIME(0) NOT NULL COMMENT '更新日時',
                 modified_by BIGINT DEFAULT NULL COMMENT '更新者アカウントID',
                 modified_ip VARCHAR(45) DEFAULT NULL COMMENT '更新時IPアドレス',
+                /* ===== Search Column (日本語全文検索用) ===== */
+                search_text LONGTEXT GENERATED ALWAYS AS (
+                    CONCAT_WS(' ',
+                        title,
+                        body,
+                        mail_to,
+                        mail_cc,
+                        mail_bcc
+                    )
+                ) STORED COMMENT '日本語全文検索用結合カラム',
+
                 PRIMARY KEY (id),
                 UNIQUE INDEX mail_infos_idx01 (related_data_key),
                 INDEX mail_infos_idx02 (send_status, send_scheduled_at),
-                INDEX mail_infos_idx03 (send_scheduled_at, send_status)
+                INDEX mail_infos_idx03 (send_scheduled_at, send_status),
+                FULLTEXT KEY mail_infos_idx04 (search_text) WITH PARSER ngram
             ) ENGINE=InnoDB
             DEFAULT CHARSET=utf8mb4
             COMMENT='メール送信情報'
