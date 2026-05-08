@@ -33,10 +33,10 @@ final class Create implements ServiceInterface
             mail_bcc: Cast::toStringOrNull($this->request->getData('mail_bcc')),
             mail_received_check: StrictCast::toString($this->request->getData('mail_received_check')),
             mail_return_path: StrictCast::toString($this->request->getData('mail_return_path')),
-            created: Cast::toStringOrNull($this->datetime->format('Y-m-d\TH:i:s')),
+            created: $this->datetime->format('Y-m-d\TH:i:s'),
             created_by: Cast::toStringOrNull($this->authContext->getAccountId()),
             created_ip: Cast::toStringOrNull($this->request->clientIp()),
-            modified: Cast::toStringOrNull($this->datetime->format('Y-m-d\TH:i:s')),
+            modified: $this->datetime->format('Y-m-d\TH:i:s'),
             modified_by: Cast::toStringOrNull($this->authContext->getAccountId()),
             modified_ip: Cast::toStringOrNull($this->request->clientIp()),
         ));

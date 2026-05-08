@@ -32,7 +32,6 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
         // メール管理
         $builder->prefix('MailManage', ['path' => '/mail_manage'], static function (RouteBuilder $builder) {
             // 登録
-            $builder->get('/create', ['controller' => 'Create', 'action' => 'index']);
             $builder->post('/create', ['controller' => 'Create', 'action' => 'indexPost']);
         });
 
