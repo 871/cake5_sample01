@@ -61,7 +61,7 @@ final class MailMapper
     public function toNewOrmEntity(DomainEntity $domainEntity): OrmEntity
     {
         $entity = $this->table->newEntity([
-            'id' => $domainEntity->id()->toInt(),
+            'id' => $domainEntity->id()->toIntOrNull(),
             'related_data_key' => $domainEntity->relatedDataKey()->toString(),
             'send_status' => $domainEntity->sendStatus()->toString(),
             'send_scheduled_at' => $domainEntity->sendScheduledAt()->format('Y-m-d\TH:i:s'),
