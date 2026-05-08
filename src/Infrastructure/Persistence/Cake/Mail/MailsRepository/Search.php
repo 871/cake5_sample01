@@ -7,6 +7,7 @@ use App\Domain\Mail\Entity\Mail as DomainEntity;
 use App\Domain\Mail\SearchCondition;
 use App\Infrastructure\Persistence\Cake\Mail\MailMapper;
 use App\Model\Table\Mail\MailsTable;
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 final class Search
@@ -38,8 +39,9 @@ final class Search
      */
     public function run(): array
     {
-        /** @var array<\App\Model\Entity\Mail\Mail> $ormEntities */
-        $ormEntities = $this->table
+        $keyword = trim($this->condition->getKeyword()?->toString() ?? '');
+
+        $query = $this->table
             ->find()
             ->where(
                 array_filter([
@@ -57,7 +59,18 @@ final class Search
                 'Mails.send_scheduled_at' => 'ASC',
                 'Mails.id' => 'ASC',
             ])
-            ->limit($this->condition->getLimit())
+            ->limit($this->condition->getLimit());
+
+        if ($keyword !== '') {
+            $query
+                ->where(new QueryExpression(
+                    'MATCH(Mails.search_text) AGAINST(:keyword IN NATURAL LANGUAGE MODE)',
+                ))
+                ->bind(':keyword', $keyword, 'string');
+        }
+
+        /** @var array<\App\Model\Entity\Mail\Mail> $ormEntities */
+        $ormEntities = $query
             ->all()
             ->toArray();
 

@@ -15,6 +15,7 @@ class SearchCondition
      * @param \App\Domain\Mail\ValueObject\SendStatus|null $sendStatus
      * @param \App\Domain\Mail\ValueObject\RelatedDataKey $relatedDataKey
      * @param int $limit
+     * @param \App\Domain\Mail\ValueObject\Search\Keyword|null $keyword
      */
     public function __construct(
         private readonly ValueObject\SendScheduledAt $sendScheduledAtFrom,
@@ -22,6 +23,7 @@ class SearchCondition
         private readonly ?ValueObject\SendStatus $sendStatus,
         private readonly ValueObject\RelatedDataKey $relatedDataKey,
         private readonly int $limit = self::DEFAULT_LIMIT,
+        private readonly ?ValueObject\Search\Keyword $keyword = null,
     ) {
         // 処理なし
     }
@@ -64,5 +66,13 @@ class SearchCondition
     public function getLimit(): int
     {
         return $this->limit;
+    }
+
+    /**
+     * @return \App\Domain\Mail\ValueObject\Search\Keyword|null
+     */
+    public function getKeyword(): ?ValueObject\Search\Keyword
+    {
+        return $this->keyword;
     }
 }
