@@ -310,11 +310,11 @@ final class Create implements ServiceInterface
             ),
             title: Cast::toStringOrNull($input['title']),
             body: Cast::toStringOrNull($input['body']),
-            mail_to: Cast::toStringOrNull($input['mail_to']),
-            mail_cc: Cast::toStringOrNull($input['mail_cc']),
-            mail_bcc: Cast::toStringOrNull($input['mail_bcc']),
-            mail_received_check: Cast::toStringOrNull($input['mail_received_check']),
-            mail_return_path: Cast::toStringOrNull($input['mail_return_path']),
+            mail_to: $this->normalizeNewlineSeparatedEmails($input['mail_to']),
+            mail_cc: $this->normalizeNewlineSeparatedEmails($input['mail_cc']),
+            mail_bcc: $this->normalizeNewlineSeparatedEmails($input['mail_bcc']),
+            mail_received_check: $this->normalizeSingleEmail($input['mail_received_check']),
+            mail_return_path: $this->normalizeSingleEmail($input['mail_return_path']),
             created: Cast::toStringOrNull($this->datetime->format(self::DATE_TIME_FORMAT)),
             created_by: Cast::toStringOrNull($this->authContext->getAccountId()),
             created_ip: Cast::toStringOrNull($this->request->clientIp()),
@@ -364,5 +364,50 @@ final class Create implements ServiceInterface
         );
 
         return $this;
+    }
+
+    /**
+     * @param mixed $value
+     * @return ?string
+     */
+    private function normalizeSingleEmail(mixed $value): ?string
+    {
+        $email = Cast::toStringOrNull($value);
+        if ($email === null) {
+            return null;
+        }
+
+        return trim($email);
+    }
+
+    /**
+     * @param mixed $value
+     * @return ?string
+     */
+    private function normalizeNewlineSeparatedEmails(mixed $value): ?string
+    {
+        $raw = Cast::toStringOrNull($value);
+        if ($raw === null) {
+            return null;
+        }
+
+        $splitLines = preg_split('/\R/u', $raw);
+        if ($splitLines === false) {
+            return trim($raw);
+        }
+        $emails = array_values(
+            array_filter(
+                array_map(
+                    static fn (string $line): string => trim($line),
+                    $splitLines,
+                ),
+                static fn (string $line): bool => $line !== '',
+            ),
+        );
+        if ($emails === []) {
+            return null;
+        }
+
+        return implode("\n", $emails);
     }
 }
