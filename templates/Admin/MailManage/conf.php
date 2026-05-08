@@ -51,14 +51,14 @@
             </table>
 
             <div class="text-center mt-4">
+                <button type="submit" name="_process_action" value="complete" class="btn btn-success px-5 me-3">
+                    登録する
+                </button>
                 <a href="<?= $this->Url->build([
                     'action' => 'input',
                     'process_id' => $this->getRequest()->getParam('process_id'),
                     '?' => $this->getRequest()->getQuery(),
                 ]) ?>" class="btn btn-secondary px-5">修正する</a>
-                <button type="submit" name="_process_action" value="complete" class="btn btn-success px-5 me-3">
-                    登録する
-                </button>
             </div>
         </form>
     </div>
