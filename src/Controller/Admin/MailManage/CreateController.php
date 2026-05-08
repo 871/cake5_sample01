@@ -56,7 +56,7 @@ class CreateController extends AppController
         } catch (Throwable $ex) {
             Log::error(
                 'メール情報の登録に失敗しました。'
-                . '[message: ' . $ex->getMessage() . ']'
+                . '[exception: ' . get_class($ex) . ']'
                 . '[Uri: ' . $this->request->getRequestTarget() . ']',
             );
             $this->Flash->error(__('メール情報の登録に失敗しました。'));
