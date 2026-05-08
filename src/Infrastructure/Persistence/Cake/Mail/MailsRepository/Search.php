@@ -39,8 +39,9 @@ final class Search
      */
     public function run(): array
     {
-        /** @var array<\App\Model\Entity\Mail\Mail> $ormEntities */
-        $ormEntities = $this->table
+        $keyword = trim($this->condition->getKeyword()?->toString() ?? '');
+
+        $query = $this->table
             ->find()
             ->where(
                 array_filter([
@@ -52,17 +53,24 @@ final class Search
                         => $this->condition->getSendStatus()?->toString(),
                     'Mails.related_data_key'
                         => $this->condition->getRelatedDataKey()->toStringOrNull(),
-                    $this->condition->getKeyword()?->toString() !== '' ? new QueryExpression(
-                        'MATCH(Mails.search_text) AGAINST(:keyword IN BOOLEAN MODE)',
-                    ) : new QueryExpression(":keyword = ''"),
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             )
             ->orderBy([
                 'Mails.send_scheduled_at' => 'ASC',
                 'Mails.id' => 'ASC',
             ])
-            ->limit($this->condition->getLimit())
-            ->bind(':keyword', $this->condition->getKeyword()?->toString() ?? '', 'string')
+            ->limit($this->condition->getLimit());
+
+        if ($keyword !== '') {
+            $query
+                ->where(new QueryExpression(
+                    'MATCH(Mails.search_text) AGAINST(:keyword IN NATURAL LANGUAGE MODE)',
+                ))
+                ->bind(':keyword', $keyword, 'string');
+        }
+
+        /** @var array<\App\Model\Entity\Mail\Mail> $ormEntities */
+        $ormEntities = $query
             ->all()
             ->toArray();
 
