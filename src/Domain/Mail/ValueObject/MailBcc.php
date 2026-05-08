@@ -59,7 +59,7 @@ class MailBcc implements Stringable
             return;
         }
         foreach ($emails as $email) {
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
                 throw new DomainException(
                     self::class . ' value email format Error'
                     . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
