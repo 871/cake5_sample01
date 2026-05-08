@@ -7,6 +7,7 @@ use App\Domain\Mail\Entity\Mail as DomainEntity;
 use App\Domain\Mail\SearchCondition;
 use App\Infrastructure\Persistence\Cake\Mail\MailMapper;
 use App\Model\Table\Mail\MailsTable;
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 final class Search
@@ -51,6 +52,9 @@ final class Search
                         => $this->condition->getSendStatus()?->toString(),
                     'Mails.related_data_key'
                         => $this->condition->getRelatedDataKey()->toStringOrNull(),
+                    $this->condition->getKeyword()?->toString() !== '' ? new QueryExpression(
+                        'MATCH(Mails.search_text) AGAINST(:keyword IN BOOLEAN MODE)',
+                    ) : new QueryExpression(":keyword = ''"),
                 ], fn($v) => !in_array($v, [null, '', []], true)),
             )
             ->orderBy([
@@ -58,6 +62,7 @@ final class Search
                 'Mails.id' => 'ASC',
             ])
             ->limit($this->condition->getLimit())
+            ->bind(':keyword', $this->condition->getKeyword()?->toString() ?? '', 'string')
             ->all()
             ->toArray();
 
