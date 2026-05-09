@@ -41,6 +41,7 @@ class CreateController extends AppController
         ) {
             return $this->redirect([
                 'action' => 'index',
+                'account_id' => $this->request->getParam('account_id'),
                 '?' => $this->request->getQuery(),
             ]);
         }

@@ -31,6 +31,11 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
 
         // メール管理
         $builder->prefix('MailManage', ['path' => '/mail_manage'], static function (RouteBuilder $builder) {
+            // メールサーバ接続確認
+            $builder->get('/check_mail_server', ['controller' => 'CheckMailServer', 'action' => 'index']);
+            $builder->get('/check_mail_server/sent_smtp', ['controller' => 'CheckMailServer', 'action' => 'sentSmtp']);
+            $builder->get('/check_mail_server/received_check_imap', ['controller' => 'CheckMailServer', 'action' => 'receivedCheckImap']);
+            $builder->get('/check_mail_server/return_path_imap', ['controller' => 'CheckMailServer', 'action' => 'returnPathImap']);
             // 登録
             $builder->get('/create', ['controller' => 'Create', 'action' => 'index']);
             $builder->get('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'input']);
