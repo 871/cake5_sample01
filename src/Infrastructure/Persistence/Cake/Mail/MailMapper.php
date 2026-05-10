@@ -60,7 +60,8 @@ final class MailMapper
      */
     public function toNewOrmEntity(DomainEntity $domainEntity): OrmEntity
     {
-        $entity = $this->table->newEntity([
+        /** @var \App\Model\Entity\Mail\Mail */
+        return $this->table->newEntity([
             'id' => $domainEntity->id()->toIntOrNull(),
             'related_data_key' => $domainEntity->relatedDataKey()->toString(),
             'send_status' => $domainEntity->sendStatus()->toString(),
@@ -81,8 +82,6 @@ final class MailMapper
         ], [
             'validate' => false,
         ]);
-
-        return $entity;
     }
 
     /**
@@ -117,8 +116,9 @@ final class MailMapper
                 : [],
             mail_received_check_logs: $ormEntity->mail_received_check_logs !== null
                 ? array_map(
-                    fn(OrmReceivedCheckLogEntity $log): DomainReceivedCheckLogEntity
-                        => $this->toDomainReceivedCheckLogEntity($log),
+                    function (OrmReceivedCheckLogEntity $log): DomainReceivedCheckLogEntity {
+                        return $this->toDomainReceivedCheckLogEntity($log);
+                    },
                     $ormEntity->mail_received_check_logs,
                 )
                 : [],
@@ -137,6 +137,7 @@ final class MailMapper
      */
     public function toNewOrmSentLogEntity(DomainSentLogEntity $domainEntity): OrmSentLogEntity
     {
+        /** @var \App\Model\Entity\Mail\MailSentLog */
         return $this->sentLogsTable->newEntity([
             'id' => $domainEntity->id()->toString(),
             'mail_id' => $domainEntity->mailId()->toInt(),
@@ -173,8 +174,10 @@ final class MailMapper
      * @param \App\Domain\Mail\Entity\MailReceivedCheckLog $domainEntity
      * @return \App\Model\Entity\Mail\MailReceivedCheckLog
      */
-    public function toNewOrmReceivedCheckLogEntity(DomainReceivedCheckLogEntity $domainEntity): OrmReceivedCheckLogEntity
-    {
+    public function toNewOrmReceivedCheckLogEntity(
+        DomainReceivedCheckLogEntity $domainEntity,
+    ): OrmReceivedCheckLogEntity {
+        /** @var \App\Model\Entity\Mail\MailReceivedCheckLog */
         return $this->receivedCheckLogsTable->newEntity([
             'id' => $domainEntity->id()->toString(),
             'mail_id' => $domainEntity->mailId()->toInt(),
@@ -209,6 +212,7 @@ final class MailMapper
      */
     public function toNewOrmBounceLogEntity(DomainBounceLogEntity $domainEntity): OrmBounceLogEntity
     {
+        /** @var \App\Model\Entity\Mail\MailBounceLog */
         return $this->bounceLogsTable->newEntity([
             'id' => $domainEntity->id()->toString(),
             'mail_id' => $domainEntity->mailId()->toInt(),

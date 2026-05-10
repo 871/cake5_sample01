@@ -8,7 +8,6 @@ use App\Domain\Mail\Entity\Mail as DomainEntity;
 use App\Domain\Mail\Entity\MailSentLog as DomainSentLogEntity;
 use App\Domain\Mail\ValueObject\SendStatus;
 use App\Infrastructure\Persistence\Cake\Mail\MailMapper;
-use App\Model\Entity\Mail\MailSentLog as OrmSentLogEntity;
 use App\Model\Table\Mail\MailSentLogsTable;
 use App\Model\Table\Mail\MailsTable;
 use Cake\ORM\Exception\PersistenceFailedException;
@@ -64,7 +63,7 @@ final class UpdateSent
 
                     $this->table->patchEntity($mail, [
                         'send_status' => in_array($mail->send_status, [
-                            SendStatus::WAITING, 
+                            SendStatus::WAITING,
                         ], true) ? SendStatus::SENT : $mail->send_status,
                         'modified' => $this->logEntity->created()->toDateTime(),
                         'modified_by' => $this->logEntity->createdBy()->toStringOrNull(),

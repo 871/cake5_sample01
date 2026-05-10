@@ -21,10 +21,12 @@ use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Validation\Validator;
 use DomainException;
+use InvalidArgumentException;
 
 final class Create implements ServiceInterface
 {
     use ServiceTrait;
+
     private const DATE_TIME_FORMAT = 'Y-m-d\TH:i:s';
 
     /**
@@ -197,7 +199,8 @@ final class Create implements ServiceInterface
                         Vo\RelatedDataKey::fromString(Cast::toStringOrNull($value));
                     } catch (DomainException $e) {
                         return match ($e->getCode()) {
-                            Vo\RelatedDataKey::ERROR_CODE_LENGTH => __('関連データキーは{0}文字以内で入力してください。', Vo\RelatedDataKey::MAX_LENGTH),
+                            Vo\RelatedDataKey::ERROR_CODE_LENGTH
+                                => __('関連データキーは{0}文字以内で入力してください。', Vo\RelatedDataKey::MAX_LENGTH),
                             default => __('関連データキーは不正な入力です。'),
                         };
                     }
@@ -307,8 +310,10 @@ final class Create implements ServiceInterface
                         Vo\MailReceivedCheck::fromString(Cast::toStringOrNull($value));
                     } catch (DomainException $e) {
                         return match ($e->getCode()) {
-                            Vo\MailReceivedCheck::ERROR_CODE_LENGTH => __('受信確認アドレスは{0}文字以内で入力してください。', Vo\MailReceivedCheck::MAX_LENGTH),
-                            Vo\MailReceivedCheck::ERROR_CODE_EMAIL_FORMAT => __('受信確認アドレスは正しいメールアドレス形式で入力してください。'),
+                            Vo\MailReceivedCheck::ERROR_CODE_LENGTH
+                                => __('受信確認アドレスは{0}文字以内で入力してください。', Vo\MailReceivedCheck::MAX_LENGTH),
+                            Vo\MailReceivedCheck::ERROR_CODE_EMAIL_FORMAT
+                                => __('受信確認アドレスは正しいメールアドレス形式で入力してください。'),
                             default => __('受信確認アドレスは不正な入力です。'),
                         };
                     }
@@ -329,8 +334,10 @@ final class Create implements ServiceInterface
                         Vo\MailReturnPath::fromString(Cast::toStringOrNull($value));
                     } catch (DomainException $e) {
                         return match ($e->getCode()) {
-                            Vo\MailReturnPath::ERROR_CODE_LENGTH => __('バウンス確認アドレスは{0}文字以内で入力してください。', Vo\MailReturnPath::MAX_LENGTH),
-                            Vo\MailReturnPath::ERROR_CODE_EMAIL_FORMAT => __('バウンス確認アドレスは正しいメールアドレス形式で入力してください。'),
+                            Vo\MailReturnPath::ERROR_CODE_LENGTH
+                                => __('バウンス確認アドレスは{0}文字以内で入力してください。', Vo\MailReturnPath::MAX_LENGTH),
+                            Vo\MailReturnPath::ERROR_CODE_EMAIL_FORMAT
+                                => __('バウンス確認アドレスは正しいメールアドレス形式で入力してください。'),
                             default => __('バウンス確認アドレスは不正な入力です。'),
                         };
                     }
@@ -347,7 +354,7 @@ final class Create implements ServiceInterface
 
                     try {
                         StrictCast::toDateTimeString($value);
-                    } catch (\InvalidArgumentException) {
+                    } catch (InvalidArgumentException) {
                         return false;
                     }
 
@@ -371,7 +378,9 @@ final class Create implements ServiceInterface
 
         (new MailsRepository())->create(new Mail(
             id: null,
-            related_data_key: Vo\RelatedDataKey::fromString(Cast::toStringOrNull($input['related_data_key']))->toStringOrNull(),
+            related_data_key: Vo\RelatedDataKey::fromString(
+                Cast::toStringOrNull($input['related_data_key']),
+            )->toStringOrNull(),
             send_status: Vo\SendStatus::WAITING,
             send_scheduled_at: Cast::toDateTimeStringOrNull($input['send_scheduled_at']) ?? $this->datetime->format(
                 self::DATE_TIME_FORMAT,
@@ -381,8 +390,12 @@ final class Create implements ServiceInterface
             mail_to: Vo\MailTo::fromString(Cast::toStringOrNull($input['mail_to']))->toStringOrNull(),
             mail_cc: Vo\MailCc::fromString(Cast::toStringOrNull($input['mail_cc']))->toStringOrNull(),
             mail_bcc: Vo\MailBcc::fromString(Cast::toStringOrNull($input['mail_bcc']))->toStringOrNull(),
-            mail_received_check: Vo\MailReceivedCheck::fromString(Cast::toStringOrNull($input['mail_received_check']))->toStringOrNull(),
-            mail_return_path: Vo\MailReturnPath::fromString(Cast::toStringOrNull($input['mail_return_path']))->toStringOrNull(),
+            mail_received_check: Vo\MailReceivedCheck::fromString(
+                Cast::toStringOrNull($input['mail_received_check']),
+            )->toStringOrNull(),
+            mail_return_path: Vo\MailReturnPath::fromString(
+                Cast::toStringOrNull($input['mail_return_path']),
+            )->toStringOrNull(),
             created: Cast::toStringOrNull($this->datetime->format(self::DATE_TIME_FORMAT)),
             created_by: Cast::toStringOrNull($this->authContext->getAccountId()),
             created_ip: Cast::toStringOrNull($this->request->clientIp()),
@@ -433,5 +446,4 @@ final class Create implements ServiceInterface
 
         return $this;
     }
-
 }

@@ -63,8 +63,8 @@ final class UpdateBounced
 
                     $this->table->patchEntity($mail, [
                         'send_status' => in_array($mail->send_status, [
-                            SendStatus::SENT, 
-                            SendStatus::RECEIVED, 
+                            SendStatus::SENT,
+                            SendStatus::RECEIVED,
                         ], true) ? SendStatus::BOUNCED : $mail->send_status,
                         'modified' => $this->logEntity->created()->toDateTime(),
                         'modified_by' => $this->logEntity->createdBy()->toStringOrNull(),

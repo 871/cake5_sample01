@@ -48,10 +48,10 @@ class MailTo implements Stringable
         $emails = array_values(
             array_filter(
                 array_map(
-                    static fn (string $line): string => trim($line),
+                    static fn(string $line): string => trim($line),
                     $splitLines,
                 ),
-                static fn (string $line): bool => $line !== '',
+                static fn(string $line): bool => $line !== '',
             ),
         );
         if ($emails === []) {

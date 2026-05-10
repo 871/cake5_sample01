@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace App\Controller\Admin\MailManage;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\Mailer\Mailer;
-use Cake\Core\Configure;
+use Throwable;
 use Webklex\PHPIMAP\ClientManager;
-
 
 class CheckMailServerController extends AppController
 {
@@ -82,7 +82,7 @@ class CheckMailServerController extends AppController
             return $this->response
                 ->withType('text/html')
                 ->withStringBody('<span style="background-color: green; color:#fff;">SMTP OK</span>');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $this->response
                 ->withStatus(500)
                 ->withType('text/html')
@@ -99,14 +99,14 @@ class CheckMailServerController extends AppController
 
         try {
             $client = (new ClientManager())
-                ->make(Configure::read('PHPIMAP.received_check'));
+                ->make((array)Configure::read('PHPIMAP.received_check'));
             $client->connect();
             $client->disconnect();
 
             return $this->response
                 ->withType('text/html')
                 ->withStringBody('<span style="background-color: green; color:#fff;">IMAP OK</span>');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $this->response
                 ->withStatus(500)
                 ->withType('text/html')
@@ -123,14 +123,14 @@ class CheckMailServerController extends AppController
 
         try {
             $client = (new ClientManager())
-                ->make(Configure::read('PHPIMAP.return_path'));
+                ->make((array)Configure::read('PHPIMAP.return_path'));
             $client->connect();
             $client->disconnect();
 
             return $this->response
                 ->withType('text/html')
                 ->withStringBody('<span style="background-color: green; color:#fff;">IMAP OK</span>');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $this->response
                 ->withStatus(500)
                 ->withType('text/html')

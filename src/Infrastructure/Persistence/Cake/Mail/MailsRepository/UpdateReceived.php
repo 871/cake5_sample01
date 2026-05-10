@@ -63,7 +63,7 @@ final class UpdateReceived
 
                     $this->table->patchEntity($mail, [
                         'send_status' => in_array($mail->send_status, [
-                            SendStatus::SENT, 
+                            SendStatus::SENT,
                         ], true) ? SendStatus::RECEIVED : $mail->send_status,
                         'modified' => $this->logEntity->created()->toDateTime(),
                         'modified_by' => $this->logEntity->createdBy()->toStringOrNull(),

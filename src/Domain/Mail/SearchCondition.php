@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Mail;
 
-use App\Domain\Mail\ValueObject\SendStatus;
-
 class SearchCondition
 {
     public const DEFAULT_LIMIT = 100;
