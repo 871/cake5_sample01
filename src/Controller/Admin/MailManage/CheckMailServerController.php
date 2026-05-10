@@ -7,6 +7,8 @@ use App\Controller\AppController;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\Mailer\Mailer;
+use Cake\Core\Configure;
+use Webklex\PHPIMAP\ClientManager;
 
 
 class CheckMailServerController extends AppController
@@ -44,17 +46,17 @@ class CheckMailServerController extends AppController
                         <script>
                             (async () => {
                                 const response = await fetch(location.href + '/sent_smtp');
-                                document.getElementById('smtp-status').textContent = await response.text();
+                                document.getElementById('smtp-status').innerHTML = await response.text();
                             })();
 
                             (async () => {
                                 const response = await fetch(location.href + '/received_check_imap');
-                                document.getElementById('imap-status').textContent = await response.text();
+                                document.getElementById('imap-status').innerHTML = await response.text();
                             })();
 
                             (async () => {
                                 const response = await fetch(location.href + '/return_path_imap');
-                                document.getElementById('imap-error-status').textContent = await response.text();
+                                document.getElementById('imap-error-status').innerHTML = await response.text();
                             })();
                         </script>
                     </body>
@@ -76,15 +78,15 @@ class CheckMailServerController extends AppController
                 ->setTo('test@example.com')
                 ->setSubject('SMTP Test')
                 ->deliver('connection test');
-            
+
             return $this->response
-                ->withType('text/plain')
-                ->withStringBody('SMTP OK');
+                ->withType('text/html')
+                ->withStringBody('<span style="background-color: green; color:#fff;">SMTP OK</span>');
         } catch (\Throwable $e) {
             return $this->response
                 ->withStatus(500)
-                ->withType('text/plain')
-                ->withStringBody($e->getMessage());
+                ->withType('text/html')
+                ->withStringBody('<span style="background-color: red; color:#fff;">' . $e->getMessage() . '</span>');
         }
     }
 
@@ -96,15 +98,19 @@ class CheckMailServerController extends AppController
         $this->autoRender = false;
 
         try {
-            // TODO
+            $client = (new ClientManager())
+                ->make(Configure::read('PHPIMAP.received_check'));
+            $client->connect();
+            $client->disconnect();
+
             return $this->response
-                ->withType('text/plain')
-                ->withStringBody('未実装');
+                ->withType('text/html')
+                ->withStringBody('<span style="background-color: green; color:#fff;">IMAP OK</span>');
         } catch (\Throwable $e) {
             return $this->response
                 ->withStatus(500)
-                ->withType('text/plain')
-                ->withStringBody($e->getMessage());
+                ->withType('text/html')
+                ->withStringBody('<span style="background-color: red; color:#fff;">' . $e->getMessage() . '</span>');
         }
     }
 
@@ -116,15 +122,19 @@ class CheckMailServerController extends AppController
         $this->autoRender = false;
 
         try {
-            // TODO
+            $client = (new ClientManager())
+                ->make(Configure::read('PHPIMAP.return_path'));
+            $client->connect();
+            $client->disconnect();
+
             return $this->response
-                ->withType('text/plain')
-                ->withStringBody('未実装');
+                ->withType('text/html')
+                ->withStringBody('<span style="background-color: green; color:#fff;">IMAP OK</span>');
         } catch (\Throwable $e) {
             return $this->response
                 ->withStatus(500)
-                ->withType('text/plain')
-                ->withStringBody($e->getMessage());
+                ->withType('text/html')
+                ->withStringBody('<span style="background-color: red; color:#fff;">' . $e->getMessage() . '</span>');
         }
     }
 }
