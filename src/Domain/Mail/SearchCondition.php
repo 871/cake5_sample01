@@ -12,6 +12,8 @@ class SearchCondition
      * @param \App\Domain\Mail\ValueObject\SendScheduledAt $sendScheduledAtTo
      * @param \App\Domain\Mail\ValueObject\SendStatus|null $sendStatus
      * @param \App\Domain\Mail\ValueObject\RelatedDataKey $relatedDataKey
+     * @param \App\Domain\Mail\ValueObject\Search\NavigationType $navigationType
+     * @param \App\Domain\Mail\ValueObject\Search\SearchKey $searchKey
      * @param int $limit
      * @param \App\Domain\Mail\ValueObject\Search\Keyword|null $keyword
      */
@@ -20,6 +22,8 @@ class SearchCondition
         private readonly ValueObject\SendScheduledAt $sendScheduledAtTo,
         private readonly ?ValueObject\SendStatus $sendStatus,
         private readonly ValueObject\RelatedDataKey $relatedDataKey,
+        private readonly ValueObject\Search\NavigationType $navigationType,
+        private readonly ValueObject\Search\SearchKey $searchKey,
         private readonly int $limit = self::DEFAULT_LIMIT,
         private readonly ?ValueObject\Search\Keyword $keyword = null,
     ) {
@@ -56,6 +60,22 @@ class SearchCondition
     public function getRelatedDataKey(): ValueObject\RelatedDataKey
     {
         return $this->relatedDataKey;
+    }
+
+    /**
+     * @return \App\Domain\Mail\ValueObject\Search\NavigationType
+     */
+    public function getNavigationType(): ValueObject\Search\NavigationType
+    {
+        return $this->navigationType;
+    }
+
+    /**
+     * @return \App\Domain\Mail\ValueObject\Search\SearchKey
+     */
+    public function getSearchKey(): ValueObject\Search\SearchKey
+    {
+        return $this->searchKey;
     }
 
     /**

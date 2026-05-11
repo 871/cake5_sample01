@@ -42,6 +42,9 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
             $builder->post('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'inputPost']);
             $builder->get('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'conf']);
             $builder->post('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'confPost']);
+            // 検索
+            $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
+            $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
         });
 
         // ログ
