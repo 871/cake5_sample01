@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 
 use App\Domain\Mail\ValueObject\SendStatus;
-use App\Model\Entity\Mail\Mail;
 use App\Model\Table\Mail\MailBounceLogsTable;
 use App\Model\Table\Mail\MailsTable;
 use Cake\Core\Configure;
@@ -14,6 +13,8 @@ use Cake\Utility\Text;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Webklex\PHPIMAP\ClientManager;
+use Webklex\PHPIMAP\Client;
+use Webklex\PHPIMAP\Message;
 
 final class CheckBounced
 {
@@ -32,6 +33,9 @@ final class CheckBounced
      */
     private MailBounceLogsTable $bounceLogsTable;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->table = $this->fetchTable(MailsTable::class);
@@ -93,7 +97,9 @@ final class CheckBounced
                         ], [
                             'validate' => false,
                         ]);
-                        $this->table->saveOrFail($mail);
+                        $this->table->saveOrFail($mail, [
+                            'checkExisting' => false,
+                        ]);
 
                         $log = $this->bounceLogsTable->newEntity([
                             'id' => Text::uuid(),
@@ -109,7 +115,9 @@ final class CheckBounced
                         ], [
                             'validate' => false,
                         ]);
-                        $this->bounceLogsTable->saveOrFail($log);
+                        $this->bounceLogsTable->saveOrFail($log, [
+                            'checkExisting' => false,
+                        ]);
                     },
                 );
 
@@ -141,136 +149,103 @@ final class CheckBounced
     }
 
     /**
-     * @param mixed $client
-     * @return iterable<mixed>
+     * @param \Webklex\PHPIMAP\Client $client
+     * @return iterable<\Webklex\PHPIMAP\Message>
      */
-    private function collectUnseenMessages(mixed $client): iterable
+    private function collectUnseenMessages(Client $client): iterable
     {
-        $folder = method_exists($client, 'getFolder') ? $client->getFolder('INBOX') : null;
-        if ($folder === null && method_exists($client, 'getFolders')) {
-            $folders = $client->getFolders();
-            if (is_iterable($folders)) {
-                foreach ($folders as $one) {
-                    $folder = $one;
-                    break;
-                }
-            }
-        }
-        if ($folder === null) {
-            return [];
-        }
-
-        $query = null;
-        if (method_exists($folder, 'messages')) {
-            $query = $folder->messages();
-        } elseif (method_exists($folder, 'query')) {
-            $query = $folder->query();
-        }
-        if ($query === null) {
-            return [];
-        }
-
-        if (method_exists($query, 'unseen')) {
-            $query = $query->unseen();
-        }
-        if (method_exists($query, 'leaveUnread')) {
-            $query = $query->leaveUnread();
-        }
-
-        if (method_exists($query, 'get')) {
-            $messages = $query->get();
-
-            return is_iterable($messages) ? $messages : [];
-        }
-
-        return [];
+        return $client->getFolder('INBOX')?->messages()
+            ->unseen()
+            ->leaveUnread()
+            ->get() ?? [];
     }
 
     /**
-     * @param mixed $message
+     * @param \Webklex\PHPIMAP\Message $message
      * @return ?string
      */
-    private function extractRelatedMessageId(mixed $message): ?string
+    private function extractRelatedMessageId(Message $message): ?string
     {
-        foreach (['getInReplyTo', 'getReferences'] as $method) {
-            if (!method_exists($message, $method)) {
-                continue;
-            }
-            $raw = (string)$message->{$method}();
+        foreach ([
+            $message->getInReplyTo(),
+            $message->getReferences(),
+        ] as $raw) {
+            $raw = (string)$raw;
+
             if ($raw === '') {
                 continue;
             }
+
             if (preg_match('/<[^>]+>/', $raw, $matched) === 1) {
                 return $this->normalizeMessageId($matched[0]);
             }
         }
 
-        if (method_exists($message, 'getTextBody')) {
-            $body = (string)$message->getTextBody();
-            if (preg_match('/<[^>]+>/', $body, $matched) === 1) {
-                return $this->normalizeMessageId($matched[0]);
-            }
+        $body = (string)$message->getTextBody();
+
+        if (preg_match('/<[^>]+>/', $body, $matched) === 1) {
+            return $this->normalizeMessageId($matched[0]);
         }
 
         return null;
     }
 
     /**
-     * @param mixed $message
+     * @param \Webklex\PHPIMAP\Message $message
      * @return ?\DateTimeImmutable
      */
-    private function extractMessageDate(mixed $message): ?DateTimeImmutable
+    private function extractMessageDate(Message $message): ?DateTimeImmutable
     {
-        if (method_exists($message, 'getDate')) {
-            $date = $message->getDate();
-            if ($date instanceof DateTimeInterface) {
-                return new DateTimeImmutable($date->format(DATE_ATOM));
-            }
-            if (is_string($date) && $date !== '') {
-                return new DateTimeImmutable($date);
-            }
+        $date = $message->getDate();
+
+        if ($date instanceof DateTimeInterface) {
+            return DateTimeImmutable::createFromInterface($date);
+        }
+
+        if (is_string($date) && $date !== '') {
+            return new DateTimeImmutable($date);
         }
 
         return null;
     }
 
     /**
-     * @param mixed $message
+     * @param \Webklex\PHPIMAP\Message $message
      * @return ?string
      */
-    private function extractRawHeaders(mixed $message): ?string
+    private function extractRawHeaders(Message $message): ?string
     {
-        if (method_exists($message, 'getHeader')) {
-            return (string)$message->getHeader();
+        $header = $message->getHeader();
+
+        if ($header === null) {
+            return null;
+        }
+
+        if (method_exists($header, '__toString')) {
+            return (string)$header;
         }
 
         return null;
     }
 
     /**
-     * @param mixed $message
-     * @return ?string
+     * @param \Webklex\PHPIMAP\Message $message
+     * @return string
      */
-    private function extractRawBody(mixed $message): ?string
+    private function extractRawBody(Message $message): string
     {
-        if (method_exists($message, 'getTextBody')) {
-            return (string)$message->getTextBody();
-        }
-
-        return null;
+        return (string)$message->getTextBody();
     }
 
     /**
-     * @param mixed $message
-     * @return ?string
+     * @param \Webklex\PHPIMAP\Message $message
+     * @return string
      */
-    private function extractRawMessage(mixed $message): ?string
+    private function extractRawMessage(Message $message): string
     {
-        if (method_exists($message, 'getRawMessage')) {
-            return (string)$message->getRawMessage();
-        }
-
-        return null;
+        return $this->extractRawHeaders($message)
+            . "\n\n"
+            . $this->extractRawBody($message);
     }
 
     /**

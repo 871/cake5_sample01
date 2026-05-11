@@ -27,6 +27,9 @@ final class SendWaiting
      */
     private MailSentLogsTable $sentLogsTable;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->table = $this->fetchTable(MailsTable::class);
@@ -97,14 +100,10 @@ final class SendWaiting
             }
 
             $mailer->deliver((string)$mail->body);
-            if (method_exists($mailer, 'getMessage')) {
-                $message = $mailer->getMessage();
-                if (is_object($message) && method_exists($message, 'getMessageId')) {
-                    $messageId = (string)$message->getMessageId();
-                    if ($messageId !== '') {
-                        $originalMessageId = $messageId;
-                    }
-                }
+            $message = $mailer->getMessage();
+            $messageId = (string)$message->getMessageId();
+            if ($messageId !== '') {
+                $originalMessageId = $messageId;
             }
         } catch (Throwable $e) {
             $sendStatus = SendStatus::FAILED;
@@ -120,7 +119,9 @@ final class SendWaiting
                 ], [
                     'validate' => false,
                 ]);
-                $this->table->saveOrFail($mail);
+                $this->table->saveOrFail($mail, [
+                    'checkExisting' => false,
+                ]);
 
                 $sentLog = $this->sentLogsTable->newEntity([
                     'id' => Text::uuid(),
@@ -133,7 +134,9 @@ final class SendWaiting
                 ], [
                     'validate' => false,
                 ]);
-                $this->sentLogsTable->saveOrFail($sentLog);
+                $this->sentLogsTable->saveOrFail($sentLog, [
+                    'checkExisting' => false,
+                ]);
             },
         );
 

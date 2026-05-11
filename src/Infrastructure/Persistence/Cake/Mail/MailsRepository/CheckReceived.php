@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 
 use App\Domain\Mail\ValueObject\SendStatus;
-use App\Model\Entity\Mail\Mail;
 use App\Model\Table\Mail\MailReceivedCheckLogsTable;
 use App\Model\Table\Mail\MailsTable;
 use Cake\Core\Configure;
@@ -13,6 +12,10 @@ use Cake\Utility\Text;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Webklex\PHPIMAP\ClientManager;
+use Webklex\PHPIMAP\Client;
+use Webklex\PHPIMAP\Folder;
+use Webklex\PHPIMAP\Query;
+use Webklex\PHPIMAP\Message;
 
 final class CheckReceived
 {
@@ -28,6 +31,9 @@ final class CheckReceived
      */
     private MailReceivedCheckLogsTable $receivedCheckLogsTable;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->table = $this->fetchTable(MailsTable::class);
@@ -79,7 +85,9 @@ final class CheckReceived
                         ], [
                             'validate' => false,
                         ]);
-                        $this->table->saveOrFail($mail);
+                        $this->table->saveOrFail($mail, [
+                            'checkExisting' => false,
+                        ]);
 
                         $log = $this->receivedCheckLogsTable->newEntity([
                             'id' => Text::uuid(),
@@ -91,7 +99,9 @@ final class CheckReceived
                         ], [
                             'validate' => false,
                         ]);
-                        $this->receivedCheckLogsTable->saveOrFail($log);
+                        $this->receivedCheckLogsTable->saveOrFail($log, [
+                            'checkExisting' => false,
+                        ]);
                     },
                 );
 
@@ -105,56 +115,20 @@ final class CheckReceived
     }
 
     /**
-     * @param mixed $client
-     * @return iterable<mixed>
+     * @param \Webklex\PHPIMAP\Client $client
+     * @return iterable<\Webklex\PHPIMAP\Message>
      */
-    private function collectUnseenMessages(mixed $client): iterable
+    private function collectUnseenMessages(Client $client): iterable
     {
-        $folder = method_exists($client, 'getFolder') ? $client->getFolder('INBOX') : null;
-        if ($folder === null && method_exists($client, 'getFolders')) {
-            $folders = $client->getFolders();
-            if (is_iterable($folders)) {
-                foreach ($folders as $one) {
-                    $folder = $one;
-                    break;
-                }
-            }
-        }
-        if ($folder === null) {
-            return [];
-        }
-
-        $query = null;
-        if (method_exists($folder, 'messages')) {
-            $query = $folder->messages();
-        } elseif (method_exists($folder, 'query')) {
-            $query = $folder->query();
-        }
-        if ($query === null) {
-            return [];
-        }
-
-        if (method_exists($query, 'unseen')) {
-            $query = $query->unseen();
-        }
-        if (method_exists($query, 'leaveUnread')) {
-            $query = $query->leaveUnread();
-        }
-
-        if (method_exists($query, 'get')) {
-            $messages = $query->get();
-
-            return is_iterable($messages) ? $messages : [];
-        }
-
-        return [];
+        $folder = $client->getFolder('INBOX');
+        return $folder?->messages()->unseen()->get() ?? [];
     }
 
     /**
-     * @param mixed $message
+     * @param \Webklex\PHPIMAP\Message $message
      * @return ?string
      */
-    private function extractRelatedMessageId(mixed $message): ?string
+    private function extractRelatedMessageId(Message $message): ?string
     {
         foreach (['getInReplyTo', 'getReferences'] as $method) {
             if (!method_exists($message, $method)) {
@@ -169,32 +143,28 @@ final class CheckReceived
             }
         }
 
-        if (method_exists($message, 'getTextBody')) {
-            $body = (string)$message->getTextBody();
-            if (preg_match('/<[^>]+>/', $body, $matched) === 1) {
-                return $this->normalizeMessageId($matched[0]);
-            }
+        $body = (string)$message->getTextBody();
+        if (preg_match('/<[^>]+>/', $body, $matched) === 1) {
+            return $this->normalizeMessageId($matched[0]);
         }
-
+    
         return null;
     }
 
     /**
-     * @param mixed $message
+     * @param Message $message
      * @return ?\DateTimeImmutable
      */
-    private function extractMessageDate(mixed $message): ?DateTimeImmutable
+    private function extractMessageDate(Message $message): ?DateTimeImmutable
     {
-        if (method_exists($message, 'getDate')) {
-            $date = $message->getDate();
-            if ($date instanceof DateTimeInterface) {
-                return new DateTimeImmutable($date->format(DATE_ATOM));
-            }
-            if (is_string($date) && $date !== '') {
-                return new DateTimeImmutable($date);
-            }
+        $date = $message->getDate();
+        if ($date instanceof DateTimeInterface) {
+            return new DateTimeImmutable($date->format(DATE_ATOM));
         }
-
+        if (is_string($date) && $date !== '') {
+            return new DateTimeImmutable($date);
+        }
+    
         return null;
     }
 
