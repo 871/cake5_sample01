@@ -18,6 +18,8 @@ use App\Model\Table\Mail\MailsTable;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use JsonException;
+use RuntimeException;
 
 final class MailMapper
 {
@@ -223,7 +225,7 @@ final class MailMapper
         /** @var \App\Model\Entity\Mail\MailBounceLog */
         return $this->bounceLogsTable->newEntity([
             'id' => $domainEntity->id()->toString(),
-            'mail_id' => $domainEntity->mailId()->toIntOrNull(),
+            'mail_id' => $domainEntity->mailId()->toInt(),
             'original_message_id' => $domainEntity->originalMessageId()->toStringOrNull(),
             'bounced_email' => $domainEntity->bouncedEmail()->toString(),
             'recipient_type' => $domainEntity->recipientType()->toStringOrNull(),
@@ -257,14 +259,14 @@ final class MailMapper
     {
         return new DomainBounceLogEntity(
             id: StrictCast::toString($ormEntity->id),
-            mail_id: Cast::toStringOrNull($ormEntity->mail_id),
+            mail_id: StrictCast::toString($ormEntity->mail_id),
             original_message_id: Cast::toStringOrNull($ormEntity->original_message_id),
-            bounced_email: Cast::toStringOrNull($ormEntity->bounced_email) ?? StrictCast::toString($ormEntity->bounced_address),
+            bounced_email: StrictCast::toString($ormEntity->bounced_email),
             recipient_type: Cast::toStringOrNull($ormEntity->recipient_type),
             action: Cast::toStringOrNull($ormEntity->action),
             status_code: Cast::toStringOrNull($ormEntity->status_code),
-            diagnostic_code: Cast::toStringOrNull($ormEntity->diagnostic_code) ?? Cast::toStringOrNull($ormEntity->bounce_reason),
-            bounce_type: Cast::toStringOrNull($ormEntity->bounce_type) ?? 'UNKNOWN',
+            diagnostic_code: Cast::toStringOrNull($ormEntity->diagnostic_code),
+            bounce_type: StrictCast::toString($ormEntity->bounce_type),
             remote_mta: Cast::toStringOrNull($ormEntity->remote_mta),
             reporting_mta: Cast::toStringOrNull($ormEntity->reporting_mta),
             arrival_date: Cast::toStringOrNull($ormEntity->arrival_date?->format('Y-m-d\TH:i:s')),
@@ -294,7 +296,11 @@ final class MailMapper
             return $value;
         }
         if (is_array($value)) {
-            return json_encode($value) ?: null;
+            try {
+                return json_encode($value, JSON_THROW_ON_ERROR);
+            } catch (JsonException $e) {
+                throw new RuntimeException('MailMapper parsed_json encode failed: ' . $e->getMessage(), 0, $e);
+            }
         }
 
         return Cast::toStringOrNull($value);

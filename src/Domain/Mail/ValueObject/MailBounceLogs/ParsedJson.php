@@ -29,7 +29,14 @@ class ParsedJson implements Stringable
         }
 
         try {
-            $this->value = (array)json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+            $decoded = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+            if (!is_array($decoded)) {
+                throw new DomainException(
+                    self::class . ' JSON must decode to array'
+                    . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
+                );
+            }
+            $this->value = $decoded;
         } catch (JsonException $e) {
             throw new DomainException(
                 self::class . ' JSON decode failed: ' . $e->getMessage()
