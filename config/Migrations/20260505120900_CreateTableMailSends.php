@@ -13,6 +13,7 @@ class CreateTableMailSends extends BaseMigration
             DROP TABLE IF EXISTS mails;
             CREATE TABLE mails (
                 id BIGINT NOT NULL AUTO_INCREMENT COMMENT 'メールID',
+                original_message_id VARCHAR(255) NULL COMMENT '元メール Message-ID',
                 related_data_key VARCHAR(255) NOT NULL COMMENT '関連データキー',
                 send_status VARCHAR(20) NOT NULL COMMENT 'ステータス: WAITING / SENT / FAILED / RECEIVED / BOUNCED',
                 -- WAITING: 送信待ち
@@ -52,7 +53,8 @@ class CreateTableMailSends extends BaseMigration
                 UNIQUE INDEX mail_infos_idx01 (related_data_key),
                 INDEX mail_infos_idx02 (send_status, send_scheduled_at),
                 INDEX mail_infos_idx03 (send_scheduled_at, send_status),
-                FULLTEXT KEY mail_infos_idx04 (search_text) WITH PARSER ngram
+                INDEX mail_infos_idx04 (original_message_id),
+                FULLTEXT KEY mail_infos_idx05 (search_text) WITH PARSER ngram
             ) ENGINE=InnoDB
             DEFAULT CHARSET=utf8mb4
             COMMENT='メール送信情報'
