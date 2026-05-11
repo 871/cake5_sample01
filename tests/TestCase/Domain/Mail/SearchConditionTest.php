@@ -6,6 +6,8 @@ namespace App\Test\TestCase\Domain\Mail;
 use App\Domain\Mail\SearchCondition;
 use App\Domain\Mail\ValueObject\RelatedDataKey;
 use App\Domain\Mail\ValueObject\Search\Keyword;
+use App\Domain\Mail\ValueObject\Search\NavigationType;
+use App\Domain\Mail\ValueObject\Search\SearchKey;
 use App\Domain\Mail\ValueObject\SendScheduledAt;
 use Cake\TestSuite\TestCase;
 
@@ -18,6 +20,8 @@ final class SearchConditionTest extends TestCase
             sendScheduledAtTo: new SendScheduledAt('2026-01-31T23:59:59'),
             sendStatus: null,
             relatedDataKey: new RelatedDataKey(null),
+            navigationType: new NavigationType(NavigationType::FIRST),
+            searchKey: new SearchKey(null),
             keyword: new Keyword('mail body'),
         );
 
@@ -31,6 +35,8 @@ final class SearchConditionTest extends TestCase
             sendScheduledAtTo: new SendScheduledAt('2026-01-31T23:59:59'),
             sendStatus: null,
             relatedDataKey: new RelatedDataKey(null),
+            navigationType: new NavigationType(NavigationType::FIRST),
+            searchKey: new SearchKey(null),
         );
 
         $this->assertNull($condition->getKeyword());
