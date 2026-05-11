@@ -19,6 +19,9 @@ final class CheckBounced
 {
     use LocatorAwareTrait;
 
+    private const DEFAULT_BOUNCE_TYPE = 'UNKNOWN';
+    private const DEFAULT_BOUNCED_EMAIL = 'unknown@example.com';
+
     /**
      * @var \App\Model\Table\Mail\MailsTable
      */
@@ -97,7 +100,7 @@ final class CheckBounced
                             'mail_id' => $mail->id,
                             'original_message_id' => $mail->original_message_id,
                             'bounced_email' => $bouncedEmail,
-                            'bounce_type' => 'UNKNOWN',
+                            'bounce_type' => self::DEFAULT_BOUNCE_TYPE,
                             'bounced_at' => $bouncedAt->format('Y-m-d\TH:i:s'),
                             'raw_headers' => $this->extractRawHeaders($message),
                             'raw_body' => $this->extractRawBody($message),
@@ -293,6 +296,6 @@ final class CheckBounced
             }
         }
 
-        return 'unknown@example.com';
+        return self::DEFAULT_BOUNCED_EMAIL;
     }
 }

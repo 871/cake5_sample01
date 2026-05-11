@@ -240,12 +240,32 @@ final class MailMapper
         return new DomainBounceLogEntity(
             id: StrictCast::toString($ormEntity->id),
             mail_id: StrictCast::toString($ormEntity->mail_id),
-            bounced_address: StrictCast::toString($ormEntity->bounced_email ?? $ormEntity->bounced_address),
-            bounce_reason: Cast::toStringOrNull($ormEntity->diagnostic_code ?? $ormEntity->bounce_reason),
+            bounced_address: StrictCast::toString($this->resolveBounceEmail($ormEntity)),
+            bounce_reason: Cast::toStringOrNull($this->resolveBounceReason($ormEntity)),
             bounced_at: StrictCast::toString($ormEntity->bounced_at->format('Y-m-d\TH:i:s')),
             created: StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s')),
             created_by: Cast::toStringOrNull($ormEntity->created_by),
             created_ip: Cast::toStringOrNull($ormEntity->created_ip),
         );
+    }
+
+    /**
+     * @param OrmBounceLogEntity $ormEntity
+     * @return string
+     */
+    private function resolveBounceEmail(OrmBounceLogEntity $ormEntity): string
+    {
+        return Cast::toStringOrNull($ormEntity->bounced_email)
+            ?? StrictCast::toString($ormEntity->bounced_address);
+    }
+
+    /**
+     * @param OrmBounceLogEntity $ormEntity
+     * @return ?string
+     */
+    private function resolveBounceReason(OrmBounceLogEntity $ormEntity): ?string
+    {
+        return Cast::toStringOrNull($ormEntity->diagnostic_code)
+            ?? Cast::toStringOrNull($ormEntity->bounce_reason);
     }
 }
