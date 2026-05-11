@@ -112,6 +112,10 @@ final class Search implements ServiceInterface
         $this->searchResults = (new PageAccessLogsRepository())->search($this->createSearchCondition());
 
         $this->isPrevExists = (function (): bool {
+            if (count($this->searchResults) === 0) {
+                return false;
+            }
+
             $searchKey = $this->searchResults[0]->searchKey()->toString() ?? '';
             if ($searchKey === '') {
                 return false;
@@ -124,6 +128,10 @@ final class Search implements ServiceInterface
             )) !== [];
         })();
         $this->isNextExists = (function (): bool {
+            if (count($this->searchResults) === 0) {
+                return false;
+            }
+
             $searchKey = $this->searchResults[count($this->searchResults) - 1]->searchKey()->toString() ?? '';
             if ($searchKey === '') {
                 return false;

@@ -111,6 +111,10 @@ final class Search implements ServiceInterface
         $this->searchResults = (new MailsRepository())->search($this->createSearchCondition());
 
         $this->isPrevExists = (function (): bool {
+            if (count($this->searchResults) === 0) {
+                return false;
+            }
+
             $searchKey = $this->searchResults[0]->id()->toStringOrNull() ?? '';
             if ($searchKey === '') {
                 return false;
@@ -123,6 +127,10 @@ final class Search implements ServiceInterface
             )) !== [];
         })();
         $this->isNextExists = (function (): bool {
+            if (count($this->searchResults) === 0) {
+                return false;
+            }
+            
             $searchKey = $this->searchResults[count($this->searchResults) - 1]->id()->toStringOrNull() ?? '';
             if ($searchKey === '') {
                 return false;
