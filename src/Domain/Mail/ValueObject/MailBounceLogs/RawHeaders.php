@@ -6,7 +6,7 @@ namespace App\Domain\Mail\ValueObject\MailBounceLogs;
 use App\Domain\Shared\ValueObject\Trait\StringTrait;
 use Stringable;
 
-class BouncedAddress implements Stringable
+class RawHeaders implements Stringable
 {
     use StringTrait;
 

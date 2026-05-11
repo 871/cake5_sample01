@@ -11,6 +11,7 @@ final class MailSentLog
     /**
      * @param ?string $id
      * @param ?string $mail_id
+     * @param ?string $original_message_id
      * @param ?string $send_status
      * @param ?string $error_message
      * @param ?string $sent_at
@@ -21,6 +22,7 @@ final class MailSentLog
     public function __construct(
         private readonly ?string $id,
         private readonly ?string $mail_id,
+        private readonly ?string $original_message_id,
         private readonly ?string $send_status,
         private readonly ?string $error_message,
         private readonly ?string $sent_at,
@@ -44,6 +46,14 @@ final class MailSentLog
     public function mailId(): Vo\MailId
     {
         return new Vo\MailId($this->mail_id);
+    }
+
+    /**
+     * @return \App\Domain\Mail\ValueObject\MailSentLogs\OriginalMessageId
+     */
+    public function originalMessageId(): Vo\OriginalMessageId
+    {
+        return Vo\OriginalMessageId::fromString($this->original_message_id);
     }
 
     /**

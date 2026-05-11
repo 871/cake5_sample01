@@ -9,6 +9,7 @@ use Cake\ORM\Entity;
  * Mail Entity
  *
  * @property int $id
+ * @property string|null $original_message_id
  * @property string $related_data_key
  * @property string $send_status
  * @property \Cake\I18n\DateTime $send_scheduled_at
@@ -35,6 +36,7 @@ class Mail extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
+        'original_message_id' => true,
         'related_data_key' => true,
         'send_status' => true,
         'send_scheduled_at' => true,

@@ -4,9 +4,6 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Mail;
 
 use App\Domain\Mail\Entity\Mail as DomainEntity;
-use App\Domain\Mail\Entity\MailBounceLog;
-use App\Domain\Mail\Entity\MailReceivedCheckLog;
-use App\Domain\Mail\Entity\MailSentLog;
 use App\Domain\Mail\Repository\MailsRepository as DomainMailsRepository;
 use App\Domain\Mail\SearchCondition;
 use App\Domain\Mail\ValueObject\Id;
@@ -47,46 +44,32 @@ final class MailsRepository implements DomainMailsRepository
     }
 
     /**
-     * 送信済みステータスへ更新（送信ログを作成）
+     * 送信待ちメールを送信し、送信ログ保存とステータス更新を行う
      *
-     * @param \App\Domain\Mail\Entity\MailSentLog $logEntity
-     * @return \App\Domain\Mail\Entity\Mail
+     * @return int 処理件数
      */
-    public function updateSent(MailSentLog $logEntity): DomainEntity
+    public function sendWaitingMails(): int
     {
-        return (new MailsRepository\UpdateSent($logEntity))->run();
+        return (new MailsRepository\SendWaiting())->run();
     }
 
     /**
-     * 送信失敗ステータスへ更新（送信ログを作成）
+     * 受信確認IMAPサーバを確認し、受信確認ログ保存とステータス更新を行う
      *
-     * @param \App\Domain\Mail\Entity\MailSentLog $logEntity
-     * @return \App\Domain\Mail\Entity\Mail
+     * @return int 処理件数
      */
-    public function updateFailed(MailSentLog $logEntity): DomainEntity
+    public function checkReceivedMails(): int
     {
-        return (new MailsRepository\UpdateFailed($logEntity))->run();
+        return (new MailsRepository\CheckReceived())->run();
     }
 
     /**
-     * 受信確認済みステータスへ更新（受信確認ログを作成）
+     * バウンスIMAPサーバを確認し、バウンスログ保存とステータス更新を行う
      *
-     * @param \App\Domain\Mail\Entity\MailReceivedCheckLog $logEntity
-     * @return \App\Domain\Mail\Entity\Mail
+     * @return int 処理件数
      */
-    public function updateReceived(MailReceivedCheckLog $logEntity): DomainEntity
+    public function checkBouncedMails(): int
     {
-        return (new MailsRepository\UpdateReceived($logEntity))->run();
-    }
-
-    /**
-     * バウンス確認済みステータスへ更新（バウンスログを作成）
-     *
-     * @param \App\Domain\Mail\Entity\MailBounceLog $logEntity
-     * @return \App\Domain\Mail\Entity\Mail
-     */
-    public function updateBounced(MailBounceLog $logEntity): DomainEntity
-    {
-        return (new MailsRepository\UpdateBounced($logEntity))->run();
+        return (new MailsRepository\CheckBounced())->run();
     }
 }

@@ -378,6 +378,7 @@ final class Create implements ServiceInterface
 
         (new MailsRepository())->create(new Mail(
             id: null,
+            original_message_id: null,
             related_data_key: Vo\RelatedDataKey::fromString(
                 Cast::toStringOrNull($input['related_data_key']),
             )->toStringOrNull(),

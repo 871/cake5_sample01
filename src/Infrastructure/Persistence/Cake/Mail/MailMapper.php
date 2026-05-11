@@ -18,6 +18,8 @@ use App\Model\Table\Mail\MailsTable;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use JsonException;
+use RuntimeException;
 
 final class MailMapper
 {
@@ -63,6 +65,7 @@ final class MailMapper
         /** @var \App\Model\Entity\Mail\Mail */
         return $this->table->newEntity([
             'id' => $domainEntity->id()->toIntOrNull(),
+            'original_message_id' => $domainEntity->originalMessageId()->toStringOrNull(),
             'related_data_key' => $domainEntity->relatedDataKey()->toString(),
             'send_status' => $domainEntity->sendStatus()->toString(),
             'send_scheduled_at' => $domainEntity->sendScheduledAt()->format('Y-m-d\TH:i:s'),
@@ -92,6 +95,7 @@ final class MailMapper
     {
         return new DomainEntity(
             id: StrictCast::toString($ormEntity->id),
+            original_message_id: Cast::toStringOrNull($ormEntity->original_message_id),
             related_data_key: StrictCast::toString($ormEntity->related_data_key),
             send_status: StrictCast::toString($ormEntity->send_status),
             send_scheduled_at: StrictCast::toString($ormEntity->send_scheduled_at->format('Y-m-d\TH:i:s')),
@@ -141,6 +145,7 @@ final class MailMapper
         return $this->sentLogsTable->newEntity([
             'id' => $domainEntity->id()->toString(),
             'mail_id' => $domainEntity->mailId()->toInt(),
+            'original_message_id' => $domainEntity->originalMessageId()->toStringOrNull(),
             'send_status' => $domainEntity->sendStatus()->toString(),
             'error_message' => $domainEntity->errorMessage()->toStringOrNull(),
             'sent_at' => $domainEntity->sentAt()->format('Y-m-d\TH:i:s'),
@@ -161,6 +166,7 @@ final class MailMapper
         return new DomainSentLogEntity(
             id: StrictCast::toString($ormEntity->id),
             mail_id: StrictCast::toString($ormEntity->mail_id),
+            original_message_id: Cast::toStringOrNull($ormEntity->original_message_id),
             send_status: StrictCast::toString($ormEntity->send_status),
             error_message: Cast::toStringOrNull($ormEntity->error_message),
             sent_at: StrictCast::toString($ormEntity->sent_at->format('Y-m-d\TH:i:s')),
@@ -181,6 +187,8 @@ final class MailMapper
         return $this->receivedCheckLogsTable->newEntity([
             'id' => $domainEntity->id()->toString(),
             'mail_id' => $domainEntity->mailId()->toInt(),
+            'original_message_id' => $domainEntity->originalMessageId()->toStringOrNull(),
+            'checked_address' => $domainEntity->checkedAddress()->toString(),
             'checked_at' => $domainEntity->checkedAt()->format('Y-m-d\TH:i:s'),
             'created' => $domainEntity->created()->format('Y-m-d\TH:i:s'),
             'created_by' => $domainEntity->createdBy()->toIntOrNull(),
@@ -199,6 +207,8 @@ final class MailMapper
         return new DomainReceivedCheckLogEntity(
             id: StrictCast::toString($ormEntity->id),
             mail_id: StrictCast::toString($ormEntity->mail_id),
+            original_message_id: Cast::toStringOrNull($ormEntity->original_message_id),
+            checked_address: StrictCast::toString($ormEntity->checked_address),
             checked_at: StrictCast::toString($ormEntity->checked_at->format('Y-m-d\TH:i:s')),
             created: StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s')),
             created_by: Cast::toStringOrNull($ormEntity->created_by),
@@ -216,9 +226,23 @@ final class MailMapper
         return $this->bounceLogsTable->newEntity([
             'id' => $domainEntity->id()->toString(),
             'mail_id' => $domainEntity->mailId()->toInt(),
-            'bounced_address' => $domainEntity->bouncedAddress()->toString(),
-            'bounce_reason' => $domainEntity->bounceReason()->toStringOrNull(),
+            'original_message_id' => $domainEntity->originalMessageId()->toStringOrNull(),
+            'bounced_email' => $domainEntity->bouncedEmail()->toString(),
+            'recipient_type' => $domainEntity->recipientType()->toStringOrNull(),
+            'action' => $domainEntity->action()->toStringOrNull(),
+            'status_code' => $domainEntity->statusCode()->toStringOrNull(),
+            'diagnostic_code' => $domainEntity->diagnosticCode()->toStringOrNull(),
+            'bounce_type' => $domainEntity->bounceType()->toString(),
+            'remote_mta' => $domainEntity->remoteMta()->toStringOrNull(),
+            'reporting_mta' => $domainEntity->reportingMta()->toStringOrNull(),
+            'arrival_date' => $domainEntity->arrivalDate()->toDateTimeOrNull()?->format('Y-m-d\TH:i:s'),
             'bounced_at' => $domainEntity->bouncedAt()->format('Y-m-d\TH:i:s'),
+            'raw_headers' => $domainEntity->rawHeaders()->toStringOrNull(),
+            'raw_body' => $domainEntity->rawBody()->toStringOrNull(),
+            'raw_message' => $domainEntity->rawMessage()->toStringOrNull(),
+            'parsed_json' => $domainEntity->parsedJson()->toStringOrNull(),
+            'provider' => $domainEntity->provider()->toStringOrNull(),
+            'is_auto_generated' => $domainEntity->isAutoGenerated()->toIntOrNull(),
             'created' => $domainEntity->created()->format('Y-m-d\TH:i:s'),
             'created_by' => $domainEntity->createdBy()->toIntOrNull(),
             'created_ip' => $domainEntity->createdIp()->toStringOrNull(),
@@ -236,12 +260,49 @@ final class MailMapper
         return new DomainBounceLogEntity(
             id: StrictCast::toString($ormEntity->id),
             mail_id: StrictCast::toString($ormEntity->mail_id),
-            bounced_address: StrictCast::toString($ormEntity->bounced_address),
-            bounce_reason: Cast::toStringOrNull($ormEntity->bounce_reason),
+            original_message_id: Cast::toStringOrNull($ormEntity->original_message_id),
+            bounced_email: StrictCast::toString($ormEntity->bounced_email),
+            recipient_type: Cast::toStringOrNull($ormEntity->recipient_type),
+            action: Cast::toStringOrNull($ormEntity->action),
+            status_code: Cast::toStringOrNull($ormEntity->status_code),
+            diagnostic_code: Cast::toStringOrNull($ormEntity->diagnostic_code),
+            bounce_type: StrictCast::toString($ormEntity->bounce_type),
+            remote_mta: Cast::toStringOrNull($ormEntity->remote_mta),
+            reporting_mta: Cast::toStringOrNull($ormEntity->reporting_mta),
+            arrival_date: Cast::toStringOrNull($ormEntity->arrival_date?->format('Y-m-d\TH:i:s')),
             bounced_at: StrictCast::toString($ormEntity->bounced_at->format('Y-m-d\TH:i:s')),
+            raw_headers: Cast::toStringOrNull($ormEntity->raw_headers),
+            raw_body: Cast::toStringOrNull($ormEntity->raw_body),
+            raw_message: Cast::toStringOrNull($ormEntity->raw_message),
+            parsed_json: $this->toJsonStringOrNull($ormEntity->parsed_json),
+            provider: Cast::toStringOrNull($ormEntity->provider),
+            is_auto_generated: Cast::toStringOrNull($ormEntity->is_auto_generated),
             created: StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s')),
             created_by: Cast::toStringOrNull($ormEntity->created_by),
             created_ip: Cast::toStringOrNull($ormEntity->created_ip),
         );
+    }
+
+    /**
+     * @param mixed $value
+     * @return ?string
+     */
+    private function toJsonStringOrNull(mixed $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        if (is_string($value)) {
+            return $value;
+        }
+        if (is_array($value)) {
+            try {
+                return json_encode($value, JSON_THROW_ON_ERROR);
+            } catch (JsonException $e) {
+                throw new RuntimeException('MailMapper parsed_json encode failed: ' . $e->getMessage(), 0, $e);
+            }
+        }
+
+        return Cast::toStringOrNull($value);
     }
 }
