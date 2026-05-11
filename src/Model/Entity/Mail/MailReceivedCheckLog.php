@@ -10,6 +10,8 @@ use Cake\ORM\Entity;
  *
  * @property string $id
  * @property int $mail_id
+ * @property string|null $original_message_id
+ * @property string $checked_address
  * @property \Cake\I18n\DateTime $checked_at
  * @property \Cake\I18n\DateTime $created
  * @property int|null $created_by
@@ -22,6 +24,8 @@ class MailReceivedCheckLog extends Entity
      */
     protected array $_accessible = [
         'mail_id' => true,
+        'original_message_id' => true,
+        'checked_address' => true,
         'checked_at' => true,
         'created' => true,
         'created_by' => true,

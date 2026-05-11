@@ -109,7 +109,7 @@ class CreateTableMailSends extends BaseMigration
                 id VARCHAR(36) NOT NULL COMMENT 'バウンスログID',
                 mail_id BIGINT UNSIGNED NULL COMMENT '元メールID',
                 original_message_id VARCHAR(255) NULL COMMENT '元メール Message-ID',
-                bounced_email VARCHAR(255) NOT NULL COMMENT '配送失敗メールアドレス'
+                bounced_email VARCHAR(255) NOT NULL COMMENT '配送失敗メールアドレス',
                 recipient_type VARCHAR(20) NULL COMMENT 'TO / CC / BCC',
                 action VARCHAR(50) NULL COMMENT 'failed / delayed / delivered',
                 status_code VARCHAR(20) NULL COMMENT 'RFC3463 status code 5.1.1',

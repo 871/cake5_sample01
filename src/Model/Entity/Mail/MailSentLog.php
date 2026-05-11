@@ -10,6 +10,7 @@ use Cake\ORM\Entity;
  *
  * @property string $id
  * @property int $mail_id
+ * @property string|null $original_message_id
  * @property string $send_status
  * @property string|null $error_message
  * @property \Cake\I18n\DateTime $sent_at
@@ -24,6 +25,7 @@ class MailSentLog extends Entity
      */
     protected array $_accessible = [
         'mail_id' => true,
+        'original_message_id' => true,
         'send_status' => true,
         'error_message' => true,
         'sent_at' => true,

@@ -141,6 +141,7 @@ final class MailMapper
         return $this->sentLogsTable->newEntity([
             'id' => $domainEntity->id()->toString(),
             'mail_id' => $domainEntity->mailId()->toInt(),
+            'original_message_id' => null,
             'send_status' => $domainEntity->sendStatus()->toString(),
             'error_message' => $domainEntity->errorMessage()->toStringOrNull(),
             'sent_at' => $domainEntity->sentAt()->format('Y-m-d\TH:i:s'),
@@ -181,6 +182,8 @@ final class MailMapper
         return $this->receivedCheckLogsTable->newEntity([
             'id' => $domainEntity->id()->toString(),
             'mail_id' => $domainEntity->mailId()->toInt(),
+            'original_message_id' => null,
+            'checked_address' => '',
             'checked_at' => $domainEntity->checkedAt()->format('Y-m-d\TH:i:s'),
             'created' => $domainEntity->created()->format('Y-m-d\TH:i:s'),
             'created_by' => $domainEntity->createdBy()->toIntOrNull(),
@@ -216,8 +219,9 @@ final class MailMapper
         return $this->bounceLogsTable->newEntity([
             'id' => $domainEntity->id()->toString(),
             'mail_id' => $domainEntity->mailId()->toInt(),
-            'bounced_address' => $domainEntity->bouncedAddress()->toString(),
-            'bounce_reason' => $domainEntity->bounceReason()->toStringOrNull(),
+            'bounced_email' => $domainEntity->bouncedAddress()->toString(),
+            'diagnostic_code' => $domainEntity->bounceReason()->toStringOrNull(),
+            'bounce_type' => 'UNKNOWN',
             'bounced_at' => $domainEntity->bouncedAt()->format('Y-m-d\TH:i:s'),
             'created' => $domainEntity->created()->format('Y-m-d\TH:i:s'),
             'created_by' => $domainEntity->createdBy()->toIntOrNull(),
@@ -236,8 +240,8 @@ final class MailMapper
         return new DomainBounceLogEntity(
             id: StrictCast::toString($ormEntity->id),
             mail_id: StrictCast::toString($ormEntity->mail_id),
-            bounced_address: StrictCast::toString($ormEntity->bounced_address),
-            bounce_reason: Cast::toStringOrNull($ormEntity->bounce_reason),
+            bounced_address: StrictCast::toString($ormEntity->bounced_email ?? $ormEntity->bounced_address),
+            bounce_reason: Cast::toStringOrNull($ormEntity->diagnostic_code ?? $ormEntity->bounce_reason),
             bounced_at: StrictCast::toString($ormEntity->bounced_at->format('Y-m-d\TH:i:s')),
             created: StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s')),
             created_by: Cast::toStringOrNull($ormEntity->created_by),
