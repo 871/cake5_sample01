@@ -10,6 +10,7 @@ final class Mail
 {
     /**
      * @param ?string $id
+     * @param ?string $original_message_id
      * @param ?string $related_data_key
      * @param ?string $send_status
      * @param ?string $send_scheduled_at
@@ -32,6 +33,7 @@ final class Mail
      */
     public function __construct(
         private readonly ?string $id,
+        private readonly ?string $original_message_id,
         private readonly ?string $related_data_key,
         private readonly ?string $send_status,
         private readonly ?string $send_scheduled_at,
@@ -60,6 +62,14 @@ final class Mail
     public function id(): Vo\Id
     {
         return new Vo\Id($this->id);
+    }
+
+    /**
+     * @return \App\Domain\Mail\ValueObject\OriginalMessageId
+     */
+    public function originalMessageId(): Vo\OriginalMessageId
+    {
+        return Vo\OriginalMessageId::fromString($this->original_message_id);
     }
 
     /**
