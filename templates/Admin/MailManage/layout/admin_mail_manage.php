@@ -72,7 +72,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
-                            'prefix' => 'Admin/Log/LoginLog',
+                            'prefix' => 'Admin/MailManage',
                             'controller' => 'MailTask',
                             'action' => 'sendWaitingMails',
                             'account_id' => $this->getRequest()->getParam('account_id'),
@@ -81,7 +81,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
-                            'prefix' => 'Admin/Log/LoginLog',
+                            'prefix' => 'Admin/MailManage',
                             'controller' => 'MailTask',
                             'action' => 'checkReceivedMails',
                             'account_id' => $this->getRequest()->getParam('account_id'),
@@ -90,7 +90,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
-                            'prefix' => 'Admin/Log/LoginLog',
+                            'prefix' => 'Admin/MailManage',
                             'controller' => 'MailTask',
                             'action' => 'checkBouncedMails',
                             'account_id' => $this->getRequest()->getParam('account_id'),

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Test\TestCase\Controller\Admin\Log\LoginLog;
+namespace App\Test\TestCase\Controller\Admin\MailManage;
 
-use App\Controller\Admin\Log\LoginLog\MailTaskController;
+use App\Controller\Admin\MailManage\MailTaskController;
 use Cake\TestSuite\TestCase;
 use ReflectionClass;
 

@@ -36,6 +36,10 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
             $builder->get('/check_mail_server/sent_smtp', ['controller' => 'CheckMailServer', 'action' => 'sentSmtp']);
             $builder->get('/check_mail_server/received_check_imap', ['controller' => 'CheckMailServer', 'action' => 'receivedCheckImap']);
             $builder->get('/check_mail_server/return_path_imap', ['controller' => 'CheckMailServer', 'action' => 'returnPathImap']);
+            // メール処理タスク
+            $builder->get('/mail_task/send_waiting_mails', ['controller' => 'MailTask', 'action' => 'sendWaitingMails']);
+            $builder->get('/mail_task/check_received_mails', ['controller' => 'MailTask', 'action' => 'checkReceivedMails']);
+            $builder->get('/mail_task/check_bounced_mails', ['controller' => 'MailTask', 'action' => 'checkBouncedMails']);
             // 登録
             $builder->get('/create', ['controller' => 'Create', 'action' => 'index']);
             $builder->get('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'input']);
@@ -53,10 +57,6 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
         $builder->prefix('Log', ['path' => '/log'], static function (RouteBuilder $builder) {
             // ログイン試行ログ
             $builder->prefix('LoginLog', ['path' => '/login_log'], static function (RouteBuilder $builder) {
-                // メール処理タスク
-                $builder->get('/mail_task/send_waiting_mails', ['controller' => 'MailTask', 'action' => 'sendWaitingMails']);
-                $builder->get('/mail_task/check_received_mails', ['controller' => 'MailTask', 'action' => 'checkReceivedMails']);
-                $builder->get('/mail_task/check_bounced_mails', ['controller' => 'MailTask', 'action' => 'checkBouncedMails']);
                 // 検索
                 $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
                 $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);

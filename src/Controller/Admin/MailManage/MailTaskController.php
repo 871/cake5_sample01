@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\Admin\Log\LoginLog;
+namespace App\Controller\Admin\MailManage;
 
 use App\Controller\AppController;
 use App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
