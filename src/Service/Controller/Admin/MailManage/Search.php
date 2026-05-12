@@ -42,7 +42,7 @@ final class Search implements ServiceInterface
 
         return [
             'send_scheduled_at_from' => $datetime->modify('-1 day')->format('Y-m-d\T00:00:00'),
-            'send_scheduled_at_to' => $datetime->modify('-1 day')->format('Y-m-d\T23:59:59'),
+            'send_scheduled_at_to' => $datetime->format('Y-m-d\T23:59:59'),
         ];
     }
 
@@ -130,7 +130,7 @@ final class Search implements ServiceInterface
             if (count($this->searchResults) === 0) {
                 return false;
             }
-            
+
             $searchKey = $this->searchResults[count($this->searchResults) - 1]->id()->toStringOrNull() ?? '';
             if ($searchKey === '') {
                 return false;

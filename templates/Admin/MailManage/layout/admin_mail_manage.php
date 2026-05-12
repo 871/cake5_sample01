@@ -50,7 +50,7 @@
                         'action' => 'init',
                         'account_id' => $this->getRequest()->getParam('account_id'),
                     ]) ?>"
-                >メール管理</a>
+                >メール情報</a>
             </li>
         </ul>
     </aside>
@@ -95,7 +95,19 @@
                         'controller' => 'Top',
                         'action' => 'index',
                         'account_id' => $this->getRequest()->getParam('account_id'),
-                    ]) ?>">Home</a>
+                    ]) ?>">Top</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <b>メール情報</b>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="<?= $this->Url->build([
+                        'prefix' => 'Admin/MailManage',
+                        'controller' => 'Create',
+                        'action' => 'index',
+                        'account_id' => $this->getRequest()->getParam('account_id'),
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>">作成</a>
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
@@ -104,7 +116,16 @@
                         'action' => 'index',
                         'account_id' => $this->getRequest()->getParam('account_id'),
                         '?' => $this->getRequest()->getQuery(),
-                    ]) ?>">メール管理</a>
+                    ]) ?>">検索</a>
+                </li>
+
+                <li class="breadcrumb-item">
+                    <a href="<?= $this->Url->build([
+                        'prefix' => 'Admin/MailManage',
+                        'controller' => 'CheckMailServer',
+                        'action' => 'index',
+                        'account_id' => $this->getRequest()->getParam('account_id'),
+                    ]) ?>" target="_blank">設定確認</a>
                 </li>
             </ol>
         </nav>

@@ -26,7 +26,7 @@ class CreateController extends AppController
     {
         parent::beforeFilter($event);
 
-        $this->viewBuilder()->setLayout('admin_main');
+        $this->viewBuilder()->setLayout('admin_mail_manage');
 
         $this->ctlService = new CtlService(
             datetime: new DateTimeImmutable(),

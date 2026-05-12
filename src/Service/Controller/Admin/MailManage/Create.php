@@ -71,7 +71,7 @@ final class Create implements ServiceInterface
                 'send_scheduled_at' => $this->datetime->format(self::DATE_TIME_FORMAT),
                 'title' => 'テストメール送信' . $this->datetime->format(self::DATE_TIME_FORMAT),
                 'body' => 'テストメール送信の本文です。' . " \n" . $this->datetime->format(self::DATE_TIME_FORMAT),
-                'mail_to' => '',
+                'mail_to' => $this->authContext->getAccountEmail() ?? '',
                 'mail_cc' => '',
                 'mail_bcc' => '',
                 'mail_received_check' => env('MAIL_RECEIVED_CHECK_ADDRESS', 'receive@example.com'),
@@ -378,7 +378,7 @@ final class Create implements ServiceInterface
 
         (new MailsRepository())->create(new Mail(
             id: null,
-            original_message_id: null,
+            original_message_id: uniqid('mail_manage_' . $this->datetime->format('YmdHis') . '_'),
             related_data_key: Vo\RelatedDataKey::fromString(
                 Cast::toStringOrNull($input['related_data_key']),
             )->toStringOrNull(),
