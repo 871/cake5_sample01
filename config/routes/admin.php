@@ -45,6 +45,8 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
             // 検索
             $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
             $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+            // 詳細
+            $builder->get('/detail/{mail_id}', ['controller' => 'Detail', 'action' => 'index']);
         });
 
         // ログ

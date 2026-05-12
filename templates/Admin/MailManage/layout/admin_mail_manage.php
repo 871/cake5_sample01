@@ -70,6 +70,18 @@
                             '?' => $this->getRequest()->getQuery(),
                         ]) ?>" class="nav-link">一覧</a>
                     </li>
+                    <?php if ($this->getRequest()->getParam('mail_id')): ?>
+                    <li class="nav-item">
+                        <a href="<?= $this->Url->build([
+                            'prefix' => 'Admin/MailManage',
+                            'controller' => 'Detail',
+                            'action' => 'index',
+                            'account_id' => $this->getRequest()->getParam('account_id'),
+                            'mail_id' => $this->getRequest()->getParam('mail_id'),
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="nav-link">詳細</a>
+                    </li>
+                    <?php endif ?>
                 </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
@@ -127,6 +139,18 @@
                         'account_id' => $this->getRequest()->getParam('account_id'),
                     ]) ?>" target="_blank">設定確認</a>
                 </li>
+                <?php if ($this->getRequest()->getParam('mail_id')): ?>
+                <li class="breadcrumb-item">
+                    <a href="<?= $this->Url->build([
+                        'prefix' => 'Admin/MailManage',
+                        'controller' => 'Detail',
+                        'action' => 'index',
+                        'account_id' => $this->getRequest()->getParam('account_id'),
+                        'mail_id' => $this->getRequest()->getParam('mail_id'),
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>">詳細</a>
+                </li>
+                <?php endif ?>
             </ol>
         </nav>
         <!-- Message Area -->

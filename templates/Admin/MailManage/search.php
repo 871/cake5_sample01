@@ -116,12 +116,13 @@ use App\Domain\Mail\SearchCondition;
                     <th>件名</th>
                     <th>宛先</th>
                     <th>関連データキー</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody>
             <?php if (count($rows) === 0): ?>
                 <tr>
-                    <td colspan="6" class="text-center text-muted py-3">データがありません</td>
+                    <td colspan="7" class="text-center text-muted py-3">データがありません</td>
                 </tr>
             <?php endif; ?>
             <?php foreach ($rows as $row): ?>
@@ -147,6 +148,16 @@ use App\Domain\Mail\SearchCondition;
                     <td class="text-break"><?= h($row->title()->toStringOrNull() ?? '') ?></td>
                     <td class="text-break"><?= h($row->mailTo()->toStringOrNull() ?? '') ?></td>
                     <td class="text-break"><?= h($row->relatedDataKey()->toStringOrNull() ?? '') ?></td>
+                    <td class="text-nowrap">
+                        <a href="<?= $this->Url->build([
+                            'prefix' => 'Admin/MailManage',
+                            'controller' => 'Detail',
+                            'action' => 'index',
+                            'account_id' => $this->getRequest()->getParam('account_id'),
+                            'mail_id' => $row->id()->toStringOrNull(),
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="btn btn-info btn-sm">詳細</a>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
