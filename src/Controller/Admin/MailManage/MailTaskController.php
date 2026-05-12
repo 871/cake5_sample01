@@ -14,9 +14,9 @@ class MailTaskController extends AppController
      */
     public function sendWaitingMails(): Response
     {
-        $this->request->allowMethod(['get']);
-
-        $count = (new MailsRepository())->sendWaitingMails();
+        // Memo: バッチ呼び出しの機能をコントローラから呼び出すための管理者向け機能
+        // 排他制御は行っていないため、複数回呼び出すと重複して処理される可能性がある点に注意
+        $count = (new MailsRepository())->sendWaitingMails(new \DateTimeImmutable());
         $this->Flash->success(__('送信待ちメールの送信処理が完了しました。（{0}件）', $count));
 
         return $this->redirectToSearch();
@@ -27,9 +27,9 @@ class MailTaskController extends AppController
      */
     public function checkReceivedMails(): Response
     {
-        $this->request->allowMethod(['get']);
-
-        $count = (new MailsRepository())->checkReceivedMails();
+        // Memo: バッチ呼び出しの機能をコントローラから呼び出すための管理者向け機能
+        // 排他制御は行っていないため、複数回呼び出すと重複して処理される可能性がある点に注意
+        $count = (new MailsRepository())->checkReceivedMails(new \DateTimeImmutable());
         $this->Flash->success(__('受信確認処理が完了しました。（{0}件）', $count));
 
         return $this->redirectToSearch();
@@ -40,9 +40,9 @@ class MailTaskController extends AppController
      */
     public function checkBouncedMails(): Response
     {
-        $this->request->allowMethod(['get']);
-
-        $count = (new MailsRepository())->checkBouncedMails();
+        // Memo: バッチ呼び出しの機能をコントローラから呼び出すための管理者向け機能
+        // 排他制御は行っていないため、複数回呼び出すと重複して処理される可能性がある点に注意
+        $count = (new MailsRepository())->checkBouncedMails(new \DateTimeImmutable());
         $this->Flash->success(__('バウンス確認処理が完了しました。（{0}件）', $count));
 
         return $this->redirectToSearch();
@@ -56,7 +56,7 @@ class MailTaskController extends AppController
         return $this->redirect([
             'prefix' => 'Admin/MailManage',
             'controller' => 'Search',
-            'action' => 'init',
+            'action' => 'index',
             'account_id' => $this->request->getParam('account_id'),
             '?' => $this->request->getQuery(),
         ]);

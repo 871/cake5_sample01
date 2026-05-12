@@ -19,6 +19,7 @@ use App\Service\Controller\Shared\Process\ProcessProvider;
 use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
+use Cake\Core\Configure;
 use Cake\Validation\Validator;
 use DomainException;
 use InvalidArgumentException;
@@ -74,8 +75,8 @@ final class Create implements ServiceInterface
                 'mail_to' => $this->authContext->getAccountEmail() ?? '',
                 'mail_cc' => '',
                 'mail_bcc' => '',
-                'mail_received_check' => env('MAIL_RECEIVED_CHECK_ADDRESS', 'receive@example.com'),
-                'mail_return_path' => env('MAIL_RETURN_PATH_ADDRESS', 'return@example.com'),
+                'mail_received_check' => Configure::read('PHPIMAP.received_check.mail_address'), 
+                'mail_return_path' => Configure::read('PHPIMAP.return_path.mail_address'),
             ]),
         );
 
@@ -378,7 +379,7 @@ final class Create implements ServiceInterface
 
         (new MailsRepository())->create(new Mail(
             id: null,
-            original_message_id: uniqid('mail_manage_' . $this->datetime->format('YmdHis') . '_'),
+            original_message_id: null,
             related_data_key: Vo\RelatedDataKey::fromString(
                 Cast::toStringOrNull($input['related_data_key']),
             )->toStringOrNull(),

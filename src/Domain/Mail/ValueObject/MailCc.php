@@ -71,4 +71,12 @@ class MailCc implements Stringable
 
         $this->value = implode("\n", $emails);
     }
+
+    /**
+     * @return array<string>
+     */
+    public function toArray(): array
+    {
+        return $this->value === null ? [] : explode("\n", $this->value);
+    }
 }

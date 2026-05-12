@@ -23,6 +23,19 @@
 
 <header>
     <h5 class="mb-0">管理画面</h5>
+    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <?= $this->Form->postLink('ログアウト', [
+                'prefix' => 'Admin',
+                'controller' => 'Logout',
+                'action' => 'index',
+                'account_id' => $this->getRequest()->getParam('account_id'),
+            ], [
+                'class' => 'nav-link',
+                'confirm' => 'ログアウトしますか？',
+            ]) ?>
+        </li>
+    </ul>
 </header>
 
 <div class="wrapper">
@@ -57,74 +70,6 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Header Menu -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2 rounded">
-            <div class="container-fluid px-2">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a href="<?= $this->Url->build([
-                            'prefix' => 'Admin/MailManage',
-                            'controller' => 'Search',
-                            'action' => 'index',
-                            'account_id' => $this->getRequest()->getParam('account_id'),
-                            '?' => $this->getRequest()->getQuery(),
-                        ]) ?>" class="nav-link">一覧</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= $this->Url->build([
-                            'prefix' => 'Admin/MailManage',
-                            'controller' => 'MailTask',
-                            'action' => 'sendWaitingMails',
-                            'account_id' => $this->getRequest()->getParam('account_id'),
-                            '?' => $this->getRequest()->getQuery(),
-                        ]) ?>" class="nav-link">メール送信</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= $this->Url->build([
-                            'prefix' => 'Admin/MailManage',
-                            'controller' => 'MailTask',
-                            'action' => 'checkReceivedMails',
-                            'account_id' => $this->getRequest()->getParam('account_id'),
-                            '?' => $this->getRequest()->getQuery(),
-                        ]) ?>" class="nav-link">受信確認</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= $this->Url->build([
-                            'prefix' => 'Admin/MailManage',
-                            'controller' => 'MailTask',
-                            'action' => 'checkBouncedMails',
-                            'account_id' => $this->getRequest()->getParam('account_id'),
-                            '?' => $this->getRequest()->getQuery(),
-                        ]) ?>" class="nav-link">バウンス確認</a>
-                    </li>
-                    <?php if ($this->getRequest()->getParam('mail_id')): ?>
-                    <li class="nav-item">
-                        <a href="<?= $this->Url->build([
-                            'prefix' => 'Admin/MailManage',
-                            'controller' => 'Detail',
-                            'action' => 'index',
-                            'account_id' => $this->getRequest()->getParam('account_id'),
-                            'mail_id' => $this->getRequest()->getParam('mail_id'),
-                            '?' => $this->getRequest()->getQuery(),
-                        ]) ?>" class="nav-link">詳細</a>
-                    </li>
-                    <?php endif ?>
-                </ul>
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <?= $this->Form->postLink('ログアウト', [
-                            'prefix' => 'Admin',
-                            'controller' => 'Logout',
-                            'action' => 'index',
-                            'account_id' => $this->getRequest()->getParam('account_id'),
-                        ], [
-                            'class' => 'nav-link',
-                            'confirm' => 'ログアウトしますか？',
-                        ]) ?>
-                    </li>
-                </ul>
-            </div>
-        </nav>
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-3">
@@ -146,7 +91,7 @@
                         'action' => 'index',
                         'account_id' => $this->getRequest()->getParam('account_id'),
                         '?' => $this->getRequest()->getQuery(),
-                    ]) ?>">作成</a>
+                    ]) ?>">新規登録</a>
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
@@ -156,15 +101,6 @@
                         'account_id' => $this->getRequest()->getParam('account_id'),
                         '?' => $this->getRequest()->getQuery(),
                     ]) ?>">検索</a>
-                </li>
-
-                <li class="breadcrumb-item">
-                    <a href="<?= $this->Url->build([
-                        'prefix' => 'Admin/MailManage',
-                        'controller' => 'CheckMailServer',
-                        'action' => 'index',
-                        'account_id' => $this->getRequest()->getParam('account_id'),
-                    ]) ?>" target="_blank">設定確認</a>
                 </li>
                 <?php if ($this->getRequest()->getParam('mail_id')): ?>
                 <li class="breadcrumb-item">
@@ -178,6 +114,41 @@
                     ]) ?>">詳細</a>
                 </li>
                 <?php endif ?>
+                <li class="breadcrumb-item">
+                    <a href="<?= $this->Url->build([
+                        'prefix' => 'Admin/MailManage',
+                        'controller' => 'CheckMailServer',
+                        'action' => 'index',
+                        'account_id' => $this->getRequest()->getParam('account_id'),
+                    ]) ?>" target="_blank">設定確認</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="<?= $this->Url->build([
+                        'prefix' => 'Admin/MailManage',
+                        'controller' => 'MailTask',
+                        'action' => 'sendWaitingMails',
+                        'account_id' => $this->getRequest()->getParam('account_id'),
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>">メール送信</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="<?= $this->Url->build([
+                        'prefix' => 'Admin/MailManage',
+                        'controller' => 'MailTask',
+                        'action' => 'checkReceivedMails',
+                        'account_id' => $this->getRequest()->getParam('account_id'),
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>">受信確認</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="<?= $this->Url->build([
+                        'prefix' => 'Admin/MailManage',
+                        'controller' => 'MailTask',
+                        'action' => 'checkBouncedMails',
+                        'account_id' => $this->getRequest()->getParam('account_id'),
+                        '?' => $this->getRequest()->getQuery(),
+                    ]) ?>">バウンス確認</a>
+                </li>
             </ol>
         </nav>
         <!-- Message Area -->

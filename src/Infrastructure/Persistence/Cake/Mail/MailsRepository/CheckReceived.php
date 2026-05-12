@@ -3,10 +3,14 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 
-use App\Domain\Mail\ValueObject\SendStatus;
+use App\Domain\Mail\ValueObject as Vo;
+use App\Domain\Mail\Entity\Mail as DomainEntity;
+use App\Infrastructure\Persistence\Cake\Mail\MailMapper;
+use App\Model\Entity\Mail\Mail;
 use App\Model\Table\Mail\MailReceivedCheckLogsTable;
 use App\Model\Table\Mail\MailsTable;
 use Cake\Core\Configure;
+use Cake\Log\Log;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Text;
 use DateTimeImmutable;
@@ -16,10 +20,13 @@ use Webklex\PHPIMAP\Client;
 use Webklex\PHPIMAP\Folder;
 use Webklex\PHPIMAP\Query;
 use Webklex\PHPIMAP\Message;
+use RuntimeException;
 
 final class CheckReceived
 {
     use LocatorAwareTrait;
+
+    const LIMIT = 50;
 
     /**
      * @var \App\Model\Table\Mail\MailsTable
@@ -32,148 +39,166 @@ final class CheckReceived
     private MailReceivedCheckLogsTable $receivedCheckLogsTable;
 
     /**
+     * 処理件数
+      * @var int
+     */
+    private int $processed;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->table = $this->fetchTable(MailsTable::class);
         $this->receivedCheckLogsTable = $this->fetchTable(MailReceivedCheckLogsTable::class);
+        $this->processed = 0;
     }
 
     /**
+     * @param \DateTimeImmutable $now
      * @return int
      */
-    public function run(): int
+    public function run(DateTimeImmutable $now): int
     {
-        /** @var array<\App\Model\Entity\Mail\Mail> $targetMails */
-        $targetMails = $this->table->find()
-            ->where(['Mails.send_status' => SendStatus::SENT])
+        /** @var array<\App\Domain\Mail\Entity\Mail> $mails */
+        $mails = $this->findTargetMails($now);
+        if ($mails === []) {
+            return $this->processed;
+        }
+
+        foreach ($mails as $mail) {
+            $this->checkReceivedMail($mail, $now);
+        }
+
+        return $this->run($now);
+    }
+
+    /**
+     * @param \DateTimeImmutable $now
+     * @return array<\App\Domain\Mail\Entity\Mail>
+     */
+    private function findTargetMails(DateTimeImmutable $now): array
+    {
+        static $offset = 0;
+        /** @var array<\App\Model\Entity\Mail\Mail> $mails */
+        $rows = $this->table->find()
+            ->where([
+                'Mails.send_status' => Vo\SendStatus::SENT,
+                // Memo: 送信予定日時が1ヶ月以上前のメールは処理対象外とする
+                // （何らかの理由で受信確認が行われていない古いメールが大量に存在することを防ぐため）
+                'Mails.send_scheduled_at >=' => $now->modify('-1 month')->format('Y-m-d\TH:i:s'),
+            ])
+            ->orderBy([
+                'Mails.send_scheduled_at' => 'ASC',
+                'Mails.id' => 'ASC',
+            ])
+            ->offset($offset)
+            ->limit(self::LIMIT)
             ->all()
             ->toArray();
 
-        $mailMap = [];
-        foreach ($targetMails as $mail) {
-            if (trim((string)$mail->original_message_id) === '') {
-                continue;
-            }
-            $mailMap[$this->normalizeMessageId((string)$mail->original_message_id)] = $mail;
-        }
-        if ($mailMap === []) {
-            return 0;
-        }
+        $offset = $offset + self::LIMIT;
+        
+        return array_map(
+            static fn(Mail $mail): DomainEntity =>  (new MailMapper())->toDomainEntity($mail),
+            $rows,
+        );
+    }
 
-        $client = (new ClientManager())->make((array)Configure::read('PHPIMAP.received_check'));
-        $client->connect();
-
+    /**
+     * メールの受信を確認し、受信ログ保存とステータス更新を行う
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @param \DateTimeImmutable $now 現在日時
+     */
+    private function checkReceivedMail(DomainEntity $entity, DateTimeImmutable $now): void
+    {
         try {
-            $processed = 0;
-            foreach ($this->collectUnseenMessages($client) as $message) {
-                $messageId = $this->extractRelatedMessageId($message);
-                if ($messageId === null || !isset($mailMap[$messageId])) {
-                    continue;
-                }
+            $message = $this->mailReceived($entity);
 
-                $mail = $mailMap[$messageId];
-                $checkedAt = $this->extractMessageDate($message) ?? new DateTimeImmutable();
-                $now = new DateTimeImmutable();
+            $this->saveMailReceivedCheckSuccess($message, $entity, $now);
 
-                $this->table->getConnection()->transactional(
-                    function () use ($mail, $checkedAt, $now): void {
-                        $this->table->patchEntity($mail, [
-                            'send_status' => SendStatus::RECEIVED,
-                            'modified' => $checkedAt->format('Y-m-d\TH:i:s'),
-                        ], [
-                            'validate' => false,
-                        ]);
-                        $this->table->saveOrFail($mail, [
-                            'checkExisting' => false,
-                        ]);
-
-                        $log = $this->receivedCheckLogsTable->newEntity([
-                            'id' => Text::uuid(),
-                            'mail_id' => $mail->id,
-                            'original_message_id' => $mail->original_message_id,
-                            'checked_address' => $mail->mail_received_check,
-                            'checked_at' => $checkedAt->format('Y-m-d\TH:i:s'),
-                            'created' => $now->format('Y-m-d\TH:i:s'),
-                        ], [
-                            'validate' => false,
-                        ]);
-                        $this->receivedCheckLogsTable->saveOrFail($log, [
-                            'checkExisting' => false,
-                        ]);
-                    },
-                );
-
-                $processed++;
-            }
-
-            return $processed;
-        } finally {
-            $client->disconnect();
+            $this->processed++;
+        } catch (RuntimeException $e) {
+            Log::warning($e->getMessage());
+            // 受信できない状況が続いている可能性があるため、次回以降の処理で再度確認する
+        } catch (\Throwable $e) {
+            Log::error('受信確認処理中に予期せぬエラーが発生しました。' . $e->getMessage());
         }
     }
 
     /**
-     * @param \Webklex\PHPIMAP\Client $client
-     * @return iterable<\Webklex\PHPIMAP\Message>
+     * メールの受信を確認を行う
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @return \Webklex\PHPIMAP\Message
      */
-    private function collectUnseenMessages(Client $client): iterable
+    private function mailReceived(DomainEntity $entity): Message
     {
+        $client = (new ClientManager())->make((array)Configure::read('PHPIMAP.received_check'));
+        $client->connect();
+
         $folder = $client->getFolder('INBOX');
-        return $folder?->messages()->unseen()->get() ?? [];
+        /** @var \Webklex\PHPIMAP\Message $message|null */
+        $message = $folder
+            ->query()
+            ->whereHeader('X-mail_id', $entity->id()->toString())
+            ->whereHeader('X-mail_send_scheduled_at', $entity->sendScheduledAt()->toString())
+            ->whereHeader('X-related_data_key', $entity->relatedDataKey()->toString())
+            ->get()
+            ->first();
+
+        $client->disconnect();
+
+        return $message ?? throw new \RuntimeException(
+            '受信確認対象のメールが見つかりませんでした。'
+            . '[メールID: ' . $entity->id()->toString() . ']'
+            . '[送信予定日時: ' . $entity->sendScheduledAt()->toString() . ']'
+            . '[関連データキー: ' . $entity->relatedDataKey()->toString() . ']'
+        );
     }
 
     /**
      * @param \Webklex\PHPIMAP\Message $message
-     * @return ?string
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @param \DateTimeImmutable $now
+     * @return void
      */
-    private function extractRelatedMessageId(Message $message): ?string
-    {
-        foreach (['getInReplyTo', 'getReferences'] as $method) {
-            if (!method_exists($message, $method)) {
-                continue;
-            }
-            $raw = (string)$message->{$method}();
-            if ($raw === '') {
-                continue;
-            }
-            if (preg_match('/<[^>]+>/', $raw, $matched) === 1) {
-                return $this->normalizeMessageId($matched[0]);
-            }
-        }
+    private function saveMailReceivedCheckSuccess(
+        Message $message, 
+        DomainEntity $entity, 
+        DateTimeImmutable $now
+    ): void{
+        
+        $this->table->getConnection()->transactional(
+            function () use ($message, $entity, $now): void {
+                $mail = $this->table->get($entity->id()->toString());
+                $this->table->patchEntity($mail, [
+                    'send_status' => Vo\SendStatus::RECEIVED,
+                    'modified' => $now->format('Y-m-d\TH:i:s'),
+                    'modified_by' => null,
+                    'modified_ip' => null,
+                ], [
+                    'validate' => false,
+                ]);
+                $this->table->saveOrFail($mail, [
+                    'checkExisting' => false,
+                ]);
 
-        $body = (string)$message->getTextBody();
-        if (preg_match('/<[^>]+>/', $body, $matched) === 1) {
-            return $this->normalizeMessageId($matched[0]);
-        }
-    
-        return null;
-    }
-
-    /**
-     * @param Message $message
-     * @return ?\DateTimeImmutable
-     */
-    private function extractMessageDate(Message $message): ?DateTimeImmutable
-    {
-        $date = $message->getDate();
-        if ($date instanceof DateTimeInterface) {
-            return new DateTimeImmutable($date->format(DATE_ATOM));
-        }
-        if (is_string($date) && $date !== '') {
-            return new DateTimeImmutable($date);
-        }
-    
-        return null;
-    }
-
-    /**
-     * @param string $messageId
-     * @return string
-     */
-    private function normalizeMessageId(string $messageId): string
-    {
-        return trim(trim($messageId), '<>');
+                $log = $this->receivedCheckLogsTable->newEntity([
+                    'id' => Text::uuid(),
+                    'mail_id' => $entity->id()->toString(),
+                    'original_message_id' => $message->getMessageId(),
+                    'checked_address' => $message->getFrom()[0]->mail,
+                    'checked_at' => $now->format('Y-m-d\TH:i:s'),
+                    'created' => $now->format('Y-m-d\TH:i:s'),
+                    'created_by' => null,
+                    'created_ip' => null,
+                ], [
+                    'validate' => false,
+                ]);
+                $this->receivedCheckLogsTable->saveOrFail($log, [
+                    'checkExisting' => false,
+                ]);
+            },
+        );
     }
 }

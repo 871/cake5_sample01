@@ -7,6 +7,7 @@ use App\Domain\Mail\Entity\Mail as DomainEntity;
 use App\Domain\Mail\Repository\MailsRepository as DomainMailsRepository;
 use App\Domain\Mail\SearchCondition;
 use App\Domain\Mail\ValueObject\Id;
+use DateTimeImmutable;
 
 final class MailsRepository implements DomainMailsRepository
 {
@@ -46,30 +47,33 @@ final class MailsRepository implements DomainMailsRepository
     /**
      * 送信待ちメールを送信し、送信ログ保存とステータス更新を行う
      *
+     * @param \DateTimeImmutable $now 現在日時
      * @return int 処理件数
      */
-    public function sendWaitingMails(): int
+    public function sendWaitingMails(DateTimeImmutable $now): int
     {
-        return (new MailsRepository\SendWaiting())->run();
+        return (new MailsRepository\SendWaiting())->run($now);
     }
 
     /**
      * 受信確認IMAPサーバを確認し、受信確認ログ保存とステータス更新を行う
      *
+     * @param \DateTimeImmutable $now 現在日時
      * @return int 処理件数
      */
-    public function checkReceivedMails(): int
+    public function checkReceivedMails(DateTimeImmutable $now): int
     {
-        return (new MailsRepository\CheckReceived())->run();
+        return (new MailsRepository\CheckReceived())->run($now);
     }
 
     /**
      * バウンスIMAPサーバを確認し、バウンスログ保存とステータス更新を行う
      *
+     * @param \DateTimeImmutable $now 現在日時
      * @return int 処理件数
      */
-    public function checkBouncedMails(): int
+    public function checkBouncedMails(DateTimeImmutable $now): int
     {
-        return (new MailsRepository\CheckBounced())->run();
+        return (new MailsRepository\CheckBounced())->run($now);
     }
 }

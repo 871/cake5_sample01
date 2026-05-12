@@ -63,7 +63,7 @@ class CreateTableMailSends extends BaseMigration
 
             DROP TABLE IF EXISTS mail_sent_logs;
             CREATE TABLE mail_sent_logs (
-                id VARCHAR(36) NOT NULL COMMENT '送信ログID',
+                id CHAR(36) NOT NULL COMMENT '送信ログID',
                 mail_id BIGINT NOT NULL COMMENT 'メールID',
                 original_message_id VARCHAR(255) NULL COMMENT '元メール Message-ID',
                 send_status VARCHAR(20) NOT NULL COMMENT '送信ステータス: SENT / FAILED',
@@ -85,7 +85,7 @@ class CreateTableMailSends extends BaseMigration
 
             DROP TABLE IF EXISTS mail_received_check_logs;
             CREATE TABLE mail_received_check_logs (
-                id VARCHAR(36) NOT NULL COMMENT '受信確認ログID',
+                id CHAR(36) NOT NULL COMMENT '受信確認ログID',
                 mail_id BIGINT NOT NULL COMMENT 'メールID',
                 original_message_id VARCHAR(255) NULL COMMENT '元メール Message-ID',
                 checked_address VARCHAR(255) NOT NULL COMMENT '確認対象メールアドレス',
@@ -106,7 +106,7 @@ class CreateTableMailSends extends BaseMigration
 
             DROP TABLE IF EXISTS mail_bounce_logs;
             CREATE TABLE mail_bounce_logs (
-                id VARCHAR(36) NOT NULL COMMENT 'バウンスログID',
+                id CHAR(36) NOT NULL COMMENT 'バウンスログID',
                 mail_id BIGINT UNSIGNED NULL COMMENT '元メールID',
                 original_message_id VARCHAR(255) NULL COMMENT '元メール Message-ID',
                 bounced_email VARCHAR(255) NOT NULL COMMENT '配送失敗メールアドレス',
