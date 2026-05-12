@@ -70,6 +70,33 @@
                             '?' => $this->getRequest()->getQuery(),
                         ]) ?>" class="nav-link">一覧</a>
                     </li>
+                    <li class="nav-item">
+                        <a href="<?= $this->Url->build([
+                            'prefix' => 'Admin/MailManage',
+                            'controller' => 'MailTask',
+                            'action' => 'sendWaitingMails',
+                            'account_id' => $this->getRequest()->getParam('account_id'),
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="nav-link">メール送信</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= $this->Url->build([
+                            'prefix' => 'Admin/MailManage',
+                            'controller' => 'MailTask',
+                            'action' => 'checkReceivedMails',
+                            'account_id' => $this->getRequest()->getParam('account_id'),
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="nav-link">受信確認</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= $this->Url->build([
+                            'prefix' => 'Admin/MailManage',
+                            'controller' => 'MailTask',
+                            'action' => 'checkBouncedMails',
+                            'account_id' => $this->getRequest()->getParam('account_id'),
+                            '?' => $this->getRequest()->getQuery(),
+                        ]) ?>" class="nav-link">バウンス確認</a>
+                    </li>
                     <?php if ($this->getRequest()->getParam('mail_id')): ?>
                     <li class="nav-item">
                         <a href="<?= $this->Url->build([
