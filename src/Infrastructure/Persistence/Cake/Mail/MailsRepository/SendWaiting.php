@@ -3,16 +3,15 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 
-use App\Domain\Mail\ValueObject as Vo;
 use App\Domain\Mail\Entity\Mail as DomainEntity;
+use App\Domain\Mail\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Mail\MailMapper;
+use App\Lib\UUID\UUID;
 use App\Model\Entity\Mail\Mail;
 use App\Model\Table\Mail\MailSentLogsTable;
 use App\Model\Table\Mail\MailsTable;
-use App\Lib\UUID\UUID;
 use Cake\Mailer\Mailer;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\Utility\Text;
 use DateTimeImmutable;
 use Throwable;
 
@@ -34,7 +33,8 @@ final class SendWaiting
 
     /**
      * 処理件数
-      * @var int
+     *
+     * @var int
      */
     private int $processed;
 
@@ -50,7 +50,7 @@ final class SendWaiting
 
     /**
      * 送信待ちメールを送信し、送信ログ保存とステータス更新を行う
-     * 
+     *
      * @param \DateTimeImmutable $now 現在日時
      * @return int
      */
@@ -72,6 +72,7 @@ final class SendWaiting
 
     /**
      * 送信対象のメールを取得する
+     *
      * @param \DateTimeImmutable $now 現在日時
      * @return array<\App\Domain\Mail\Entity\Mail>
      */
@@ -90,15 +91,16 @@ final class SendWaiting
             ->limit(self::SEND_LIMIT) // 一度に大量のメールを送信しないようにするため、上限を設ける
             ->all()
             ->toArray();
-        
+
         return array_map(
-            static fn(Mail $mail): DomainEntity =>  (new MailMapper())->toDomainEntity($mail),
+            static fn(Mail $mail): DomainEntity => (new MailMapper())->toDomainEntity($mail),
             $rows,
         );
     }
 
     /**
      * メールを送信し、送信ログ保存とステータス更新を行う
+     *
      * @param \App\Domain\Mail\Entity\Mail $entity
      * @param \DateTimeImmutable $now 現在日時
      */
@@ -115,6 +117,7 @@ final class SendWaiting
 
     /**
      * メール送信処理
+     *
      * @param \App\Domain\Mail\Entity\Mail $entity
      * @return \Cake\Mailer\Mailer
      */
@@ -135,8 +138,7 @@ final class SendWaiting
                 'X-related_data_key' => $entity->relatedDataKey()->toString(),
             ])
             ->setSubject($entity->title()->toString())
-            ->deliver($entity->body()->toString())
-            ;
+            ->deliver($entity->body()->toString());
 
         return $mailer;
     }
@@ -149,9 +151,9 @@ final class SendWaiting
      * @return void
      */
     private function saveMailSentSuccess(
-        Mailer $mailer, 
-        DomainEntity $entity, 
-        DateTimeImmutable $now
+        Mailer $mailer,
+        DomainEntity $entity,
+        DateTimeImmutable $now,
     ): void {
         $messageId = (string)$mailer->getMessage()->getMessageId();
 
@@ -201,11 +203,10 @@ final class SendWaiting
      * @return void
      */
     private function saveMailSentFailed(
-        DomainEntity $entity, 
+        DomainEntity $entity,
         DateTimeImmutable $now,
-        Throwable $e
+        Throwable $e,
     ): void {
-        
         $this->table->getConnection()->transactional(
             function () use ($entity, $now, $e): void {
                 // メール送信成功のステータスに更新

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 
-use App\Domain\Mail\ValueObject as Vo;
 use App\Domain\Mail\Entity\Mail as DomainEntity;
+use App\Domain\Mail\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Mail\MailMapper;
 use App\Model\Entity\Mail\Mail;
 use App\Model\Table\Mail\MailBounceLogsTable;
@@ -15,6 +15,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Text;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Stringable;
 use Throwable;
 use Webklex\PHPIMAP\ClientManager;
 use Webklex\PHPIMAP\Message;
@@ -23,7 +24,7 @@ final class CheckBounced
 {
     use LocatorAwareTrait;
 
-    const LIMIT = 50;
+    public const LIMIT = 50;
 
     private const DEFAULT_BOUNCE_TYPE = 'UNKNOWN';
     private const DEFAULT_BOUNCED_EMAIL = 'unknown@example.com';
@@ -46,6 +47,7 @@ final class CheckBounced
 
     /**
      * 処理件数
+     *
      * @var int
      */
     private int $processed;
@@ -75,7 +77,7 @@ final class CheckBounced
     }
 
     /**
-     * @return DateTimeInterface
+     * @return \DateTimeInterface
      */
     private function findMaxMailBounceLogsBouncedAt(): DateTimeInterface
     {
@@ -96,7 +98,7 @@ final class CheckBounced
      * @return array<\Webklex\PHPIMAP\Message>
      */
     private function findTargetBouncedMessages(
-        DateTimeInterface $thresholdBouncedAt
+        DateTimeInterface $thresholdBouncedAt,
     ): array {
         $client = (new ClientManager())->make((array)Configure::read('PHPIMAP.return_path'));
         $client->connect();
@@ -116,7 +118,10 @@ final class CheckBounced
 
             return array_values(array_filter(
                 $messages,
-                fn(Message $message): bool => $this->extractMessageDate($message)?->getTimestamp() > $thresholdBouncedAt->getTimestamp(),
+                function (Message $message) use ($thresholdBouncedAt): bool {
+                    return $this->extractMessageDate($message)?->getTimestamp()
+                        > $thresholdBouncedAt->getTimestamp();
+                },
             ));
         } finally {
             $client->disconnect();
@@ -127,9 +132,9 @@ final class CheckBounced
      * @param \DateTimeImmutable $now
      * @return int
      */
-    public function _run(DateTimeImmutable $now): int
+    private function _run(DateTimeImmutable $now): int
     {
-         /** @var array<\App\Domain\Mail\Entity\Mail> $mails */
+        /** @var array<\App\Domain\Mail\Entity\Mail> $mails */
         $mails = $this->findTargetMails($now);
         if ($mails === []) {
             return $this->processed;
@@ -169,15 +174,16 @@ final class CheckBounced
             ->toArray();
 
         $offset = $offset + self::LIMIT;
-        
+
         return array_map(
-            static fn(Mail $mail): DomainEntity =>  (new MailMapper())->toDomainEntity($mail),
+            static fn(Mail $mail): DomainEntity => (new MailMapper())->toDomainEntity($mail),
             $rows,
         );
     }
 
     /**
      * メールのバウンスを確認し、バウンスログ保存とステータス更新を行う
+     *
      * @param \App\Domain\Mail\Entity\Mail $entity
      * @param \DateTimeImmutable $now 現在日時
      */
@@ -192,7 +198,7 @@ final class CheckBounced
             $this->saveMailBouncedLog($message, $entity, $now);
 
             $this->processed++;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Log::error('バウンスメール確認処理中に予期せぬエラーが発生しました。' . $e->getMessage());
         }
     }
@@ -259,15 +265,31 @@ final class CheckBounced
                 $log = $this->bounceLogsTable->newEntity([
                     'id' => Text::uuid(),
                     'mail_id' => $entity->id()->toString(),
-                    'original_message_id' => $this->extractOriginalMessageId($message, $entity, $rawHeaders, $rawBody, $rawMessage),
+                    'original_message_id' => $this->extractOriginalMessageId(
+                        $message,
+                        $entity,
+                        $rawHeaders,
+                        $rawBody,
+                        $rawMessage,
+                    ),
                     'bounced_email' => $bouncedEmail,
                     'recipient_type' => null,
                     'action' => $action,
                     'status_code' => $statusCode,
                     'diagnostic_code' => $diagnosticCode,
                     'bounce_type' => $this->resolveBounceType($statusCode, $action),
-                    'remote_mta' => $this->findFirstMatch('/^Remote-MTA:\s*[^;]*;\s*(.+)$/mi', $rawHeaders, $rawBody, $rawMessage),
-                    'reporting_mta' => $this->findFirstMatch('/^Reporting-MTA:\s*[^;]*;\s*(.+)$/mi', $rawHeaders, $rawBody, $rawMessage),
+                    'remote_mta' => $this->findFirstMatch(
+                        '/^Remote-MTA:\s*[^;]*;\s*(.+)$/mi',
+                        $rawHeaders,
+                        $rawBody,
+                        $rawMessage,
+                    ),
+                    'reporting_mta' => $this->findFirstMatch(
+                        '/^Reporting-MTA:\s*[^;]*;\s*(.+)$/mi',
+                        $rawHeaders,
+                        $rawBody,
+                        $rawMessage,
+                    ),
                     'arrival_date' => $arrivalDate?->format('Y-m-d\TH:i:s'),
                     'bounced_at' => $bouncedAt->format('Y-m-d\TH:i:s'),
                     'raw_headers' => $rawHeaders,
@@ -509,7 +531,7 @@ final class CheckBounced
         if (is_scalar($value)) {
             return trim((string)$value);
         }
-        if ($value instanceof \Stringable) {
+        if ($value instanceof Stringable) {
             return trim((string)$value);
         }
         if (is_array($value)) {
@@ -674,9 +696,24 @@ final class CheckBounced
         ?string $rawBody,
         ?string $rawMessage,
     ): string {
-        $candidate = $this->findFirstMatch('/^Final-Recipient:\s*[^;]+;\s*([^\s;]+)/mi', $rawHeaders, $rawBody, $rawMessage)
-            ?? $this->findFirstMatch('/^Original-Recipient:\s*[^;]+;\s*([^\s;]+)/mi', $rawHeaders, $rawBody, $rawMessage)
-            ?? $this->findFirstMatch('/^X-Failed-Recipients:\s*([^\s,;]+)/mi', $rawHeaders, $rawBody, $rawMessage);
+        $candidate = $this->findFirstMatch(
+            '/^Final-Recipient:\s*[^;]+;\s*([^\s;]+)/mi',
+            $rawHeaders,
+            $rawBody,
+            $rawMessage,
+        )
+        ?? $this->findFirstMatch(
+            '/^Original-Recipient:\s*[^;]+;\s*([^\s;]+)/mi',
+            $rawHeaders,
+            $rawBody,
+            $rawMessage,
+        )
+        ?? $this->findFirstMatch(
+            '/^X-Failed-Recipients:\s*([^\s,;]+)/mi',
+            $rawHeaders,
+            $rawBody,
+            $rawMessage,
+        );
 
         if ($candidate !== null && filter_var($candidate, FILTER_VALIDATE_EMAIL) !== false) {
             return $candidate;

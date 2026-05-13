@@ -75,7 +75,7 @@ final class Create implements ServiceInterface
                 'mail_to' => $this->authContext->getAccountEmail() ?? '',
                 'mail_cc' => '',
                 'mail_bcc' => '',
-                'mail_received_check' => Configure::read('PHPIMAP.received_check.mail_address'), 
+                'mail_received_check' => Configure::read('PHPIMAP.received_check.mail_address'),
                 'mail_return_path' => Configure::read('PHPIMAP.return_path.mail_address'),
             ]),
         );

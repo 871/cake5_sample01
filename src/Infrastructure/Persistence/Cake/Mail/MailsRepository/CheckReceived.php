@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 
-use App\Domain\Mail\ValueObject as Vo;
 use App\Domain\Mail\Entity\Mail as DomainEntity;
+use App\Domain\Mail\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Mail\MailMapper;
 use App\Model\Entity\Mail\Mail;
 use App\Model\Table\Mail\MailReceivedCheckLogsTable;
@@ -14,15 +14,16 @@ use Cake\Log\Log;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Text;
 use DateTimeImmutable;
+use RuntimeException;
+use Throwable;
 use Webklex\PHPIMAP\ClientManager;
 use Webklex\PHPIMAP\Message;
-use RuntimeException;
 
 final class CheckReceived
 {
     use LocatorAwareTrait;
 
-    const LIMIT = 50;
+    public const LIMIT = 50;
 
     /**
      * @var \App\Model\Table\Mail\MailsTable
@@ -36,6 +37,7 @@ final class CheckReceived
 
     /**
      * 処理件数
+     *
      * @var int
      */
     private int $processed;
@@ -94,15 +96,16 @@ final class CheckReceived
             ->toArray();
 
         $offset = $offset + self::LIMIT;
-        
+
         return array_map(
-            static fn(Mail $mail): DomainEntity =>  (new MailMapper())->toDomainEntity($mail),
+            static fn(Mail $mail): DomainEntity => (new MailMapper())->toDomainEntity($mail),
             $rows,
         );
     }
 
     /**
      * メールの受信を確認し、受信ログ保存とステータス更新を行う
+     *
      * @param \App\Domain\Mail\Entity\Mail $entity
      * @param \DateTimeImmutable $now 現在日時
      */
@@ -117,13 +120,14 @@ final class CheckReceived
         } catch (RuntimeException $e) {
             Log::warning($e->getMessage());
             // 受信できない状況が続いている可能性があるため、次回以降の処理で再度確認する
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Log::error('受信確認処理中に予期せぬエラーが発生しました。' . $e->getMessage());
         }
     }
 
     /**
      * メールの受信を確認を行う
+     *
      * @param \App\Domain\Mail\Entity\Mail $entity
      * @return \Webklex\PHPIMAP\Message
      */
@@ -144,11 +148,11 @@ final class CheckReceived
 
         $client->disconnect();
 
-        return $message ?? throw new \RuntimeException(
+        return $message ?? throw new RuntimeException(
             '受信確認対象のメールが見つかりませんでした。'
             . '[メールID: ' . $entity->id()->toString() . ']'
             . '[送信予定日時: ' . $entity->sendScheduledAt()->toString() . ']'
-            . '[関連データキー: ' . $entity->relatedDataKey()->toString() . ']'
+            . '[関連データキー: ' . $entity->relatedDataKey()->toString() . ']',
         );
     }
 
@@ -159,11 +163,10 @@ final class CheckReceived
      * @return void
      */
     private function saveMailReceivedCheckSuccess(
-        Message $message, 
-        DomainEntity $entity, 
-        DateTimeImmutable $now
-    ): void{
-        
+        Message $message,
+        DomainEntity $entity,
+        DateTimeImmutable $now,
+    ): void {
         $this->table->getConnection()->transactional(
             function () use ($message, $entity, $now): void {
                 $mail = $this->table->get($entity->id()->toString());
