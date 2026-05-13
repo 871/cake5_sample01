@@ -78,7 +78,7 @@ final class SendWaiting
      */
     private function findTargetMails(DateTimeImmutable $now): array
     {
-        /** @var array<\App\Model\Entity\Mail\Mail> $mails */
+        /** @var array<\App\Model\Entity\Mail\Mail> $rows */
         $rows = $this->table->find()
             ->where([
                 'Mails.send_status' => Vo\SendStatus::WAITING,
@@ -147,7 +147,6 @@ final class SendWaiting
      * @param \Cake\Mailer\Mailer $mailer
      * @param \App\Domain\Mail\Entity\Mail $entity
      * @param \DateTimeImmutable $now
-     * @param \Throwable $e
      * @return void
      */
     private function saveMailSentSuccess(
@@ -196,7 +195,6 @@ final class SendWaiting
     }
 
     /**
-     * @param \Cake\Mailer\Mailer $mailer
      * @param \App\Domain\Mail\Entity\Mail $entity
      * @param \DateTimeImmutable $now
      * @param \Throwable $e
