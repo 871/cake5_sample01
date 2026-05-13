@@ -81,20 +81,29 @@ final class CheckBounced
      */
     private function findMaxMailBounceLogsBouncedAt(): DateTimeInterface
     {
-        /** @var object|null $latest */
+        /** @var array<string, mixed>|null $latest */
         $latest = $this->bounceLogsTable->find()
             ->select(['bounced_at'])
             ->orderBy(['bounced_at' => 'DESC'])
-            ->first()
-            ?->toArray() ?? [
-                'bounced_at' => new DateTimeImmutable('@0'),
-            ];
+            ->disableHydration()
+            ->first();
 
-        return $latest['bounced_at'];
+        $bouncedAt = is_array($latest) ? ($latest['bounced_at'] ?? null) : null;
+        if ($bouncedAt instanceof DateTimeInterface) {
+            return $bouncedAt;
+        }
+        if (is_string($bouncedAt) && $bouncedAt !== '') {
+            try {
+                return new DateTimeImmutable($bouncedAt);
+            } catch (Throwable) {
+            }
+        }
+
+        return new DateTimeImmutable('@0');
     }
 
     /**
-     * @param \DateTimeInterface $threshold_bounced_at
+     * @param \DateTimeInterface $thresholdBouncedAt
      * @return array<\Webklex\PHPIMAP\Message>
      */
     private function findTargetBouncedMessages(
@@ -105,6 +114,9 @@ final class CheckBounced
 
         try {
             $folder = $client->getFolder('INBOX');
+            if ($folder === null) {
+                return [];
+            }
             $query = $folder->query();
             $queryFiltered = $this->applyBouncedAfterFilter($query, $thresholdBouncedAt);
             /** @var array<\Webklex\PHPIMAP\Message> $messages */
@@ -153,8 +165,9 @@ final class CheckBounced
      */
     private function findTargetMails(DateTimeImmutable $now): array
     {
+        /** @var int $offset */
         static $offset = 0;
-        /** @var array<\App\Model\Entity\Mail\Mail> $mails */
+        /** @var array<\App\Model\Entity\Mail\Mail> $rows */
         $rows = $this->table->find()
             ->where([
                 'Mails.send_status IN' => [
@@ -495,18 +508,6 @@ final class CheckBounced
      */
     private function extractHeaderValue(Message $message, string $headerName): ?string
     {
-        if (method_exists($message, 'getHeader')) {
-            try {
-                /** @var mixed $value */
-                $value = $message->getHeader($headerName);
-                $normalized = $this->normalizeHeaderValue($value);
-                if ($normalized !== null && $normalized !== '') {
-                    return $normalized;
-                }
-            } catch (Throwable) {
-            }
-        }
-
         $rawHeaders = $this->extractRawHeaders($message);
         if ($rawHeaders === null || $rawHeaders === '') {
             return null;
@@ -552,14 +553,12 @@ final class CheckBounced
      */
     private function extractMessageDate(Message $message): ?DateTimeImmutable
     {
-        if (method_exists($message, 'getDate')) {
-            try {
-                /** @var mixed $date */
-                $date = $message->getDate();
+        try {
+            /** @var mixed $date */
+            $date = $message->getDate();
 
-                return $this->toDateTimeImmutable($date);
-            } catch (Throwable) {
-            }
+            return $this->toDateTimeImmutable($date);
+        } catch (Throwable) {
         }
 
         return null;
@@ -719,25 +718,23 @@ final class CheckBounced
             return $candidate;
         }
 
-        if (method_exists($message, 'getTo')) {
-            try {
-                /** @var mixed $to */
-                $to = $message->getTo();
-                if (is_iterable($to)) {
-                    foreach ($to as $recipient) {
-                        $mail = null;
-                        if (is_object($recipient) && isset($recipient->mail) && is_string($recipient->mail)) {
-                            $mail = $recipient->mail;
-                        } elseif (is_string($recipient)) {
-                            $mail = $recipient;
-                        }
-                        if ($mail !== null && filter_var($mail, FILTER_VALIDATE_EMAIL) !== false) {
-                            return $mail;
-                        }
+        try {
+            /** @var mixed $to */
+            $to = $message->getTo();
+            if (is_iterable($to)) {
+                foreach ($to as $recipient) {
+                    $mail = null;
+                    if (is_object($recipient) && isset($recipient->mail) && is_string($recipient->mail)) {
+                        $mail = $recipient->mail;
+                    } elseif (is_string($recipient)) {
+                        $mail = $recipient;
+                    }
+                    if ($mail !== null && filter_var($mail, FILTER_VALIDATE_EMAIL) !== false) {
+                        return $mail;
                     }
                 }
-            } catch (Throwable) {
             }
+        } catch (Throwable) {
         }
 
         return self::DEFAULT_BOUNCED_EMAIL;

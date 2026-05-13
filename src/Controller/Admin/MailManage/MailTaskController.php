@@ -54,12 +54,15 @@ class MailTaskController extends AppController
      */
     private function redirectToSearch(): Response
     {
-        return $this->redirect([
+        /** @var \Cake\Http\Response $response */
+        $response = $this->redirect([
             'prefix' => 'Admin/MailManage',
             'controller' => 'Search',
             'action' => 'index',
             'account_id' => $this->request->getParam('account_id'),
             '?' => $this->request->getQuery(),
         ]);
+
+        return $response;
     }
 }

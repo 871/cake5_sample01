@@ -77,8 +77,9 @@ final class CheckReceived
      */
     private function findTargetMails(DateTimeImmutable $now): array
     {
+        /** @var int $offset */
         static $offset = 0;
-        /** @var array<\App\Model\Entity\Mail\Mail> $mails */
+        /** @var array<\App\Model\Entity\Mail\Mail> $rows */
         $rows = $this->table->find()
             ->where([
                 'Mails.send_status' => Vo\SendStatus::SENT,
@@ -137,6 +138,11 @@ final class CheckReceived
         $client->connect();
 
         $folder = $client->getFolder('INBOX');
+        if ($folder === null) {
+            $client->disconnect();
+
+            throw new RuntimeException('受信確認対象のINBOXフォルダが見つかりませんでした。');
+        }
         /** @var \Webklex\PHPIMAP\Message $message|null */
         $message = $folder
             ->query()
@@ -186,7 +192,7 @@ final class CheckReceived
                     'id' => Text::uuid(),
                     'mail_id' => $entity->id()->toString(),
                     'original_message_id' => $message->getMessageId(),
-                    'checked_address' => $message->getFrom()[0]->mail,
+                    'checked_address' => $this->extractCheckedAddress($message, $entity),
                     'checked_at' => $now->format('Y-m-d\TH:i:s'),
                     'created' => $now->format('Y-m-d\TH:i:s'),
                     'created_by' => null,
@@ -199,5 +205,31 @@ final class CheckReceived
                 ]);
             },
         );
+    }
+
+    /**
+     * @param \Webklex\PHPIMAP\Message $message
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @return string
+     */
+    private function extractCheckedAddress(Message $message, DomainEntity $entity): string
+    {
+        $from = $message->getFrom();
+        if (is_iterable($from)) {
+            foreach ($from as $address) {
+                if (
+                    is_object($address)
+                    && property_exists($address, 'mail')
+                    && is_string($address->mail)
+                ) {
+                    return $address->mail;
+                }
+                if (is_string($address)) {
+                    return $address;
+                }
+            }
+        }
+
+        return $entity->mailReceivedCheck()->toString();
     }
 }
