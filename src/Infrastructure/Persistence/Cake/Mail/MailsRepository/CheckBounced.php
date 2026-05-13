@@ -27,6 +27,7 @@ final class CheckBounced
 
     private const DEFAULT_BOUNCE_TYPE = 'UNKNOWN';
     private const DEFAULT_BOUNCED_EMAIL = 'unknown@example.com';
+    private const IMAP_SINCE_METHODS = ['since', 'whereSince'];
 
     /**
      * @var \App\Model\Table\Mail\MailsTable
@@ -67,7 +68,7 @@ final class CheckBounced
     {
         // 対象バウンスドメール取得
         $this->messages = $this->findTargetBouncedMessages(
-            threshold_bounced_at: $this->findMaxMailBounceLogsBouncedAt(),
+            thresholdBouncedAt: $this->findMaxMailBounceLogsBouncedAt(),
         );
 
         return $this->_run($now);
@@ -95,22 +96,27 @@ final class CheckBounced
      * @return array<\Webklex\PHPIMAP\Message>
      */
     private function findTargetBouncedMessages(
-        DateTimeInterface $threshold_bounced_at
+        DateTimeInterface $thresholdBouncedAt
     ): array {
         $client = (new ClientManager())->make((array)Configure::read('PHPIMAP.return_path'));
         $client->connect();
 
         try {
             $folder = $client->getFolder('INBOX');
+            $query = $folder->query();
+            $queryFiltered = $this->applyBouncedAfterFilter($query, $thresholdBouncedAt);
             /** @var array<\Webklex\PHPIMAP\Message> $messages */
-            $messages = $folder
-                ->query()
+            $messages = $query
                 ->get()
                 ->toArray();
 
+            if ($queryFiltered) {
+                return $messages;
+            }
+
             return array_values(array_filter(
                 $messages,
-                fn(Message $message): bool => $this->extractMessageDate($message)?->getTimestamp() > $threshold_bounced_at->getTimestamp(),
+                fn(Message $message): bool => $this->extractMessageDate($message)?->getTimestamp() > $thresholdBouncedAt->getTimestamp(),
             ));
         } finally {
             $client->disconnect();
@@ -292,7 +298,8 @@ final class CheckBounced
         foreach ($this->messages as $message) {
             $mailId = $this->extractHeaderValue($message, 'X-mail_id');
             $scheduledAt = $this->extractHeaderValue($message, 'X-mail_send_scheduled_at');
-            $relatedDataKey = $this->extractHeaderValue($message, 'X-related_data_key');
+            $relatedDataKey = $this->extractHeaderValue($message, 'X-related_data_key')
+                ?? $this->extractHeaderValue($message, 'X-related_data');
 
             if (
                 $mailId === $entity->id()->toString()
@@ -422,7 +429,41 @@ final class CheckBounced
      */
     private function normalizeMessageId(string $value): string
     {
-        return trim(trim($value), "<> \t\n\r\0\x0B\"");
+        return trim($value, "<> \t\n\r\"");
+    }
+
+    /**
+     * @param mixed $query
+     * @param \DateTimeInterface $thresholdBouncedAt
+     * @return bool
+     */
+    private function applyBouncedAfterFilter(mixed $query, DateTimeInterface $thresholdBouncedAt): bool
+    {
+        if (!is_object($query)) {
+            return false;
+        }
+
+        $dateValues = [
+            $thresholdBouncedAt,
+            $thresholdBouncedAt->format(DateTimeInterface::RFC2822),
+            $thresholdBouncedAt->format('Y-m-d H:i:s'),
+        ];
+
+        foreach (self::IMAP_SINCE_METHODS as $method) {
+            if (!method_exists($query, $method)) {
+                continue;
+            }
+            foreach ($dateValues as $dateValue) {
+                try {
+                    $query->{$method}($dateValue);
+
+                    return true;
+                } catch (Throwable) {
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
