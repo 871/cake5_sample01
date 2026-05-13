@@ -88,7 +88,7 @@ final class CheckBounced
             ->disableHydration()
             ->first();
 
-        $bouncedAt = $latest['bounced_at'] ?? null;
+        $bouncedAt = is_array($latest) ? ($latest['bounced_at'] ?? null) : null;
         if ($bouncedAt instanceof DateTimeInterface) {
             return $bouncedAt;
         }
