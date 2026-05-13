@@ -93,7 +93,10 @@ final class CheckBounced
             return $bouncedAt;
         }
         if (is_string($bouncedAt) && $bouncedAt !== '') {
-            return new DateTimeImmutable($bouncedAt);
+            try {
+                return new DateTimeImmutable($bouncedAt);
+            } catch (Throwable) {
+            }
         }
 
         return new DateTimeImmutable('@0');

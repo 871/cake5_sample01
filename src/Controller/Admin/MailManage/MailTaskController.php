@@ -7,7 +7,6 @@ use App\Controller\AppController;
 use App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 use Cake\Http\Response;
 use DateTimeImmutable;
-use RuntimeException;
 
 class MailTaskController extends AppController
 {
@@ -55,6 +54,7 @@ class MailTaskController extends AppController
      */
     private function redirectToSearch(): Response
     {
+        /** @var \Cake\Http\Response $response */
         $response = $this->redirect([
             'prefix' => 'Admin/MailManage',
             'controller' => 'Search',
@@ -62,10 +62,6 @@ class MailTaskController extends AppController
             'account_id' => $this->request->getParam('account_id'),
             '?' => $this->request->getQuery(),
         ]);
-
-        if ($response === null) {
-            throw new RuntimeException('Redirect response could not be generated.');
-        }
 
         return $response;
     }

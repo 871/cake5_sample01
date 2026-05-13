@@ -217,7 +217,11 @@ final class CheckReceived
         $from = $message->getFrom();
         if (is_iterable($from)) {
             foreach ($from as $address) {
-                if (is_object($address) && isset($address->mail) && is_string($address->mail)) {
+                if (
+                    is_object($address)
+                    && property_exists($address, 'mail')
+                    && is_string($address->mail)
+                ) {
                     return $address->mail;
                 }
                 if (is_string($address)) {
