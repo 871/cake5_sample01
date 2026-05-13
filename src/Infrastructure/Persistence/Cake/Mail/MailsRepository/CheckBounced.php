@@ -17,6 +17,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Stringable;
 use Throwable;
+use Webklex\PHPIMAP\Attribute;
 use Webklex\PHPIMAP\ClientManager;
 use Webklex\PHPIMAP\Message;
 
@@ -28,7 +29,6 @@ final class CheckBounced
 
     private const DEFAULT_BOUNCE_TYPE = 'UNKNOWN';
     private const DEFAULT_BOUNCED_EMAIL = 'unknown@example.com';
-    private const IMAP_SINCE_METHODS = ['since', 'whereSince'];
 
     /**
      * @var \App\Model\Table\Mail\MailsTable
@@ -117,16 +117,11 @@ final class CheckBounced
             if ($folder === null) {
                 return [];
             }
-            $query = $folder->query();
-            $queryFiltered = $this->applyBouncedAfterFilter($query, $thresholdBouncedAt);
             /** @var array<\Webklex\PHPIMAP\Message> $messages */
-            $messages = $query
-                ->get()
-                ->toArray();
-
-            if ($queryFiltered) {
-                return $messages;
-            }
+            $messages = $folder
+                ->messages()
+                ->since($thresholdBouncedAt->format('d-M-Y'))
+                ->get()->toArray() ?? [];
 
             return array_values(array_filter(
                 $messages,
@@ -173,6 +168,7 @@ final class CheckBounced
                 'Mails.send_status IN' => [
                     Vo\SendStatus::SENT,
                     Vo\SendStatus::RECEIVED,
+                    Vo\SendStatus::BOUNCED,
                 ],
                 // Memo: 送信予定日時が2週以上前のメールは処理対象外とする
                 'Mails.send_scheduled_at >=' => $now->modify('-2 weeks')->format('Y-m-d\TH:i:s'),
@@ -209,8 +205,6 @@ final class CheckBounced
             }
 
             $this->saveMailBouncedLog($message, $entity, $now);
-
-            $this->processed++;
         } catch (Throwable $e) {
             Log::error('バウンスメール確認処理中に予期せぬエラーが発生しました。' . $e->getMessage());
         }
@@ -246,6 +240,16 @@ final class CheckBounced
         $bouncedEmail = $this->extractBouncedEmail($message, $rawHeaders, $rawBody, $rawMessage);
         $bouncedAt = $this->extractMessageDate($message) ?? $now;
         $arrivalDate = $this->extractArrivalDate($rawHeaders, $rawBody, $rawMessage);
+
+        if (
+            $this->bounceLogsTable->exists([
+            'mail_id' => $entity->id()->toString(),
+            'bounced_email' => $bouncedEmail,
+            ])
+        ) {
+            // 重複チェック
+            return;
+        }
 
         $this->table->getConnection()->transactional(
             function () use (
@@ -322,6 +326,8 @@ final class CheckBounced
                 ]);
             },
         );
+
+        $this->processed++;
     }
 
     /**
@@ -468,40 +474,6 @@ final class CheckBounced
     }
 
     /**
-     * @param mixed $query
-     * @param \DateTimeInterface $thresholdBouncedAt
-     * @return bool
-     */
-    private function applyBouncedAfterFilter(mixed $query, DateTimeInterface $thresholdBouncedAt): bool
-    {
-        if (!is_object($query)) {
-            return false;
-        }
-
-        $dateValues = [
-            $thresholdBouncedAt,
-            $thresholdBouncedAt->format(DateTimeInterface::RFC2822),
-            $thresholdBouncedAt->format('Y-m-d H:i:s'),
-        ];
-
-        foreach (self::IMAP_SINCE_METHODS as $method) {
-            if (!method_exists($query, $method)) {
-                continue;
-            }
-            foreach ($dateValues as $dateValue) {
-                try {
-                    $query->{$method}($dateValue);
-
-                    return true;
-                } catch (Throwable) {
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * @param \Webklex\PHPIMAP\Message $message
      * @param string $headerName
      * @return ?string
@@ -556,6 +528,20 @@ final class CheckBounced
         try {
             /** @var mixed $date */
             $date = $message->getDate();
+            if ($date instanceof DateTimeInterface) {
+                return $this->toDateTimeImmutable($date);
+            }
+
+            if ($date instanceof Attribute) {
+                return $this->toDateTimeImmutable(
+                    array_values(
+                        array_filter(
+                            $date->toArray(),
+                            fn($v) => $v instanceof DateTimeInterface,
+                        ),
+                    )[0] ?? null,
+                );
+            }
 
             return $this->toDateTimeImmutable($date);
         } catch (Throwable) {

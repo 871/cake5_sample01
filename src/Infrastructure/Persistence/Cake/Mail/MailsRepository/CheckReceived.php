@@ -82,10 +82,14 @@ final class CheckReceived
         /** @var array<\App\Model\Entity\Mail\Mail> $rows */
         $rows = $this->table->find()
             ->where([
-                'Mails.send_status' => Vo\SendStatus::SENT,
+                'Mails.send_status IN' => [
+                    Vo\SendStatus::SENT,
+                    Vo\SendStatus::BOUNCED,
+                ],
                 // Memo: 送信予定日時が1ヶ月以上前のメールは処理対象外とする
                 // （何らかの理由で受信確認が行われていない古いメールが大量に存在することを防ぐため）
                 'Mails.send_scheduled_at >=' => $now->modify('-1 month')->format('Y-m-d\TH:i:s'),
+                'NOT EXISTS (SELECT 1 FROM mail_received_check_logs AS T1 WHERE T1.mail_id = Mails.id)',
             ])
             ->orderBy([
                 'Mails.send_scheduled_at' => 'ASC',
@@ -175,9 +179,12 @@ final class CheckReceived
     ): void {
         $this->table->getConnection()->transactional(
             function () use ($message, $entity, $now): void {
+                /** @var \App\Model\Entity\Mail\Mail $mail */
                 $mail = $this->table->get($entity->id()->toString());
                 $this->table->patchEntity($mail, [
-                    'send_status' => Vo\SendStatus::RECEIVED,
+                    'send_status' => $mail->send_status === Vo\SendStatus::SENT
+                        ? Vo\SendStatus::RECEIVED
+                        : $mail->send_status,
                     'modified' => $now->format('Y-m-d\TH:i:s'),
                     'modified_by' => null,
                     'modified_ip' => null,

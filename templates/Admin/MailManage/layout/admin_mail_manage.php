@@ -115,6 +115,9 @@
                 </li>
                 <?php endif ?>
                 <li class="breadcrumb-item">
+                    <b>システム管理者</b>
+                </li>
+                <li class="breadcrumb-item">
                     <a href="<?= $this->Url->build([
                         'prefix' => 'Admin/MailManage',
                         'controller' => 'CheckMailServer',

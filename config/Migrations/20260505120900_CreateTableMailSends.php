@@ -130,7 +130,7 @@ class CreateTableMailSends extends BaseMigration
                 created_ip VARCHAR(45) DEFAULT NULL COMMENT '作成時IPアドレス',
 
                 PRIMARY KEY (id),
-                INDEX mail_bounce_logs_idx01 (mail_id),
+                UNIQUE INDEX mail_bounce_logs_idx01 (mail_id, bounced_email),
                 INDEX mail_bounce_logs_idx02 (original_message_id),
                 INDEX mail_bounce_logs_idx03 (bounced_email),
                 INDEX mail_bounce_logs_idx04 (status_code),

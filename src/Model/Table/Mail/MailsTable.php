@@ -24,14 +24,17 @@ final class MailsTable extends Table
         $this->hasMany('MailSentLogs', [
             'className' => MailSentLogsTable::class,
             'foreignKey' => 'mail_id',
+            'sort' => ['MailSentLogs.created' => 'DESC'],
         ]);
         $this->hasMany('MailReceivedCheckLogs', [
             'className' => MailReceivedCheckLogsTable::class,
             'foreignKey' => 'mail_id',
+            'sort' => ['MailReceivedCheckLogs.created' => 'DESC'],
         ]);
         $this->hasMany('MailBounceLogs', [
             'className' => MailBounceLogsTable::class,
             'foreignKey' => 'mail_id',
+            'sort' => ['MailBounceLogs.created' => 'DESC'],
         ]);
     }
 }
