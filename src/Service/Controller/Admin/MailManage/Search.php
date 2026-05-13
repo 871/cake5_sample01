@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin\Log\PageAccessLog;
+namespace App\Service\Controller\Admin\MailManage;
 
-use App\Domain\Log\PageAccessLogs\SearchCondition;
-use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
+use App\Domain\Mail\SearchCondition;
+use App\Domain\Mail\ValueObject as Vo;
 use App\Exception\ValidateException;
-use App\Infrastructure\Persistence\Cake\Log\PageAccessLogs\PageAccessLogsRepository;
+use App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
 use App\Service\Controller\Shared\ServiceInterface;
@@ -19,7 +19,7 @@ final class Search implements ServiceInterface
     use ServiceTrait;
 
     /**
-     * @var array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog>
+     * @var array<\App\Domain\Mail\Entity\Mail>
      */
     private array $searchResults = [];
 
@@ -41,9 +41,8 @@ final class Search implements ServiceInterface
         $datetime = DateTimeImmutable::createFromInterface($this->datetime);
 
         return [
-            // 仕様: accessed_fromは現在日の23:59:59、accessed_toは13日前の00:00:00
-            'accessed_from' => $datetime->modify('-1 day')->format('Y-m-d\T00:00:00'),
-            'accessed_to' => $datetime->modify('-1 day')->format('Y-m-d\T23:59:59'),
+            'send_scheduled_at_from' => $datetime->modify('-1 day')->format('Y-m-d\T00:00:00'),
+            'send_scheduled_at_to' => $datetime->format('Y-m-d\T23:59:59'),
         ];
     }
 
@@ -71,27 +70,27 @@ final class Search implements ServiceInterface
      */
     private function getValidator(): Validator
     {
-         return (new Validator())
-            ->notEmptyDateTime('accessed_from', __('アクセス日時（自）を入力してください。'))
-            ->add('accessed_from', 'validFormat', [
+        return (new Validator())
+            ->notEmptyDateTime('send_scheduled_at_from', __('送信予定日時（自）を入力してください。'))
+            ->add('send_scheduled_at_from', 'validFormat', [
                 'rule' => function ($value) {
                     return Cast::toDateTimeOrNull($value) !== null;
                 },
-                'message' => __('アクセス日時（自）は正しい日時形式で入力してください。'),
+                'message' => __('送信予定日時（自）は正しい日時形式で入力してください。'),
             ])
-            ->notEmptyDateTime('accessed_to', __('アクセス日時（至）を入力してください。'))
-            ->add('accessed_to', 'validFormat', [
+            ->notEmptyDateTime('send_scheduled_at_to', __('送信予定日時（至）を入力してください。'))
+            ->add('send_scheduled_at_to', 'validFormat', [
                 'rule' => function ($value) {
                     return Cast::toDateTimeOrNull($value) !== null;
                 },
-                'message' => __('アクセス日時（至）は正しい日時形式で入力してください。'),
+                'message' => __('送信予定日時（至）は正しい日時形式で入力してください。'),
             ])
-            ->add('accessed_to', 'withinSevenDays', [
+            ->add('send_scheduled_at_to', 'withinFourteenDays', [
                 'rule' => function ($value, array $context) {
                     /** @var array<string, mixed> $data */
                     $data = $context['data'] ?? [];
                     /** @var \DateTimeImmutable|null $from */
-                    $from = Cast::toDateTimeOrNull($data['accessed_from'] ?? null);
+                    $from = Cast::toDateTimeOrNull($data['send_scheduled_at_from'] ?? null);
                     /** @var \DateTimeImmutable|null $to */
                     $to = Cast::toDateTimeOrNull($value);
                     if ($from === null || $to === null) {
@@ -100,7 +99,7 @@ final class Search implements ServiceInterface
 
                     return $from->modify('+ 14 days') >= $to;
                 },
-                'message' => __('アクセス日時の範囲は14日以内で指定してください。'),
+                'message' => __('送信予定日時の範囲は14日以内で指定してください。'),
             ]);
     }
 
@@ -109,19 +108,19 @@ final class Search implements ServiceInterface
      */
     public function search(): self
     {
-        $this->searchResults = (new PageAccessLogsRepository())->search($this->createSearchCondition());
+        $this->searchResults = (new MailsRepository())->search($this->createSearchCondition());
 
         $this->isPrevExists = (function (): bool {
             if (count($this->searchResults) === 0) {
                 return false;
             }
 
-            $searchKey = $this->searchResults[0]->searchKey()->toString() ?? '';
+            $searchKey = $this->searchResults[0]->id()->toStringOrNull() ?? '';
             if ($searchKey === '') {
                 return false;
             }
 
-            return (new PageAccessLogsRepository())->search($this->createSearchCondition(
+            return (new MailsRepository())->search($this->createSearchCondition(
                 navigation_type: Vo\Search\NavigationType::PREV,
                 search_key: $searchKey,
                 limit: 1,
@@ -132,12 +131,12 @@ final class Search implements ServiceInterface
                 return false;
             }
 
-            $searchKey = $this->searchResults[count($this->searchResults) - 1]->searchKey()->toString() ?? '';
+            $searchKey = $this->searchResults[count($this->searchResults) - 1]->id()->toStringOrNull() ?? '';
             if ($searchKey === '') {
                 return false;
             }
 
-            return (new PageAccessLogsRepository())->search($this->createSearchCondition(
+            return (new MailsRepository())->search($this->createSearchCondition(
                 navigation_type: Vo\Search\NavigationType::NEXT,
                 search_key: $searchKey,
                 limit: 1,
@@ -149,9 +148,9 @@ final class Search implements ServiceInterface
 
     /**
      * @param string|null $navigation_type ナビゲーションタイプ（FIRST, LAST, NEXT, PREV）
-     * @param string|null $search_key カーソルベースページネーションの検索キー
+     * @param string|null $search_key カーソルベースページネーションの検索キー（プライマリID）
      * @param int|null $limit 1ページあたりの件数
-     * @return \App\Domain\Log\PageAccessLogs\SearchCondition
+     * @return \App\Domain\Mail\SearchCondition
      */
     private function createSearchCondition(
         ?string $navigation_type = null,
@@ -159,41 +158,32 @@ final class Search implements ServiceInterface
         ?int $limit = null,
     ): SearchCondition {
         return new SearchCondition(
-            accessedFrom: new Vo\Accessed(
+            sendScheduledAtFrom: new Vo\SendScheduledAt(
                 StrictCast::toDateTimeString(
-                    $this->request->getQuery('accessed_from'),
+                    $this->request->getQuery('send_scheduled_at_from'),
                     'Y-m-d\TH:i:s',
                 ),
                 'Y-m-d\TH:i:s',
             ),
-            accessedTo: new Vo\Accessed(
+            sendScheduledAtTo: new Vo\SendScheduledAt(
                 StrictCast::toDateTimeString(
-                    $this->request->getQuery('accessed_to'),
+                    $this->request->getQuery('send_scheduled_at_to'),
                     'Y-m-d\TH:i:s',
                 ),
                 'Y-m-d\TH:i:s',
             ),
-            accountType: new Vo\Search\AccountType(
-                Cast::toStringOrNull(
-                    $this->request->getQuery('account_type'),
-                ),
-            ),
-            accountId: new Vo\Search\AccountId(
-                Cast::toStringOrNull(
-                    $this->request->getQuery('account_id'),
-                ),
-            ),
-            keyword: new Vo\Search\Keyword(
-                Cast::toStringOrNull(
-                    $this->request->getQuery('keyword'),
-                ),
+            sendStatus: ($status = Cast::toStringOrNull($this->request->getQuery('send_status'))) !== null
+                ? new Vo\SendStatus($status)
+                : null,
+            relatedDataKey: new Vo\RelatedDataKey(
+                Cast::toStringOrNull($this->request->getQuery('related_data_key')),
             ),
             navigationType: new Vo\Search\NavigationType(
                 Cast::toStringOrNull(
                     $navigation_type ?? $this->request->getQuery('navigation_type'),
                 ) ?? Vo\Search\NavigationType::FIRST,
             ),
-            searchKey: new Vo\SearchKey(
+            searchKey: new Vo\Search\SearchKey(
                 Cast::toStringOrNull(
                     $search_key ?? $this->request->getQuery('search_key'),
                 ),
@@ -201,13 +191,16 @@ final class Search implements ServiceInterface
             limit: Cast::toIntOrNull(
                 $limit ?? $this->request->getQuery('limit'),
             ) ?? SearchCondition::DEFAULT_LIMIT,
+            keyword: ($kw = Cast::toStringOrNull($this->request->getQuery('keyword'))) !== null
+                ? new Vo\Search\Keyword($kw)
+                : null,
         );
     }
 
     /**
-     * 検索結果を返す（アクセス日時・プライマリIDの降順）
+     * 検索結果を返す（プライマリIDの昇順）
      *
-     * @return array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog>
+     * @return array<\App\Domain\Mail\Entity\Mail>
      */
     public function getRows(): array
     {

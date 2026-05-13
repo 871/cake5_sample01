@@ -32,8 +32,13 @@ class CreateTablePageAccessLogs extends BaseMigration
                     )
                 ) STORED COMMENT '検索用結合キー',
                 PRIMARY KEY (id),
-                UNIQUE INDEX page_access_logs_idx01 (search_key)
-            );
+                UNIQUE INDEX page_access_logs_idx01 (search_key),
+                INDEX page_access_logs_idx02 (accessed, account_id),
+                INDEX page_access_logs_idx03 (accessed, method)
+            ) ENGINE=InnoDB
+            DEFAULT CHARSET=utf8mb4
+            COMMENT='ページアクセスログ'
+            COLLATE=utf8mb4_0900_ai_ci;
 
         SQL;
 
