@@ -14,11 +14,7 @@ use Cake\Log\Log;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Text;
 use DateTimeImmutable;
-use DateTimeInterface;
 use Webklex\PHPIMAP\ClientManager;
-use Webklex\PHPIMAP\Client;
-use Webklex\PHPIMAP\Folder;
-use Webklex\PHPIMAP\Query;
 use Webklex\PHPIMAP\Message;
 use RuntimeException;
 
@@ -40,7 +36,7 @@ final class CheckReceived
 
     /**
      * 処理件数
-      * @var int
+     * @var int
      */
     private int $processed;
 

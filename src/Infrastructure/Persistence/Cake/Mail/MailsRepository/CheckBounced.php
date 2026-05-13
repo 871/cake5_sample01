@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 
-use App\Domain\Mail\ValueObject\SendStatus;
+use App\Domain\Mail\ValueObject as Vo;
+use App\Domain\Mail\Entity\Mail as DomainEntity;
+use App\Infrastructure\Persistence\Cake\Mail\MailMapper;
+use App\Model\Entity\Mail\Mail;
 use App\Model\Table\Mail\MailBounceLogsTable;
 use App\Model\Table\Mail\MailsTable;
 use Cake\Core\Configure;
@@ -20,6 +23,8 @@ final class CheckBounced
 {
     use LocatorAwareTrait;
 
+    const LIMIT = 50;
+
     private const DEFAULT_BOUNCE_TYPE = 'UNKNOWN';
     private const DEFAULT_BOUNCED_EMAIL = 'unknown@example.com';
 
@@ -34,243 +39,185 @@ final class CheckBounced
     private MailBounceLogsTable $bounceLogsTable;
 
     /**
+     * @var array<\Webklex\PHPIMAP\Message>
+     */
+    private array $messages;
+
+    /**
+     * 処理件数
+     * @var int
+     */
+    private int $processed;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->table = $this->fetchTable(MailsTable::class);
         $this->bounceLogsTable = $this->fetchTable(MailBounceLogsTable::class);
+        $this->processed = 0;
     }
 
     /**
+     * @param \DateTimeImmutable $now
      * @return int
      */
-    public function run(): int
+    public function run(DateTimeImmutable $now): int
     {
-        $since = $this->loadBounceCheckSince();
+        // 対象バウンスドメール取得
+        $this->messages = $this->findTargetBouncedMessages(
+            threshold_bounced_at: $this->findMaxMailBounceLogsBouncedAt(),
+        );
 
-        /** @var array<\App\Model\Entity\Mail\Mail> $targetMails */
-        $targetMails = $this->table->find()
-            ->where(['Mails.send_status IN' => [SendStatus::SENT, SendStatus::RECEIVED]])
-            ->all()
-            ->toArray();
-
-        $mailMap = [];
-        foreach ($targetMails as $mail) {
-            if (trim((string)$mail->original_message_id) === '') {
-                continue;
-            }
-            $mailMap[$this->normalizeMessageId((string)$mail->original_message_id)] = $mail;
-        }
-        if ($mailMap === []) {
-            return 0;
-        }
-
-        $client = (new ClientManager())->make((array)Configure::read('PHPIMAP.return_path'));
-        $client->connect();
-
-        try {
-            $processed = 0;
-            foreach ($this->collectUnseenMessages($client) as $message) {
-                $bouncedAt = $this->extractMessageDate($message) ?? new DateTimeImmutable();
-                if ($bouncedAt < $since) {
-                    continue;
-                }
-
-                $messageId = $this->extractRelatedMessageId($message);
-                if ($messageId === null || !isset($mailMap[$messageId])) {
-                    Log::warning('Skip bounce log save: mail not found for message-id', [
-                        'original_message_id' => $messageId,
-                    ]);
-                    continue;
-                }
-
-                $mail = $mailMap[$messageId];
-                $now = new DateTimeImmutable();
-                $bouncedEmail = $this->firstAddress((string)$mail->mail_to);
-
-                $this->table->getConnection()->transactional(
-                    function () use ($mail, $bouncedAt, $now, $bouncedEmail, $message): void {
-                        $this->table->patchEntity($mail, [
-                            'send_status' => SendStatus::BOUNCED,
-                            'modified' => $bouncedAt->format('Y-m-d\TH:i:s'),
-                        ], [
-                            'validate' => false,
-                        ]);
-                        $this->table->saveOrFail($mail, [
-                            'checkExisting' => false,
-                        ]);
-
-                        $log = $this->bounceLogsTable->newEntity([
-                            'id' => Text::uuid(),
-                            'mail_id' => $mail->id,
-                            'original_message_id' => $mail->original_message_id,
-                            'bounced_email' => $bouncedEmail,
-                            'bounce_type' => self::DEFAULT_BOUNCE_TYPE,
-                            'bounced_at' => $bouncedAt->format('Y-m-d\TH:i:s'),
-                            'raw_headers' => $this->extractRawHeaders($message),
-                            'raw_body' => $this->extractRawBody($message),
-                            'raw_message' => $this->extractRawMessage($message),
-                            'created' => $now->format('Y-m-d\TH:i:s'),
-                        ], [
-                            'validate' => false,
-                        ]);
-                        $this->bounceLogsTable->saveOrFail($log, [
-                            'checkExisting' => false,
-                        ]);
-                    },
-                );
-
-                $processed++;
-            }
-
-            return $processed;
-        } finally {
-            $client->disconnect();
-        }
+        return $this->_run($now);
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return DateTimeInterface
      */
-    private function loadBounceCheckSince(): DateTimeImmutable
+    private function findMaxMailBounceLogsBouncedAt(): DateTimeInterface
     {
         /** @var object|null $latest */
         $latest = $this->bounceLogsTable->find()
             ->select(['bounced_at'])
             ->orderBy(['bounced_at' => 'DESC'])
-            ->first();
+            ->first()
+            ?->toArray() ?? [
+                'bounced_at' => new DateTimeImmutable('@0'),
+            ];
 
-        if ($latest !== null && isset($latest->bounced_at) && $latest->bounced_at instanceof DateTimeInterface) {
-            return new DateTimeImmutable($latest->bounced_at->format(DATE_ATOM));
-        }
-
-        return new DateTimeImmutable('@0');
+        return $latest['bounced_at'];
     }
 
     /**
-     * @param \Webklex\PHPIMAP\Client $client
-     * @return iterable<\Webklex\PHPIMAP\Message>
+     * @param \DateTimeInterface $threshold_bounced_at
+     * @return array<\Webklex\PHPIMAP\Message>
      */
-    private function collectUnseenMessages(Client $client): iterable
-    {
-        return $client->getFolder('INBOX')?->messages()
-            ->unseen()
-            ->leaveUnread()
-            ->get() ?? [];
+    private function findTargetBouncedMessages(
+        DateTimeInterface $threshold_bounced_at
+    ): array {
+        $client = (new ClientManager())->make((array)Configure::read('PHPIMAP.return_path'));
+        $client->connect();
+        
+        // TODO 未実装 $threshold_bounced_atの指定日付を超過したメールを取得する
+
+        $client->disconnect();
+
+        return $messages;
     }
 
     /**
-     * @param \Webklex\PHPIMAP\Message $message
-     * @return ?string
+     * @param \DateTimeImmutable $now
+     * @return int
      */
-    private function extractRelatedMessageId(Message $message): ?string
+    public function _run(DateTimeImmutable $now): int
     {
-        foreach ([
-            $message->getInReplyTo(),
-            $message->getReferences(),
-        ] as $raw) {
-            $raw = (string)$raw;
-
-            if ($raw === '') {
-                continue;
-            }
-
-            if (preg_match('/<[^>]+>/', $raw, $matched) === 1) {
-                return $this->normalizeMessageId($matched[0]);
-            }
+         /** @var array<\App\Domain\Mail\Entity\Mail> $mails */
+        $mails = $this->findTargetMails($now);
+        if ($mails === []) {
+            return $this->processed;
         }
 
-        $body = (string)$message->getTextBody();
-
-        if (preg_match('/<[^>]+>/', $body, $matched) === 1) {
-            return $this->normalizeMessageId($matched[0]);
+        foreach ($mails as $mail) {
+            $this->processBouncedMail($mail, $now);
         }
 
+        return $this->_run($now);
+    }
+
+    /**
+     * @param \DateTimeImmutable $now
+     * @return array<\App\Domain\Mail\Entity\Mail>
+     */
+    private function findTargetMails(DateTimeImmutable $now): array
+    {
+        static $offset = 0;
+        /** @var array<\App\Model\Entity\Mail\Mail> $mails */
+        $rows = $this->table->find()
+            ->where([
+                'Mails.send_status IN' => [
+                    Vo\SendStatus::SENT,
+                    Vo\SendStatus::RECEIVED,
+                ],
+                // Memo: 送信予定日時が2週以上前のメールは処理対象外とする
+                'Mails.send_scheduled_at >=' => $now->modify('-2 weeks')->format('Y-m-d\TH:i:s'),
+            ])
+            ->orderBy([
+                'Mails.send_scheduled_at' => 'ASC',
+                'Mails.id' => 'ASC',
+            ])
+            ->offset($offset)
+            ->limit(self::LIMIT)
+            ->all()
+            ->toArray();
+
+        $offset = $offset + self::LIMIT;
+        
+        return array_map(
+            static fn(Mail $mail): DomainEntity =>  (new MailMapper())->toDomainEntity($mail),
+            $rows,
+        );
+    }
+
+    /**
+     * メールのバウンスを確認し、バウンスログ保存とステータス更新を行う
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @param \DateTimeImmutable $now 現在日時
+     */
+    private function processBouncedMail(DomainEntity $entity, DateTimeImmutable $now): void
+    {
+        try {
+            $message = $this->getBouncedMessage($entity);
+            if ($message === null) {
+                return;
+            }
+
+            $this->saveMailBouncedLog($message, $entity, $now);
+
+            $this->processed++;
+        } catch (\Throwable $e) {
+            Log::error('バウンスメール確認処理中に予期せぬエラーが発生しました。' . $e->getMessage());
+        }
+    }
+
+    /**
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @return ?\Webklex\PHPIMAP\Message
+     */
+    private function getBouncedMessage(DomainEntity $entity): ?Message
+    {
+        // TODO 未実装 メールのバウンスを確認を行う
+        // $entityの内容から、$this->messagesの中から該当するバウンスメールを特定して返す
+        // 特定できない場合はnullを返す
+        // 優先順位は以下の順とする
+        // 1. X-mail_id, X-mail_send_scheduled_at, X-related_data
+        // 2. Original-Message-ID
+        // 3. In-Reply-To
+        // 4. References
+        // 5. 添付message/rfc822
+        // ※条件ごとにpriovateメソッドを作成し、順番に呼び出していく形で実装すること
+        // 例: 
+        // return $this->findBouncedMessageByXHeaders($entity) 
+        //     ?? $this->findBouncedMessageByOriginalMessageId($entity) 
+        //     ?? ...;
+    
         return null;
     }
 
     /**
      * @param \Webklex\PHPIMAP\Message $message
-     * @return ?\DateTimeImmutable
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @param \DateTimeImmutable $now
+     * @return void
      */
-    private function extractMessageDate(Message $message): ?DateTimeImmutable
+    private function saveMailBouncedLog(Message $message, DomainEntity $entity, DateTimeImmutable $now): void
     {
-        $date = $message->getDate();
-
-        if ($date instanceof DateTimeInterface) {
-            return DateTimeImmutable::createFromInterface($date);
-        }
-
-        if (is_string($date) && $date !== '') {
-            return new DateTimeImmutable($date);
-        }
-
-        return null;
-    }
-
-    /**
-     * @param \Webklex\PHPIMAP\Message $message
-     * @return ?string
-     */
-    private function extractRawHeaders(Message $message): ?string
-    {
-        $header = $message->getHeader();
-
-        if ($header === null) {
-            return null;
-        }
-
-        if (method_exists($header, '__toString')) {
-            return (string)$header;
-        }
-
-        return null;
-    }
-
-    /**
-     * @param \Webklex\PHPIMAP\Message $message
-     * @return string
-     */
-    private function extractRawBody(Message $message): string
-    {
-        return (string)$message->getTextBody();
-    }
-
-    /**
-     * @param \Webklex\PHPIMAP\Message $message
-     * @return string
-     */
-    private function extractRawMessage(Message $message): string
-    {
-        return $this->extractRawHeaders($message)
-            . "\n\n"
-            . $this->extractRawBody($message);
-    }
-
-    /**
-     * @param string $messageId
-     * @return string
-     */
-    private function normalizeMessageId(string $messageId): string
-    {
-        return trim(trim($messageId), '<>');
-    }
-
-    /**
-     * @param string $raw
-     * @return string
-     */
-    private function firstAddress(string $raw): string
-    {
-        $items = preg_split('/[\s,;]+/', $raw) ?: [];
-        foreach ($items as $item) {
-            $address = trim($item);
-            if ($address !== '') {
-                return $address;
-            }
-        }
-
-        return self::DEFAULT_BOUNCED_EMAIL;
-    }
+        // TODO 未実装 メールのバウンスログ保存とステータス更新を行う
+        // トランザクション内で以下の処理を行う
+        // 1. Mailsテーブルの該当メールのsend_statusをBOUNCEDに更新する
+        // 2. MailBounceLogsテーブルにバウンスログを保存する
+        // テーブル情報はマイグレーションのmail_bounce_logsのCREATE TABLE文を参照
+        
+     }
 }
