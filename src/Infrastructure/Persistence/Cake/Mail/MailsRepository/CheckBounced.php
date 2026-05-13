@@ -15,8 +15,8 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Text;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Throwable;
 use Webklex\PHPIMAP\ClientManager;
-use Webklex\PHPIMAP\Client;
 use Webklex\PHPIMAP\Message;
 
 final class CheckBounced
@@ -99,12 +99,22 @@ final class CheckBounced
     ): array {
         $client = (new ClientManager())->make((array)Configure::read('PHPIMAP.return_path'));
         $client->connect();
-        
-        // TODO 未実装 $threshold_bounced_atの指定日付を超過したメールを取得する
 
-        $client->disconnect();
+        try {
+            $folder = $client->getFolder('INBOX');
+            /** @var array<\Webklex\PHPIMAP\Message> $messages */
+            $messages = $folder
+                ->query()
+                ->get()
+                ->toArray();
 
-        return $messages;
+            return array_values(array_filter(
+                $messages,
+                fn(Message $message): bool => $this->extractMessageDate($message)?->getTimestamp() > $threshold_bounced_at->getTimestamp(),
+            ));
+        } finally {
+            $client->disconnect();
+        }
     }
 
     /**
@@ -187,22 +197,11 @@ final class CheckBounced
      */
     private function getBouncedMessage(DomainEntity $entity): ?Message
     {
-        // TODO 未実装 メールのバウンスを確認を行う
-        // $entityの内容から、$this->messagesの中から該当するバウンスメールを特定して返す
-        // 特定できない場合はnullを返す
-        // 優先順位は以下の順とする
-        // 1. X-mail_id, X-mail_send_scheduled_at, X-related_data
-        // 2. Original-Message-ID
-        // 3. In-Reply-To
-        // 4. References
-        // 5. 添付message/rfc822
-        // ※条件ごとにpriovateメソッドを作成し、順番に呼び出していく形で実装すること
-        // 例: 
-        // return $this->findBouncedMessageByXHeaders($entity) 
-        //     ?? $this->findBouncedMessageByOriginalMessageId($entity) 
-        //     ?? ...;
-    
-        return null;
+        return $this->findBouncedMessageByXHeaders($entity)
+            ?? $this->findBouncedMessageByOriginalMessageId($entity)
+            ?? $this->findBouncedMessageByInReplyTo($entity)
+            ?? $this->findBouncedMessageByReferences($entity)
+            ?? $this->findBouncedMessageByAttachedMessage($entity);
     }
 
     /**
@@ -213,11 +212,518 @@ final class CheckBounced
      */
     private function saveMailBouncedLog(Message $message, DomainEntity $entity, DateTimeImmutable $now): void
     {
-        // TODO 未実装 メールのバウンスログ保存とステータス更新を行う
-        // トランザクション内で以下の処理を行う
-        // 1. Mailsテーブルの該当メールのsend_statusをBOUNCEDに更新する
-        // 2. MailBounceLogsテーブルにバウンスログを保存する
-        // テーブル情報はマイグレーションのmail_bounce_logsのCREATE TABLE文を参照
-        
-     }
+        $rawHeaders = $this->extractRawHeaders($message);
+        $rawBody = $this->extractRawBody($message);
+        $rawMessage = $this->extractRawMessage($rawHeaders, $rawBody, $message);
+        $statusCode = $this->findFirstMatch('/^Status:\s*([0-9.]+)/mi', $rawHeaders, $rawBody, $rawMessage);
+        $action = $this->findFirstMatch('/^Action:\s*([a-zA-Z]+)/mi', $rawHeaders, $rawBody, $rawMessage);
+        $diagnosticCode = $this->findFirstMatch('/^Diagnostic-Code:\s*(.+)$/mi', $rawHeaders, $rawBody, $rawMessage);
+        $bouncedEmail = $this->extractBouncedEmail($message, $rawHeaders, $rawBody, $rawMessage);
+        $bouncedAt = $this->extractMessageDate($message) ?? $now;
+        $arrivalDate = $this->extractArrivalDate($rawHeaders, $rawBody, $rawMessage);
+
+        $this->table->getConnection()->transactional(
+            function () use (
+                $entity,
+                $now,
+                $message,
+                $bouncedEmail,
+                $action,
+                $statusCode,
+                $diagnosticCode,
+                $arrivalDate,
+                $bouncedAt,
+                $rawHeaders,
+                $rawBody,
+                $rawMessage,
+            ): void {
+                $mail = $this->table->get($entity->id()->toString());
+                $this->table->patchEntity($mail, [
+                    'send_status' => Vo\SendStatus::BOUNCED,
+                    'modified' => $now->format('Y-m-d\TH:i:s'),
+                    'modified_by' => null,
+                    'modified_ip' => null,
+                ], [
+                    'validate' => false,
+                ]);
+                $this->table->saveOrFail($mail, [
+                    'checkExisting' => false,
+                ]);
+
+                $log = $this->bounceLogsTable->newEntity([
+                    'id' => Text::uuid(),
+                    'mail_id' => $entity->id()->toString(),
+                    'original_message_id' => $this->extractOriginalMessageId($message, $entity, $rawHeaders, $rawBody, $rawMessage),
+                    'bounced_email' => $bouncedEmail,
+                    'recipient_type' => null,
+                    'action' => $action,
+                    'status_code' => $statusCode,
+                    'diagnostic_code' => $diagnosticCode,
+                    'bounce_type' => $this->resolveBounceType($statusCode, $action),
+                    'remote_mta' => $this->findFirstMatch('/^Remote-MTA:\s*[^;]*;\s*(.+)$/mi', $rawHeaders, $rawBody, $rawMessage),
+                    'reporting_mta' => $this->findFirstMatch('/^Reporting-MTA:\s*[^;]*;\s*(.+)$/mi', $rawHeaders, $rawBody, $rawMessage),
+                    'arrival_date' => $arrivalDate?->format('Y-m-d\TH:i:s'),
+                    'bounced_at' => $bouncedAt->format('Y-m-d\TH:i:s'),
+                    'raw_headers' => $rawHeaders,
+                    'raw_body' => $rawBody,
+                    'raw_message' => $rawMessage,
+                    'parsed_json' => null,
+                    'provider' => null,
+                    'is_auto_generated' => true,
+                    'created' => $now->format('Y-m-d\TH:i:s'),
+                    'created_by' => null,
+                    'created_ip' => null,
+                ], [
+                    'validate' => false,
+                ]);
+                $this->bounceLogsTable->saveOrFail($log, [
+                    'checkExisting' => false,
+                ]);
+            },
+        );
+    }
+
+    /**
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @return ?\Webklex\PHPIMAP\Message
+     */
+    private function findBouncedMessageByXHeaders(DomainEntity $entity): ?Message
+    {
+        foreach ($this->messages as $message) {
+            $mailId = $this->extractHeaderValue($message, 'X-mail_id');
+            $scheduledAt = $this->extractHeaderValue($message, 'X-mail_send_scheduled_at');
+            $relatedDataKey = $this->extractHeaderValue($message, 'X-related_data_key');
+
+            if (
+                $mailId === $entity->id()->toString()
+                && $scheduledAt === $entity->sendScheduledAt()->toString()
+                && $relatedDataKey === $entity->relatedDataKey()->toString()
+            ) {
+                return $message;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @return ?\Webklex\PHPIMAP\Message
+     */
+    private function findBouncedMessageByOriginalMessageId(DomainEntity $entity): ?Message
+    {
+        $originalMessageId = $entity->originalMessageId()->toStringOrNull();
+        if ($originalMessageId === null || $originalMessageId === '') {
+            return null;
+        }
+
+        return $this->findBouncedMessageByHeaderContainsMessageId('Original-Message-ID', $originalMessageId);
+    }
+
+    /**
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @return ?\Webklex\PHPIMAP\Message
+     */
+    private function findBouncedMessageByInReplyTo(DomainEntity $entity): ?Message
+    {
+        $originalMessageId = $entity->originalMessageId()->toStringOrNull();
+        if ($originalMessageId === null || $originalMessageId === '') {
+            return null;
+        }
+
+        return $this->findBouncedMessageByHeaderContainsMessageId('In-Reply-To', $originalMessageId);
+    }
+
+    /**
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @return ?\Webklex\PHPIMAP\Message
+     */
+    private function findBouncedMessageByReferences(DomainEntity $entity): ?Message
+    {
+        $originalMessageId = $entity->originalMessageId()->toStringOrNull();
+        if ($originalMessageId === null || $originalMessageId === '') {
+            return null;
+        }
+
+        return $this->findBouncedMessageByHeaderContainsMessageId('References', $originalMessageId);
+    }
+
+    /**
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @return ?\Webklex\PHPIMAP\Message
+     */
+    private function findBouncedMessageByAttachedMessage(DomainEntity $entity): ?Message
+    {
+        $originalMessageId = $entity->originalMessageId()->toStringOrNull();
+        if ($originalMessageId === null || $originalMessageId === '') {
+            return null;
+        }
+
+        foreach ($this->messages as $message) {
+            $rawMessage = $this->extractRawMessage(
+                $this->extractRawHeaders($message),
+                $this->extractRawBody($message),
+                $message,
+            );
+            if ($rawMessage === null || !str_contains(mb_strtolower($rawMessage), 'message/rfc822')) {
+                continue;
+            }
+            if ($this->containsMessageId($rawMessage, $originalMessageId)) {
+                return $message;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $headerName
+     * @param string $messageId
+     * @return ?\Webklex\PHPIMAP\Message
+     */
+    private function findBouncedMessageByHeaderContainsMessageId(string $headerName, string $messageId): ?Message
+    {
+        foreach ($this->messages as $message) {
+            if ($this->containsMessageId($this->extractHeaderValue($message, $headerName), $messageId)) {
+                return $message;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param ?string $value
+     * @param string $messageId
+     * @return bool
+     */
+    private function containsMessageId(?string $value, string $messageId): bool
+    {
+        if ($value === null || $value === '') {
+            return false;
+        }
+
+        $target = $this->normalizeMessageId($messageId);
+        if ($target === '') {
+            return false;
+        }
+
+        $normalizedValue = $this->normalizeMessageId($value);
+        if ($normalizedValue === $target) {
+            return true;
+        }
+
+        return str_contains($normalizedValue, $target);
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    private function normalizeMessageId(string $value): string
+    {
+        return trim(trim($value), "<> \t\n\r\0\x0B\"");
+    }
+
+    /**
+     * @param \Webklex\PHPIMAP\Message $message
+     * @param string $headerName
+     * @return ?string
+     */
+    private function extractHeaderValue(Message $message, string $headerName): ?string
+    {
+        if (method_exists($message, 'getHeader')) {
+            try {
+                /** @var mixed $value */
+                $value = $message->getHeader($headerName);
+                $normalized = $this->normalizeHeaderValue($value);
+                if ($normalized !== null && $normalized !== '') {
+                    return $normalized;
+                }
+            } catch (Throwable) {
+            }
+        }
+
+        $rawHeaders = $this->extractRawHeaders($message);
+        if ($rawHeaders === null || $rawHeaders === '') {
+            return null;
+        }
+
+        if (preg_match('/^' . preg_quote($headerName, '/') . ':\s*(.+)$/mi', $rawHeaders, $matches) !== 1) {
+            return null;
+        }
+
+        return trim((string)$matches[1]);
+    }
+
+    /**
+     * @param mixed $value
+     * @return ?string
+     */
+    private function normalizeHeaderValue(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+        if (is_scalar($value)) {
+            return trim((string)$value);
+        }
+        if ($value instanceof \Stringable) {
+            return trim((string)$value);
+        }
+        if (is_array($value)) {
+            $parts = array_values(array_filter(array_map(
+                fn(mixed $item): ?string => $this->normalizeHeaderValue($item),
+                $value,
+            )));
+
+            return $parts === [] ? null : implode(' ', $parts);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param \Webklex\PHPIMAP\Message $message
+     * @return ?\DateTimeImmutable
+     */
+    private function extractMessageDate(Message $message): ?DateTimeImmutable
+    {
+        if (method_exists($message, 'getDate')) {
+            try {
+                /** @var mixed $date */
+                $date = $message->getDate();
+
+                return $this->toDateTimeImmutable($date);
+            } catch (Throwable) {
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param mixed $value
+     * @return ?\DateTimeImmutable
+     */
+    private function toDateTimeImmutable(mixed $value): ?DateTimeImmutable
+    {
+        if ($value instanceof DateTimeImmutable) {
+            return $value;
+        }
+        if ($value instanceof DateTimeInterface) {
+            return DateTimeImmutable::createFromInterface($value);
+        }
+        if (!is_string($value) || $value === '') {
+            return null;
+        }
+
+        try {
+            return new DateTimeImmutable($value);
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * @param ?string $rawHeaders
+     * @param ?string $rawBody
+     * @param \Webklex\PHPIMAP\Message $message
+     * @return ?string
+     */
+    private function extractRawMessage(?string $rawHeaders, ?string $rawBody, Message $message): ?string
+    {
+        $messageData = $rawHeaders !== null || $rawBody !== null
+            ? trim(($rawHeaders ?? '') . "\n\n" . ($rawBody ?? ''))
+            : null;
+
+        if ($messageData !== null && $messageData !== '') {
+            return $messageData;
+        }
+
+        return $this->extractRawBody($message);
+    }
+
+    /**
+     * @param \Webklex\PHPIMAP\Message $message
+     * @return ?string
+     */
+    private function extractRawHeaders(Message $message): ?string
+    {
+        foreach (['getRawHeader', 'getHeader'] as $method) {
+            if (!method_exists($message, $method)) {
+                continue;
+            }
+            try {
+                /** @var mixed $value */
+                $value = $message->{$method}();
+                $normalized = $this->normalizeHeaderValue($value);
+                if ($normalized !== null && $normalized !== '') {
+                    return $normalized;
+                }
+            } catch (Throwable) {
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param \Webklex\PHPIMAP\Message $message
+     * @return ?string
+     */
+    private function extractRawBody(Message $message): ?string
+    {
+        foreach (['getRawBody', 'getTextBody', 'getHTMLBody', '__toString'] as $method) {
+            if (!method_exists($message, $method)) {
+                continue;
+            }
+            try {
+                /** @var mixed $value */
+                $value = $message->{$method}();
+                if (is_string($value) && $value !== '') {
+                    return $value;
+                }
+            } catch (Throwable) {
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param \Webklex\PHPIMAP\Message $message
+     * @param \App\Domain\Mail\Entity\Mail $entity
+     * @param ?string $rawHeaders
+     * @param ?string $rawBody
+     * @param ?string $rawMessage
+     * @return ?string
+     */
+    private function extractOriginalMessageId(
+        Message $message,
+        DomainEntity $entity,
+        ?string $rawHeaders,
+        ?string $rawBody,
+        ?string $rawMessage,
+    ): ?string {
+        foreach (['Original-Message-ID', 'In-Reply-To', 'References'] as $headerName) {
+            $value = $this->extractHeaderValue($message, $headerName);
+            if ($value !== null && $value !== '') {
+                return $value;
+            }
+        }
+
+        $value = $this->findFirstMatch('/^Original-Message-ID:\s*(.+)$/mi', $rawHeaders, $rawBody, $rawMessage)
+            ?? $this->findFirstMatch('/^In-Reply-To:\s*(.+)$/mi', $rawHeaders, $rawBody, $rawMessage)
+            ?? $this->findFirstMatch('/^References:\s*(.+)$/mi', $rawHeaders, $rawBody, $rawMessage);
+
+        return $value ?? $entity->originalMessageId()->toStringOrNull();
+    }
+
+    /**
+     * @param \Webklex\PHPIMAP\Message $message
+     * @param ?string $rawHeaders
+     * @param ?string $rawBody
+     * @param ?string $rawMessage
+     * @return string
+     */
+    private function extractBouncedEmail(
+        Message $message,
+        ?string $rawHeaders,
+        ?string $rawBody,
+        ?string $rawMessage,
+    ): string {
+        $candidate = $this->findFirstMatch('/^Final-Recipient:\s*[^;]+;\s*([^\s;]+)/mi', $rawHeaders, $rawBody, $rawMessage)
+            ?? $this->findFirstMatch('/^Original-Recipient:\s*[^;]+;\s*([^\s;]+)/mi', $rawHeaders, $rawBody, $rawMessage)
+            ?? $this->findFirstMatch('/^X-Failed-Recipients:\s*([^\s,;]+)/mi', $rawHeaders, $rawBody, $rawMessage);
+
+        if ($candidate !== null && filter_var($candidate, FILTER_VALIDATE_EMAIL) !== false) {
+            return $candidate;
+        }
+
+        if (method_exists($message, 'getTo')) {
+            try {
+                /** @var mixed $to */
+                $to = $message->getTo();
+                if (is_iterable($to)) {
+                    foreach ($to as $recipient) {
+                        $mail = null;
+                        if (is_object($recipient) && isset($recipient->mail) && is_string($recipient->mail)) {
+                            $mail = $recipient->mail;
+                        } elseif (is_string($recipient)) {
+                            $mail = $recipient;
+                        }
+                        if ($mail !== null && filter_var($mail, FILTER_VALIDATE_EMAIL) !== false) {
+                            return $mail;
+                        }
+                    }
+                }
+            } catch (Throwable) {
+            }
+        }
+
+        return self::DEFAULT_BOUNCED_EMAIL;
+    }
+
+    /**
+     * @param ?string $statusCode
+     * @param ?string $action
+     * @return string
+     */
+    private function resolveBounceType(?string $statusCode, ?string $action): string
+    {
+        if ($statusCode !== null && preg_match('/^5\./', $statusCode) === 1) {
+            return 'HARD';
+        }
+        if ($statusCode !== null && preg_match('/^4\./', $statusCode) === 1) {
+            return 'SOFT';
+        }
+
+        $normalizedAction = $action !== null ? mb_strtolower($action) : null;
+        if ($normalizedAction === 'failed') {
+            return 'HARD';
+        }
+        if ($normalizedAction === 'delayed') {
+            return 'SOFT';
+        }
+
+        return self::DEFAULT_BOUNCE_TYPE;
+    }
+
+    /**
+     * @param ?string ...$texts
+     * @return ?\DateTimeImmutable
+     */
+    private function extractArrivalDate(?string ...$texts): ?DateTimeImmutable
+    {
+        $arrivalDateText = $this->findFirstMatch('/^Arrival-Date:\s*(.+)$/mi', ...$texts);
+        if ($arrivalDateText === null || $arrivalDateText === '') {
+            return null;
+        }
+
+        try {
+            return new DateTimeImmutable($arrivalDateText);
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * @param string $pattern
+     * @param ?string ...$texts
+     * @return ?string
+     */
+    private function findFirstMatch(string $pattern, ?string ...$texts): ?string
+    {
+        foreach ($texts as $text) {
+            if ($text === null || $text === '') {
+                continue;
+            }
+            if (preg_match($pattern, $text, $matches) === 1) {
+                return trim((string)$matches[1]);
+            }
+        }
+
+        return null;
+    }
 }
