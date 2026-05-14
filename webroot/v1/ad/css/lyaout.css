@@ -39,6 +39,9 @@ header {
 .admin-menu-group > summary {
     list-style: none;
     cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    font-weight: 600;
 }
 
 .admin-menu-group > summary::-webkit-details-marker {
@@ -56,7 +59,14 @@ header {
 }
 
 .admin-submenu {
-    padding-left: 1rem;
+    padding-left: 1.5rem;
+    margin-left: 0.5rem;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.admin-submenu .nav-link {
+    font-size: 0.9rem;
+    opacity: 0.85;
 }
 
 /* ===== Main ===== */
