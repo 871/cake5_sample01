@@ -28,7 +28,7 @@ class SearchController extends AppController
             authContext: AuthContextResolver::resolve($this->request),
         );
 
-        $this->viewBuilder()->setLayout('admin_page_access_log');
+        $this->viewBuilder()->setLayout('admin_main');
     }
 
     /**

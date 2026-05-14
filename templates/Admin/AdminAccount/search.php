@@ -13,7 +13,7 @@ use App\Model\Entity\Admin\AdminAccount as OrmEntity;
         管理者アカウント検索
     </div>
     <div class="card-body">
-        <form method="get" action="<?= $this->Url->build(['action' => 'index']) ?>">
+        <form method="get">
             <div class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label">ID</label>
@@ -70,12 +70,19 @@ use App\Model\Entity\Admin\AdminAccount as OrmEntity;
         <table class="table table-hover table-bordered mb-0">
             <thead class="table-dark">
                 <tr>
-                    <th><?= $this->Paginator->sort('id', 'ID') ?></th>
-                    <th><?= $this->Paginator->sort('email', 'メールアドレス') ?></th>
-                    <th><?= $this->Paginator->sort('name', '名前') ?></th>
-                    <th><?= $this->Paginator->sort('account_status_master_id', 'ステータス') ?></th>
-                    <th><?= $this->Paginator->sort('is_email_verified', 'メール確認') ?></th>
-                    <th><?= $this->Paginator->sort('password_changed_at', 'PW変更日時') ?></th>
+                    <?php
+                        $pageOptions = [
+                            'url' => [
+                                'account_id' => $this->getRequest()->getParam('account_id'),
+                            ],
+                        ];
+                    ?>
+                    <th><?= $this->Paginator->sort('id', 'ID', $pageOptions) ?></th>
+                    <th><?= $this->Paginator->sort('email', 'メールアドレス', $pageOptions) ?></th>
+                    <th><?= $this->Paginator->sort('name', '名前', $pageOptions) ?></th>
+                    <th><?= $this->Paginator->sort('account_status_master_id', 'ステータス', $pageOptions) ?></th>
+                    <th><?= $this->Paginator->sort('is_email_verified', 'メール確認', $pageOptions) ?></th>
+                    <th><?= $this->Paginator->sort('password_changed_at', 'PW変更日時', $pageOptions) ?></th>
                     <th>操作</th>
                 </tr>
             </thead>

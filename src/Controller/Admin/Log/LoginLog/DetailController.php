@@ -24,7 +24,7 @@ class DetailController extends AppController
     {
         parent::beforeFilter($event);
 
-        $this->viewBuilder()->setLayout('admin_login_log');
+        $this->viewBuilder()->setLayout('admin_main');
 
         $this->ctlService = new CtlService(
             datetime: new DateTimeImmutable(),

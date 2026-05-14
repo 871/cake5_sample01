@@ -22,47 +22,28 @@
 
 <header>
     <h5 class="mb-0">管理画面</h5>
+    <!-- Header Menu -->
+    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <?= $this->Form->postLink('ログアウト', [
+                'prefix' => 'Admin',
+                'controller' => 'Logout',
+                'action' => 'index',
+                'account_id' => $this->getRequest()->getParam('account_id'),
+            ], [
+                'class' => 'nav-link',
+                'confirm' => 'ログアウトしますか？',
+            ]) ?>
+        </li>
+    </ul>
 </header>
 
 <div class="wrapper">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <h6>メニュー</h6>
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a
-                    class="nav-link text-white"
-                    href="<?= $this->Url->build([
-                        'prefix' => 'Admin',
-                        'controller' => 'Top',
-                        'action' => 'index',
-                        'account_id' => $this->getRequest()->getParam('account_id'),
-                    ]) ?>"
-                >Dashboard</a>
-            </li>
-        </ul>
-    </aside>
+    <?= $this->element('left_menu') ?>
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Header Menu -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2 rounded">
-            <div class="container-fluid px-2">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <?= $this->Form->postLink('ログアウト', [
-                            'prefix' => 'Admin',
-                            'controller' => 'Logout',
-                            'action' => 'index',
-                            'account_id' => $this->getRequest()->getParam('account_id'),
-                        ], [
-                            'class' => 'nav-link',
-                            'confirm' => 'ログアウトしますか？',
-                        ]) ?>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        <?= $this->element('breadcrumb') ?>
         <!-- Message Area -->
         <div class="message-area mb-3">
             <?= $this->Flash->render() ?>
