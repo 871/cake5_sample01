@@ -36,6 +36,29 @@ header {
     overflow-y: auto;
 }
 
+.admin-menu-group > summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.admin-menu-group > summary::-webkit-details-marker {
+    display: none;
+}
+
+.admin-menu-group > summary.nav-link::after {
+    content: "▸";
+    float: right;
+    transition: transform 0.2s ease;
+}
+
+.admin-menu-group[open] > summary.nav-link::after {
+    transform: rotate(90deg);
+}
+
+.admin-submenu {
+    padding-left: 1rem;
+}
+
 /* ===== Main ===== */
 .main-content {
     flex: 1;
