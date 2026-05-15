@@ -33,7 +33,7 @@ final class AdminGrantRepository implements DomainAdminGrantRepository
         array $grantRoleIds,
         array $grantPermissionIds,
     ): void {
-        (new AdminGrantRepository\SetAccountGrants(
+        (new AdminGrantRepository\SaveAccountGrants(
             $adminAccountId,
             $grantRoleIds,
             $grantPermissionIds,
