@@ -6,7 +6,9 @@ namespace App\Infrastructure\Persistence\Cake\Admin;
 use App\Domain\Admin\AdminGrant\Entity\GrantPermission;
 use App\Domain\Admin\AdminGrant\Entity\GrantRolePermission;
 use App\Domain\Admin\AdminGrant\Repository\AdminGrantRepository as DomainAdminGrantRepository;
+use App\Domain\Admin\AdminGrant\SearchCondition;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
+use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
 
 final class AdminGrantRepository implements DomainAdminGrantRepository
@@ -118,5 +120,16 @@ final class AdminGrantRepository implements DomainAdminGrantRepository
     public function getAccountPermissions(Vo\AdminAccountId $adminAccountId): array
     {
         return (new AdminGrantRepository\GetAccountPermissions($adminAccountId))->run();
+    }
+
+    /**
+     * 管理者権限の検索
+     *
+     * @param \App\Domain\Admin\AdminGrant\SearchCondition $condition
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
+     */
+    public function search(SearchCondition $condition): SelectQuery
+    {
+        return (new AdminGrantRepository\Search($condition))->run();
     }
 }

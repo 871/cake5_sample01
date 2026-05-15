@@ -5,7 +5,9 @@ namespace App\Domain\Admin\AdminGrant\Repository;
 
 use App\Domain\Admin\AdminGrant\Entity\GrantPermission;
 use App\Domain\Admin\AdminGrant\Entity\GrantRolePermission;
+use App\Domain\Admin\AdminGrant\SearchCondition;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
+use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
 
 interface AdminGrantRepository
@@ -90,4 +92,16 @@ interface AdminGrantRepository
      * @return \App\Domain\Admin\AdminGrant\Entity\GrantPermission[]
      */
     public function getAccountPermissions(Vo\AdminAccountId $adminAccountId): array;
+
+    /**
+     * 管理者権限の検索
+     *
+     * アカウントと権限の組み合わせでユニークなレコードを検索する
+     *
+     * Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。 --- IGNORE ---
+     *
+     * @param \App\Domain\Admin\AdminGrant\SearchCondition $condition
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
+     */
+    public function search(SearchCondition $condition): SelectQuery;
 }
