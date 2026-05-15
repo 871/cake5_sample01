@@ -6,7 +6,6 @@ namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrantRepository;
 use App\Domain\Admin\AdminGrant\Entity\GrantRolePermission as DomainEntity;
 use App\Domain\Exception\RepositoryException;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrantMapper;
-use App\Model\Entity\Grant\GrantRolePermission as OrmEntity;
 use App\Model\Table\Grant\GrantRolePermissionsTable;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
