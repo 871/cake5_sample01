@@ -12,6 +12,7 @@ class CreateTableGrantAccessControl extends BaseMigration
             DROP TABLE IF EXISTS grant_roles;
             CREATE TABLE grant_roles (
                 id BIGINT NOT NULL AUTO_INCREMENT COMMENT '権限ロールID',
+                account_type VARCHAR(20) NOT NULL COMMENT 'アカウント種別:ADMIN / USER',
                 code VARCHAR(100) NOT NULL COMMENT '権限ロールコード',
                 name VARCHAR(100) NOT NULL COMMENT '権限ロール名',
                 description VARCHAR(255) NULL COMMENT '説明',
@@ -20,8 +21,8 @@ class CreateTableGrantAccessControl extends BaseMigration
                 created DATETIME(0) NOT NULL COMMENT '作成日時',
                 modified DATETIME(0) NOT NULL COMMENT '更新日時',
                 PRIMARY KEY (id),
-                UNIQUE INDEX grant_roles_idx01 (code),
-                INDEX grant_roles_idx02 (is_active, sort)
+                UNIQUE INDEX grant_roles_idx01 (account_type, code),
+                INDEX grant_roles_idx02 (account_type, is_active, sort)
             ) ENGINE=InnoDB
             DEFAULT CHARSET=utf8mb4
             COMMENT='権限ロール'
@@ -30,6 +31,7 @@ class CreateTableGrantAccessControl extends BaseMigration
             DROP TABLE IF EXISTS grant_permissions;
             CREATE TABLE grant_permissions (
                 id BIGINT NOT NULL AUTO_INCREMENT COMMENT '権限ID',
+                account_type VARCHAR(20) NOT NULL COMMENT 'アカウント種別:ADMIN / USER',
                 code VARCHAR(100) NOT NULL COMMENT '権限コード',
                 name VARCHAR(100) NOT NULL COMMENT '権限名',
                 description VARCHAR(255) NULL COMMENT '説明',
@@ -38,8 +40,8 @@ class CreateTableGrantAccessControl extends BaseMigration
                 created DATETIME(0) NOT NULL COMMENT '作成日時',
                 modified DATETIME(0) NOT NULL COMMENT '更新日時',
                 PRIMARY KEY (id),
-                UNIQUE INDEX grant_permissions_idx01 (code),
-                INDEX grant_permissions_idx02 (is_active, sort)
+                UNIQUE INDEX grant_permissions_idx01 (account_type, code),
+                INDEX grant_permissions_idx02 (account_type, is_active, sort)
             ) ENGINE=InnoDB
             DEFAULT CHARSET=utf8mb4
             COMMENT='権限'
@@ -65,13 +67,14 @@ class CreateTableGrantAccessControl extends BaseMigration
             DROP TABLE IF EXISTS grant_role_permissions;
             CREATE TABLE grant_role_permissions (
                 id CHAR(36) NOT NULL COMMENT 'ロール権限紐付けID',
+                account_type VARCHAR(20) NOT NULL COMMENT 'アカウント種別:ADMIN / USER',
                 grant_role_id BIGINT NOT NULL COMMENT '権限ロールID',
                 grant_permission_id BIGINT NOT NULL COMMENT '権限ID',
                 created DATETIME(0) NOT NULL COMMENT '作成日時',
                 modified DATETIME(0) NOT NULL COMMENT '更新日時',
                 PRIMARY KEY (id),
-                UNIQUE INDEX grant_role_permissions_idx01 (grant_role_id, grant_permission_id),
-                INDEX grant_role_permissions_idx02 (grant_permission_id)
+                UNIQUE INDEX grant_role_permissions_idx01 (account_type, grant_role_id, grant_permission_id),
+                INDEX grant_role_permissions_idx02 (account_type, grant_permission_id)
             ) ENGINE=InnoDB
             DEFAULT CHARSET=utf8mb4
             COMMENT='権限ロールと権限の紐付け'
