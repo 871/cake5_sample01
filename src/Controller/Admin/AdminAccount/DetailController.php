@@ -1,24 +1,23 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\Admin\Log\LoginLog;
+namespace App\Controller\Admin\AdminAccount;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\Log\LoginLog\Detail as CtlService;
+use App\Service\Controller\Admin\AdminAccount\Detail as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 
 class DetailController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\Log\LoginLog\Detail
+     * @var \App\Service\Controller\Admin\AdminAccount\Detail
      */
     private CtlService $ctlService;
 
     /**
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
-     * @return void
      */
     public function beforeFilter(EventInterface $event): void
     {
@@ -39,9 +38,10 @@ class DetailController extends AppController
     public function index()
     {
         $this->set([
-            'entity' => $this->ctlService->getEntity(),
+            'entity' => $this->ctlService->getDomainEntity(),
+            'histories' => $this->ctlService->getHistories(),
         ]);
 
-        return $this->render('/Admin/Log/LoginLog/detail');
+        return $this->render('/Admin/AdminAccount/detail');
     }
 }

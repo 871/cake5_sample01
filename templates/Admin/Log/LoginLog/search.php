@@ -117,7 +117,7 @@ use App\Model\Entity\Log\LoginLog;
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">アカウント種別</label>
+                    <label class="form-label">ログイン結果</label>
                     <div class="form-control">
                         <label class="form-check-label">
                             <input 
@@ -282,9 +282,9 @@ use App\Model\Entity\Log\LoginLog;
             </div>
             <nav>
                 <ul class="pagination pagination-sm mb-0">
-                    <?= $this->Paginator->prev('«') ?>
-                    <?= $this->Paginator->numbers() ?>
-                    <?= $this->Paginator->next('»') ?>
+                    <?= $this->Paginator->prev('«', $pageOptions) ?>
+                    <?= $this->Paginator->numbers($pageOptions) ?>
+                    <?= $this->Paginator->next('»', $pageOptions) ?>
                 </ul>
             </nav>
         </div>

@@ -17,8 +17,9 @@ $builder->prefix('Other', ['path' => '/ot'], static function (RouteBuilder $buil
         $builder->connect('/admin-accounts/edit/*', ['controller' => 'AdminAccounts', 'action' => 'edit']);
         $builder->connect('/admin-accounts/delete/*', ['controller' => 'AdminAccounts', 'action' => 'delete']);
     });
-    // 管理者アカウント管理
-    $builder->prefix('AdminAccount', ['path' => '/admin_account'], static function (RouteBuilder $builder) {
+    // 管理者アカウント管理 
+    // Memo：　管理者機能へ移行済
+    /* $builder->prefix('AdminAccount', ['path' => '/admin_account'], static function (RouteBuilder $builder) {
         // 検索
         $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
         $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
@@ -41,7 +42,7 @@ $builder->prefix('Other', ['path' => '/ot'], static function (RouteBuilder $buil
         // 削除
         $builder->get('/delete/{admin_account_id}', ['controller' => 'Delete', 'action' => 'index']);
         $builder->post('/delete/{admin_account_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
-    });
+    }); /**/
 
     // サンプルBake
     $builder->prefix('SampleBake', ['path' => '/sample-bake'], static function (RouteBuilder $builder) {

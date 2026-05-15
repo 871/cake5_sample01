@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\Admin\Log\LoginLog;
+namespace App\Controller\Admin\AdminAccount;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\Log\LoginLog\Search as CtlService;
+use App\Service\Controller\Admin\AdminAccount\Search as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Log\Log;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class SearchController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\Log\LoginLog\Search
+     * @var \App\Service\Controller\Admin\AdminAccount\Search
      */
     private CtlService $ctlService;
 
@@ -55,16 +55,12 @@ class SearchController extends AppController
     public function index()
     {
         try {
-            $categoryService = $this->ctlService->createCategoryService();
-
             $this->set([
-                'loginActorTypeOptions' => $categoryService->getLoginActorTypeOptions(),
-                'loginResultOptions' => $categoryService->getLoginResultOptions(),
-                'failureReasonCodeOptions' => $categoryService->getFailureReasonCodeOptions(),
                 'rows' => $this->paginate(
                     $this->ctlService->getSearchQuery(),
                     $this->ctlService->getPaginateSettings(),
                 ),
+                'accountStatusOptions' => $this->ctlService->getAccountStatusOptions(),
             ]);
         } catch (NotFoundException $e) {
             Log::error(
@@ -83,6 +79,6 @@ class SearchController extends AppController
             ]);
         }
 
-        return $this->render('/Admin/Log/LoginLog/search');
+        return $this->render('/Admin/AdminAccount/search');
     }
 }

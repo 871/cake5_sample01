@@ -1,20 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\Admin\MailManage;
+namespace App\Controller\Admin\AdminAccount;
 
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\MailManage\Create as CtlService;
+use App\Service\Controller\Admin\AdminAccount\Edit as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
 
-class CreateController extends AppController
+class EditController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\MailManage\Create
+     * @var \App\Service\Controller\Admin\AdminAccount\Edit
      */
     private CtlService $ctlService;
 
@@ -39,7 +39,10 @@ class CreateController extends AppController
                 ignoreActions: ['index'],
             )
         ) {
+            $this->Flash->error(__('更新対象のデータが見つかりません。'));
+
             return $this->redirect([
+                'controller' => 'Search',
                 'action' => 'index',
                 'account_id' => $this->request->getParam('account_id'),
                 '?' => $this->request->getQuery(),
@@ -71,9 +74,10 @@ class CreateController extends AppController
     {
         $this->set([
             'input' => $this->ctlService->getInputProcess(),
+            'accountStatusOptions' => $this->ctlService->getAccountStatusOptions(),
         ]);
 
-        return $this->render('/Admin/MailManage/input');
+        return $this->render('/Admin/AdminAccount/input');
     }
 
     /**
@@ -112,9 +116,10 @@ class CreateController extends AppController
     {
         $this->set([
             'input' => $this->ctlService->getInputProcess(),
+            'accountStatusOptions' => $this->ctlService->getAccountStatusOptions(),
         ]);
 
-        return $this->render('/Admin/MailManage/conf');
+        return $this->render('/Admin/AdminAccount/conf');
     }
 
     /**
@@ -128,13 +133,13 @@ class CreateController extends AppController
                 ->saveInputProcess()
                 ->endInputProcess();
 
-            $this->Flash->success(__('メール情報の登録が完了しました。'));
-            $inputProcess = $this->ctlService->startInputProcess();
+            $this->Flash->success(__('管理者アカウントの更新が完了しました。'));
 
             return $this->redirect([
-                'action' => 'input',
+                'prefix' => 'Admin/AdminAccount',
+                'controller' => 'Search',
+                'action' => 'index',
                 'account_id' => $this->request->getParam('account_id'),
-                'process_id' => $inputProcess->getId(),
                 '?' => $this->request->getQuery(),
             ]);
         } catch (ValidateException $ex) {
@@ -142,6 +147,8 @@ class CreateController extends AppController
                 ->inputProcessErrorUpdate($ex);
 
             return $this->redirect([
+                'prefix' => 'Admin/AdminAccount',
+                'controller' => 'Edit',
                 'action' => 'input',
                 'account_id' => $this->request->getParam('account_id'),
                 'process_id' => $this->request->getParam('process_id'),

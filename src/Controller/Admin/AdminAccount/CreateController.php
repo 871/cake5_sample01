@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\Admin\MailManage;
+namespace App\Controller\Admin\AdminAccount;
 
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\MailManage\Create as CtlService;
+use App\Service\Controller\Admin\AdminAccount\Create as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class CreateController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\MailManage\Create
+     * @var \App\Service\Controller\Admin\AdminAccount\Create
      */
     private CtlService $ctlService;
 
@@ -36,7 +36,7 @@ class CreateController extends AppController
 
         if (
             !$this->ctlService->existsInputProcess(
-                ignoreActions: ['index'],
+                ignoreActions: ['index', 'copy'],
             )
         ) {
             return $this->redirect([
@@ -67,13 +67,29 @@ class CreateController extends AppController
     /**
      * @return \Cake\Http\Response|null|void Renders view
      */
+    public function copy()
+    {
+        $inputProcess = $this->ctlService->startInputProcessForCopy();
+
+        return $this->redirect([
+            'action' => 'input',
+            'account_id' => $this->request->getParam('account_id'),
+            'process_id' => $inputProcess->getId(),
+            '?' => $this->request->getQuery(),
+        ]);
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
     public function input()
     {
         $this->set([
             'input' => $this->ctlService->getInputProcess(),
+            'accountStatusOptions' => $this->ctlService->getAccountStatusOptions(),
         ]);
 
-        return $this->render('/Admin/MailManage/input');
+        return $this->render('/Admin/AdminAccount/input');
     }
 
     /**
@@ -112,9 +128,10 @@ class CreateController extends AppController
     {
         $this->set([
             'input' => $this->ctlService->getInputProcess(),
+            'accountStatusOptions' => $this->ctlService->getAccountStatusOptions(),
         ]);
 
-        return $this->render('/Admin/MailManage/conf');
+        return $this->render('/Admin/AdminAccount/conf');
     }
 
     /**
@@ -128,13 +145,13 @@ class CreateController extends AppController
                 ->saveInputProcess()
                 ->endInputProcess();
 
-            $this->Flash->success(__('メール情報の登録が完了しました。'));
-            $inputProcess = $this->ctlService->startInputProcess();
+            $this->Flash->success(__('管理者アカウントの作成が完了しました。'));
 
             return $this->redirect([
-                'action' => 'input',
+                'prefix' => 'Admin/AdminAccount',
+                'controller' => 'Search',
+                'action' => 'index',
                 'account_id' => $this->request->getParam('account_id'),
-                'process_id' => $inputProcess->getId(),
                 '?' => $this->request->getQuery(),
             ]);
         } catch (ValidateException $ex) {
