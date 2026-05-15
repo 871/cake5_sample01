@@ -7,23 +7,11 @@ use App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrantMapper;
 use App\Model\Table\Grant\GrantAccountPermissionsTable;
-use App\Model\Table\Grant\GrantAccountRolesTable;
-use App\Model\Table\Grant\GrantRolePermissionsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 final class HasPermission
 {
     use LocatorAwareTrait;
-
-    /**
-     * @var \App\Model\Table\Grant\GrantAccountRolesTable
-     */
-    private GrantAccountRolesTable $accountRolesTable;
-
-    /**
-     * @var \App\Model\Table\Grant\GrantRolePermissionsTable
-     */
-    private GrantRolePermissionsTable $rolePermissionsTable;
 
     /**
      * @var \App\Model\Table\Grant\GrantAccountPermissionsTable
@@ -38,8 +26,6 @@ final class HasPermission
         private readonly AdminAccountId $adminAccountId,
         private readonly GrantPermissionId $grantPermissionId,
     ) {
-        $this->accountRolesTable = $this->fetchTable(GrantAccountRolesTable::class);
-        $this->rolePermissionsTable = $this->fetchTable(GrantRolePermissionsTable::class);
         $this->accountPermissionsTable = $this->fetchTable(GrantAccountPermissionsTable::class);
     }
 
@@ -51,36 +37,37 @@ final class HasPermission
         $accountId = $this->adminAccountId->toInt();
         $permissionId = $this->grantPermissionId->toInt();
 
-        // 個別付与の権限チェック
-        $hasIndividual = $this->accountPermissionsTable
-            ->find()
-            ->where([
-                'GrantAccountPermissions.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
-                'GrantAccountPermissions.account_id' => $accountId,
-                'GrantAccountPermissions.grant_permission_id' => $permissionId,
-            ])
-            ->count() > 0;
+        $sql = <<<SQL
+SELECT EXISTS(
+    SELECT 1 FROM `grant_account_permissions`
+    WHERE `account_type` = ?
+      AND `account_id` = ?
+      AND `grant_permission_id` = ?
+    UNION ALL
+    SELECT 1 FROM `grant_account_roles` AS `gar`
+    INNER JOIN `grant_role_permissions` AS `grp`
+        ON `gar`.`grant_role_id` = `grp`.`grant_role_id`
+    WHERE `gar`.`account_type` = ?
+      AND `gar`.`account_id` = ?
+      AND `grp`.`account_type` = ?
+      AND `grp`.`grant_permission_id` = ?
+    LIMIT 1
+) AS `has_permission`
+SQL;
 
-        if ($hasIndividual) {
-            return true;
-        }
+        $stmt = $this->accountPermissionsTable->getConnection()->execute($sql, [
+            AdminGrantMapper::ACCOUNT_TYPE,
+            $accountId,
+            $permissionId,
+            AdminGrantMapper::ACCOUNT_TYPE,
+            $accountId,
+            AdminGrantMapper::ACCOUNT_TYPE,
+            $permissionId,
+        ]);
 
-        // ロール経由の権限チェック（サブクエリを使用）
-        $roleSubQuery = $this->accountRolesTable
-            ->find()
-            ->select(['grant_role_id'])
-            ->where([
-                'GrantAccountRoles.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
-                'GrantAccountRoles.account_id' => $accountId,
-            ]);
+        /** @var array<string, mixed>|false $row */
+        $row = $stmt->fetch('assoc');
 
-        return $this->rolePermissionsTable
-            ->find()
-            ->where([
-                'GrantRolePermissions.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
-                'GrantRolePermissions.grant_role_id IN' => $roleSubQuery,
-                'GrantRolePermissions.grant_permission_id' => $permissionId,
-            ])
-            ->count() > 0;
+        return is_array($row) && (bool)$row['has_permission'];
     }
 }

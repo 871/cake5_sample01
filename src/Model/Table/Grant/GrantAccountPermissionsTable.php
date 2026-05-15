@@ -4,12 +4,14 @@ declare(strict_types=1);
 namespace App\Model\Table\Grant;
 
 use App\Model\Entity\Grant\GrantAccountPermission;
+use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
  * GrantAccountPermissions Model
  *
+ * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Admin\AdminAccountsTable> $AdminAccounts
  * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Grant\GrantPermissionsTable> $GrantPermissions
  * @method \App\Model\Entity\Grant\GrantAccountPermission newEmptyEntity()
  * @method \App\Model\Entity\Grant\GrantAccountPermission newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
@@ -29,6 +31,13 @@ final class GrantAccountPermissionsTable extends Table
         $this->setTable('grant_account_permissions');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->belongsTo('AdminAccounts', [
+            'className' => AdminAccountsTable::class,
+            'foreignKey' => 'account_id',
+            'conditions' => ['GrantAccountPermissions.account_type' => 'ADMIN'],
+            'joinType' => 'INNER',
+        ]);
 
         $this->belongsTo('GrantPermissions', [
             'className' => GrantPermissionsTable::class,

@@ -49,20 +49,20 @@ final class UpdateRolePermissions
             ]);
 
             // 新しいロール権限を登録
-            foreach ($this->grantPermissionIds as $grantPermissionId) {
-                assert($grantPermissionId instanceof GrantPermissionId);
-                $this->table->saveOrFail(
-                    $this->table->newEntity([
+            $entities = array_map(
+                function (GrantPermissionId $grantPermissionId) use ($roleId, $datetimeStr) {
+                    return $this->table->newEntity([
                         'id' => UUID::uuid7(),
                         'account_type' => AdminGrantMapper::ACCOUNT_TYPE,
                         'grant_role_id' => $roleId,
                         'grant_permission_id' => $grantPermissionId->toInt(),
                         'created' => $datetimeStr,
                         'modified' => $datetimeStr,
-                    ], ['validate' => false]),
-                    ['checkExisting' => false],
-                );
-            }
+                    ], ['validate' => false]);
+                },
+                $this->grantPermissionIds,
+            );
+            $this->table->saveManyOrFail($entities, ['checkExisting' => false]);
         });
     }
 }

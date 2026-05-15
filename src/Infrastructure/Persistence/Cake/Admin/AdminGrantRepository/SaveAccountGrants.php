@@ -7,12 +7,13 @@ use App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrantMapper;
+use App\Lib\UUID\UUID;
 use App\Model\Table\Grant\GrantAccountPermissionsTable;
 use App\Model\Table\Grant\GrantAccountRolesTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use DateTimeInterface;
 
-final class SetAccountGrants
+final class SaveAccountGrants
 {
     use LocatorAwareTrait;
 
@@ -25,11 +26,6 @@ final class SetAccountGrants
      * @var \App\Model\Table\Grant\GrantAccountPermissionsTable
      */
     private GrantAccountPermissionsTable $accountPermissionsTable;
-
-    /**
-     * @var \App\Infrastructure\Persistence\Cake\Admin\AdminGrantMapper
-     */
-    private AdminGrantMapper $mapper;
 
     /**
      * @param \App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId $adminAccountId
@@ -45,7 +41,6 @@ final class SetAccountGrants
     ) {
         $this->accountRolesTable = $this->fetchTable(GrantAccountRolesTable::class);
         $this->accountPermissionsTable = $this->fetchTable(GrantAccountPermissionsTable::class);
-        $this->mapper = new AdminGrantMapper();
     }
 
     /**
@@ -70,30 +65,36 @@ final class SetAccountGrants
             ]);
 
             // ロールを付与
-            foreach ($this->grantRoleIds as $grantRoleId) {
-                assert($grantRoleId instanceof GrantRoleId);
-                $this->accountRolesTable->saveOrFail(
-                    $this->mapper->toNewOrmAccountRoleEntity(
-                        $accountId,
-                        $grantRoleId->toInt(),
-                        $datetimeStr,
-                    ),
-                    ['checkExisting' => false],
-                );
-            }
+            $roleEntities = array_map(
+                function (GrantRoleId $grantRoleId) use ($accountId, $datetimeStr) {
+                    return $this->accountRolesTable->newEntity([
+                        'id' => UUID::uuid7(),
+                        'account_type' => AdminGrantMapper::ACCOUNT_TYPE,
+                        'account_id' => $accountId,
+                        'grant_role_id' => $grantRoleId->toInt(),
+                        'created' => $datetimeStr,
+                        'modified' => $datetimeStr,
+                    ], ['validate' => false]);
+                },
+                $this->grantRoleIds,
+            );
+            $this->accountRolesTable->saveManyOrFail($roleEntities, ['checkExisting' => false]);
 
             // 個別権限を付与
-            foreach ($this->grantPermissionIds as $grantPermissionId) {
-                assert($grantPermissionId instanceof GrantPermissionId);
-                $this->accountPermissionsTable->saveOrFail(
-                    $this->mapper->toNewOrmAccountPermissionEntity(
-                        $accountId,
-                        $grantPermissionId->toInt(),
-                        $datetimeStr,
-                    ),
-                    ['checkExisting' => false],
-                );
-            }
+            $permEntities = array_map(
+                function (GrantPermissionId $grantPermissionId) use ($accountId, $datetimeStr) {
+                    return $this->accountPermissionsTable->newEntity([
+                        'id' => UUID::uuid7(),
+                        'account_type' => AdminGrantMapper::ACCOUNT_TYPE,
+                        'account_id' => $accountId,
+                        'grant_permission_id' => $grantPermissionId->toInt(),
+                        'created' => $datetimeStr,
+                        'modified' => $datetimeStr,
+                    ], ['validate' => false]);
+                },
+                $this->grantPermissionIds,
+            );
+            $this->accountPermissionsTable->saveManyOrFail($permEntities, ['checkExisting' => false]);
         });
     }
 }
