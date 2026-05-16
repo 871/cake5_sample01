@@ -44,10 +44,22 @@ final class Search
         //   - IN (UNION ALL 相関サブクエリ): MySQL のセミジョイン最適化が適用される場合もあるが、
         //     UNION ALL 内では FirstMatch 戦略が働きにくい。
         //   - EXISTS (UNION ALL 相関サブクエリ) ← 採用:
-        //     最初に一致した行で短絡評価され、(account_id, grant_permission_id, account_type) の
-        //     インデックスを効率的に活用できる。派生テーブルのマテリアライズを避けられるため、
-        //     パフォーマンスが最も優れている。
-        $query = $this->table
+        //     最初に一致した行で短絡評価され、各テーブルの複合インデックスを効率的に活用できる。
+        //     派生テーブルのマテリアライズを避けられるため、パフォーマンスが最も優れている。
+        //
+        // 利用想定 INDEX:
+        //   admin_accounts            : PRIMARY KEY (id)
+        //                               KEY idx_account_status_master_id (account_status_master_id)
+        //   account_status_masters    : PRIMARY KEY (id)
+        //   grant_permissions         : KEY idx_account_type (account_type)
+        //                               PRIMARY KEY (id)
+        //   grant_account_permissions : KEY idx_account_type_account_id_permission_id
+        //                                   (account_type, account_id, grant_permission_id)
+        //   grant_role_permissions    : KEY idx_account_type_permission_id
+        //                                   (account_type, grant_permission_id)
+        //   grant_account_roles       : KEY idx_account_type_account_id_role_id
+        //                                   (account_type, account_id, grant_role_id)
+        return $this->table
             ->find()
             ->select([
                 'AdminAccounts.id',
@@ -62,11 +74,14 @@ final class Search
                 'grant_permission_code' => 'GrantPermissions.code',
             ])
             ->join([
+                // account_status_masters.PRIMARY KEY (id) を使用
+                // admin_accounts.KEY idx_account_status_master_id (account_status_master_id) を使用
                 'AccountStatusMasters' => [
                     'table' => 'account_status_masters',
                     'type' => 'INNER',
                     'conditions' => 'AccountStatusMasters.id = AdminAccounts.account_status_master_id',
                 ],
+                // grant_permissions.KEY idx_account_type (account_type) を使用
                 'GrantPermissions' => [
                     'table' => 'grant_permissions',
                     'type' => 'INNER',
@@ -75,15 +90,19 @@ final class Search
             ])
             ->where(function (QueryExpression $exp): QueryExpression {
                 // 直接付与またはロール経由で権限を保持しているか EXISTS で確認
-                return $exp->exists(
+                // grant_account_permissions.KEY idx_account_type_account_id_permission_id を使用
+                // grant_role_permissions.KEY idx_account_type_permission_id を使用
+                // grant_account_roles.KEY idx_account_type_account_id_role_id を使用
+                $exp->exists(
                     (function () {
                         return $this->table->getConnection()->newQuery()
                             ->select(['1'])
                             ->from(['gap' => 'grant_account_permissions'])
                             ->where([
-                                'gap.grant_permission_id = GrantPermissions.id',
+                                // idx_account_type_account_id_permission_id の列順に記述
                                 'gap.account_type = GrantPermissions.account_type',
                                 'gap.account_id = AdminAccounts.id',
+                                'gap.grant_permission_id = GrantPermissions.id',
                             ])
                             ->unionAll(
                                 (function () {
@@ -94,63 +113,65 @@ final class Search
                                             'table' => 'grant_account_roles',
                                             'type' => 'INNER',
                                             'conditions' => [
-                                                'grp.grant_role_id = gar.grant_role_id',
+                                                // grant_role_permissions.idx_account_type_permission_id の列順
                                                 'grp.account_type = GrantPermissions.account_type',
+                                                'grp.grant_permission_id = GrantPermissions.id',
+                                                // grant_account_roles.idx_account_type_account_id_role_id の列順
                                                 'gar.account_type = GrantPermissions.account_type',
                                                 'gar.account_id = AdminAccounts.id',
+                                                'gar.grant_role_id = grp.grant_role_id',
                                             ],
                                         ]])
-                                        ->where(['grp.grant_permission_id = GrantPermissions.id']);
+                                        ->where([]);
                                 })(),
                             );
                     })(),
                 );
-            });
 
-        // 検索条件を適用
-        $adminAccountIds = array_map(
-            fn(AdminAccountId $vo): int => $vo->toInt(),
-            $this->condition->getAdminAccountIds(),
-        );
-        $accountStatusMasterIds = array_map(
-            fn(AccountStatusMasterId $vo): int => $vo->toInt(),
-            $this->condition->getAccountStatusMasterIds(),
-        );
-        $grantPermissionIds = array_map(
-            fn(GrantPermissionId $vo): int => $vo->toInt(),
-            $this->condition->getGrantPermissionIds(),
-        );
-        $grantRoleIds = array_map(
-            fn(GrantRoleId $vo): int => $vo->toInt(),
-            $this->condition->getGrantRoleIds(),
-        );
-
-        $query->where(
-            array_filter([
-                'AdminAccounts.id IN' => $adminAccountIds ?: null,
-                'AdminAccounts.account_status_master_id IN' => $accountStatusMasterIds ?: null,
-                'GrantPermissions.id IN' => $grantPermissionIds ?: null,
-            ], fn($v) => $v !== null),
-        );
-
-        // ロール絞り込み（アカウントがそのロールを保持しているか）
-        if ($grantRoleIds !== []) {
-            $query->where(function (QueryExpression $exp) use ($grantRoleIds): QueryExpression {
-                return $exp->exists(
-                    (function () use ($grantRoleIds) {
-                        return $this->table->getConnection()->newQuery()
-                            ->select(['1'])
-                            ->from(['gar_filter' => 'grant_account_roles'])
-                            ->where([
-                                'gar_filter.account_id = AdminAccounts.id',
-                                'gar_filter.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
-                                'gar_filter.grant_role_id IN' => $grantRoleIds,
-                            ]);
-                    })(),
+                // 省略可能な絞り込み条件: 入力値がある場合のみ追加（array_filter で除外）
+                // admin_accounts.PRIMARY KEY (id) を使用
+                // admin_accounts.KEY idx_account_status_master_id (account_status_master_id) を使用
+                // grant_permissions.PRIMARY KEY (id) を使用
+                $exp->add(
+                    array_filter([
+                        'AdminAccounts.id IN' => (array_map(
+                            fn(AdminAccountId $vo): int => $vo->toInt(),
+                            $this->condition->getAdminAccountIds(),
+                        )) ?: null,
+                        'AdminAccounts.account_status_master_id IN' => (array_map(
+                            fn(AccountStatusMasterId $vo): int => $vo->toInt(),
+                            $this->condition->getAccountStatusMasterIds(),
+                        )) ?: null,
+                        'GrantPermissions.id IN' => (array_map(
+                            fn(GrantPermissionId $vo): int => $vo->toInt(),
+                            $this->condition->getGrantPermissionIds(),
+                        )) ?: null,
+                    ], fn($v) => $v !== null),
                 );
-            });
-        }
 
-        return $query;
+                // ロール絞り込み（オプション）: アカウントがそのロールを保持しているか
+                // grant_account_roles.KEY idx_account_type_account_id_role_id を使用
+                $grantRoleIds = array_map(
+                    fn(GrantRoleId $vo): int => $vo->toInt(),
+                    $this->condition->getGrantRoleIds(),
+                );
+                if ($grantRoleIds !== []) {
+                    $exp->exists(
+                        (function () use ($grantRoleIds) {
+                            return $this->table->getConnection()->newQuery()
+                                ->select(['1'])
+                                ->from(['gar_filter' => 'grant_account_roles'])
+                                ->where([
+                                    // idx_account_type_account_id_role_id の列順に記述
+                                    'gar_filter.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
+                                    'gar_filter.account_id = AdminAccounts.id',
+                                    'gar_filter.grant_role_id IN' => $grantRoleIds,
+                                ]);
+                        })(),
+                    );
+                }
+
+                return $exp;
+            });
     }
 }
