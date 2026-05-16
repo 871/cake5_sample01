@@ -30,7 +30,7 @@ final class AdminGrantRepository implements DomainAdminGrantRepository
      * @param \App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId[] $grantPermissionIds
      * @return void
      */
-    public function setAccountGrants(
+    public function saveAccountGrants(
         Vo\AdminAccountId $adminAccountId,
         array $grantRoleIds,
         array $grantPermissionIds,
