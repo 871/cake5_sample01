@@ -10,7 +10,7 @@
             ]) ?>">Top</a>
         </li>
         <li class="breadcrumb-item">
-            <b>メール情報</b>
+            <b>システムメール</b>
         </li>
         <li class="breadcrumb-item">
             <a href="<?= $this->Url->build([
@@ -43,7 +43,7 @@
         </li>
         <?php endif ?>
         <li class="breadcrumb-item">
-            <b>システム管理者</b>
+            <b>システム管理者機能</b>
         </li>
         <li class="breadcrumb-item">
             <a href="<?= $this->Url->build([

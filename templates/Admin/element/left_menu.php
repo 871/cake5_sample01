@@ -2,8 +2,8 @@
 $request = $this->getRequest();
 $accountId = $request->getParam('account_id');
 $prefix = (string)$request->getParam('prefix');
-$isLogMenuOpen = in_array($prefix, ['Admin/Log/LoginLog', 'Admin/Log/PageAccessLog'], true);
-$isSystemMenuOpen = $prefix === 'Admin/AdminAccount';
+
+
 ?>
 <!-- Sidebar -->
 <aside class="sidebar">
@@ -21,7 +21,10 @@ $isSystemMenuOpen = $prefix === 'Admin/AdminAccount';
             >Top</a>
         </li>
         <li class="nav-item">
-            <details class="admin-menu-group"<?= $isLogMenuOpen ? ' open' : '' ?>>
+            <details class="admin-menu-group"<?= in_array((string)$request->getParam('prefix'), [
+                'Admin/Log/LoginLog',
+                'Admin/Log/PageAccessLog',
+            ], true) ? ' open' : '' ?>>
                 <summary class="nav-link text-white">ログ管理</summary>
                 <ul class="nav flex-column admin-submenu">
                     <li class="nav-item">
@@ -50,9 +53,23 @@ $isSystemMenuOpen = $prefix === 'Admin/AdminAccount';
             </details>
         </li>
         <li class="nav-item">
-            <details class="admin-menu-group"<?= $isSystemMenuOpen ? ' open' : '' ?>>
+            <details class="admin-menu-group"<?= in_array((string)$request->getParam('prefix'), [
+                'Admin/MailManage',
+                'Admin/AdminAccount',
+            ], true) ? ' open' : '' ?>>
                 <summary class="nav-link text-white">システム管理</summary>
                 <ul class="nav flex-column admin-submenu">
+                    <li class="nav-item">
+                        <a
+                            class="nav-link text-white"
+                            href="<?= $this->Url->build([
+                                'prefix' => 'Admin/MailManage',
+                                'controller' => 'Search',
+                                'action' => 'init',
+                                'account_id' => $accountId,
+                            ]) ?>"
+                        >システムメール</a>
+                    </li>
                     <li class="nav-item">
                         <a
                             class="nav-link text-white"
