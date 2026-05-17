@@ -1,0 +1,251 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Security\Auth;
+
+use App\Model\Entity\User\UserAccount;
+use App\Security\Auth\AuthContext\Fields\Type;
+use Cake\Utility\Security;
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeInterface;
+
+final class UserTokenService
+{
+    public const ACCESS_TOKEN_COOKIE = 'user_access_token';
+    public const REFRESH_TOKEN_COOKIE = 'user_refresh_token';
+    public const REQUEST_ATTRIBUTE = 'userAuth';
+    public const COOKIE_PATH = '/v1/us';
+    private const ACCESS_TOKEN_TTL = 'PT15M';
+    private const REFRESH_TOKEN_TTL = 'P30D';
+
+    /**
+     * @param \App\Model\Entity\User\UserAccount $account
+     * @param \DateTimeInterface $now
+     * @return array{auth: array<string, string>, access_token: string, refresh_token: string, set_cookie_headers: array<int, string>}
+     */
+    public function createTokenSet(UserAccount $account, DateTimeInterface $now): array
+    {
+        $issuedAt = DateTimeImmutable::createFromInterface($now);
+        $auth = $this->buildAuthPayload($account, $issuedAt);
+        $accessExpiresAt = $issuedAt->add(new DateInterval(self::ACCESS_TOKEN_TTL));
+        $refreshExpiresAt = $issuedAt->add(new DateInterval(self::REFRESH_TOKEN_TTL));
+
+        $accessToken = $this->encode(array_merge($auth, [
+            'token_type' => 'access',
+            'iat' => (string)$issuedAt->getTimestamp(),
+            'exp' => (string)$accessExpiresAt->getTimestamp(),
+        ]));
+        $refreshToken = $this->encode([
+            'account_id' => $auth['account_id'],
+            'token_type' => 'refresh',
+            'iat' => (string)$issuedAt->getTimestamp(),
+            'exp' => (string)$refreshExpiresAt->getTimestamp(),
+        ]);
+
+        return [
+            'auth' => $auth,
+            'access_token' => $accessToken,
+            'refresh_token' => $refreshToken,
+            'set_cookie_headers' => [
+                $this->buildCookieHeader(self::ACCESS_TOKEN_COOKIE, $accessToken, $accessExpiresAt),
+                $this->buildCookieHeader(self::REFRESH_TOKEN_COOKIE, $refreshToken, $refreshExpiresAt),
+            ],
+        ];
+    }
+
+    /**
+     * @param ?string $token
+     * @return ?array<string, string>
+     */
+    public function readAccessToken(?string $token): ?array
+    {
+        $claims = $this->readToken($token, 'access');
+        if ($claims === null) {
+            return null;
+        }
+
+        unset($claims['token_type'], $claims['iat'], $claims['exp']);
+
+        /** @var array<string, string> */
+        return $claims;
+    }
+
+    /**
+     * @param ?string $token
+     * @return ?array<string, string>
+     */
+    public function readRefreshToken(?string $token): ?array
+    {
+        return $this->readToken($token, 'refresh');
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function createExpiredCookieHeaders(): array
+    {
+        return [
+            $this->buildExpiredCookieHeader(self::ACCESS_TOKEN_COOKIE),
+            $this->buildExpiredCookieHeader(self::REFRESH_TOKEN_COOKIE),
+        ];
+    }
+
+    /**
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @param array<int, string> $setCookieHeaders
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function withCookieHeaders(
+        \Psr\Http\Message\ResponseInterface $response,
+        array $setCookieHeaders,
+    ): \Psr\Http\Message\ResponseInterface {
+        foreach ($setCookieHeaders as $header) {
+            $response = $response->withAddedHeader('Set-Cookie', $header);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param \App\Model\Entity\User\UserAccount $account
+     * @param \DateTimeInterface $now
+     * @return array<string, string>
+     */
+    private function buildAuthPayload(UserAccount $account, DateTimeInterface $now): array
+    {
+        return [
+            'type' => Type::TYPE_USER,
+            'account_id' => (string)$account->id,
+            'account_email' => (string)$account->email,
+            'account_name' => (string)$account->name,
+            'account_status_master_id' => (string)$account->account_status_master_id,
+            'account_status_master_code' => (string)$account->account_status_master->code,
+            'account_status_master_name' => (string)$account->account_status_master->name,
+            'is_email_verified' => (string)$account->is_email_verified,
+            'password_changed_at' => $account->password_changed_at->format('Y-m-d\TH:i:s'),
+            'password_expires_at' => $account->password_expires_at->format('Y-m-d\TH:i:s'),
+            'created' => $account->created->format('Y-m-d\TH:i:s'),
+            'modified' => $account->modified->format('Y-m-d\TH:i:s'),
+            'logined' => $now->format('Y-m-d\TH:i:s'),
+        ];
+    }
+
+    /**
+     * @param ?string $token
+     * @param string $expectedTokenType
+     * @return ?array<string, string>
+     */
+    private function readToken(?string $token, string $expectedTokenType): ?array
+    {
+        if ($token === null || $token === '') {
+            return null;
+        }
+
+        $parts = explode('.', $token);
+        if (count($parts) !== 3) {
+            return null;
+        }
+
+        [$encodedHeader, $encodedPayload, $encodedSignature] = $parts;
+        $expectedSignature = $this->base64UrlEncode(hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, Security::getSalt(), true));
+        if (!hash_equals($expectedSignature, $encodedSignature)) {
+            return null;
+        }
+
+        $payloadJson = $this->base64UrlDecode($encodedPayload);
+        if ($payloadJson === null) {
+            return null;
+        }
+
+        $claims = json_decode($payloadJson, true);
+        if (!is_array($claims)) {
+            return null;
+        }
+
+        $tokenType = $claims['token_type'] ?? null;
+        $expiresAt = $claims['exp'] ?? null;
+        if (!is_string($tokenType) || $tokenType !== $expectedTokenType || !is_string($expiresAt) || !ctype_digit($expiresAt)) {
+            return null;
+        }
+
+        if ((int)$expiresAt < (new DateTimeImmutable())->getTimestamp()) {
+            return null;
+        }
+
+        /** @var array<string, string> */
+        return array_map(static fn (mixed $value): string => (string)$value, $claims);
+    }
+
+    /**
+     * @param array<string, string> $claims
+     * @return string
+     */
+    private function encode(array $claims): string
+    {
+        $encodedHeader = $this->base64UrlEncode((string)json_encode([
+            'alg' => 'HS256',
+            'typ' => 'JWT',
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR));
+        $encodedPayload = $this->base64UrlEncode((string)json_encode(
+            $claims,
+            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+        ));
+        $signature = $this->base64UrlEncode(hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, Security::getSalt(), true));
+
+        return $encodedHeader . '.' . $encodedPayload . '.' . $signature;
+    }
+
+    /**
+     * @param string $name
+     * @param string $value
+     * @param \DateTimeInterface $expiresAt
+     * @return string
+     */
+    private function buildCookieHeader(string $name, string $value, DateTimeInterface $expiresAt): string
+    {
+        $maxAge = max(0, $expiresAt->getTimestamp() - (new DateTimeImmutable())->getTimestamp());
+
+        return sprintf(
+            '%s=%s; Expires=%s; Max-Age=%d; Path=%s; HttpOnly; SameSite=Lax',
+            $name,
+            rawurlencode($value),
+            gmdate('D, d M Y H:i:s', $expiresAt->getTimestamp()) . ' GMT',
+            $maxAge,
+            self::COOKIE_PATH,
+        );
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    private function buildExpiredCookieHeader(string $name): string
+    {
+        return sprintf(
+            '%s=deleted; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=%s; HttpOnly; SameSite=Lax',
+            $name,
+            self::COOKIE_PATH,
+        );
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    private function base64UrlEncode(string $value): string
+    {
+        return rtrim(strtr(base64_encode($value), '+/', '-_'), '=');
+    }
+
+    /**
+     * @param string $value
+     * @return ?string
+     */
+    private function base64UrlDecode(string $value): ?string
+    {
+        $decoded = base64_decode(strtr($value, '-_', '+/') . str_repeat('=', (4 - strlen($value) % 4) % 4), true);
+
+        return $decoded === false ? null : $decoded;
+    }
+}
