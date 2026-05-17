@@ -69,6 +69,8 @@ final class Search
                 'grant_permission_id' => 'GrantPermissions.id',
                 'grant_permission_name' => 'GrantPermissions.name',
                 'grant_permission_code' => 'GrantPermissions.code',
+                'role_grant_exists' => "COALESCE(RoleGrantExists.role_grant_exists, 0)",
+                'account_grant_exists' => "COALESCE(AccoutGrantExists.account_grant_exists, 0)",
             ])
             ->join([
                 // account_status_masters.PRIMARY KEY (id) を使用
@@ -82,51 +84,43 @@ final class Search
                 'GrantPermissions' => [
                     'table' => 'grant_permissions',
                     'type' => 'INNER',
-                    'conditions' => ['GrantPermissions.account_type' => AdminGrantMapper::ACCOUNT_TYPE],
+                    'conditions' => [
+                        'GrantPermissions.account_type' => AdminGrantMapper::ACCOUNT_TYPE
+                    ],
+                ],
+                'RoleGrantExists' => [
+                    'table' => '(SELECT 1 AS role_grant_exists FROM DUAL)',
+                    'type' => 'LEFT',
+                    'conditions' => [
+                        // grant_role_permissions.grant_role_permissions_idx02 (account_type, grant_permission_id)
+                        // grant_account_roles.grant_account_roles_idx03 (grant_role_id)
+                        'EXISTS(' 
+                        . ' SELECT 1 FROM grant_role_permissions AS T1'
+                        . ' INNER JOIN grant_account_roles AS T2' 
+                        . ' ON T1.account_type = GrantPermissions.account_type'
+                        . ' AND T1.grant_permission_id = GrantPermissions.id'
+                        . ' AND T2.grant_role_id = T1.grant_role_id'
+                        . ' AND T2.account_id = AdminAccounts.id'
+                        . ' AND T2.account_type = T1.account_type'
+                        . ')'
+                    ],
+                ],
+                'AccoutGrantExists' => [
+                    'table' => '(SELECT 1 AS account_grant_exists FROM DUAL)',
+                    'type' => 'LEFT',
+                    'conditions' => [
+                        // grant_account_permissions.grant_account_permissions_idx01 (account_type, account_id, grant_permission_id)
+                        'EXISTS('
+                        . ' SELECT 1 FROM grant_account_permissions AS T3'
+                        . ' WHERE T3.account_type = GrantPermissions.account_type'
+                        . ' AND T3.grant_permission_id = GrantPermissions.id'
+                        . ' AND T3.account_id = AdminAccounts.id'
+                        . ')'
+                    ]
                 ],
             ])
             ->where(array_filter(
                 [
-                    // 直接付与またはロール経由で権限を保持しているか EXISTS で確認
-                    // grant_account_permissions.grant_account_permissions_idx01 (account_type, account_id, grant_permission_id) を使用
-                    // grant_role_permissions.grant_role_permissions_idx02 (account_type, grant_permission_id) を使用
-                    // grant_account_roles.grant_account_roles_idx01 (account_type, account_id, grant_role_id) を使用
-                    function (QueryExpression $exp): QueryExpression {
-                        return $exp->exists(
-                            (function () {
-                                return $this->table->getConnection()->newQuery()
-                                    ->select(['1'])
-                                    ->from(['gap' => 'grant_account_permissions'])
-                                    ->where([
-                                        // grant_account_permissions_idx01 (account_type, account_id, grant_permission_id) の列順
-                                        'gap.account_type = GrantPermissions.account_type',
-                                        'gap.account_id = AdminAccounts.id',
-                                        'gap.grant_permission_id = GrantPermissions.id',
-                                    ])
-                                    ->unionAll(
-                                        (function () {
-                                            return $this->table->getConnection()->newQuery()
-                                                ->select(['1'])
-                                                ->from(['grp' => 'grant_role_permissions'])
-                                                ->join(['gar' => [
-                                                    'table' => 'grant_account_roles',
-                                                    'type' => 'INNER',
-                                                    'conditions' => [
-                                                        // grant_role_permissions_idx02 (account_type, grant_permission_id) の列順
-                                                        'grp.account_type = GrantPermissions.account_type',
-                                                        'grp.grant_permission_id = GrantPermissions.id',
-                                                        // grant_account_roles_idx01 (account_type, account_id, grant_role_id) の列順
-                                                        'gar.account_type = GrantPermissions.account_type',
-                                                        'gar.account_id = AdminAccounts.id',
-                                                        'gar.grant_role_id = grp.grant_role_id',
-                                                    ],
-                                                ]])
-                                                ->where([]);
-                                        })(),
-                                    );
-                            })(),
-                        );
-                    },
                     // admin_accounts.PRIMARY KEY (id) を使用
                     'AdminAccounts.id IN' => array_map(
                         fn(AdminAccountId $vo): int => $vo->toInt(),
@@ -152,14 +146,15 @@ final class Search
                             ? function (QueryExpression $exp) use ($grantRoleIds): QueryExpression {
                                 return $exp->exists(
                                     (function () use ($grantRoleIds) {
-                                        return $this->table->getConnection()->newQuery()
-                                            ->select(['1'])
-                                            ->from(['gar_filter' => 'grant_account_roles'])
+                                        return $this->table->GrantAccountRoles->find()
+                                            ->select([
+                                                '_exists' => '1'
+                                            ])
                                             ->where([
                                                 // grant_account_roles_idx01 (account_type, account_id, grant_role_id) の列順
-                                                'gar_filter.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
-                                                'gar_filter.account_id = AdminAccounts.id',
-                                                'gar_filter.grant_role_id IN' => $grantRoleIds,
+                                                'GrantAccountRoles.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
+                                                'GrantAccountRoles.account_id = AdminAccounts.id',
+                                                'GrantAccountRoles.grant_role_id IN' => $grantRoleIds,
                                             ]);
                                     })(),
                                 );

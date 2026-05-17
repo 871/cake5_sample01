@@ -76,6 +76,6 @@ class SearchController extends AppController
             ]);
         }
 
-        return $this->render('/Admin/AdminGrant/account_permission');
+        return $this->render('/Admin/AdminGrant/search');
     }
 }

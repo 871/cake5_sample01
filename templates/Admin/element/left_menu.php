@@ -87,7 +87,7 @@ $prefix = (string)$request->getParam('prefix');
                             class="nav-link text-white"
                             href="<?= $this->Url->build([
                                 'prefix' => 'Admin/AdminGrant',
-                                'controller' => 'RolePermission/Search',
+                                'controller' => 'Search',
                                 'action' => 'init',
                                 'account_id' => $accountId,
                             ]) ?>"
