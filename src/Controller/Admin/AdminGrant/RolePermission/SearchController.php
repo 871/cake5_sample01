@@ -13,8 +13,15 @@ use DateTimeImmutable;
 
 class SearchController extends AppController
 {
+    /**
+     * @var \App\Service\Controller\Admin\AdminGrant\RolePermission\Search
+     */
     private CtlService $ctlService;
 
+    /**
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
+     * @return void
+     */
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
@@ -26,6 +33,9 @@ class SearchController extends AppController
         $this->viewBuilder()->setLayout('admin_main');
     }
 
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
     public function init()
     {
         return $this->redirect([
@@ -35,6 +45,9 @@ class SearchController extends AppController
         ]);
     }
 
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
     public function index()
     {
         try {
@@ -45,12 +58,18 @@ class SearchController extends AppController
                 ),
             ]);
         } catch (NotFoundException $e) {
-            Log::error('無効なページが指定されました。[message: ' . $e->getMessage() . ']');
+            Log::error(
+                '無効なページが指定されました。'
+                . '[message: ' . $e->getMessage() . ']'
+                . '[Uri: ' . $this->request->getRequestTarget() . ']',
+            );
             $this->Flash->warning('無効なページが指定されました。1ページ目を表示します。');
 
             return $this->redirect([
                 'account_id' => $this->request->getParam('account_id'),
-                '?' => array_merge((array)$this->request->getQuery(), ['page' => 1]),
+                '?' => array_merge((array)$this->request->getQuery(), [
+                    'page' => 1,
+                ]),
             ]);
         }
 
