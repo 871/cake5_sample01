@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrantRepository;
 
+use App\Domain\Admin\AdminGrant\SearchRolePermissionCondition;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrantMapper;
 use App\Model\Table\Grant\GrantRolePermissionsTable;
 use Cake\Database\Expression\QueryExpression;
@@ -19,10 +20,10 @@ final class SearchRolePermission
     private GrantRolePermissionsTable $table;
 
     /**
-     * @param string|null $searchText
+     * @param \App\Domain\Admin\AdminGrant\SearchRolePermissionCondition $condition
      */
     public function __construct(
-        private readonly ?string $searchText,
+        private readonly SearchRolePermissionCondition $condition,
     ) {
         $this->table = $this->fetchTable(GrantRolePermissionsTable::class);
     }
@@ -34,12 +35,9 @@ final class SearchRolePermission
     {
         $query = $this->table
             ->find()
-            ->contain(['GrantRoles', 'GrantPermissions'])
+            ->contain(['GrantRoles'])
             ->innerJoinWith('GrantRoles', fn(SelectQuery $q): SelectQuery => $q->where([
                 'GrantRoles.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
-            ]))
-            ->innerJoinWith('GrantPermissions', fn(SelectQuery $q): SelectQuery => $q->where([
-                'GrantPermissions.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
             ]))
             ->where([
                 'GrantRolePermissions.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
@@ -49,15 +47,14 @@ final class SearchRolePermission
                 'GrantRolePermissions.grant_permission_id' => 'ASC',
             ]);
 
-        $keyword = trim($this->searchText ?? '');
+        $keyword = trim($this->condition->getSearchText()->toString());
         if ($keyword === '') {
             return $query;
         }
 
         return $query
             ->where(new QueryExpression(
-                '(MATCH(GrantRoles.search_text) AGAINST(:keyword IN NATURAL LANGUAGE MODE) '
-                . 'OR MATCH(GrantPermissions.search_text) AGAINST(:keyword IN NATURAL LANGUAGE MODE))',
+                'MATCH(GrantRoles.search_text) AGAINST(:keyword IN NATURAL LANGUAGE MODE)',
             ))
             ->bind(':keyword', $keyword, 'string');
     }
