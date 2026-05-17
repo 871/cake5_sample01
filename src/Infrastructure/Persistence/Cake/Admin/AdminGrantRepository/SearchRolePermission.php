@@ -35,7 +35,7 @@ final class SearchRolePermission
     {
         $query = $this->table
             ->find()
-            ->contain(['GrantRoles'])
+            ->contain(['GrantRoles', 'GrantPermissions'])
             ->innerJoinWith('GrantRoles', fn(SelectQuery $q): SelectQuery => $q->where([
                 'GrantRoles.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
             ]))

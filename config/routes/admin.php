@@ -2,6 +2,7 @@
 
 
 use App\Middleware\Admin\AdminAuthMiddleware;
+use App\Middleware\Admin\AdminGrantMiddleware;
 use App\Middleware\Admin\PageAccessLogMiddleware;
 use Cake\Routing\RouteBuilder;
 
@@ -16,12 +17,13 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
     // ログイン済ルート
     $builder->registerMiddleware('adminAuth', new AdminAuthMiddleware());
     $builder->registerMiddleware('pageAccessLog', new PageAccessLogMiddleware());
+    $builder->registerMiddleware('adminGrant', new AdminGrantMiddleware());
     $builder->scope('/{account_id}', static function (RouteBuilder $builder) {
         // ログアウト Memo: 認証ミドルウェアより前に置かないとログアウト後のリダイレクトで不備が出るため注意
         $builder->get('/logout', ['controller' => 'Logout', 'action' => 'index']);
         $builder->post('/logout', ['controller' => 'Logout', 'action' => 'indexPost']);
         // 認証チェック
-        $builder->applyMiddleware('adminAuth', 'pageAccessLog');
+        $builder->applyMiddleware('adminAuth', 'pageAccessLog', 'adminGrant');
         // エラー
         $builder->get('/error', ['controller' => 'Error', 'action' => 'index']);
         $builder->get('/error/{message_id}', ['controller' => 'Error', 'action' => 'index']);
@@ -77,6 +79,26 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
             // 削除
             $builder->get('/delete/{admin_account_id}', ['controller' => 'Delete', 'action' => 'index']);
             $builder->post('/delete/{admin_account_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
+        });
+
+        // 管理者権限管理
+        $builder->prefix('AdminGrant', ['path' => '/admin_grant'], static function (RouteBuilder $builder) {
+            // ロール権限
+            $builder->get('/role_permission', ['controller' => 'RolePermission', 'action' => 'init']);
+            $builder->get('/role_permission/search', ['controller' => 'RolePermission', 'action' => 'search']);
+            $builder->get('/role_permission/create', ['controller' => 'RolePermission', 'action' => 'create']);
+            $builder->post('/role_permission/create', ['controller' => 'RolePermission', 'action' => 'create']);
+            $builder->get('/role_permission/detail/{grant_role_permission_id}', ['controller' => 'RolePermission', 'action' => 'detail']);
+            $builder->get('/role_permission/edit/{grant_role_id}', ['controller' => 'RolePermission', 'action' => 'edit']);
+            $builder->post('/role_permission/edit/{grant_role_id}', ['controller' => 'RolePermission', 'action' => 'edit']);
+            $builder->post('/role_permission/delete/{grant_role_permission_id}', ['controller' => 'RolePermission', 'action' => 'delete']);
+
+            // 管理者権限
+            $builder->get('/account_permission', ['controller' => 'AccountPermission', 'action' => 'init']);
+            $builder->get('/account_permission/search', ['controller' => 'AccountPermission', 'action' => 'search']);
+            $builder->get('/account_permission/detail/{admin_account_id}', ['controller' => 'AccountPermission', 'action' => 'detail']);
+            $builder->get('/account_permission/edit/{admin_account_id}', ['controller' => 'AccountPermission', 'action' => 'edit']);
+            $builder->post('/account_permission/edit/{admin_account_id}', ['controller' => 'AccountPermission', 'action' => 'edit']);
         });
 
         // ログ
