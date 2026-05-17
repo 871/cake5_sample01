@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace App\Controller\Admin\AdminGrant\RolePermission;
 
 use App\Controller\AppController;
+use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
 use App\Service\Controller\Admin\AdminGrant\RolePermission\Create as CtlService;
 use Cake\Event\EventInterface;
-use Cake\Log\Log;
+use Cake\Http\Response;
 use DateTimeImmutable;
-use Throwable;
 
 class CreateController extends AppController
 {
@@ -20,9 +20,9 @@ class CreateController extends AppController
 
     /**
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
-     * @return void
+     * @return ?\Cake\Http\Response
      */
-    public function beforeFilter(EventInterface $event): void
+    public function beforeFilter(EventInterface $event): ?Response
     {
         parent::beforeFilter($event);
         $this->ctlService = new CtlService(
@@ -31,6 +31,16 @@ class CreateController extends AppController
             authContext: AuthContextResolver::resolve($this->request),
         );
         $this->viewBuilder()->setLayout('admin_main');
+
+        if (!$this->ctlService->existsInputProcess(ignoreActions: ['index'])) {
+            return $this->redirect([
+                'action' => 'index',
+                'account_id' => $this->request->getParam('account_id'),
+                '?' => $this->request->getQuery(),
+            ]);
+        }
+
+        return null;
     }
 
     /**
@@ -38,24 +48,82 @@ class CreateController extends AppController
      */
     public function index()
     {
-        $this->set([
-            'grantRoleOptions' => $this->ctlService->getGrantRoleOptions(),
-            'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
-            'selectedPermissionIds' => [],
-            'isEdit' => false,
-            'targetGrantRoleId' => null,
-        ]);
+        $inputProcess = $this->ctlService->startInputProcess();
 
-        return $this->render('/Admin/AdminGrant/role_permission_form');
+        return $this->redirect([
+            'action' => 'input',
+            'account_id' => $this->request->getParam('account_id'),
+            'process_id' => $inputProcess->getId(),
+            '?' => $this->request->getQuery(),
+        ]);
     }
 
     /**
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function indexPost()
+    public function input()
+    {
+        $this->set([
+            'input' => $this->ctlService->getInputProcess(),
+            'grantRoleOptions' => $this->ctlService->getGrantRoleOptions(),
+            'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
+        ]);
+
+        return $this->render('/Admin/AdminGrant/role_permission_create_input');
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function inputPost()
     {
         try {
-            $this->ctlService->createFromRequest();
+            $this->ctlService
+                ->inputProcessUpdate()
+                ->inputProcessValidation();
+
+            return $this->redirect([
+                'action' => 'conf',
+                'account_id' => $this->request->getParam('account_id'),
+                'process_id' => $this->request->getParam('process_id'),
+                '?' => $this->request->getQuery(),
+            ]);
+        } catch (ValidateException $ex) {
+            $this->ctlService->inputProcessErrorUpdate($ex);
+
+            return $this->redirect([
+                'action' => 'input',
+                'account_id' => $this->request->getParam('account_id'),
+                'process_id' => $this->request->getParam('process_id'),
+                '?' => $this->request->getQuery(),
+            ]);
+        }
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function conf()
+    {
+        $this->set([
+            'input' => $this->ctlService->getInputProcess(),
+            'grantRoleOptions' => $this->ctlService->getGrantRoleOptions(),
+            'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
+        ]);
+
+        return $this->render('/Admin/AdminGrant/role_permission_create_conf');
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function confPost()
+    {
+        try {
+            $this->ctlService
+                ->inputProcessValidation()
+                ->saveInputProcess()
+                ->endInputProcess();
             $this->Flash->success('ロール権限を作成しました。');
 
             return $this->redirect([
@@ -64,16 +132,15 @@ class CreateController extends AppController
                 'account_id' => $this->request->getParam('account_id'),
                 '?' => $this->request->getQuery(),
             ]);
-        } catch (Throwable $e) {
-            Log::error($e->getMessage());
-            $this->Flash->error('ロール権限の作成に失敗しました。');
-        }
+        } catch (ValidateException $ex) {
+            $this->ctlService->inputProcessErrorUpdate($ex);
 
-        return $this->redirect([
-            'controller' => 'RolePermission/Create',
-            'action' => 'index',
-            'account_id' => $this->request->getParam('account_id'),
-            '?' => $this->request->getQuery(),
-        ]);
+            return $this->redirect([
+                'action' => 'input',
+                'account_id' => $this->request->getParam('account_id'),
+                'process_id' => $this->request->getParam('process_id'),
+                '?' => $this->request->getQuery(),
+            ]);
+        }
     }
 }

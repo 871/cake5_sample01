@@ -44,7 +44,7 @@
                             <td class="text-nowrap">
                                 <a href="<?= $this->Url->build(['controller' => 'RolePermission/Detail', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'grant_role_permission_id' => $row->id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-info btn-sm">詳細</a>
                                 <a href="<?= $this->Url->build(['controller' => 'RolePermission/Update', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'grant_role_id' => $row->grant_role_id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-primary btn-sm">更新</a>
-                                <?= $this->Form->postLink('削除', ['controller' => 'RolePermission/Delete', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'grant_role_permission_id' => $row->id, '?' => $this->getRequest()->getQuery()], ['class' => 'btn btn-danger btn-sm', 'confirm' => '削除しますか？']) ?>
+                                <?= $this->Form->postLink('削除', ['controller' => 'RolePermission/Delete', 'action' => 'indexPost', 'account_id' => $this->getRequest()->getParam('account_id'), 'grant_role_permission_id' => $row->id, '?' => $this->getRequest()->getQuery()], ['class' => 'btn btn-danger btn-sm', 'confirm' => '削除しますか？']) ?>
                             </td>
                         </tr>
                     <?php } ?>
