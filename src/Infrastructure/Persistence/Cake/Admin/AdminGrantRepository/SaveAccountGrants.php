@@ -78,7 +78,9 @@ final class SaveAccountGrants
                 },
                 $this->grantRoleIds,
             );
-            $this->accountRolesTable->saveManyOrFail($roleEntities, ['checkExisting' => false]);
+            if ($roleEntities !== []) {
+                $this->accountRolesTable->saveManyOrFail($roleEntities, ['checkExisting' => false]);
+            }
 
             // 個別権限を付与
             $permEntities = array_map(
@@ -94,7 +96,9 @@ final class SaveAccountGrants
                 },
                 $this->grantPermissionIds,
             );
-            $this->accountPermissionsTable->saveManyOrFail($permEntities, ['checkExisting' => false]);
+            if ($permEntities !== []) {
+                $this->accountPermissionsTable->saveManyOrFail($permEntities, ['checkExisting' => false]);
+            }
         });
     }
 }

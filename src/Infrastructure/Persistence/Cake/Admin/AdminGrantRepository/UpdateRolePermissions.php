@@ -48,6 +48,10 @@ final class UpdateRolePermissions
                 'grant_role_id' => $roleId,
             ]);
 
+            if ($this->grantPermissionIds === []) {
+                return;
+            }
+
             // 新しいロール権限を登録
             $entities = array_map(
                 function (GrantPermissionId $grantPermissionId) use ($roleId, $datetimeStr) {
