@@ -17,12 +17,21 @@ class CreateTableGrantAccessControl extends BaseMigration
                 name VARCHAR(100) NOT NULL COMMENT '権限ロール名',
                 description VARCHAR(255) NULL COMMENT '説明',
                 sort INT NOT NULL DEFAULT 0 COMMENT '表示順',
-                is_active INT NOT NULL DEFAULT 1 COMMENT '有効フラグ',
+                is_active INT NOT NULL DEFAULT 1 COMMENT '有効フラグ（新規設定）',
                 created DATETIME(0) NOT NULL COMMENT '作成日時',
                 modified DATETIME(0) NOT NULL COMMENT '更新日時',
+                /* ===== Search Column (日本語全文検索用) ===== */
+                search_text LONGTEXT GENERATED ALWAYS AS (
+                    CONCAT_WS(' ',
+                        code,
+                        name,
+                        description
+                    )
+                ) STORED COMMENT '日本語全文検索用結合カラム',
                 PRIMARY KEY (id),
                 UNIQUE INDEX grant_roles_idx01 (account_type, code),
-                INDEX grant_roles_idx02 (account_type, is_active, sort)
+                INDEX grant_roles_idx02 (account_type, is_active, sort),
+                FULLTEXT KEY grant_roles_idx03 (search_text) WITH PARSER ngram
             ) ENGINE=InnoDB
             DEFAULT CHARSET=utf8mb4
             COMMENT='権限ロール'
@@ -36,12 +45,21 @@ class CreateTableGrantAccessControl extends BaseMigration
                 name VARCHAR(100) NOT NULL COMMENT '権限名',
                 description VARCHAR(255) NULL COMMENT '説明',
                 sort INT NOT NULL DEFAULT 0 COMMENT '表示順',
-                is_active INT NOT NULL DEFAULT 1 COMMENT '有効フラグ',
+                is_active INT NOT NULL DEFAULT 1 COMMENT '有効フラグ（新規設定）',
                 created DATETIME(0) NOT NULL COMMENT '作成日時',
                 modified DATETIME(0) NOT NULL COMMENT '更新日時',
+                /* ===== Search Column (日本語全文検索用) ===== */
+                search_text LONGTEXT GENERATED ALWAYS AS (
+                    CONCAT_WS(' ',
+                        code,
+                        name,
+                        description
+                    )
+                ) STORED COMMENT '日本語全文検索用結合カラム',
                 PRIMARY KEY (id),
                 UNIQUE INDEX grant_permissions_idx01 (account_type, code),
-                INDEX grant_permissions_idx02 (account_type, is_active, sort)
+                INDEX grant_permissions_idx02 (account_type, is_active, sort),
+                FULLTEXT KEY grant_permissions_idx03 (search_text) WITH PARSER ngram
             ) ENGINE=InnoDB
             DEFAULT CHARSET=utf8mb4
             COMMENT='権限'
