@@ -6,6 +6,7 @@ namespace App\Domain\Admin\AdminGrant\Repository;
 use App\Domain\Admin\AdminGrant\Entity\GrantPermission;
 use App\Domain\Admin\AdminGrant\Entity\GrantRolePermission;
 use App\Domain\Admin\AdminGrant\SearchCondition;
+use App\Domain\Admin\AdminGrant\SearchRolePermissionCondition;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
@@ -16,6 +17,18 @@ interface AdminGrantRepository
      * @param \DateTimeInterface $datetime
      */
     public function __construct(DateTimeInterface $datetime);
+
+    /**
+     * ロール権限の検索
+     *
+     * 検索条件は search_text のキーワード検索のみ
+     *
+     * Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。 --- IGNORE ---
+     *
+     * @param \App\Domain\Admin\AdminGrant\SearchRolePermissionCondition $condition
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Grant\GrantRolePermission>
+     */
+    public function searchRolePermission(SearchRolePermissionCondition $condition): SelectQuery;
 
     /**
      * ロール権限の作成

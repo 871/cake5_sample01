@@ -7,6 +7,7 @@ use App\Domain\Admin\AdminGrant\Entity\GrantPermission;
 use App\Domain\Admin\AdminGrant\Entity\GrantRolePermission;
 use App\Domain\Admin\AdminGrant\Repository\AdminGrantRepository as DomainAdminGrantRepository;
 use App\Domain\Admin\AdminGrant\SearchCondition;
+use App\Domain\Admin\AdminGrant\SearchRolePermissionCondition;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
@@ -20,6 +21,17 @@ final class AdminGrantRepository implements DomainAdminGrantRepository
         private readonly DateTimeInterface $datetime,
     ) {
         // do nothing
+    }
+
+    /**
+     * ロール権限の検索
+     *
+     * @param \App\Domain\Admin\AdminGrant\SearchRolePermissionCondition $condition
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Grant\GrantRolePermission>
+     */
+    public function searchRolePermission(SearchRolePermissionCondition $condition): SelectQuery
+    {
+        return (new AdminGrantRepository\SearchRolePermission($condition))->run();
     }
 
     /**
