@@ -54,6 +54,7 @@ final class Search implements ServiceInterface
             ],
             'order' => [
                 'AdminAccounts.id' => 'ASC',
+                'GrantPermissions.id' => 'ASC',
             ],
         ];
     }

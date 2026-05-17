@@ -5,6 +5,9 @@ namespace App\Model\Table\Admin;
 
 use App\Model\Entity\Admin\AdminAccount;
 use App\Model\Table\Shared\AccountStatusMastersTable;
+use App\Model\Table\Admin\AdminAccountHistoriesTable;
+use App\Model\Table\Grant\GrantAccountPermissionsTable;
+use App\Model\Table\Grant\GrantRolePermissionsTable;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -43,6 +46,19 @@ final class AdminAccountsTable extends Table
             'className' => AdminAccountHistoriesTable::class,
             'foreignKey' => 'admin_account_id',
         ]);
+
+        $this->hasMany('GrantAccountPermissions', [
+            'className' => GrantAccountPermissionsTable::class,
+            'foreignKey' => 'account_id',
+            'conditions' => ['GrantAccountPermissions.account_type' => 'ADMIN'],
+        ]);
+
+        $this->hasMany('GrantRolePermissions', [
+            'className' => GrantRolePermissionsTable::class,
+            'foreignKey' => 'account_id',
+            'conditions' => ['GrantRolePermissions.account_type' => 'ADMIN'],
+        ]);
+
     }
 
     /**

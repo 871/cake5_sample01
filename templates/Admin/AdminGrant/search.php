@@ -3,6 +3,12 @@
 /* @var array $accountStatusOptions */
 /* @var array $grantRoleOptions */
 /* @var array $grantPermissionOptions */
+
+$pageOptions = [
+    'url' => [
+        'account_id' => $this->getRequest()->getParam('account_id'),
+    ],
+];
 ?>
 <div class="card mb-3">
     <div class="card-header bg-secondary text-white">管理者権限検索</div>
@@ -52,10 +58,13 @@
         <table class="table table-bordered table-hover mb-0">
             <thead class="table-dark">
                 <tr>
-                    <th><?= $this->Paginator->sort('AdminAccounts.id', 'ID') ?></th>
-                    <th><?= $this->Paginator->sort('AdminAccounts.email', 'メール') ?></th>
-                    <th><?= $this->Paginator->sort('AdminAccounts.name', '名前') ?></th>
-                    <th>権限</th>
+                    <th><?= $this->Paginator->sort('AdminAccounts.id', 'ID', $pageOptions) ?></th>
+                    <th><?= $this->Paginator->sort('AdminAccounts.email', 'メール', $pageOptions) ?></th>
+                    <th><?= $this->Paginator->sort('AdminAccounts.name', '名前', $pageOptions) ?></th>
+                    <th>権限名</th>
+                    <th>権限コード</th>
+                    <th>ロール付与</th>
+                    <th>アカウント付与</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -69,6 +78,9 @@
                             <td><?= h((string)$row->email) ?></td>
                             <td><?= h((string)$row->name) ?></td>
                             <td><?= h((string)$row->grant_permission_name) ?></td>
+                            <td><?= h((string)$row->grant_permission_code) ?></td>
+                            <td><?= $row->role_grant_exists ? '<span class="badge bg-success">あり</span>' : '<span class="badge bg-danger">なし</span>' ?></td>
+                            <td><?= $row->account_grant_exists ? '<span class="badge bg-success">あり</span>' : '<span class="badge bg-danger">なし</span>' ?></td>
                             <td class="text-nowrap">
                                 <a href="<?= $this->Url->build(['controller' => 'Detail', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $row->id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-info btn-sm">詳細</a>
                                 <a href="<?= $this->Url->build(['controller' => 'Edit', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $row->id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-primary btn-sm">更新</a>
@@ -82,9 +94,9 @@
     <div class="card-footer d-flex justify-content-between align-items-center">
         <div><?= $this->Paginator->counter('全 {{count}} 件中 {{start}}-{{end}} 件') ?></div>
         <ul class="pagination pagination-sm mb-0">
-            <?= $this->Paginator->prev('«') ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next('»') ?>
+            <?= $this->Paginator->prev('«', $pageOptions) ?>
+            <?= $this->Paginator->numbers($pageOptions) ?>
+            <?= $this->Paginator->next('»', $pageOptions) ?>
         </ul>
     </div>
 </div>
