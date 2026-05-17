@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace App\Controller\Admin\AdminGrant;
 
 use App\Controller\AppController;
+use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
 use App\Service\Controller\Admin\AdminGrant\Edit as CtlService;
 use Cake\Event\EventInterface;
-use Cake\Log\Log;
+use Cake\Http\Response;
 use DateTimeImmutable;
-use Throwable;
 
 class EditController extends AppController
 {
@@ -20,9 +20,9 @@ class EditController extends AppController
 
     /**
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
-     * @return void
+     * @return ?\Cake\Http\Response
      */
-    public function beforeFilter(EventInterface $event): void
+    public function beforeFilter(EventInterface $event): ?Response
     {
         parent::beforeFilter($event);
         $this->ctlService = new CtlService(
@@ -31,6 +31,19 @@ class EditController extends AppController
             authContext: AuthContextResolver::resolve($this->request),
         );
         $this->viewBuilder()->setLayout('admin_main');
+
+        if (!$this->ctlService->existsInputProcess(ignoreActions: ['index'])) {
+            $this->Flash->error('更新対象のデータが見つかりません。');
+
+            return $this->redirect([
+                'controller' => 'Search',
+                'action' => 'index',
+                'account_id' => $this->request->getParam('account_id'),
+                '?' => $this->request->getQuery(),
+            ]);
+        }
+
+        return null;
     }
 
     /**
@@ -38,27 +51,94 @@ class EditController extends AppController
      */
     public function index()
     {
-        $adminAccountId = (string)$this->request->getParam('admin_account_id');
-        $this->set([
-            'adminAccountId' => $adminAccountId,
-            'grantRoleOptions' => $this->ctlService->getGrantRoleOptions(),
-            'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
-            'grantedRoleIds' => $this->ctlService->getGrantedRoleIds($adminAccountId),
-            'grantedPermissionIds' => $this->ctlService->getGrantedPermissionIds($adminAccountId),
-        ]);
+        $inputProcess = $this->ctlService->startInputProcess();
 
-        return $this->render('/Admin/AdminGrant/account_permission_edit');
+        return $this->redirect([
+            'action' => 'input',
+            'account_id' => $this->request->getParam('account_id'),
+            'process_id' => $inputProcess->getId(),
+            '?' => $this->request->getQuery(),
+        ]);
     }
 
     /**
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function indexPost()
+    public function input()
     {
-        $adminAccountId = (string)$this->request->getParam('admin_account_id');
+        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $input */
+        $input = $this->ctlService->getInputProcess();
 
+        $this->set([
+            'input' => $input,
+            'adminAccountId' => $input->getInput('admin_account_id'),
+            'grantRoleOptions' => $this->ctlService->getGrantRoleOptions(),
+            'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
+        ]);
+
+        return $this->render('/Admin/AdminGrant/account_permission_input');
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function inputPost()
+    {
         try {
-            $this->ctlService->save($adminAccountId);
+            $this->ctlService
+                ->inputProcessUpdate()
+                ->inputProcessValidation();
+
+            return $this->redirect([
+                'action' => 'conf',
+                'account_id' => $this->request->getParam('account_id'),
+                'process_id' => $this->request->getParam('process_id'),
+                '?' => $this->request->getQuery(),
+            ]);
+        } catch (ValidateException $ex) {
+            $this->ctlService->inputProcessErrorUpdate($ex);
+
+            return $this->redirect([
+                'action' => 'input',
+                'account_id' => $this->request->getParam('account_id'),
+                'process_id' => $this->request->getParam('process_id'),
+                '?' => $this->request->getQuery(),
+            ]);
+        }
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function conf()
+    {
+        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $input */
+        $input = $this->ctlService->getInputProcess();
+
+        $this->set([
+            'input' => $input,
+            'adminAccountId' => $input->getInput('admin_account_id'),
+            'grantRoleOptions' => $this->ctlService->getGrantRoleOptions(),
+            'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
+        ]);
+
+        return $this->render('/Admin/AdminGrant/account_permission_conf');
+    }
+
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function confPost()
+    {
+        try {
+            /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $input */
+            $input = $this->ctlService->getInputProcess();
+            $adminAccountId = (string)$input->getInput('admin_account_id');
+
+            $this->ctlService
+                ->inputProcessValidation()
+                ->saveInputProcess()
+                ->endInputProcess();
             $this->Flash->success('管理者権限を更新しました。');
 
             return $this->redirect([
@@ -68,17 +148,15 @@ class EditController extends AppController
                 'admin_account_id' => $adminAccountId,
                 '?' => $this->request->getQuery(),
             ]);
-        } catch (Throwable $e) {
-            Log::error($e->getMessage());
-            $this->Flash->error('管理者権限の更新に失敗しました。');
-        }
+        } catch (ValidateException $ex) {
+            $this->ctlService->inputProcessErrorUpdate($ex);
 
-        return $this->redirect([
-            'controller' => 'Edit',
-            'action' => 'index',
-            'account_id' => $this->request->getParam('account_id'),
-            'admin_account_id' => $adminAccountId,
-            '?' => $this->request->getQuery(),
-        ]);
+            return $this->redirect([
+                'action' => 'input',
+                'account_id' => $this->request->getParam('account_id'),
+                'process_id' => $this->request->getParam('process_id'),
+                '?' => $this->request->getQuery(),
+            ]);
+        }
     }
 }
