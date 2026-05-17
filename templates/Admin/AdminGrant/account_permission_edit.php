@@ -40,7 +40,7 @@
             </div>
 
             <div class="text-center">
-                <a href="<?= $this->Url->build(['action' => 'detail', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $adminAccountId, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-secondary px-5">戻る</a>
+                <a href="<?= $this->Url->build(['controller' => 'Detail', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $adminAccountId, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-secondary px-5">戻る</a>
                 <button type="submit" class="btn btn-primary px-5">更新</button>
             </div>
         </form>

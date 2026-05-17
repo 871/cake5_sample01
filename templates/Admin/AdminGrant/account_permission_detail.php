@@ -29,7 +29,7 @@
         </table>
     </div>
     <div class="card-footer text-center">
-        <a href="<?= $this->Url->build(['action' => 'search', 'account_id' => $this->getRequest()->getParam('account_id'), '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-secondary px-5">戻る</a>
-        <a href="<?= $this->Url->build(['action' => 'edit', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $adminAccountId, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-primary px-5">更新</a>
+        <a href="<?= $this->Url->build(['controller' => 'Search', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-secondary px-5">戻る</a>
+        <a href="<?= $this->Url->build(['controller' => 'Edit', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $adminAccountId, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-primary px-5">更新</a>
     </div>
 </div>
