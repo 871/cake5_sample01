@@ -18,7 +18,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <span>検索結果</span>
-        <a href="<?= $this->Url->build(['action' => 'create', 'account_id' => $this->getRequest()->getParam('account_id'), '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-success btn-sm">新規作成</a>
+        <a href="<?= $this->Url->build(['controller' => 'RolePermission/Create', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-success btn-sm">新規作成</a>
     </div>
     <div class="card-body p-0">
         <table class="table table-bordered table-hover mb-0">
@@ -42,9 +42,9 @@
                             <td><?= h((string)$row->grant_permission_id) ?></td>
                             <td><?= h((string)($row->grant_permission->name ?? '')) ?></td>
                             <td class="text-nowrap">
-                                <a href="<?= $this->Url->build(['action' => 'detail', 'account_id' => $this->getRequest()->getParam('account_id'), 'grant_role_permission_id' => $row->id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-info btn-sm">詳細</a>
-                                <a href="<?= $this->Url->build(['action' => 'edit', 'account_id' => $this->getRequest()->getParam('account_id'), 'grant_role_id' => $row->grant_role_id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-primary btn-sm">更新</a>
-                                <?= $this->Form->postLink('削除', ['action' => 'delete', 'account_id' => $this->getRequest()->getParam('account_id'), 'grant_role_permission_id' => $row->id, '?' => $this->getRequest()->getQuery()], ['class' => 'btn btn-danger btn-sm', 'confirm' => '削除しますか？']) ?>
+                                <a href="<?= $this->Url->build(['controller' => 'RolePermission/Detail', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'grant_role_permission_id' => $row->id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-info btn-sm">詳細</a>
+                                <a href="<?= $this->Url->build(['controller' => 'RolePermission/Update', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'grant_role_id' => $row->grant_role_id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-primary btn-sm">更新</a>
+                                <?= $this->Form->postLink('削除', ['controller' => 'RolePermission/Delete', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'grant_role_permission_id' => $row->id, '?' => $this->getRequest()->getQuery()], ['class' => 'btn btn-danger btn-sm', 'confirm' => '削除しますか？']) ?>
                             </td>
                         </tr>
                     <?php } ?>

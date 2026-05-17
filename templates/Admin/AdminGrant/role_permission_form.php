@@ -52,7 +52,7 @@
             <?php } ?>
 
             <div class="text-center">
-                <a href="<?= $this->Url->build(['action' => 'search', 'account_id' => $this->getRequest()->getParam('account_id'), '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-secondary px-5">戻る</a>
+                <a href="<?= $this->Url->build(['controller' => 'RolePermission/Search', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-secondary px-5">戻る</a>
                 <button type="submit" class="btn btn-primary px-5"><?= $isEdit ? '更新' : '作成' ?></button>
             </div>
         </form>

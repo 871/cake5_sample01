@@ -70,8 +70,8 @@
                             <td><?= h((string)$row->name) ?></td>
                             <td><?= h((string)$row->grant_permission_name) ?></td>
                             <td class="text-nowrap">
-                                <a href="<?= $this->Url->build(['action' => 'detail', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $row->id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-info btn-sm">詳細</a>
-                                <a href="<?= $this->Url->build(['action' => 'edit', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $row->id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-primary btn-sm">更新</a>
+                                <a href="<?= $this->Url->build(['controller' => 'Detail', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $row->id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-info btn-sm">詳細</a>
+                                <a href="<?= $this->Url->build(['controller' => 'Edit', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $row->id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-primary btn-sm">更新</a>
                             </td>
                         </tr>
                     <?php } ?>
