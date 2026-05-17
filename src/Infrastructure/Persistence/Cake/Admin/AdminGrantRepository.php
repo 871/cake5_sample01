@@ -23,6 +23,17 @@ final class AdminGrantRepository implements DomainAdminGrantRepository
     }
 
     /**
+     * ロール権限の検索
+     *
+     * @param string|null $searchText
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Grant\GrantRolePermission>
+     */
+    public function searchRolePermission(?string $searchText): SelectQuery
+    {
+        return (new AdminGrantRepository\SearchRolePermission($searchText))->run();
+    }
+
+    /**
      * 管理者権限の設定（ロール、個別を同時）
      *
      * @param \App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId $adminAccountId
