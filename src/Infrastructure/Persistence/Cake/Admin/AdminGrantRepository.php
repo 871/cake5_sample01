@@ -144,4 +144,15 @@ final class AdminGrantRepository implements DomainAdminGrantRepository
     {
         return (new AdminGrantRepository\Search($condition))->run();
     }
+
+    /**
+     * 管理者権限情報の取得
+     *
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId $adminAccountId
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission>
+     */
+    public function detail(Vo\AdminAccountId $adminAccountId): array
+    {
+        return [];
+    }
 }
