@@ -32,6 +32,6 @@ class DetailController extends AppController
             'permissions' => $this->ctlService->getAccountPermissions($adminAccountId),
         ]);
 
-        return $this->render('/Admin/AdminGrant/account_permission_detail');
+        return $this->render('/Admin/AdminGrant/detail');
     }
 }

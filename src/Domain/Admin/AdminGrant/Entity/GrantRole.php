@@ -9,33 +9,44 @@ use App\Domain\Shared\ValueObject as SVo;
 final class GrantRole
 {
     /**
-     * @param ?string $id
-     * @param ?string $code
-     * @param ?string $name
-     * @param ?string $description
-     * @param ?string $sort
-     * @param ?string $is_active
-     * @param ?string $created
-     * @param ?string $modified
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId $grant_role_id
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Code $code
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Name $name
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Description $description
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Sort $sort
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\IsActive $is_active
+     * @param \App\Domain\Shared\ValueObject\Created $created
+     * @param \App\Domain\Shared\ValueObject\Modified $modified
+     * @param array<\App\Domain\Admin\AdminGrant\Entity\GrantRolePermission> $grant_role_permissions
      */
     public function __construct(
-        private readonly ?string $id,
-        private readonly ?string $code,
-        private readonly ?string $name,
-        private readonly ?string $description,
-        private readonly ?string $sort,
-        private readonly ?string $is_active,
-        private readonly ?string $created,
-        private readonly ?string $modified,
+        private readonly Vo\GrantRoleId $grant_role_id,
+        private readonly Vo\Code $code,
+        private readonly Vo\Name $name,
+        private readonly Vo\Description $description,
+        private readonly Vo\Sort $sort,
+        private readonly Vo\IsActive $is_active,
+        private readonly SVo\Created $created,
+        private readonly SVo\Modified $modified,
+        private readonly array $grant_role_permissions = [],
     ) {
+    }
+
+    /**
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId $grant_role_id
+     * @return bool
+     */
+    public function hasGrantRoleId(Vo\GrantRoleId $grant_role_id): bool
+    {
+        return $this->grant_role_id->toString() === $grant_role_id->toString();
     }
 
     /**
      * @return \App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId
      */
-    public function id(): Vo\GrantRoleId
+    public function grantRoleId(): Vo\GrantRoleId
     {
-        return new Vo\GrantRoleId($this->id);
+        return $this->grant_role_id;
     }
 
     /**
@@ -43,7 +54,7 @@ final class GrantRole
      */
     public function code(): Vo\Code
     {
-        return new Vo\Code($this->code);
+        return $this->code;
     }
 
     /**
@@ -51,7 +62,7 @@ final class GrantRole
      */
     public function name(): Vo\Name
     {
-        return new Vo\Name($this->name);
+        return $this->name;
     }
 
     /**
@@ -59,7 +70,7 @@ final class GrantRole
      */
     public function description(): Vo\Description
     {
-        return new Vo\Description($this->description);
+        return $this->description;
     }
 
     /**
@@ -67,7 +78,7 @@ final class GrantRole
      */
     public function sort(): Vo\Sort
     {
-        return new Vo\Sort($this->sort);
+        return $this->sort;
     }
 
     /**
@@ -75,7 +86,7 @@ final class GrantRole
      */
     public function isActive(): Vo\IsActive
     {
-        return new Vo\IsActive($this->is_active);
+        return $this->is_active;
     }
 
     /**
@@ -83,7 +94,7 @@ final class GrantRole
      */
     public function created(): SVo\Created
     {
-        return new SVo\Created($this->created);
+        return $this->created;
     }
 
     /**
@@ -91,6 +102,14 @@ final class GrantRole
      */
     public function modified(): SVo\Modified
     {
-        return new SVo\Modified($this->modified);
+        return $this->modified;
+    }
+
+    /**
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantRolePermission>
+     */
+    public function grantRolePermissions(): array
+    {
+        return $this->grant_role_permissions;
     }
 }

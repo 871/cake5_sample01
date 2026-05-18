@@ -66,17 +66,7 @@ interface AdminGrantRepository
      */
     public function deleteRolePermission(Vo\GrantRolePermissionId $id): GrantRolePermission;
 
-    /**
-     * 管理者権限の検索
-     *
-     * アカウントと権限の組み合わせでユニークなレコードを検索する
-     *
-     * Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。 --- IGNORE ---
-     *
-     * @param \App\Domain\Admin\AdminGrant\SearchCondition $condition
-     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
-     */
-    public function search(SearchCondition $condition): SelectQuery;
+    
 
     /**
      * 管理者権限一覧の取得
@@ -117,4 +107,26 @@ interface AdminGrantRepository
         Vo\AdminAccountId $adminAccountId,
         Vo\GrantPermissionId $grantPermissionId,
     ): bool;
+
+    /**
+     * 管理者権限の検索
+     *
+     * アカウントと権限の組み合わせでユニークなレコードを検索する
+     *
+     * Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。 --- IGNORE ---
+     *
+     * @param \App\Domain\Admin\AdminGrant\SearchCondition $condition
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
+     */
+    public function search(SearchCondition $condition): SelectQuery;
+
+    /**
+     * 管理者権限情報の取得
+     *
+     * 指定した管理者アカウントが保持している権限一覧を取得する（ロール経由・個別付与を含む）
+     *
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId $adminAccountId
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission>
+     */
+    public function detail(Vo\AdminAccountId $adminAccountId): array;
 }

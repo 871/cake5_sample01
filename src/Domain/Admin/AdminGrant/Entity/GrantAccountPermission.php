@@ -9,35 +9,48 @@ use App\Domain\Shared\ValueObject as SVo;
 final class GrantAccountPermission
 {
     /**
-     * @param ?string $id
-     * @param ?string $account_id
-     * @param ?string $grant_permission_id
-     * @param ?string $created
-     * @param ?string $modified
+     * @param Vo\GrantAccountPermissionId $grant_account_permission_id
+     * @param Vo\AdminAccountId $admin_account_id
+     * @param Vo\GrantPermissionId $grant_permission_id
+     * @param SVo\Created $created
+     * @param SVo\Modified $modified
      */
     public function __construct(
-        private readonly ?string $id,
-        private readonly ?string $account_id,
-        private readonly ?string $grant_permission_id,
-        private readonly ?string $created,
-        private readonly ?string $modified,
+        private readonly Vo\GrantAccountPermissionId $grant_account_permission_id,
+        private readonly Vo\AdminAccountId $admin_account_id,
+        private readonly Vo\GrantPermissionId $grant_permission_id,
+        private readonly SVo\Created $created,
+        private readonly SVo\Modified $modified,
+        private readonly GrantPermission $grant_permissions,
     ) {
+        if (!$this->grant_permissions->hasGrantPermissionId($this->grant_permission_id)) {
+            throw new \DomainException('GrantPermission id does not match grant_permission_id');
+        }
+    }
+
+    /**
+     * @param Vo\AdminAccountId $admin_account_id
+     * @return bool
+     */
+    public function hasAdminAccountId(Vo\AdminAccountId $admin_account_id): bool
+    {
+        return $this->admin_account_id->toString() === $admin_account_id->toString();
     }
 
     /**
      * @return \App\Domain\Admin\AdminGrant\ValueObject\GrantAccountPermissionId
      */
-    public function id(): Vo\GrantAccountPermissionId
+    public function grantAccountPermissionId(): Vo\GrantAccountPermissionId
     {
-        return new Vo\GrantAccountPermissionId($this->id);
+        return $this->grant_account_permission_id;
     }
 
     /**
      * @return \App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId
      */
-    public function accountId(): Vo\AdminAccountId
+    public function adminAccountId(): Vo\AdminAccountId
     {
-        return new Vo\AdminAccountId($this->account_id);
+        return $this->admin_account_id;
     }
 
     /**
@@ -45,7 +58,7 @@ final class GrantAccountPermission
      */
     public function grantPermissionId(): Vo\GrantPermissionId
     {
-        return new Vo\GrantPermissionId($this->grant_permission_id);
+        return $this->grant_permission_id;
     }
 
     /**
@@ -53,7 +66,7 @@ final class GrantAccountPermission
      */
     public function created(): SVo\Created
     {
-        return new SVo\Created($this->created);
+        return $this->created;
     }
 
     /**
@@ -61,6 +74,6 @@ final class GrantAccountPermission
      */
     public function modified(): SVo\Modified
     {
-        return new SVo\Modified($this->modified);
+        return $this->modified;
     }
 }

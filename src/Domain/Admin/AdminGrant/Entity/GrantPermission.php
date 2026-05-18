@@ -9,33 +9,42 @@ use App\Domain\Shared\ValueObject as SVo;
 final class GrantPermission
 {
     /**
-     * @param ?string $id
-     * @param ?string $code
-     * @param ?string $name
-     * @param ?string $description
-     * @param ?string $sort
-     * @param ?string $is_active
-     * @param ?string $created
-     * @param ?string $modified
+     * @param Vo\GrantPermissionId $grant_permission_id
+     * @param Vo\Code $code
+     * @param Vo\Name $name
+     * @param Vo\Description $description
+     * @param Vo\Sort $sort
+     * @param Vo\IsActive $is_active
+     * @param SVo\Created $created
+     * @param SVo\Modified $modified
      */
     public function __construct(
-        private readonly ?string $id,
-        private readonly ?string $code,
-        private readonly ?string $name,
-        private readonly ?string $description,
-        private readonly ?string $sort,
-        private readonly ?string $is_active,
-        private readonly ?string $created,
-        private readonly ?string $modified,
+        private readonly Vo\GrantPermissionId $grant_permission_id,
+        private readonly Vo\Code $code,
+        private readonly Vo\Name $name,
+        private readonly Vo\Description $description,
+        private readonly Vo\Sort $sort,
+        private readonly Vo\IsActive $is_active,
+        private readonly SVo\Created $created,
+        private readonly SVo\Modified $modified,
     ) {
+    }
+
+    /**
+     * @param Vo\GrantPermissionId $grant_permission_id
+     * @return bool
+     */
+    public function hasGrantPermissionId(Vo\GrantPermissionId $grant_permission_id): bool
+    {
+        return $this->grant_permission_id->toString() === $grant_permission_id->toString();
     }
 
     /**
      * @return \App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId
      */
-    public function id(): Vo\GrantPermissionId
+    public function grantPermissionId(): Vo\GrantPermissionId
     {
-        return new Vo\GrantPermissionId($this->id);
+        return $this->grant_permission_id;
     }
 
     /**
@@ -43,7 +52,7 @@ final class GrantPermission
      */
     public function code(): Vo\Code
     {
-        return new Vo\Code($this->code);
+        return $this->code;
     }
 
     /**
@@ -51,7 +60,7 @@ final class GrantPermission
      */
     public function name(): Vo\Name
     {
-        return new Vo\Name($this->name);
+        return $this->name;
     }
 
     /**
@@ -59,7 +68,7 @@ final class GrantPermission
      */
     public function description(): Vo\Description
     {
-        return new Vo\Description($this->description);
+        return $this->description;
     }
 
     /**
@@ -67,7 +76,7 @@ final class GrantPermission
      */
     public function sort(): Vo\Sort
     {
-        return new Vo\Sort($this->sort);
+        return $this->sort;
     }
 
     /**
@@ -75,7 +84,7 @@ final class GrantPermission
      */
     public function isActive(): Vo\IsActive
     {
-        return new Vo\IsActive($this->is_active);
+        return $this->is_active;
     }
 
     /**
@@ -83,7 +92,7 @@ final class GrantPermission
      */
     public function created(): SVo\Created
     {
-        return new SVo\Created($this->created);
+        return $this->created;
     }
 
     /**
@@ -91,6 +100,6 @@ final class GrantPermission
      */
     public function modified(): SVo\Modified
     {
-        return new SVo\Modified($this->modified);
+        return $this->modified;
     }
 }
