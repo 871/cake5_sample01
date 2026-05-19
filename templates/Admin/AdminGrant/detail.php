@@ -12,7 +12,7 @@
         管理者ID：<span class="badge bg-light text-dark"><?= h($adminAccountGrant->adminAccountId()) ?></span>
         管理者名：<span class="badge bg-light text-dark"><?= h($adminAccountGrant->name()) ?></span>
         メールアドレス：<span class="badge bg-light text-dark"><?= h($adminAccountGrant->email()) ?></span>
-        )
+        ）
     </div>
     <div class="card-body p-0">
         <table class="table table-bordered mb-0">
