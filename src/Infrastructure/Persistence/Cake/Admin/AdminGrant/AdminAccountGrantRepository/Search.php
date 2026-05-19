@@ -1,14 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrantRepository;
+namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 
-use App\Domain\Admin\AdminGrant\SearchCondition;
+use App\Domain\Admin\AdminGrant\SearchAdminAccountGrantCondition;
 use App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId;
 use App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId;
-use App\Infrastructure\Persistence\Cake\Admin\AdminGrantMapper;
 use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -18,16 +17,18 @@ final class Search
 {
     use LocatorAwareTrait;
 
+    const ACCOUNT_TYPE = 'ADMIN';
+
     /**
      * @var \App\Model\Table\Admin\AdminAccountsTable
      */
     private AdminAccountsTable $table;
 
     /**
-     * @param \App\Domain\Admin\AdminGrant\SearchCondition $condition
+     * @param \App\Domain\Admin\AdminGrant\SearchAdminAccountGrantCondition $condition
      */
     public function __construct(
-        private readonly SearchCondition $condition,
+        private readonly SearchAdminAccountGrantCondition $condition,
     ) {
         $this->table = $this->fetchTable(AdminAccountsTable::class);
     }
@@ -85,7 +86,7 @@ final class Search
                     'table' => 'grant_permissions',
                     'type' => 'INNER',
                     'conditions' => [
-                        'GrantPermissions.account_type' => AdminGrantMapper::ACCOUNT_TYPE
+                        'GrantPermissions.account_type' => self::ACCOUNT_TYPE,
                     ],
                 ],
                 'RoleGrantExists' => [
@@ -152,7 +153,7 @@ final class Search
                                             ])
                                             ->where([
                                                 // grant_account_roles_idx01 (account_type, account_id, grant_role_id) の列順
-                                                'GrantAccountRoles.account_type' => AdminGrantMapper::ACCOUNT_TYPE,
+                                                'GrantAccountRoles.account_type' => self::ACCOUNT_TYPE,
                                                 'GrantAccountRoles.account_id = AdminAccounts.id',
                                                 'GrantAccountRoles.grant_role_id IN' => $grantRoleIds,
                                             ]);

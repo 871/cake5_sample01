@@ -17,6 +17,7 @@ final class GrantRole
      * @param \App\Domain\Admin\AdminGrant\ValueObject\IsActive $is_active
      * @param \App\Domain\Shared\ValueObject\Created $created
      * @param \App\Domain\Shared\ValueObject\Modified $modified
+     * @param array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountRole> $grant_account_roles
      * @param array<\App\Domain\Admin\AdminGrant\Entity\GrantRolePermission> $grant_role_permissions
      */
     public function __construct(
@@ -28,8 +29,48 @@ final class GrantRole
         private readonly Vo\IsActive $is_active,
         private readonly SVo\Created $created,
         private readonly SVo\Modified $modified,
-        private readonly array $grant_role_permissions = [],
+        private array $grant_account_roles = [],
+        private array $grant_role_permissions = [],
     ) {
+        foreach ($this->grant_account_roles as $grant_account_role) {
+            if (!$grant_account_role->hasGrantRoleId($this->grant_role_id)) {
+                throw new \DomainException('GrantAccountRole grant_role_id does not match grant_role_id');
+            }
+        }
+
+        foreach ($this->grant_role_permissions as $grant_role_permission) {
+            if (!$grant_role_permission->hasGrantRoleId($this->grant_role_id)) {
+                throw new \DomainException('GrantRolePermission grant_role_id does not match grant_role_id');
+            }
+        }
+    }
+
+    public function assignGrantAccountRoles(array $grant_account_roles): self
+    {
+        foreach ($grant_account_roles as $grant_account_role) {
+            if (!$grant_account_role->hasGrantRoleId($this->grant_role_id)) {
+                throw new \DomainException('GrantAccountRole grant_role_id does not match grant_role_id');
+            }
+        }
+
+        $ther = clone $this;
+        $ther->grant_account_roles = $grant_account_roles;
+
+        return $ther;
+    }
+
+    public function assignGrantRolePermissions(array $grant_role_permissions): self
+    {
+        foreach ($grant_role_permissions as $grant_role_permission) {
+            if (!$grant_role_permission->hasGrantRoleId($this->grant_role_id)) {
+                throw new \DomainException('GrantRolePermission grant_role_id does not match grant_role_id');
+            }
+        }
+
+        $ther = clone $this;
+        $ther->grant_role_permissions = $grant_role_permissions;
+
+        return $ther;
     }
 
     /**
@@ -39,6 +80,18 @@ final class GrantRole
     public function hasGrantRoleId(Vo\GrantRoleId $grant_role_id): bool
     {
         return $this->grant_role_id->toString() === $grant_role_id->toString();
+    }
+
+    /**
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Code $code
+     * @return bool
+     */
+    public function hasPermissionCode(Vo\Code $code): bool
+    {
+        return array_filter(
+            $this->grant_role_permissions,
+            fn($grant_role_permission) => $grant_role_permission->hasPermissionCode($code)
+        ) !== [];
     }
 
     /**

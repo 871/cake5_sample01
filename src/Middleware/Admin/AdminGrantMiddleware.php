@@ -20,6 +20,8 @@ class AdminGrantMiddleware implements MiddlewareInterface
 {
     use LocatorAwareTrait;
 
+    const ACCOUNT_TYPE = 'ADMIN';
+
     /**
      * @param \Psr\Http\Message\ServerRequestInterface $request
      * @param \Psr\Http\Server\RequestHandlerInterface $handler
@@ -79,7 +81,7 @@ class AdminGrantMiddleware implements MiddlewareInterface
         $permission = $table->find()
             ->select(['id'])
             ->where([
-                'account_type' => AdminGrantMapper::ACCOUNT_TYPE,
+                'account_type' => self::ACCOUNT_TYPE,
                 'code' => $code,
                 'is_active' => 1,
             ])

@@ -26,10 +26,11 @@ class DetailController extends AppController
 
     public function index()
     {
-        $adminAccountId = (string)$this->request->getParam('admin_account_id');
         $this->set([
-            'adminAccountId' => $adminAccountId,
-            'permissions' => $this->ctlService->getAccountPermissions($adminAccountId),
+            'adminAccountGrant' => $this->ctlService->getAdminAccountGrant(
+                adminAccountId: (string)$this->request->getParam('admin_account_id'),
+            ),
+            'grantPermissions' => $this->ctlService->getGrantPermissions(),
         ]);
 
         return $this->render('/Admin/AdminGrant/detail');

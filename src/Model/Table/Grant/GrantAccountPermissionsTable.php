@@ -35,13 +35,17 @@ final class GrantAccountPermissionsTable extends Table
         $this->belongsTo('AdminAccounts', [
             'className' => AdminAccountsTable::class,
             'foreignKey' => 'account_id',
-            'conditions' => ['GrantAccountPermissions.account_type' => 'ADMIN'],
+            'conditions' => [
+                'GrantAccountPermissions.account_type' => 'ADMIN'
+            ],
             'joinType' => 'INNER',
         ]);
 
         $this->belongsTo('GrantPermissions', [
             'className' => GrantPermissionsTable::class,
             'foreignKey' => 'grant_permission_id',
+            'conditions' => [
+            ],
             'joinType' => 'INNER',
         ]);
     }

@@ -5,7 +5,7 @@ namespace App\Domain\Admin\AdminGrant;
 
 use App\Domain\Shared\ValueObject\SearchText;
 
-class SearchRolePermissionCondition
+class SearchAdminGrantPermissionCondition
 {
     /**
      * @param \App\Domain\Shared\ValueObject\SearchText $searchText

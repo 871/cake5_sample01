@@ -15,8 +15,8 @@ use Cake\ORM\Entity;
  * @property string|null $description
  * @property int $sort
  * @property int $is_active
- * @property \Cake\I18n\DateTime $created
- * @property \Cake\I18n\DateTime $modified
+ * @property \DateTimeInterface $created
+ * @property \DateTimeInterface $modified
  *
  * @property \App\Model\Entity\Grant\GrantRolePermission[] $grant_role_permissions
  * @property \App\Model\Entity\Grant\GrantAccountPermission[] $grant_account_permissions

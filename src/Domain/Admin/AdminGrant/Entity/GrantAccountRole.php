@@ -43,28 +43,32 @@ final class GrantAccountRole
 
     /**
      * @param \App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant $admin_account_grant
-     * @return void
+     * @return self
      */
-    public function assignAdminAccountGrant(AdminAccountGrant $admin_account_grant): void
+    public function assignAdminAccountGrant(AdminAccountGrant $admin_account_grant): self
     {
         if (!$admin_account_grant->hasAdminAccountId($this->admin_account_id)) {
             throw new \DomainException('GrantAccountGrant admin_account_id does not match admin_account_id');
         }
 
-        $this->admin_account_grant = $admin_account_grant;
+        $ther = clone $this;
+        $ther->admin_account_grant = $admin_account_grant;
+        return $ther;
     }
 
     /**
      * @param \App\Domain\Admin\AdminGrant\Entity\GrantRole $grant_role
-     * @return void
+     * @return self
      */
-    public function assignGrantRole(GrantRole $grant_role): void
+    public function assignGrantRole(GrantRole $grant_role): self
     {
         if (!$grant_role->hasGrantRoleId($this->grant_role_id)) {
             throw new \DomainException('GrantRole id does not match grant_role_id');
         }
 
-        $this->grant_role = $grant_role;
+        $ther = clone $this;
+        $ther->grant_role = $grant_role;
+        return $ther;
     }
 
     /**
@@ -83,6 +87,16 @@ final class GrantAccountRole
     public function hasGrantRoleId(Vo\GrantRoleId $grant_role_id): bool
     {
         return $this->grant_role_id->toString() === $grant_role_id->toString();
+    }
+
+    /**
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Code $code
+     * @return bool
+     */
+    public function hasPermissionCode(Vo\Code $code): bool
+    {
+        return $this->grant_role !== null
+            && $this->grant_role->hasPermissionCode($code);
     }
 
     /**
@@ -123,5 +137,13 @@ final class GrantAccountRole
     public function modified(): SVo\Modified
     {
         return $this->modified;
+    }
+
+    /**
+     * @return ?\App\Domain\Admin\AdminGrant\Entity\GrantRole
+     */
+    public function grantRole(): ?GrantRole
+    {
+        return $this->grant_role;
     }
 }

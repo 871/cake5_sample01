@@ -12,8 +12,8 @@ use Cake\ORM\Entity;
  * @property string $account_type
  * @property int $account_id
  * @property int $grant_role_id
- * @property \Cake\I18n\DateTime $created
- * @property \Cake\I18n\DateTime $modified
+ * @property \DateTimeInterface $created
+ * @property \DateTimeInterface $modified
  *
  * @property \App\Model\Entity\Grant\GrantRole $grant_role
  */

@@ -14,7 +14,8 @@ final class GrantRolePermission
      * @param \App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId $grant_permission_id
      * @param \App\Domain\Shared\ValueObject\Created $created
      * @param \App\Domain\Shared\ValueObject\Modified $modified
-     * @param \App\Domain\Admin\AdminGrant\Entity\GrantPermission $grant_permissions
+     * @param \App\Domain\Admin\AdminGrant\Entity\GrantRole|null $grant_role
+     * @param \App\Domain\Admin\AdminGrant\Entity\GrantPermission|null $grant_permission
      */
     public function __construct(
         private readonly Vo\GrantRolePermissionId $grant_role_permission_id,
@@ -22,9 +23,20 @@ final class GrantRolePermission
         private readonly Vo\GrantPermissionId $grant_permission_id,
         private readonly SVo\Created $created,
         private readonly SVo\Modified $modified,
-        private readonly GrantPermission $grant_permissions,
+        private readonly ?GrantRole $grant_role,
+        private readonly ?GrantPermission $grant_permission,
     ) {
-        if (!$this->grant_permissions->hasGrantPermissionId($this->grant_permission_id)) {
+        if (
+            $this->grant_role !== null
+            && !$this->grant_role->hasGrantRoleId($grant_role_id)
+        ) {
+            throw new \DomainException('GrantRole grant_role_id does not match grant_role_id');
+        }
+
+        if (
+            $this->grant_permission !== null 
+            && !$this->grant_permission->hasGrantPermissionId($this->grant_permission_id)
+        ) {
             throw new \DomainException('GrantPermission id does not match grant_permission_id');
         }
     }
@@ -36,6 +48,15 @@ final class GrantRolePermission
     public function hasGrantRoleId(Vo\GrantRoleId $grant_role_id): bool
     {
         return $this->grant_role_id->toString() === $grant_role_id->toString();
+    }
+
+    /**
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Code $code
+     */
+    public function hasPermissionCode(Vo\Code $code): bool
+    {
+        return $this->grant_permission !== null
+            && $this->grant_permission->hasCode($code);
     }
 
     /**
@@ -81,8 +102,8 @@ final class GrantRolePermission
     /**
      * @return \App\Domain\Admin\AdminGrant\Entity\GrantPermission
      */
-    public function grantPermissions(): GrantPermission
+    public function grantPermission(): GrantPermission
     {
-        return $this->grant_permissions;
+        return $this->grant_permission;
     }
 }

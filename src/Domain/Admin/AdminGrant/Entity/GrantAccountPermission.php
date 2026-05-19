@@ -21,11 +21,43 @@ final class GrantAccountPermission
         private readonly Vo\GrantPermissionId $grant_permission_id,
         private readonly SVo\Created $created,
         private readonly SVo\Modified $modified,
-        private readonly GrantPermission $grant_permissions,
+        private ?AdminAccountGrant $admin_account_grant,
+        private ?GrantPermission $grant_permission,
     ) {
-        if (!$this->grant_permissions->hasGrantPermissionId($this->grant_permission_id)) {
+        if (
+            $admin_account_grant !== null
+            && !$admin_account_grant->hasAdminAccountId($admin_account_id)
+        ) {
+            throw new \DomainException('AdminAccountGrant does not have the specified admin_account_id');
+        }
+        
+        if (
+            $this->grant_permission !== null
+            && !$this->grant_permission->hasGrantPermissionId($this->grant_permission_id)
+        ) {
             throw new \DomainException('GrantPermission id does not match grant_permission_id');
         }
+    }
+
+    public function assignAdminAccountGrant(AdminAccountGrant $admin_account_grant): self
+    {
+        if (!$admin_account_grant->hasAdminAccountId($this->admin_account_id)) {
+            throw new \DomainException('AdminAccountGrant does not have the specified admin_account_id');
+        }
+
+        $ther = clone $this;
+        $ther->admin_account_grant = $admin_account_grant;
+        return $ther;
+    }
+
+    public function assignGrantPermission(GrantPermission $grant_permission): self
+    {
+        if (!$grant_permission->hasGrantPermissionId($this->grant_permission_id)) {
+            throw new \DomainException('GrantPermission id does not match grant_permission_id');
+        }
+        $ther = clone $this;
+        $ther->grant_permission = $grant_permission;
+        return $ther;
     }
 
     /**
@@ -35,6 +67,15 @@ final class GrantAccountPermission
     public function hasAdminAccountId(Vo\AdminAccountId $admin_account_id): bool
     {
         return $this->admin_account_id->toString() === $admin_account_id->toString();
+    }
+
+    /**
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Code $code
+     */
+    public function hasPermissionCode(Vo\Code $code): bool
+    {
+        return $this->grant_permission !== null
+            && $this->grant_permission->hasCode($code);
     }
 
     /**
@@ -75,5 +116,21 @@ final class GrantAccountPermission
     public function modified(): SVo\Modified
     {
         return $this->modified;
+    }
+
+    /**
+     * @return \App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant|null
+     */
+    public function adminAccountGrant(): ?AdminAccountGrant
+    {
+        return $this->admin_account_grant;
+    }
+
+    /**
+     * @return \App\Domain\Admin\AdminGrant\Entity\GrantPermission|null
+     */
+    public function grantPermission(): ?GrantPermission
+    {
+        return $this->grant_permission;
     }
 }
