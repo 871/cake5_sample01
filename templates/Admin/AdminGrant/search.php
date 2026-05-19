@@ -58,13 +58,18 @@ $pageOptions = [
         <table class="table table-bordered table-hover mb-0">
             <thead class="table-dark">
                 <tr>
-                    <th><?= $this->Paginator->sort('AdminAccounts.id', 'ID', $pageOptions) ?></th>
-                    <th><?= $this->Paginator->sort('AdminAccounts.email', 'メール', $pageOptions) ?></th>
-                    <th><?= $this->Paginator->sort('AdminAccounts.name', '名前', $pageOptions) ?></th>
-                    <th>権限名</th>
-                    <th>権限コード</th>
-                    <th>ロール付与</th>
-                    <th>アカウント付与</th>
+                    <th><?= $this->Paginator->sort('AdminAccounts.id', '管理者ID', $pageOptions) ?></th>
+                    <th>
+                        <?= $this->Paginator->sort('AdminAccounts.name', '管理者名', $pageOptions) ?>
+                        <br>
+                        <?= $this->Paginator->sort('AdminAccounts.email', 'メール', $pageOptions) ?>
+                    </th>
+                    <th>
+                        権限名
+                        <br>
+                        権限コード
+                    </th>
+                    <th>権限設定</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -73,17 +78,40 @@ $pageOptions = [
                     <tr><td colspan="5" class="text-center text-muted py-3">データがありません</td></tr>
                 <?php } else { ?>
                     <?php foreach ($rows as $row) { ?>
-                        <tr>
+                        <tr
+                            <?= $row->role_grant_exists || $row->account_grant_exists? '' :'class="table-secondary"' ?>
+                        >
                             <td><?= h((string)$row->id) ?></td>
-                            <td><?= h((string)$row->email) ?></td>
-                            <td><?= h((string)$row->name) ?></td>
-                            <td><?= h((string)$row->grant_permission_name) ?></td>
-                            <td><?= h((string)$row->grant_permission_code) ?></td>
-                            <td><?= $row->role_grant_exists ? '<span class="badge bg-success">あり</span>' : '<span class="badge bg-danger">なし</span>' ?></td>
-                            <td><?= $row->account_grant_exists ? '<span class="badge bg-success">あり</span>' : '<span class="badge bg-danger">なし</span>' ?></td>
+                            <td>
+                                <?= h((string)$row->name) ?>
+                                <br>
+                                <?= h((string)$row->email) ?>
+                            </td>
+                            <td>
+                                <?= h((string)$row->grant_permission_name) ?>
+                                <br>
+                                <?= h((string)$row->grant_permission_code) ?>
+                            </td>
+                            <td>
+                                アカウント：<?= $row->role_grant_exists ? '<span class="badge bg-success">あり</span>' : '<span class="badge bg-danger">なし</span>' ?>
+                                <br>
+                                ロール　　：<?= $row->account_grant_exists ? '<span class="badge bg-success">あり</span>' : '<span class="badge bg-danger">なし</span>' ?>
+                            </td>
                             <td class="text-nowrap">
-                                <a href="<?= $this->Url->build(['controller' => 'Detail', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $row->id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-info btn-sm">詳細</a>
-                                <a href="<?= $this->Url->build(['controller' => 'Edit', 'action' => 'index', 'account_id' => $this->getRequest()->getParam('account_id'), 'admin_account_id' => $row->id, '?' => $this->getRequest()->getQuery()]) ?>" class="btn btn-primary btn-sm">更新</a>
+                                <a href="<?= $this->Url->build([
+                                    'controller' => 'Detail',
+                                    'action' => 'index',
+                                    'account_id' => $this->getRequest()->getParam('account_id'),
+                                    'admin_account_id' => $row->id,
+                                    '?' => $this->getRequest()->getQuery()
+                                ]) ?>" class="btn btn-info btn-sm">詳細</a>
+                                <a href="<?= $this->Url->build([
+                                    'controller' => 'Edit',
+                                    'action' => 'index',
+                                    'account_id' => $this->getRequest()->getParam('account_id'),
+                                    'admin_account_id' => $row->id,
+                                    '?' => $this->getRequest()->getQuery()
+                                ]) ?>" class="btn btn-primary btn-sm">更新</a>
                             </td>
                         </tr>
                     <?php } ?>
