@@ -40,6 +40,15 @@ final class GrantPermission
     }
 
     /**
+     * @param Vo\Code $code
+     * @return bool
+     */
+    public function hasCode(Vo\Code $code): bool
+    {
+        return $this->code->toString() === $code->toString();
+    }
+
+    /**
      * @return \App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId
      */
     public function grantPermissionId(): Vo\GrantPermissionId

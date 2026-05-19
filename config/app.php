@@ -233,7 +233,30 @@ return [
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
-
+    'PHPIMAP' => [
+        'received_check' => [
+            'host' => 'localhost',
+            'port' => 993,
+            'mail_address' => 'xxxxxxxx',
+            'username' => 'xxxxxxxx',
+            'password' => 'xxxxxxxx',
+            'protocol' => 'imap',
+            'encryption' => 'ssl',
+            'validate_cert' => true,
+            'authentication' => 'xxxxxxxx',
+        ],
+        'return_path' => [
+            'host' => 'localhost',
+            'port' => 993,
+            'mail_address' => 'xxxxxxxx',
+            'username' => 'xxxxxxxx',
+            'password' => 'xxxxxxxx',
+            'protocol' => 'imap',
+            'encryption' => 'ssl',
+            'validate_cert' => true,
+            'authentication' => 'xxxxxxxx',
+        ],
+    ],
     /*
      * Email delivery profiles
      *

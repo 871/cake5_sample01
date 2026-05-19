@@ -8,18 +8,13 @@ use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 final class AdminAccountGrant
 {
     /**
-     * @param array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission> $grant_permissions
-     */
-    private readonly array $grant_permissions;
-
-    /**
      * @param Vo\AdminAccountId $admin_account_id
      * @param Vo\Email $email
      * @param Vo\Name $name
      * @param Vo\AdminNote $admin_note
      * @param Vo\AccountStatusMasterId $account_status_master_id
-     * @param Vo\AccountStatusMasterCode $admin_account_status_master_code
-     * @param Vo\AccountStatusMasterName $admin_account_status_master_name
+     * @param Vo\AccountStatusMasterCode $account_status_master_code
+     * @param Vo\AccountStatusMasterName $account_status_master_name
      * @param array $grant_account_roles<App\Domain\Admin\AdminGrant\Entity\GrantAccountRole>
      * @param array $grant_account_permissions<App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission>
      */
@@ -29,10 +24,10 @@ final class AdminAccountGrant
         private readonly Vo\Name $name,
         private readonly Vo\AdminNote $admin_note,
         private readonly Vo\AccountStatusMasterId $account_status_master_id,
-        private readonly Vo\AccountStatusMasterCode $admin_account_status_master_code,
-        private readonly Vo\AccountStatusMasterName $admin_account_status_master_name,
-        private readonly array $grant_account_roles = [],
-        private readonly array $grant_account_permissions = [],
+        private readonly Vo\AccountStatusMasterCode $account_status_master_code,
+        private readonly Vo\AccountStatusMasterName $account_status_master_name,
+        private array $grant_account_roles = [],
+        private array $grant_account_permissions = [],
     ) {
         foreach ($this->grant_account_roles as $grant_role) {
             if (!$grant_role->hasAdminAccountId($this->admin_account_id)) {
@@ -48,29 +43,39 @@ final class AdminAccountGrant
     }
 
     /**
-     * @param \App\Domain\Admin\AdminGrant\Entity\GrantAccountRole $grant_account_role
-     * @return void
+     * @param array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountRole> $grant_account_roles
+     * @return self
      */
-    public function assignAddGrantAccountRole(GrantAccountRole $grant_account_role): void
+    public function assignGrantAccountRoles(array $grant_account_roles): self
     {
-        if (!$grant_account_role->hasAdminAccountId($this->admin_account_id)) {
-            throw new \DomainException('GrantAccountRole admin_account_id does not match AdminAccountId');
+        foreach ($grant_account_roles as $grant_account_role) {
+            if (!$grant_account_role->hasAdminAccountId($this->admin_account_id)) {
+                throw new \DomainException('GrantAccountRole admin_account_id does not match AdminAccountId');
+            }
         }
 
-        $this->grant_account_roles[] = $grant_account_role;
+        $ther = clone $this;
+        $ther->grant_account_roles = $grant_account_roles;
+
+        return $ther;
     }
 
     /**
-     * @param \App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission $grant_account_permission
-     * @return void
+     * @param array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission> $grant_account_permissions
+     * @return self
      */
-    public function assignAddGrantAccountPermission(GrantAccountPermission $grant_account_permission): void
+    public function assignGrantAccountPermissions(array $grant_account_permissions): self
     {
-        if (!$grant_account_permission->hasAdminAccountId($this->admin_account_id)) {
-            throw new \DomainException('GrantAccountPermission admin_account_id does not match AdminAccountId');
+        foreach ($grant_account_permissions as $grant_account_permission) {
+            if (!$grant_account_permission->hasAdminAccountId($this->admin_account_id)) {
+                throw new \DomainException('GrantAccountPermission admin_account_id does not match AdminAccountId');
+            }
         }
 
-        $this->grant_account_permissions[] = $grant_account_permission;
+        $ther = clone $this;
+        $ther->grant_account_permissions = $grant_account_permissions;
+
+        return $ther;
     }
 
     /**
@@ -80,6 +85,40 @@ final class AdminAccountGrant
     public function hasAdminAccountId(Vo\AdminAccountId $id): bool
     {
         return $this->admin_account_id->toString() === $id->toString();
+    }
+
+    /**
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Code $code
+     */
+    public function hasPermissionCode(Vo\Code $code): bool
+    {
+        return array_filter($this->grant_account_permissions, function($grant_account_permission) use ($code) {
+            return $grant_account_permission->hasPermissionCode($code);
+        }) !== []
+        ||
+        array_filter($this->grant_account_roles, function($grant_account_role) use ($code) {
+            return $grant_account_role->hasPermissionCode($code);
+        }) !== [];
+    }
+
+    /**
+     * 
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Code $code
+     * @return array<string>
+     */
+    public function grantSettings(Vo\Code $code): array
+    {
+        return array_filter([
+            array_filter($this->grant_account_permissions, function($grant_account_permission) use ($code) {
+                return $grant_account_permission->hasPermissionCode($code);
+            }) !== [] ? 'アカウント付与': null,
+
+            ...array_map(function($grant_account_role) use ($code) {
+                return $grant_account_role->hasPermissionCode($code) 
+                    ? $grant_account_role->grantRole()->name()
+                    : null;
+            }, $this->grant_account_roles),
+        ], fn($v) => $v !== null);
     }
 
     /**
@@ -125,17 +164,17 @@ final class AdminAccountGrant
     /**
      * @return \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterCode
      */
-    public function adminAccountStatusMasterCode(): Vo\AccountStatusMasterCode
+    public function accountStatusMasterCode(): Vo\AccountStatusMasterCode
     {
-        return $this->admin_account_status_master_code;
+        return $this->account_status_master_code;
     }
 
     /**
      * @return \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterName
      */
-    public function adminAccountStatusMasterName(): Vo\AccountStatusMasterName
+    public function accountStatusMasterName(): Vo\AccountStatusMasterName
     {
-        return $this->admin_account_status_master_name;
+        return $this->account_status_master_name;
     }
 
     /**

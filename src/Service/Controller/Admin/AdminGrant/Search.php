@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Admin\AdminGrant;
 
-use App\Domain\Admin\AdminGrant\SearchCondition;
+use App\Domain\Admin\AdminGrant\SearchAdminAccountGrantCondition;
 use App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId;
 use App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId;
-use App\Infrastructure\Persistence\Cake\Admin\AdminGrantRepository;
+use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 use App\Service\Controller\Admin\AdminGrant as CategoryService;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
@@ -31,7 +31,7 @@ final class Search implements ServiceInterface
      */
     public function getSearchQuery(): SelectQuery
     {
-        return (new AdminGrantRepository($this->datetime))->search(new SearchCondition(
+        return (new AdminAccountGrantRepository($this->datetime))->search(new SearchAdminAccountGrantCondition(
             adminAccountIds: $this->toAdminAccountIds($this->request->getQuery('admin_account_id')),
             accountStatusMasterIds: $this->toAccountStatusMasterIds($this->request->getQuery('account_status_master_id')),
             grantRoleIds: $this->toGrantRoleIds($this->request->getQuery('grant_role_id')),

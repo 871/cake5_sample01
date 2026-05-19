@@ -83,6 +83,16 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
 
         // 管理者権限管理
         $builder->prefix('AdminGrant', ['path' => '/admin_grant'], static function (RouteBuilder $builder) {
+            // 管理者権限
+            $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
+            $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+            $builder->get('/detail/{admin_account_id}', ['controller' => 'Detail', 'action' => 'index']);
+            $builder->get('/edit/{admin_account_id}', ['controller' => 'Edit', 'action' => 'index']);
+            $builder->get('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'input']);
+            $builder->post('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
+            $builder->get('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
+            $builder->post('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
+        
             // ロール権限
             $builder->get('/role_permission', ['controller' => 'RolePermission/Search', 'action' => 'init']);
             $builder->get('/role_permission/search', ['controller' => 'RolePermission/Search', 'action' => 'index']);
@@ -99,15 +109,6 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
             $builder->post('/role_permission/edit/{process_id}/conf', ['controller' => 'RolePermission/Update', 'action' => 'confPost']);
             $builder->post('/role_permission/delete/{grant_role_permission_id}', ['controller' => 'RolePermission/Delete', 'action' => 'indexPost']);
 
-            // 管理者権限
-            $builder->get('/account_permission', ['controller' => 'Search', 'action' => 'init']);
-            $builder->get('/account_permission/search', ['controller' => 'Search', 'action' => 'index']);
-            $builder->get('/account_permission/detail/{admin_account_id}', ['controller' => 'Detail', 'action' => 'index']);
-            $builder->get('/account_permission/edit/{admin_account_id}', ['controller' => 'Edit', 'action' => 'index']);
-            $builder->get('/account_permission/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'input']);
-            $builder->post('/account_permission/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
-            $builder->get('/account_permission/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
-            $builder->post('/account_permission/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
         });
 
         // ログ

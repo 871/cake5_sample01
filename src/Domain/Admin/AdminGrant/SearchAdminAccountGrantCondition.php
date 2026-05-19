@@ -5,7 +5,7 @@ namespace App\Domain\Admin\AdminGrant;
 
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 
-class SearchCondition
+class SearchAdminAccountGrantCondition
 {
     /**
      * @param \App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId[] $adminAccountIds

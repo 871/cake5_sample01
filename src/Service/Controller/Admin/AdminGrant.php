@@ -30,7 +30,7 @@ final class AdminGrant implements ServiceInterface
         return $table->find()
             ->select(['id', 'name'])
             ->where([
-                'account_type' => AdminGrantMapper::ACCOUNT_TYPE,
+                'account_type' => 'ADMIN',
                 'is_active' => 1,
             ])
             ->orderBy(['sort' => 'ASC', 'id' => 'ASC'])
@@ -53,7 +53,7 @@ final class AdminGrant implements ServiceInterface
         return $table->find()
             ->select(['id', 'name'])
             ->where([
-                'account_type' => AdminGrantMapper::ACCOUNT_TYPE,
+                'account_type' => 'ADMIN',
                 'is_active' => 1,
             ])
             ->orderBy(['sort' => 'ASC', 'id' => 'ASC'])
