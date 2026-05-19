@@ -18,7 +18,6 @@
         <table class="table table-bordered mb-0">
             <thead class="table-dark">
                 <tr>
-                    <th>権限ID</th>
                     <th>コード</th>
                     <th>権限名</th>
                     <th>付与状況</th>
@@ -30,8 +29,11 @@
                 <tr
                     <?= $adminAccountGrant->hasPermissionCode($grantPermission->code()) ? '' :'class="table-secondary"' ?>
                 >
-                    <td><?= h($grantPermission->grantPermissionId()) ?></td>
-                    <td><?= h($grantPermission->code()) ?></td>
+                    <td
+                        title="ID: <?= h($grantPermission->grantPermissionId()) ?>"
+                    >
+                        <?= h($grantPermission->code()) ?>
+                    </td>
                     <td><?= h($grantPermission->name()) ?></td>
                     <td><?= $adminAccountGrant->hasPermissionCode($grantPermission->code()) ? '<span class="badge bg-success">あり</span>' : '<span class="badge bg-danger">なし</span>' ?></td>
                     <td>
