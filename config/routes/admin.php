@@ -93,23 +93,24 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
             $builder->post('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
             $builder->get('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
             $builder->post('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
-        
             // ロール権限
-            $builder->get('/role_permission', ['controller' => 'RolePermission/Search', 'action' => 'init']);
-            $builder->get('/role_permission/search', ['controller' => 'RolePermission/Search', 'action' => 'index']);
-            $builder->get('/role_permission/create', ['controller' => 'RolePermission/Create', 'action' => 'index']);
-            $builder->get('/role_permission/create/{process_id}/input', ['controller' => 'RolePermission/Create', 'action' => 'input']);
-            $builder->post('/role_permission/create/{process_id}/input', ['controller' => 'RolePermission/Create', 'action' => 'inputPost']);
-            $builder->get('/role_permission/create/{process_id}/conf', ['controller' => 'RolePermission/Create', 'action' => 'conf']);
-            $builder->post('/role_permission/create/{process_id}/conf', ['controller' => 'RolePermission/Create', 'action' => 'confPost']);
-            $builder->get('/role_permission/detail/{grant_role_permission_id}', ['controller' => 'RolePermission/Detail', 'action' => 'index']);
-            $builder->get('/role_permission/edit/{grant_role_id}', ['controller' => 'RolePermission/Update', 'action' => 'index']);
-            $builder->get('/role_permission/edit/{process_id}/input', ['controller' => 'RolePermission/Update', 'action' => 'input']);
-            $builder->post('/role_permission/edit/{process_id}/input', ['controller' => 'RolePermission/Update', 'action' => 'inputPost']);
-            $builder->get('/role_permission/edit/{process_id}/conf', ['controller' => 'RolePermission/Update', 'action' => 'conf']);
-            $builder->post('/role_permission/edit/{process_id}/conf', ['controller' => 'RolePermission/Update', 'action' => 'confPost']);
-            $builder->post('/role_permission/delete/{grant_role_permission_id}', ['controller' => 'RolePermission/Delete', 'action' => 'indexPost']);
-
+            $builder->prefix('Role', ['path' => '/role'], static function (RouteBuilder $builder) {
+                $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
+                $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+                $builder->get('/create', ['controller' => 'Create', 'action' => 'index']);
+                $builder->get('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'input']);
+                $builder->post('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'inputPost']);
+                $builder->get('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'conf']);
+                $builder->post('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'confPost']);
+                $builder->get('/detail/{grant_role_id}', ['controller' => 'Detail', 'action' => 'index']);
+                $builder->get('/edit/{grant_role_id}', ['controller' => 'Update', 'action' => 'index']);
+                $builder->get('/edit/{process_id}/input', ['controller' => 'Update', 'action' => 'input']);
+                $builder->post('/edit/{process_id}/input', ['controller' => 'Update', 'action' => 'inputPost']);
+                $builder->get('/edit/{process_id}/conf', ['controller' => 'Update', 'action' => 'conf']);
+                $builder->post('/edit/{process_id}/conf', ['controller' => 'Update', 'action' => 'confPost']);
+                $builder->get('/delete/{grant_role_id}', ['controller' => 'Delete', 'action' => 'index']);
+                $builder->post('/delete/{grant_role_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
+            });
         });
 
         // ログ
