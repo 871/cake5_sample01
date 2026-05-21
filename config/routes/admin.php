@@ -6,6 +6,7 @@ use App\Middleware\Admin\AdminGrantMiddleware;
 use App\Middleware\Admin\PageAccessLogMiddleware;
 use Cake\Routing\RouteBuilder;
 
+/** @var \Cake\Routing\RouteBuilder $builder */
 $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $builder) {
 
     // エラー（未ログイン）

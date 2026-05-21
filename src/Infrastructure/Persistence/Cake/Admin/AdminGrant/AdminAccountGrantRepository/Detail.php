@@ -6,7 +6,6 @@ namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrant
 use App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Model\Table\Admin\AdminAccountsTable;
-use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantMapper;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 final class Detail
@@ -52,6 +51,6 @@ final class Detail
             ])
             ->firstOrFail();
 
-        return AdminAccountGrantMapper::toAdminAccountGrant($ormEntity);
+        return FromOrmToDomainMapper::toAdminAccountGrant($ormEntity);
     }
 }

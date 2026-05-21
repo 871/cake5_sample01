@@ -1,20 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant;
+namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantPermissionRepository;
 
 use App\Model\Entity\Grant\GrantPermission as OrmEntityGrantPermission;
 use App\Domain\Admin\AdminGrant\Entity\GrantPermission  as DomainEntityGrantPermission;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
-use Cake\ORM\Locator\LocatorAwareTrait;
 
-final class AdminGrantPermissionMapper
+final class Mapper
 {
-    use LocatorAwareTrait;
-
-    const ACCOUNT_TYPE = 'ADMIN';
-
     /**
      * Constructor.
      */
@@ -23,7 +18,7 @@ final class AdminGrantPermissionMapper
         // 処理なし
     }
 
-    public static function toGrantPermission(
+    public static function toDomainGrantPermission(
         OrmEntityGrantPermission $ormGrantPermission
     ): DomainEntityGrantPermission {
         return new DomainEntityGrantPermission(

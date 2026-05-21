@@ -8,6 +8,7 @@ use App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId;
 use App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId;
+use App\Domain\Shared\Enum as SEn;
 use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -17,7 +18,7 @@ final class Search
 {
     use LocatorAwareTrait;
 
-    const ACCOUNT_TYPE = 'ADMIN';
+    const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
 
     /**
      * @var \App\Model\Table\Admin\AdminAccountsTable

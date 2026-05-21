@@ -1,8 +1,8 @@
 <?php
-/* @var array $rows */
-/* @var array $accountStatusOptions */
-/* @var array $grantRoleOptions */
-/* @var array $grantPermissionOptions */
+/** @var array $rows */
+/** @var array<\App\Domain\Admin\AdminGrant\Entity\AccountStatusMaster> $accountStatusOptions */
+/** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantRole> $grantRoleOptions */
+/** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission> $grantPermissionOptions */
 
 $pageOptions = [
     'url' => [
@@ -19,29 +19,47 @@ $pageOptions = [
                 <input type="number" min="1" name="admin_account_id" class="form-control" value="<?= h($this->getRequest()->getQuery('admin_account_id')) ?>">
             </div>
             <div class="col-md-3">
-                <label class="form-label">ステータス</label>
-                <select name="account_status_master_id" class="form-select">
-                    <option value="">（全て）</option>
+                <label class="form-label">管理者ステータス</label>
+                <select 
+                    name="account_status_master_id[]" 
+                    class="form-select"
+                    multiple
+                >
                     <?php foreach ($accountStatusOptions as $option) { ?>
-                        <option value="<?= h($option['value']) ?>" <?= $this->getRequest()->getQuery('account_status_master_id') === $option['value'] ? 'selected' : '' ?>><?= h($option['label']) ?></option>
+                        <option
+                            value="<?= h($option->accountStatusMasterId()->toString()) ?>"
+                            <?= in_array($option->accountStatusMasterId()->toString(), (array)$this->getRequest()->getQuery('account_status_master_id')) ? 'selected' : '' ?>
+                        ><?= h($option->accountStatusMasterName()->toString()) ?></option>
                     <?php } ?>
                 </select>
             </div>
             <div class="col-md-3">
                 <label class="form-label">ロール</label>
-                <select name="grant_role_id" class="form-select">
-                    <option value="">（全て）</option>
+                <select 
+                    name="grant_role_id[]" 
+                    class="form-select"
+                    multiple
+                >
                     <?php foreach ($grantRoleOptions as $option) { ?>
-                        <option value="<?= h($option['value']) ?>" <?= $this->getRequest()->getQuery('grant_role_id') === $option['value'] ? 'selected' : '' ?>><?= h($option['label']) ?></option>
+                        <option
+                            value="<?= h($option->grantRoleId()->toString()) ?>"
+                            <?= in_array($option->grantRoleId()->toString(), (array)$this->getRequest()->getQuery('grant_role_id')) ? 'selected' : '' ?>
+                        ><?= h($option->name()->toString()) ?></option>
                     <?php } ?>
                 </select>
             </div>
             <div class="col-md-3">
                 <label class="form-label">権限</label>
-                <select name="grant_permission_id" class="form-select">
-                    <option value="">（全て）</option>
+                <select 
+                    name="grant_permission_id[]" 
+                    class="form-select"
+                    multiple
+                >
                     <?php foreach ($grantPermissionOptions as $option) { ?>
-                        <option value="<?= h($option['value']) ?>" <?= $this->getRequest()->getQuery('grant_permission_id') === $option['value'] ? 'selected' : '' ?>><?= h($option['label']) ?></option>
+                        <option
+                            value="<?= h($option->grantPermissionId()->toString()) ?>"
+                            <?= in_array($option->grantPermissionId()->toString(), (array)$this->getRequest()->getQuery('grant_permission_id')) ? 'selected' : '' ?>
+                        ><?= h($option->name()->toString()) ?></option>
                     <?php } ?>
                 </select>
             </div>

@@ -37,6 +37,16 @@ final class AdminAccountGrantRepository implements DomainAdminAccountGrantReposi
     }
 
     /**
+     * 管理者ステータスマスタの取得
+     *
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\AccountStatusMaster>
+     */
+    public function findAccountStatusMasters(): array
+    {
+        return (new AdminAccountGrantRepository\FindAccountStatusMasters())->run();
+    }
+
+    /**
      * 管理者権限情報の取得
      *
      * 指定した管理者アカウントが保持している権限一覧を取得する（ロール経由・個別付与を含む）

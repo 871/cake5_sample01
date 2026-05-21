@@ -34,11 +34,17 @@ final class GrantRolesTable extends Table
         $this->hasMany('GrantAccountRoles', [
             'className' => GrantAccountRolesTable::class,
             'foreignKey' => 'grant_role_id',
+            'sort' => [
+                'GrantAccountRoles.created' => 'DESC',
+            ],
         ]);
 
         $this->hasMany('GrantRolePermissions', [
             'className' => GrantRolePermissionsTable::class,
             'foreignKey' => 'grant_role_id',
+            'sort' => [
+                'GrantRolePermissions.sort' => 'ASC',
+            ],
         ]);
     }
 
