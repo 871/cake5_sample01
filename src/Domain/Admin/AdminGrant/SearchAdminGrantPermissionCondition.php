@@ -12,6 +12,7 @@ class SearchAdminGrantPermissionCondition
      */
     public function __construct(
         private readonly SearchText $searchText,
+        private readonly int $isActive = 1,
     ) {
         // 処理なし
     }
@@ -22,5 +23,13 @@ class SearchAdminGrantPermissionCondition
     public function getSearchText(): SearchText
     {
         return $this->searchText;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIsActive(): int
+    {
+        return $this->isActive;
     }
 }
