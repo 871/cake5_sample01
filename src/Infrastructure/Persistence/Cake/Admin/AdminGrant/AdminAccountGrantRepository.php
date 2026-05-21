@@ -33,7 +33,7 @@ final class AdminAccountGrantRepository implements DomainAdminAccountGrantReposi
      */
     public function search(SearchAdminAccountGrantCondition $condition): SelectQuery
     {
-        return (new AdminAccountGrantRepository\Search($condition))->run();
+        return (new AdminAccountGrantRepository\Search($this->datetime))->run($condition);
     }
 
     /**
@@ -56,7 +56,7 @@ final class AdminAccountGrantRepository implements DomainAdminAccountGrantReposi
      */
     public function detail(Vo\AdminAccountId $adminAccountId): AdminAccountGrant
     {
-        return (new AdminAccountGrantRepository\Detail($adminAccountId))->run();
+        return (new AdminAccountGrantRepository\Detail($this->datetime))->run($adminAccountId);
     }
 
     /**
@@ -69,6 +69,6 @@ final class AdminAccountGrantRepository implements DomainAdminAccountGrantReposi
      */
     public function save(AdminAccountGrant $adminAccountGrant): AdminAccountGrant
     {
-        return (new AdminAccountGrantRepository\Save($adminAccountGrant))->run();
+        return (new AdminAccountGrantRepository\Save($this->datetime))->run($adminAccountGrant);
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\AdminGrant;
 
+use App\Domain\Admin\AdminGrant\ValueObject\IsActive;
 use App\Domain\Shared\ValueObject\SearchText;
 
 class SearchAdminGrantPermissionCondition
@@ -12,6 +13,7 @@ class SearchAdminGrantPermissionCondition
      */
     public function __construct(
         private readonly SearchText $searchText,
+        private readonly IsActive $isActive,
     ) {
         // 処理なし
     }
@@ -22,5 +24,13 @@ class SearchAdminGrantPermissionCondition
     public function getSearchText(): SearchText
     {
         return $this->searchText;
+    }
+
+    /**
+     * @return \App\Domain\Admin\AdminGrant\ValueObject\IsActive
+     */
+    public function getIsActive(): IsActive
+    {
+        return $this->isActive;
     }
 }

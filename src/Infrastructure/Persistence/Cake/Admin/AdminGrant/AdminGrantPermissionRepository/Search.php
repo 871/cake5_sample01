@@ -39,6 +39,7 @@ final class Search
             ->find()
             ->where([
                 'GrantPermissions.account_type' => self::ACCOUNT_TYPE,
+                'GrantPermissions.is_active' => $this->condition->getIsActive()->toInt(),
             ])
             ->orderBy([
                 'GrantPermissions.sort' => 'ASC',
