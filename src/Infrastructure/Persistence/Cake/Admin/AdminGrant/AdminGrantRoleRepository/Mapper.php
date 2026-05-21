@@ -58,7 +58,7 @@ final class Mapper
                 function(OrmGrantAccountRole $grantAccountRole) use ($domainGrantRole) {
                     return $this->toDomainGrantAccountRole($grantAccountRole, $domainGrantRole);
                 },
-                $ormGrantRole->grant_account_roles,
+                $ormGrantRole->grant_account_roles ?? [],
             )
         )->assignGrantRolePermissions(
             (function() use ($ormGrantRole, $domainGrantRole): array {
@@ -66,7 +66,7 @@ final class Mapper
                     function(OrmGrantRolePermission $grantRolePermission) use ($domainGrantRole) {
                         return $this->toDomainGrantRolePermission($grantRolePermission, $domainGrantRole);
                     },
-                    $ormGrantRole->grant_role_permissions,
+                    $ormGrantRole->grant_role_permissions ?? [],
                 );
 
                 uksort($domainGrantRolePermissions, function(De\GrantRolePermission $a, De\GrantRolePermission $b) {
