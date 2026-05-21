@@ -51,6 +51,7 @@ final class AdminGrant implements ServiceInterface
         return (new AdminGrantRoleRepository($this->datetime))->search(
             condition: new SearchAdminGrantRoleCondition(
                 searchText: new SVo\SearchText(null),
+                isActive: 1,
             ),
         );
     }
@@ -63,6 +64,7 @@ final class AdminGrant implements ServiceInterface
         return (new AdminGrantPermissionRepository($this->datetime))->search(
             condition: new SearchAdminGrantPermissionCondition(
                 searchText: new SVo\SearchText(null),
+                isActive: 1,
             ),
         );
     }
