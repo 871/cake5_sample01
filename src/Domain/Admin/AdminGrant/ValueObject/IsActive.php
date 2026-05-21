@@ -11,7 +11,9 @@ class IsActive implements Stringable
 {
     use IntTrait;
 
-    public const VALUES = [0, 1];
+    public const INACTIVE = 0;
+    public const ACTIVE = 1;
+    public const VALUES = [self::INACTIVE, self::ACTIVE];
 
     private ?int $value;
 

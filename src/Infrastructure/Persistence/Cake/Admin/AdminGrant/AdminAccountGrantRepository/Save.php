@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 
 use App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant;
+use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Exception\RepositoryException;
 use App\Domain\Shared\Enum as SEn;
 use App\Lib\UUID\UUID;
@@ -83,7 +84,7 @@ final class Save
                             ->select(['GrantRoles.id'])
                             ->where([
                                 'GrantRoles.account_type' => self::ACCOUNT_TYPE,
-                                'GrantRoles.is_active' => 1,
+                                'GrantRoles.is_active' => Vo\IsActive::ACTIVE,
                                 'GrantRoles.id IN' => $selectedGrantRoleIds,
                             ])
                             ->epilog('FOR UPDATE')
@@ -99,7 +100,7 @@ final class Save
                             ->select(['GrantPermissions.id'])
                             ->where([
                                 'GrantPermissions.account_type' => self::ACCOUNT_TYPE,
-                                'GrantPermissions.is_active' => 1,
+                                'GrantPermissions.is_active' => Vo\IsActive::ACTIVE,
                                 'GrantPermissions.id IN' => $selectedGrantPermissionIds,
                             ])
                             ->epilog('FOR UPDATE')
@@ -116,47 +117,53 @@ final class Save
                     'GrantAccountPermissions.account_id' => $accountId,
                 ]);
 
-                if ($grantRoleIds !== []) {
-                    $this->table->GrantAccountRoles->saveManyOrFail(
+                $this->table->GrantAccountRoles->saveManyOrFail(
+                    $this->table->GrantAccountRoles->newEntities(
                         array_map(
-                            function (int $grantRoleId) use ($accountIdInt, $now) {
-                                $entity = $this->table->GrantAccountRoles->newEmptyEntity();
-                                $entity->set('id', UUID::uuid4(), ['guard' => false]);
-                                $entity->set('account_type', self::ACCOUNT_TYPE);
-                                $entity->set('account_id', $accountIdInt);
-                                $entity->set('grant_role_id', $grantRoleId);
-                                $entity->set('created', $now);
-                                $entity->set('modified', $now);
-                                return $entity;
-                            },
+                            fn(int $grantRoleId): array => [
+                                'id' => UUID::uuid4(),
+                                'account_type' => self::ACCOUNT_TYPE,
+                                'account_id' => $accountIdInt,
+                                'grant_role_id' => $grantRoleId,
+                                'created' => $now,
+                                'modified' => $now,
+                            ],
                             $grantRoleIds,
                         ),
                         [
-                            'checkExisting' => false,
+                            'accessibleFields' => [
+                                'id' => true,
+                            ],
                         ],
-                    );
-                }
+                    ),
+                    [
+                        'checkExisting' => false,
+                    ],
+                );
 
-                if ($grantPermissionIds !== []) {
-                    $this->table->GrantAccountPermissions->saveManyOrFail(
+                $this->table->GrantAccountPermissions->saveManyOrFail(
+                    $this->table->GrantAccountPermissions->newEntities(
                         array_map(
-                            function (int $grantPermissionId) use ($accountIdInt, $now) {
-                                $entity = $this->table->GrantAccountPermissions->newEmptyEntity();
-                                $entity->set('id', UUID::uuid4(), ['guard' => false]);
-                                $entity->set('account_type', self::ACCOUNT_TYPE);
-                                $entity->set('account_id', $accountIdInt);
-                                $entity->set('grant_permission_id', $grantPermissionId);
-                                $entity->set('created', $now);
-                                $entity->set('modified', $now);
-                                return $entity;
-                            },
+                            fn(int $grantPermissionId): array => [
+                                'id' => UUID::uuid4(),
+                                'account_type' => self::ACCOUNT_TYPE,
+                                'account_id' => $accountIdInt,
+                                'grant_permission_id' => $grantPermissionId,
+                                'created' => $now,
+                                'modified' => $now,
+                            ],
                             $grantPermissionIds,
                         ),
                         [
-                            'checkExisting' => false,
+                            'accessibleFields' => [
+                                'id' => true,
+                            ],
                         ],
-                    );
-                }
+                    ),
+                    [
+                        'checkExisting' => false,
+                    ],
+                );
             });
         } catch (PersistenceFailedException $ex) {
             throw new RepositoryException(
