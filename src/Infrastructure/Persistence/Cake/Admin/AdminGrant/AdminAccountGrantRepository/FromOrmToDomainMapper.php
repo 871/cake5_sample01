@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant;
+namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 
 use App\Model\Entity\Admin\AdminAccount as OrmEntityAdminAccount;
 use App\Model\Entity\Grant\GrantAccountRole as OrmEntityGrantAccountRole;
@@ -9,22 +9,19 @@ use App\Model\Entity\Grant\GrantRole as OrmEntityGrantRole;
 use App\Model\Entity\Grant\GrantRolePermission as OrmEntityGrantRolePermission;
 use App\Model\Entity\Grant\GrantAccountPermission as OrmEntityGrantAccountPermission;
 use App\Model\Entity\Grant\GrantPermission as OrmEntityGrantPermission;
+use App\Model\Entity\Shared\AccountStatusMaster as OrmAccountStatusMaster;
 use App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant as DomainEntityAdminAccountGrant;
 use App\Domain\Admin\AdminGrant\Entity\GrantAccountRole as DomainEntityGrantAccountRole;
 use App\Domain\Admin\AdminGrant\Entity\GrantRole as DomainEntityGrantRole;
 use App\Domain\Admin\AdminGrant\Entity\GrantRolePermission as DomainEntityGrantRolePermission;
 use App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission  as DomainEntityGrantAccountPermission;
 use App\Domain\Admin\AdminGrant\Entity\GrantPermission  as DomainEntityGrantPermission;
+use App\Domain\Admin\AdminGrant\Entity\AccountStatusMaster as DomainAccountStatusMaster;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
-use Cake\ORM\Locator\LocatorAwareTrait;
 
-final class AdminAccountGrantMapper
+final class FromOrmToDomainMapper
 {
-    use LocatorAwareTrait;
-
-    const ACCOUNT_TYPE = 'ADMIN';
-
     /**
      * Constructor.
      */
@@ -67,11 +64,25 @@ final class AdminAccountGrantMapper
     }
 
     /**
+     * @param \App\Model\Entity\Shared\AccountStatusMaster $ormAccountStatusMaster
+     * @return \App\Domain\Admin\AdminGrant\Entity\AccountStatusMaster
+     */
+    public static function toAccountStatusMaster(
+        OrmAccountStatusMaster $ormAccountStatusMaster
+    ): DomainAccountStatusMaster {
+        return new DomainAccountStatusMaster(
+            account_status_master_id: new Vo\AccountStatusMasterId((string)$ormAccountStatusMaster->id),
+            account_status_master_code: new Vo\AccountStatusMasterCode((string)$ormAccountStatusMaster->code),
+            account_status_master_name: new Vo\AccountStatusMasterName((string)$ormAccountStatusMaster->name),
+        );
+    }
+
+    /**
      * @param \App\Model\Entity\Grant\GrantAccountRole $ormGrantAccountRole
      * @param \App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant $domainEntityAdminAccountGrant
      * @return \App\Domain\Admin\AdminGrant\Entity\GrantAccountRole
      */
-    public static function toGrantAccountRole(
+    private static function toGrantAccountRole(
         OrmEntityGrantAccountRole $ormGrantAccountRole, 
         DomainEntityAdminAccountGrant $domainEntityAdminAccountGrant
     ): DomainEntityGrantAccountRole {
@@ -86,13 +97,20 @@ final class AdminAccountGrantMapper
         );
 
         return $domainEntityGrantAccountRole->assignGrantRole(
-            self::toGrantRole($ormGrantAccountRole->grant_role, $domainEntityGrantAccountRole),
+            self::toGrantRole($ormGrantAccountRole->grant_role, [
+                $domainEntityGrantAccountRole
+            ]),
         );
     }
 
-    public static function toGrantRole(
+    /**
+     * @param \App\Model\Entity\Grant\GrantRole $ormGrantRole
+     * @param array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountRole> $grant_account_roles
+     * @return \App\Domain\Admin\AdminGrant\Entity\GrantRole
+     */
+    private static function toGrantRole(
         OrmEntityGrantRole $ormGrantRole, 
-        DomainEntityGrantAccountRole $domainEntityGrantAccountRole,
+        array $grant_account_roles = [],
     ): DomainEntityGrantRole {
         $domainEntityGrantRole = new DomainEntityGrantRole(
             grant_role_id: new Vo\GrantRoleId((string)$ormGrantRole->id),
@@ -103,9 +121,7 @@ final class AdminAccountGrantMapper
             is_active: new Vo\IsActive((string)$ormGrantRole->is_active),
             created: new SVo\Created($ormGrantRole->created->format('Y-m-d\TH:i:s')),
             modified: new SVo\Modified($ormGrantRole->modified->format('Y-m-d\TH:i:s')),
-            grant_account_roles: [
-                $domainEntityGrantAccountRole
-            ],
+            grant_account_roles: $grant_account_roles,
             grant_role_permissions: [],
         );
 
@@ -118,7 +134,12 @@ final class AdminAccountGrantMapper
         );
     }
 
-    public static function toGrantRolePermission(
+    /**
+     * @param \App\Model\Entity\Grant\GrantRolePermission $ormGrantRolePermission
+     * @param \App\Domain\Admin\AdminGrant\Entity\GrantRole $domainEntityGrantRole
+     * @return \App\Domain\Admin\AdminGrant\Entity\GrantRolePermission
+     */
+    private static function toGrantRolePermission(
         OrmEntityGrantRolePermission $ormGrantRolePermission,
         DomainEntityGrantRole $domainEntityGrantRole,
     ): DomainEntityGrantRolePermission {
@@ -133,7 +154,12 @@ final class AdminAccountGrantMapper
         );
     }
 
-    public static function toGrantAccountPermission(
+    /**
+     * @param \App\Model\Entity\Grant\GrantAccountPermission $ormGrantAccountPermission
+     * @param \App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant $domainEntityAdminAccountGrant
+     * @return \App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission
+     */
+    private static function toGrantAccountPermission(
         OrmEntityGrantAccountPermission $ormGrantAccountPermission,
         DomainEntityAdminAccountGrant $domainEntityAdminAccountGrant,
     ): DomainEntityGrantAccountPermission {
@@ -148,7 +174,11 @@ final class AdminAccountGrantMapper
         );
     }
 
-    public static function toGrantPermission(
+    /**
+     * @param \App\Model\Entity\Grant\GrantPermission $ormGrantPermission
+     * @return \App\Domain\Admin\AdminGrant\Entity\GrantPermission
+     */
+    private static function toGrantPermission(
         OrmEntityGrantPermission $ormGrantPermission
     ): DomainEntityGrantPermission {
         return new DomainEntityGrantPermission(

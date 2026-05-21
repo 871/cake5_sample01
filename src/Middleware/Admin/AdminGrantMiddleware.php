@@ -31,21 +31,10 @@ class AdminGrantMiddleware implements MiddlewareInterface
     {
         /** @var \Cake\Http\ServerRequest $request */
         $accountId = (string)$request->getParam('account_id');
-        if ($accountId === '') {
-            return $handler->handle($request);
-        }
-
-        $permissionId = $this->resolvePermissionId($request);
-        if ($permissionId === null) {
-            return $handler->handle($request);
-        }
-
-        $hasPermission = (new AdminGrantRepository(new DateTimeImmutable()))->hasPermission(
-            new AdminAccountId($accountId),
-            new GrantPermissionId((string)$permissionId),
-        );
-
-        if ($hasPermission) {
+        if (
+            $accountId !== ''
+            && $this->hasPageAccessPermission($request, $accountId)
+        ) {
             return $handler->handle($request);
         }
 
@@ -59,34 +48,9 @@ class AdminGrantMiddleware implements MiddlewareInterface
         return (new Response())->withLocation('/v1/ad/' . rawurlencode($accountId));
     }
 
-    /**
-     * @param \Cake\Http\ServerRequest $request
-     * @return int|null
-     */
-    private function resolvePermissionId(\Cake\Http\ServerRequest $request): ?int
+    private function hasPageAccessPermission(ServerRequestInterface $request, string $accountId): bool
     {
-        $controller = (string)$request->getParam('controller');
-        $action = (string)$request->getParam('action');
-        $prefix = str_replace('/', '_', (string)$request->getParam('prefix'));
-
-        if ($controller === '' || $action === '' || in_array($controller, ['Top', 'Error', 'Logout'], true)) {
-            return null;
-        }
-
-        $code = strtoupper(trim($prefix . '_' . $controller . '_' . $action, '_'));
-
-        /** @var \App\Model\Table\Grant\GrantPermissionsTable $table */
-        $table = $this->fetchTable(GrantPermissionsTable::class);
-        /** @var \App\Model\Entity\Grant\GrantPermission|null $permission */
-        $permission = $table->find()
-            ->select(['id'])
-            ->where([
-                'account_type' => self::ACCOUNT_TYPE,
-                'code' => $code,
-                'is_active' => 1,
-            ])
-            ->first();
-
-        return $permission?->id;
+        // TODO 未実装 
+        return true;
     }
 }

@@ -45,6 +45,9 @@ final class AdminAccountsTable extends Table
         $this->hasMany('AdminAccountHistories', [
             'className' => AdminAccountHistoriesTable::class,
             'foreignKey' => 'admin_account_id',
+            'sort' => [
+                'AdminAccountHistories.created' => 'DESC',
+            ],
         ]);
 
         $this->hasMany('GrantAccountPermissions', [
@@ -52,12 +55,18 @@ final class AdminAccountsTable extends Table
             'foreignKey' => 'account_id',
             'conditions' => [
             ],
+            'sort' => [
+                'GrantAccountPermissions.sort' => 'ASC',
+            ],
         ]);
 
         $this->hasMany('GrantAccountRoles', [
             'className' => GrantAccountRolesTable::class,
             'foreignKey' => 'account_id',
             'conditions' => [
+            ],
+            'sort' => [
+                'GrantAccountRoles.created' => 'DESC',
             ],
         ]);
     }

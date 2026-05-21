@@ -9,6 +9,7 @@ use App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
+use App\Security\Input\Cast;
 use App\Service\Controller\Admin\AdminGrant as CategoryService;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
@@ -32,10 +33,18 @@ final class Search implements ServiceInterface
     public function getSearchQuery(): SelectQuery
     {
         return (new AdminAccountGrantRepository($this->datetime))->search(new SearchAdminAccountGrantCondition(
-            adminAccountIds: $this->toAdminAccountIds($this->request->getQuery('admin_account_id')),
-            accountStatusMasterIds: $this->toAccountStatusMasterIds($this->request->getQuery('account_status_master_id')),
-            grantRoleIds: $this->toGrantRoleIds($this->request->getQuery('grant_role_id')),
-            grantPermissionIds: $this->toGrantPermissionIds($this->request->getQuery('grant_permission_id')),
+            adminAccountIds: $this->request->getQuery('admin_account_id') ? [
+                new AdminAccountId(Cast::toStringOrNull($this->request->getQuery('admin_account_id'))),
+            ] : [],
+            accountStatusMasterIds: array_map(function($val) {
+                return new AccountStatusMasterId(Cast::toStringOrNull($val));
+            }, (array)$this->request->getQuery('account_status_master_id', [])),
+            grantRoleIds: array_map(function($val) {
+                return new GrantRoleId(Cast::toStringOrNull($val));
+            }, (array)$this->request->getQuery('grant_role_id', [])),
+            grantPermissionIds: array_map(function($val) {
+                return new GrantPermissionId(Cast::toStringOrNull($val));
+            }, (array)$this->request->getQuery('grant_permission_id', [])),
         ));
     }
 
@@ -90,49 +99,5 @@ final class Search implements ServiceInterface
         $category = $this->createService(CategoryService::class);
 
         return $category->getAccountStatusOptions();
-    }
-
-    /**
-     * @param mixed $value
-     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId>
-     */
-    private function toAdminAccountIds(mixed $value): array
-    {
-        $val = trim((string)$value);
-
-        return $val === '' ? [] : [new AdminAccountId($val)];
-    }
-
-    /**
-     * @param mixed $value
-     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId>
-     */
-    private function toAccountStatusMasterIds(mixed $value): array
-    {
-        $val = trim((string)$value);
-
-        return $val === '' ? [] : [new AccountStatusMasterId($val)];
-    }
-
-    /**
-     * @param mixed $value
-     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId>
-     */
-    private function toGrantRoleIds(mixed $value): array
-    {
-        $val = trim((string)$value);
-
-        return $val === '' ? [] : [new GrantRoleId($val)];
-    }
-
-    /**
-     * @param mixed $value
-     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId>
-     */
-    private function toGrantPermissionIds(mixed $value): array
-    {
-        $val = trim((string)$value);
-
-        return $val === '' ? [] : [new GrantPermissionId($val)];
     }
 }

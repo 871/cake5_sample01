@@ -16,6 +16,7 @@ use Cake\ORM\Entity;
  * @property \DateTimeInterface $modified
  *
  * @property \App\Model\Entity\Grant\GrantRole $grant_role
+ * @property \App\Model\Entity\Admin\AdminAccount $admin_account
  */
 class GrantAccountRole extends Entity
 {

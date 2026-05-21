@@ -4,18 +4,17 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantPermissionRepository;
 
 use App\Domain\Admin\AdminGrant\SearchAdminGrantPermissionCondition;
+use App\Domain\Shared\Enum as SEn;
 use App\Model\Table\Grant\GrantPermissionsTable;
 use App\Model\Entity\Grant\GrantPermission as OrmEntityGrantPermission;
-use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantPermissionMapper;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\Query\SelectQuery;
 
 final class Search
 {
     use LocatorAwareTrait;
 
-    const ACCOUNT_TYPE = 'ADMIN';
+    const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
 
     /**
      * @var \App\Model\Table\Grant\GrantPermissionsTable
@@ -53,7 +52,7 @@ final class Search
         }
 
         return array_map(function(OrmEntityGrantPermission $row) {
-            return AdminGrantPermissionMapper::toGrantPermission($row);
+            return Mapper::toDomainGrantPermission($row);
         }, $query->all()->toArray());
     }
 }
