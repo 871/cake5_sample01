@@ -41,7 +41,7 @@ final class Query
             ->find()
             ->where([
                 'GrantRoles.account_type' => self::ACCOUNT_TYPE,
-                'GrantRoles.is_active' => $condition->getIsActive(),
+                'GrantRoles.is_active' => $condition->getIsActive()->toInt(),
             ])
             ->orderBy([
                 'GrantRoles.sort' => 'ASC',

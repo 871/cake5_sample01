@@ -7,6 +7,7 @@ use App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use DateTimeInterface;
 
 final class Detail
 {
@@ -18,10 +19,10 @@ final class Detail
     private AdminAccountsTable $table;
 
     /**
-     * @param \App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId $adminAccountId
+     * @param \DateTimeInterface $datetime
      */
     public function __construct(
-        private readonly Vo\AdminAccountId $adminAccountId,
+        private readonly DateTimeInterface $datetime,
     ) {
         $this->table = $this->fetchTable(AdminAccountsTable::class);
     }
@@ -29,12 +30,12 @@ final class Detail
     /**
      * @return \App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant
      */
-    public function run(): AdminAccountGrant
+    public function run(Vo\AdminAccountId $adminAccountId): AdminAccountGrant
     {
         /** @var \App\Model\Entity\Admin\AdminAccount $ormEntity */
         $ormEntity = $this->table->find()
             ->where([
-                'AdminAccounts.id' => $this->adminAccountId->toString(),
+                'AdminAccounts.id' => $adminAccountId->toString(),
             ])
             ->contain([
                 'AccountStatusMasters',

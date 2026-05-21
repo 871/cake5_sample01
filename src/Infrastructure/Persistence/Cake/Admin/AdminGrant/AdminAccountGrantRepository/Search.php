@@ -13,6 +13,7 @@ use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query\SelectQuery;
+use DateTimeInterface;
 
 final class Search
 {
@@ -26,10 +27,10 @@ final class Search
     private AdminAccountsTable $table;
 
     /**
-     * @param \App\Domain\Admin\AdminGrant\SearchAdminAccountGrantCondition $condition
+     * @param \DateTimeInterface $datetime
      */
     public function __construct(
-        private readonly SearchAdminAccountGrantCondition $condition,
+        private readonly DateTimeInterface $datetime,
     ) {
         $this->table = $this->fetchTable(AdminAccountsTable::class);
     }
@@ -37,7 +38,7 @@ final class Search
     /**
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
      */
-    public function run(): SelectQuery
+    public function run(SearchAdminAccountGrantCondition $condition): SelectQuery
     {
         // ※ 採用アプローチ: INNER JOIN grant_permissions + EXISTS (UNION ALL) 方式
         //   【比較検討】
@@ -126,23 +127,23 @@ final class Search
                     // admin_accounts.PRIMARY KEY (id) を使用
                     'AdminAccounts.id IN' => array_map(
                         fn(AdminAccountId $vo): int => $vo->toInt(),
-                        $this->condition->getAdminAccountIds(),
+                        $condition->getAdminAccountIds(),
                     ),
                     // admin_accounts.admin_accounts_idx03 (account_status_master_id) を使用
                     'AdminAccounts.account_status_master_id IN' => array_map(
                         fn(AccountStatusMasterId $vo): int => $vo->toInt(),
-                        $this->condition->getAccountStatusMasterIds(),
+                        $condition->getAccountStatusMasterIds(),
                     ),
                     // grant_permissions.PRIMARY KEY (id) を使用
                     'GrantPermissions.id IN' => array_map(
                         fn(GrantPermissionId $vo): int => $vo->toInt(),
-                        $this->condition->getGrantPermissionIds(),
+                        $condition->getGrantPermissionIds(),
                     ),
                     // ロール絞り込み（オプション）: grant_account_roles_idx01 (account_type, account_id, grant_role_id) を使用
                     (function () {
                         $grantRoleIds = array_map(
                             fn(GrantRoleId $vo): int => $vo->toInt(),
-                            $this->condition->getGrantRoleIds(),
+                            $condition->getGrantRoleIds(),
                         );
                         return $grantRoleIds !== []
                             ? function (QueryExpression $exp) use ($grantRoleIds): QueryExpression {

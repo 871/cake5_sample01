@@ -33,7 +33,7 @@ final class Detail implements ServiceInterface
     {
         return (new AdminGrantPermissionRepository($this->datetime))->search(new SearchAdminGrantPermissionCondition(
             searchText: new SVo\SearchText(''),
-            isActive: 1,
+            isActive: new Vo\IsActive('1'),
         ));
     }
 }

@@ -5,6 +5,7 @@ namespace App\Service\Controller\Admin;
 
 use App\Domain\Admin\AdminGrant\SearchAdminGrantPermissionCondition;
 use App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition;
+use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantPermissionRepository;
@@ -51,7 +52,7 @@ final class AdminGrant implements ServiceInterface
         return (new AdminGrantRoleRepository($this->datetime))->search(
             condition: new SearchAdminGrantRoleCondition(
                 searchText: new SVo\SearchText(null),
-                isActive: 1,
+                isActive: new Vo\IsActive('1'),
             ),
         );
     }
@@ -64,7 +65,7 @@ final class AdminGrant implements ServiceInterface
         return (new AdminGrantPermissionRepository($this->datetime))->search(
             condition: new SearchAdminGrantPermissionCondition(
                 searchText: new SVo\SearchText(null),
-                isActive: 1,
+                isActive: new Vo\IsActive('1'),
             ),
         );
     }
