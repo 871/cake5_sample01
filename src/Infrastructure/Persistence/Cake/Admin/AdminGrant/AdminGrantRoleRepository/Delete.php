@@ -3,19 +3,20 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
 
-use App\Domain\Shared\Enum as SEn;
-use App\Domain\Exception\RepositoryException;
-use App\Model\Table\Grant\GrantRolesTable;
-use App\Model\Entity\Grant\GrantRole as OrmGrantRole;
 use App\Domain\Admin\AdminGrant\Entity as De;
-use Cake\ORM\Locator\LocatorAwareTrait;
+use App\Domain\Exception\RepositoryException;
+use App\Domain\Shared\Enum as SEn;
+use App\Model\Entity\Grant\GrantRole as OrmGrantRole;
+use App\Model\Table\Grant\GrantRolesTable;
 use Cake\ORM\Exception\PersistenceFailedException;
+use Cake\ORM\Locator\LocatorAwareTrait;
+use DateTimeInterface;
 
 final class Delete
 {
     use LocatorAwareTrait;
 
-    const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
+    public const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
 
     /**
      * @var \App\Model\Table\Grant\GrantRolesTable
@@ -31,7 +32,7 @@ final class Delete
      * @param \DateTimeInterface $datetime
      */
     public function __construct(
-        private readonly \DateTimeInterface $datetime,
+        private readonly DateTimeInterface $datetime,
     ) {
         $this->table = $this->fetchTable(GrantRolesTable::class);
         $this->mapper = new Mapper($this->datetime);
@@ -46,22 +47,24 @@ final class Delete
         try {
             /** @var \App\Model\Entity\Grant\GrantRole $ormEntity */
             $ormEntity = $this->table->getConnection()->transactional(
-                function() use ($domainGrantRole): OrmGrantRole {
+                function () use ($domainGrantRole): OrmGrantRole {
                     // テーブルロック
                     $ormEntity = $this->table->find()
                         ->contain([
                             // Memo: Acount側の情報はここでは更新しない
                             'GrantRolePermissions',
                         ])->where([
-                            'id' => $domainGrantRole->grantRoleId()->toString()
+                            'id' => $domainGrantRole->grantRoleId()->toString(),
                         ])
                         ->epilog('FOR UPDATE')
                         ->firstOrFail();
-                    
+
                     // 関連するアカウントロールが存在する場合は削除できない
-                    if ($this->table->GrantAccountRoles->exists([
+                    if (
+                        $this->table->GrantAccountRoles->exists([
                         'grant_role_id' => $domainGrantRole->grantRoleId()->toString(),
-                    ])) {
+                        ])
+                    ) {
                         throw new RepositoryException(
                             message: 'Cannot delete grant role with associated account roles',
                         );

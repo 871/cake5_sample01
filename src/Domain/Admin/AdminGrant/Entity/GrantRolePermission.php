@@ -5,6 +5,7 @@ namespace App\Domain\Admin\AdminGrant\Entity;
 
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
+use DomainException;
 
 final class GrantRolePermission
 {
@@ -30,21 +31,21 @@ final class GrantRolePermission
             $this->grant_role !== null
             && !$this->grant_role->hasGrantRoleId($grant_role_id)
         ) {
-            throw new \DomainException('GrantRole grant_role_id does not match grant_role_id');
+            throw new DomainException('GrantRole grant_role_id does not match grant_role_id');
         }
 
         if (
-            $this->grant_permission !== null 
+            $this->grant_permission !== null
             && !$this->grant_permission->hasGrantPermissionId($this->grant_permission_id)
         ) {
-            throw new \DomainException('GrantPermission id does not match grant_permission_id');
+            throw new DomainException('GrantPermission id does not match grant_permission_id');
         }
     }
 
     /**
-    * @param \App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId $grant_role_id
-    * @return bool
-    */
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId $grant_role_id
+     * @return bool
+     */
     public function hasGrantRoleId(Vo\GrantRoleId $grant_role_id): bool
     {
         return $this->grant_role_id->toString() === $grant_role_id->toString();

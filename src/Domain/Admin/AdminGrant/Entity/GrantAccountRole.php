@@ -5,6 +5,7 @@ namespace App\Domain\Admin\AdminGrant\Entity;
 
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
+use DomainException;
 
 final class GrantAccountRole
 {
@@ -25,19 +26,19 @@ final class GrantAccountRole
         private readonly SVo\Modified $modified,
         private ?AdminAccountGrant $admin_account_grant,
         private ?GrantRole $grant_role,
-    ) { 
+    ) {
         if (
             $this->admin_account_grant !== null
             && !$this->admin_account_grant->hasAdminAccountId($this->admin_account_id)
         ) {
-            throw new \DomainException('GrantAccountGrant admin_account_id does not match admin_account_id');
+            throw new DomainException('GrantAccountGrant admin_account_id does not match admin_account_id');
         }
 
         if (
             $this->grant_role !== null
             && !$this->grant_role->hasGrantRoleId($this->grant_role_id)
         ) {
-            throw new \DomainException('GrantRole id does not match grant_role_id');
+            throw new DomainException('GrantRole id does not match grant_role_id');
         }
     }
 
@@ -48,11 +49,12 @@ final class GrantAccountRole
     public function assignAdminAccountGrant(AdminAccountGrant $admin_account_grant): self
     {
         if (!$admin_account_grant->hasAdminAccountId($this->admin_account_id)) {
-            throw new \DomainException('GrantAccountGrant admin_account_id does not match admin_account_id');
+            throw new DomainException('GrantAccountGrant admin_account_id does not match admin_account_id');
         }
 
         $ther = clone $this;
         $ther->admin_account_grant = $admin_account_grant;
+
         return $ther;
     }
 
@@ -63,11 +65,12 @@ final class GrantAccountRole
     public function assignGrantRole(GrantRole $grant_role): self
     {
         if (!$grant_role->hasGrantRoleId($this->grant_role_id)) {
-            throw new \DomainException('GrantRole id does not match grant_role_id');
+            throw new DomainException('GrantRole id does not match grant_role_id');
         }
 
         $ther = clone $this;
         $ther->grant_role = $grant_role;
+
         return $ther;
     }
 

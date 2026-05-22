@@ -9,6 +9,7 @@ use App\Domain\Admin\AdminGrant\Entity\GrantAccountRole;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
 use App\Exception\ValidateException;
+use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 use App\Lib\UUID\UUID;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
@@ -22,6 +23,7 @@ use App\Service\Controller\Shared\Process\ProcessProvider;
 use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
+use DomainException;
 
 final class Edit implements ServiceInterface
 {
@@ -172,7 +174,7 @@ final class Edit implements ServiceInterface
         $errorInfos = [];
         try {
             new Vo\AdminAccountId(Cast::toStringOrNull($input['admin_account_id']));
-        } catch (\DomainException) {
+        } catch (DomainException) {
             $errorInfos['admin_account_id'] = [
                 'invalid' => __('管理者IDが不正です。'),
             ];
@@ -181,7 +183,7 @@ final class Edit implements ServiceInterface
         foreach ((array)$input['grant_role_ids'] as $value) {
             try {
                 new Vo\GrantRoleId(Cast::toStringOrNull($value));
-            } catch (\DomainException) {
+            } catch (DomainException) {
                 $errorInfos['grant_role_ids'] = [
                     'invalid' => __('ロールの選択が不正です。'),
                 ];
@@ -192,7 +194,7 @@ final class Edit implements ServiceInterface
         foreach ((array)$input['grant_permission_ids'] as $value) {
             try {
                 new Vo\GrantPermissionId(Cast::toStringOrNull($value));
-            } catch (\DomainException) {
+            } catch (DomainException) {
                 $errorInfos['grant_permission_ids'] = [
                     'invalid' => __('権限の選択が不正です。'),
                 ];
@@ -248,7 +250,7 @@ final class Edit implements ServiceInterface
             ),
         );
 
-        (new \App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository($this->datetime))
+        (new AdminAccountGrantRepository($this->datetime))
             ->save($adminAccountGrant);
 
         return $this;
@@ -322,7 +324,7 @@ final class Edit implements ServiceInterface
      */
     private function readAdminAccountGrant(string $adminAccountId): AdminAccountGrant
     {
-        return (new \App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository($this->datetime))
+        return (new AdminAccountGrantRepository($this->datetime))
             ->detail(new Vo\AdminAccountId($adminAccountId));
     }
 

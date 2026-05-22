@@ -9,14 +9,14 @@ use App\Domain\Shared\ValueObject as SVo;
 final class GrantPermission
 {
     /**
-     * @param Vo\GrantPermissionId $grant_permission_id
-     * @param Vo\Code $code
-     * @param Vo\Name $name
-     * @param Vo\Description $description
-     * @param Vo\Sort $sort
-     * @param Vo\IsActive $is_active
-     * @param SVo\Created $created
-     * @param SVo\Modified $modified
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId $grant_permission_id
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Code $code
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Name $name
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Description $description
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Sort $sort
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\IsActive $is_active
+     * @param \App\Domain\Shared\ValueObject\Created $created
+     * @param \App\Domain\Shared\ValueObject\Modified $modified
      */
     public function __construct(
         private readonly Vo\GrantPermissionId $grant_permission_id,
@@ -31,7 +31,7 @@ final class GrantPermission
     }
 
     /**
-     * @param Vo\GrantPermissionId $grant_permission_id
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId $grant_permission_id
      * @return bool
      */
     public function hasGrantPermissionId(Vo\GrantPermissionId $grant_permission_id): bool
@@ -40,7 +40,7 @@ final class GrantPermission
     }
 
     /**
-     * @param Vo\Code $code
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Code $code
      * @return bool
      */
     public function hasCode(Vo\Code $code): bool

@@ -3,31 +3,29 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\AdminGrant;
 
-use App\Domain\Admin\AdminGrant\ValueObject as Vo;
-
 class SearchAdminAccountGrantCondition
 {
     /**
-     * @param \App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId[] $adminAccountIds
-     * @param \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId[] $accountStatusMasterIds
-     * @param \App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId[] $grantRoleIds
-     * @param \App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId[] $grantPermissionIds
+     * @param array<\App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId> $adminAccountIds
+     * @param array<\App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId> $accountStatusMasterIds
+     * @param array<\App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId> $grantRoleIds
+     * @param array<\App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId> $grantPermissionIds
      */
     public function __construct(
-        /** @var \App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId[] */
+        /** @var array<\App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId> */
         private readonly array $adminAccountIds,
-        /** @var \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId[] */
+        /** @var array<\App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId> */
         private readonly array $accountStatusMasterIds,
-        /** @var \App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId[] */
+        /** @var array<\App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId> */
         private readonly array $grantRoleIds,
-        /** @var \App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId[] */
+        /** @var array<\App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId> */
         private readonly array $grantPermissionIds,
     ) {
         // 処理なし
     }
 
     /**
-     * @return \App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId[]
+     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId>
      */
     public function getAdminAccountIds(): array
     {
@@ -35,7 +33,7 @@ class SearchAdminAccountGrantCondition
     }
 
     /**
-     * @return \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId[]
+     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId>
      */
     public function getAccountStatusMasterIds(): array
     {
@@ -43,7 +41,7 @@ class SearchAdminAccountGrantCondition
     }
 
     /**
-     * @return \App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId[]
+     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId>
      */
     public function getGrantRoleIds(): array
     {
@@ -51,7 +49,7 @@ class SearchAdminAccountGrantCondition
     }
 
     /**
-     * @return \App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId[]
+     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId>
      */
     public function getGrantPermissionIds(): array
     {

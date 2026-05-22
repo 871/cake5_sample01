@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Domain\Admin\AdminGrant\Repository;
 
 use App\Domain\Admin\AdminGrant\SearchAdminGrantPermissionCondition;
-use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
 
 interface AdminGrantPermissionRepository
