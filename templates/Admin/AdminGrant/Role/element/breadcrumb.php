@@ -16,6 +16,15 @@
             <b>管理者権限</b>
         </li>
         <li class="breadcrumb-item">
+            <a href="<?= $this->Url->build([
+                'prefix' => 'Admin/AdminGrant',
+                'controller' => 'Search',
+                'action' => 'index',
+                'account_id' => $this->getRequest()->getParam('account_id'),
+                '?' => $this->getRequest()->getQuery(),
+            ]) ?>">検索</a>
+        </li>
+        <li class="breadcrumb-item">
             <b>ロール権限</b>
         </li>
         <li class="breadcrumb-item">
