@@ -103,11 +103,11 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
                 $builder->get('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'conf']);
                 $builder->post('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'confPost']);
                 $builder->get('/detail/{grant_role_id}', ['controller' => 'Detail', 'action' => 'index']);
-                $builder->get('/edit/{grant_role_id}', ['controller' => 'Update', 'action' => 'index']);
-                $builder->get('/edit/{process_id}/input', ['controller' => 'Update', 'action' => 'input']);
-                $builder->post('/edit/{process_id}/input', ['controller' => 'Update', 'action' => 'inputPost']);
-                $builder->get('/edit/{process_id}/conf', ['controller' => 'Update', 'action' => 'conf']);
-                $builder->post('/edit/{process_id}/conf', ['controller' => 'Update', 'action' => 'confPost']);
+                $builder->get('/edit/{grant_role_id}', ['controller' => 'Edit', 'action' => 'index']);
+                $builder->get('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'input']);
+                $builder->post('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
+                $builder->get('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
+                $builder->post('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
                 $builder->get('/delete/{grant_role_id}', ['controller' => 'Delete', 'action' => 'index']);
                 $builder->post('/delete/{grant_role_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
             });

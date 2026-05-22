@@ -1,5 +1,4 @@
 <?php
-
 /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $input */
 ?>
 <!-- Breadcrumb -->
@@ -16,59 +15,6 @@
         <li class="breadcrumb-item">
             <b>管理者権限</b>
         </li>
-        <li class="breadcrumb-item">
-            <a href="<?= $this->Url->build([
-                'prefix' => 'Admin/AdminGrant',
-                'controller' => 'Search',
-                'action' => 'index',
-                'account_id' => $this->getRequest()->getParam('account_id'),
-                '?' => $this->getRequest()->getQuery(),
-            ]) ?>">検索</a>
-        </li>
-    <?php if ($this->getRequest()->getParam('admin_account_id')): ?>
-        <li class="breadcrumb-item">
-            <a href="<?= $this->Url->build([
-                'prefix' => 'Admin/AdminGrant',
-                'controller' => 'Detail',
-                'action' => 'index',
-                'account_id' => $this->getRequest()->getParam('account_id'),
-                'admin_account_id' => $this->getRequest()->getParam('admin_account_id'),
-                '?' => $this->getRequest()->getQuery(),
-            ]) ?>">詳細</a>
-        </li>
-        <li class="breadcrumb-item">
-            <a href="<?= $this->Url->build([
-                'prefix' => 'Admin/AdminGrant',
-                'controller' => 'Edit',
-                'action' => 'index',
-                'account_id' => $this->getRequest()->getParam('account_id'),
-                'admin_account_id' => $this->getRequest()->getParam('admin_account_id'),
-                '?' => $this->getRequest()->getQuery(),
-            ]) ?>">更新</a>
-        </li>
-    <?php endif ?>
-    <?php if ($this->getRequest()->getParam('process_id')): ?>
-        <li class="breadcrumb-item">
-            <a href="<?= $this->Url->build([
-                'prefix' => 'Admin/AdminGrant',
-                'controller' => 'Detail',
-                'action' => 'index',
-                'account_id' => $this->getRequest()->getParam('account_id'),
-                'admin_account_id' => $input->getInput('admin_account_id'),
-                '?' => $this->getRequest()->getQuery(),
-            ]) ?>">詳細</a>
-        </li>
-        <li class="breadcrumb-item">
-            <a href="<?= $this->Url->build([
-                'prefix' => 'Admin/AdminGrant',
-                'controller' => 'Edit',
-                'action' => 'input',
-                'account_id' => $this->getRequest()->getParam('account_id'),
-                'process_id' => $this->getRequest()->getParam('process_id'),
-                '?' => $this->getRequest()->getQuery(),
-            ]) ?>">更新</a>
-        </li>
-    <?php endif ?>
         <li class="breadcrumb-item">
             <b>ロール権限</b>
         </li>
@@ -90,5 +36,53 @@
                 '?' => $this->getRequest()->getQuery(),
             ]) ?>">検索</a>
         </li>
+    <?php if ($this->getRequest()->getParam('grant_role_id')): ?>
+        <li class="breadcrumb-item">
+            <a href="<?= $this->Url->build([
+                'prefix' => 'Admin/AdminGrant/Role',
+                'controller' => 'Detail',
+                'action' => 'index',
+                'account_id' => $this->getRequest()->getParam('account_id'),
+                'grant_role_id' => $this->getRequest()->getParam('grant_role_id'),
+                '?' => $this->getRequest()->getQuery(),
+            ]) ?>">詳細</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="<?= $this->Url->build([
+                'prefix' => 'Admin/AdminGrant/Role',
+                'controller' => 'Edit',
+                'action' => 'index',
+                'account_id' => $this->getRequest()->getParam('account_id'),
+                'grant_role_id' => $this->getRequest()->getParam('grant_role_id'),
+                '?' => $this->getRequest()->getQuery(),
+            ]) ?>">更新</a>
+        </li>
+    <?php endif ?>
+    <?php if (
+        $this->getRequest()->getParam('process_id')
+        && isset($input)
+        && !empty($input->getInput('grant_role_id'))
+    ): ?>
+        <li class="breadcrumb-item">
+            <a href="<?= $this->Url->build([
+                'prefix' => 'Admin/AdminGrant/Role',
+                'controller' => 'Detail',
+                'action' => 'index',
+                'account_id' => $this->getRequest()->getParam('account_id'),
+                'grant_role_id' => $input->getInput('grant_role_id'),
+                '?' => $this->getRequest()->getQuery(),
+            ]) ?>">詳細</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="<?= $this->Url->build([
+                'prefix' => 'Admin/AdminGrant/Role',
+                'controller' => 'Edit',
+                'action' => 'input',
+                'account_id' => $this->getRequest()->getParam('account_id'),
+                'process_id' => $this->getRequest()->getParam('process_id'),
+                '?' => $this->getRequest()->getQuery(),
+            ]) ?>">更新</a>
+        </li>
+    <?php endif ?>
     </ol>
 </nav>
