@@ -15,6 +15,8 @@ class IsActive implements Stringable
     public const ACTIVE = 1;
     public const VALUES = [self::INACTIVE, self::ACTIVE];
 
+    public const ERROR_CODE_OUT_OF_TYPE = 1001;
+
     private ?int $value;
 
     /**
@@ -28,11 +30,12 @@ class IsActive implements Stringable
             return;
         }
 
-        if (!preg_match('/^\d+$/', $value) || !in_array((int)$value, self::VALUES, true)) {
+        if (!in_array((int)$value, self::VALUES, true)) {
             throw new DomainException(
-                self::class . ' value out of range Error'
+                message: self::class . ' value out of type Error'
                 . '[value: ' . $value . ']'
                 . '[allowed: 0, 1]',
+                code: self::ERROR_CODE_OUT_OF_TYPE,
             );
         }
 

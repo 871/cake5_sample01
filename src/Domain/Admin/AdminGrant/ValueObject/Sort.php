@@ -13,6 +13,8 @@ class Sort implements Stringable
 
     private ?int $value;
 
+    public const ERROR_CODE_INTEGER_FORMAT = 1001;
+
     /**
      * @param ?string $value
      */
@@ -24,10 +26,11 @@ class Sort implements Stringable
             return;
         }
 
-        if (!preg_match('/^-?\d+$/', $value)) {
+        if (!preg_match('/^-?\d{1,10}$/', $value)) {
             throw new DomainException(
-                self::class . ' value integer format Error'
+                message: self::class . ' value integer format Error'
                 . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
+                code: self::ERROR_CODE_INTEGER_FORMAT,
             );
         }
 

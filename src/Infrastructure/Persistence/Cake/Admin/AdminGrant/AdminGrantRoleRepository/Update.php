@@ -8,6 +8,7 @@ use App\Domain\Exception\RepositoryException;
 use App\Domain\Shared\Enum as SEn;
 use App\Model\Entity\Grant\GrantRole as OrmGrantRole;
 use App\Model\Table\Grant\GrantRolesTable;
+use App\Lib\UUID\UUID;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use DateTimeInterface;
@@ -55,6 +56,7 @@ final class Update
                             'GrantRolePermissions',
                         ])->where([
                             'id' => $domainGrantRole->grantRoleId()->toString(),
+                            'modified' => $domainGrantRole->modified()->format('Y-m-d\TH:i:s'),
                         ])
                         ->epilog('FOR UPDATE')
                         ->firstOrFail();
@@ -67,19 +69,20 @@ final class Update
                             'description' => $domainGrantRole->description()->toStringOrNull(),
                             'sort' => $domainGrantRole->sort()->toInt(),
                             'is_active' => $domainGrantRole->isActive()->toInt(),
-                            'modified' => $domainGrantRole->modified()->format('Y-m-d\TH:i:s'),
+                            'modified' => $this->datetime->format('Y-m-d\TH:i:s'),
                             'grant_role_permissions' => array_map(
                                 function (
                                     De\GrantRolePermission $domainGrantRolePermission,
-                                ) use ($domainGrantRole) {
+                                ) {
                                     return [
+                                        'id' => UUID::uuid7(),
                                         'account_type' => self::ACCOUNT_TYPE,
                                         'grant_role_id' => $domainGrantRolePermission->grantRoleId()->toString(),
                                         'grant_permission_id' => $domainGrantRolePermission
                                             ->grantPermissionId()
                                             ->toString(),
-                                        'created' => $domainGrantRolePermission->created()->format('Y-m-d\TH:i:s'),
-                                        'modified' => $domainGrantRolePermission->modified()->format('Y-m-d\TH:i:s'),
+                                        'created' => $this->datetime->format('Y-m-d\TH:i:s'),
+                                        'modified' => $this->datetime->format('Y-m-d\TH:i:s'),
                                     ];
                                 },
                                 $domainGrantRole->grantRolePermissions(),
