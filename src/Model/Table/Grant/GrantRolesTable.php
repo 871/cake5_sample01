@@ -43,7 +43,7 @@ final class GrantRolesTable extends Table
             'className' => GrantRolePermissionsTable::class,
             'foreignKey' => 'grant_role_id',
             'sort' => [
-                'GrantRolePermissions.sort' => 'ASC',
+                'GrantRolePermissions.created' => 'DESC',
             ],
         ]);
     }

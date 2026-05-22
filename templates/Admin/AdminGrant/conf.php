@@ -7,7 +7,7 @@ $selectedGrantRoleNames = array_values(array_map(
     fn($option) => $option->name()->toString(),
     array_filter(
         $grantRoleOptions,
-        fn($option) => in_array($option->grantRoleId()->toString(), (array)$input->getInput('grant_role_ids', []), true),
+        fn($option) => in_array($option->grantRoleId()->toString(), (array)$input->getInput('grant_role_ids'), true),
     ),
 ));
 
@@ -15,7 +15,7 @@ $selectedGrantPermissionNames = array_values(array_map(
     fn($option) => $option->name()->toString(),
     array_filter(
         $grantPermissionOptions,
-        fn($option) => in_array($option->grantPermissionId()->toString(), (array)$input->getInput('grant_permission_ids', []), true),
+        fn($option) => in_array($option->grantPermissionId()->toString(), (array)$input->getInput('grant_permission_ids'), true),
     ),
 ));
 ?>

@@ -56,7 +56,6 @@ final class Save
         try {
             $this->table->getConnection()->transactional(function () use ($adminAccountGrant): void {
                 $accountId = $adminAccountGrant->adminAccountId()->toString();
-                $accountIdInt = $adminAccountGrant->adminAccountId()->toIntOrNull();
                 $now = $this->datetime->format('Y-m-d H:i:s');
 
                 $this->table->find()
@@ -121,9 +120,9 @@ final class Save
                     $this->table->GrantAccountRoles->newEntities(
                         array_map(
                             fn(int $grantRoleId): array => [
-                                'id' => UUID::uuid4(),
+                                'id' => UUID::uuid7(),
                                 'account_type' => self::ACCOUNT_TYPE,
-                                'account_id' => $accountIdInt,
+                                'account_id' => $accountId,
                                 'grant_role_id' => $grantRoleId,
                                 'created' => $now,
                                 'modified' => $now,
@@ -145,9 +144,9 @@ final class Save
                     $this->table->GrantAccountPermissions->newEntities(
                         array_map(
                             fn(int $grantPermissionId): array => [
-                                'id' => UUID::uuid4(),
+                                'id' => UUID::uuid7(),
                                 'account_type' => self::ACCOUNT_TYPE,
-                                'account_id' => $accountIdInt,
+                                'account_id' => $accountId,
                                 'grant_permission_id' => $grantPermissionId,
                                 'created' => $now,
                                 'modified' => $now,

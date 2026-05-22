@@ -44,7 +44,7 @@
                         <?php foreach ($grantRoleOptions as $option) { ?>
                             <option
                                 value="<?= h($option->grantRoleId()->toString()) ?>"
-                                <?= in_array($option->grantRoleId()->toString(), (array)$input->getInput('grant_role_ids', []), true) ? 'selected' : '' ?>
+                                <?= in_array($option->grantRoleId()->toString(), (array)$input->getInput('grant_role_ids'), true) ? 'selected' : '' ?>
                             >
                                 <?= h($option->name()->toString()) ?>
                             </option>
@@ -62,7 +62,7 @@
                         <?php foreach ($grantPermissionOptions as $option) { ?>
                             <option
                                 value="<?= h($option->grantPermissionId()->toString()) ?>"
-                                <?= in_array($option->grantPermissionId()->toString(), (array)$input->getInput('grant_permission_ids', []), true) ? 'selected' : '' ?>
+                                <?= in_array($option->grantPermissionId()->toString(), (array)$input->getInput('grant_permission_ids'), true) ? 'selected' : '' ?>
                             >
                                 <?= h($option->name()->toString()) ?>
                             </option>

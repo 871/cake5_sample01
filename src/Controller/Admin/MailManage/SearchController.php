@@ -59,7 +59,7 @@ class SearchController extends AppController
                 'rows' => $this->ctlService->getRows(),
                 'isPrevExists' => $this->ctlService->isPrevExists(),
                 'isNextExists' => $this->ctlService->isNextExists(),
-                'errorMeesasges' => [],
+                'errorMessages' => [],
                 'errorFields' => [],
             ]);
         } catch (ValidateException $ex) {
@@ -67,7 +67,7 @@ class SearchController extends AppController
                 'rows' => [],
                 'isPrevExists' => false,
                 'isNextExists' => false,
-                'errorMeesasges' => $ex->getErrorMeesasges(),
+                'errorMessages' => $ex->getErrorMessages(),
                 'errorFields' => $ex->getErrorFields(),
             ]);
         }

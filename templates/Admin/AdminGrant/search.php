@@ -76,7 +76,11 @@ $pageOptions = [
         <table class="table table-bordered table-hover mb-0">
             <thead class="table-dark">
                 <tr>
-                    <th><?= $this->Paginator->sort('AdminAccounts.id', '管理者ID', $pageOptions) ?></th>
+                    <th>
+                        <?= $this->Paginator->sort('AdminAccounts.id', '管理者ID', $pageOptions) ?>
+                        <br>
+                        ステータス
+                    </th>
                     <th>
                         <?= $this->Paginator->sort('AdminAccounts.name', '管理者名', $pageOptions) ?>
                         <br>
@@ -99,7 +103,18 @@ $pageOptions = [
                         <tr
                             <?= $row->role_grant_exists || $row->account_grant_exists? '' :'class="table-secondary"' ?>
                         >
-                            <td><?= h((string)$row->id) ?></td>
+                            <td>
+                                <?= h((string)$row->id) ?>
+                                <br>
+                                <?= match($row->account_status_master_code) {
+                                    'PENDING' => '<span class="badge bg-primary">' . h($row->account_status_master_name) . '</span>',
+                                    'ACTIVE' => '<span class="badge bg-success">' . h($row->account_status_master_name) . '</span>',
+                                    'SUSPENDED' => '<span class="badge bg-warning">' . h($row->account_status_master_name) . '</span>',
+                                    'LOCKED' => '<span class="badge bg-danger">' . h($row->account_status_master_name) . '</span>',
+                                    'DELETED' => '<span class="badge bg-secondary">' . h($row->account_status_master_name) . '</span>',
+                                    default => '<span class="badge bg-secondary">' . h($row->account_status_master_name) . '</span>',
+                                } ?>                            
+                            </td>
                             <td>
                                 <?= h((string)$row->name) ?>
                                 <br>
