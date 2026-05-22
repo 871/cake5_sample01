@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Security\Auth;
 
+use App\Lib\UUID\UUID;
 use App\Model\Entity\User\UserAccount;
 use App\Security\Auth\AuthContext\Fields\Type;
 use Cake\Utility\Security;
@@ -22,7 +23,7 @@ final class UserTokenService
     /**
      * @param \App\Model\Entity\User\UserAccount $account
      * @param \DateTimeInterface $now
-     * @return array{auth: array<string, string>, access_token: string, refresh_token: string, set_cookie_headers: array<int, string>}
+     * @return array{auth: array<string, string>, access_token: string, refresh_token: string, refresh_token_id: string, refresh_token_expires_at: \DateTimeImmutable, set_cookie_headers: array<int, string>}
      */
     public function createTokenSet(UserAccount $account, DateTimeInterface $now): array
     {
@@ -30,6 +31,7 @@ final class UserTokenService
         $auth = $this->buildAuthPayload($account, $issuedAt);
         $accessExpiresAt = $issuedAt->add(new DateInterval(self::ACCESS_TOKEN_TTL));
         $refreshExpiresAt = $issuedAt->add(new DateInterval(self::REFRESH_TOKEN_TTL));
+        $refreshTokenId = UUID::uuid7();
 
         $accessToken = $this->encode(array_merge($auth, [
             'token_type' => 'access',
@@ -38,6 +40,7 @@ final class UserTokenService
         ]));
         $refreshToken = $this->encode([
             'account_id' => $auth['account_id'],
+            'refresh_token_id' => $refreshTokenId,
             'token_type' => 'refresh',
             'iat' => (string)$issuedAt->getTimestamp(),
             'exp' => (string)$refreshExpiresAt->getTimestamp(),
@@ -47,6 +50,8 @@ final class UserTokenService
             'auth' => $auth,
             'access_token' => $accessToken,
             'refresh_token' => $refreshToken,
+            'refresh_token_id' => $refreshTokenId,
+            'refresh_token_expires_at' => $refreshExpiresAt,
             'set_cookie_headers' => [
                 $this->buildCookieHeader(self::ACCESS_TOKEN_COOKIE, $accessToken, $accessExpiresAt),
                 $this->buildCookieHeader(self::REFRESH_TOKEN_COOKIE, $refreshToken, $refreshExpiresAt),

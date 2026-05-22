@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Middleware\User;
 
+use App\Infrastructure\Persistence\Cake\User\RefreshTokensRepository;
 use App\Infrastructure\Persistence\Cake\User\UserAccountsRepository;
 use App\Middleware\User\UserAuthMiddleware;
 use App\Model\Entity\User\UserAccount;
@@ -20,7 +21,11 @@ final class UserAuthMiddlewareTest extends TestCase
 {
     public function testRedirectsToLoginWhenNotAuthenticated(): void
     {
-        $middleware = new UserAuthMiddleware(new UserTokenService(), new UserAccountsRepository());
+        $middleware = new UserAuthMiddleware(
+            new UserTokenService(),
+            new UserAccountsRepository(),
+            new RefreshTokensRepository(),
+        );
         $request = $this->makeRequest('100001', [], '/v1/us/100001/');
         $handler = $this->createMock(RequestHandlerInterface::class);
         $handler->expects($this->never())->method('handle');
@@ -36,7 +41,8 @@ final class UserAuthMiddlewareTest extends TestCase
         $tokenService = new UserTokenService();
         $tokenSet = $tokenService->createTokenSet($this->makeAccount(), new DateTimeImmutable());
         $repository = $this->createMock(UserAccountsRepository::class);
-        $middleware = new UserAuthMiddleware($tokenService, $repository);
+        $refreshTokensRepository = $this->createMock(RefreshTokensRepository::class);
+        $middleware = new UserAuthMiddleware($tokenService, $repository, $refreshTokensRepository);
         $request = $this->makeRequest('100001', [
             UserTokenService::ACCESS_TOKEN_COOKIE => $tokenSet['access_token'],
         ]);
@@ -60,11 +66,25 @@ final class UserAuthMiddlewareTest extends TestCase
         $tokenService = new UserTokenService();
         $tokenSet = $tokenService->createTokenSet($this->makeAccount(), new DateTimeImmutable('-20 minutes'));
         $repository = $this->createMock(UserAccountsRepository::class);
+        $refreshTokensRepository = $this->createMock(RefreshTokensRepository::class);
         $repository->expects($this->once())
             ->method('read')
             ->with('100001')
             ->willReturn($this->makeAccount());
-        $middleware = new UserAuthMiddleware($tokenService, $repository);
+        $refreshTokensRepository->expects($this->once())
+            ->method('isValid')
+            ->with($tokenSet['refresh_token_id'], '100001', $this->isInstanceOf(DateTimeImmutable::class))
+            ->willReturn(true);
+        $refreshTokensRepository->expects($this->once())
+            ->method('rotate')
+            ->with(
+                $tokenSet['refresh_token_id'],
+                '100001',
+                $this->isString(),
+                $this->isInstanceOf(DateTimeImmutable::class),
+                $this->isInstanceOf(DateTimeImmutable::class),
+            );
+        $middleware = new UserAuthMiddleware($tokenService, $repository, $refreshTokensRepository);
         $request = $this->makeRequest('100001', [
             UserTokenService::ACCESS_TOKEN_COOKIE => $tokenSet['access_token'],
             UserTokenService::REFRESH_TOKEN_COOKIE => $tokenSet['refresh_token'],

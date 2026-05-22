@@ -21,6 +21,7 @@ final class UserTokenServiceTest extends TestCase
         $this->assertSame('user', $tokenSet['auth']['type']);
         $this->assertSame('100001', $service->readAccessToken($tokenSet['access_token'])['account_id']);
         $this->assertSame('100001', $service->readRefreshToken($tokenSet['refresh_token'])['account_id']);
+        $this->assertSame($tokenSet['refresh_token_id'], $service->readRefreshToken($tokenSet['refresh_token'])['refresh_token_id']);
         $this->assertCount(2, $tokenSet['set_cookie_headers']);
     }
 

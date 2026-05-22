@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace App\Model\Table\User;
 
-use App\Model\Entity\User\UserAccount;
+use App\Model\Entity\User\UserAccountHistory;
 use App\Model\Table\Shared\AccountStatusMastersTable;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-final class UserAccountsTable extends Table
+final class UserAccountHistoriesTable extends Table
 {
     /**
      * @param array<string, mixed> $config
@@ -19,36 +19,32 @@ final class UserAccountsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setEntityClass(UserAccount::class);
-        $this->setTable('user_accounts');
+        $this->setEntityClass(UserAccountHistory::class);
+        $this->setTable('user_account_histories');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
+        $this->belongsTo('UserAccounts', [
+            'className' => UserAccountsTable::class,
+            'foreignKey' => 'user_account_id',
+            'joinType' => 'INNER',
+        ]);
         $this->belongsTo('AccountStatusMasters', [
             'className' => AccountStatusMastersTable::class,
             'foreignKey' => 'account_status_master_id',
             'joinType' => 'INNER',
-        ]);
-        $this->hasMany('UserAccountHistories', [
-            'className' => UserAccountHistoriesTable::class,
-            'foreignKey' => 'user_account_id',
-        ]);
-        $this->hasMany('RefreshTokens', [
-            'className' => RefreshTokensTable::class,
-            'foreignKey' => 'user_account_id',
         ]);
     }
 
     public function validationDefault(Validator $validator): Validator
     {
         $validator
+            ->notEmptyString('user_account_id');
+
+        $validator
             ->email('email')
             ->requirePresence('email', 'create')
-            ->notEmptyString('email')
-            ->add('email', 'unique', [
-                'rule' => 'validateUnique',
-                'provider' => 'table',
-            ]);
+            ->notEmptyString('email');
 
         $validator
             ->scalar('password')
@@ -67,7 +63,7 @@ final class UserAccountsTable extends Table
             ->notEmptyString('account_status_master_id');
 
         $validator
-            ->boolean('is_email_verified')
+            ->integer('is_email_verified')
             ->notEmptyString('is_email_verified');
 
         $validator
@@ -80,12 +76,23 @@ final class UserAccountsTable extends Table
             ->requirePresence('password_expires_at', 'create')
             ->notEmptyDateTime('password_expires_at');
 
+        $validator
+            ->scalar('operation_type')
+            ->maxLength('operation_type', 10)
+            ->requirePresence('operation_type', 'create')
+            ->notEmptyString('operation_type');
+
+        $validator
+            ->dateTime('history_created')
+            ->requirePresence('history_created', 'create')
+            ->notEmptyDateTime('history_created');
+
         return $validator;
     }
 
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->isUnique(['email']), ['errorField' => 'email']);
+        $rules->add($rules->existsIn(['user_account_id'], 'UserAccounts'), ['errorField' => 'user_account_id']);
         $rules->add(
             $rules->existsIn(['account_status_master_id'], 'AccountStatusMasters'),
             ['errorField' => 'account_status_master_id'],

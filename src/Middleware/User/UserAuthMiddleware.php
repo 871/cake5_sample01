@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Middleware\User;
 
 use App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterCode;
+use App\Infrastructure\Persistence\Cake\User\RefreshTokensRepository;
 use App\Infrastructure\Persistence\Cake\User\UserAccountsRepository;
 use App\Model\Entity\User\UserAccount;
 use App\Security\Auth\AuthContext\Fields\Type;
@@ -22,6 +23,7 @@ class UserAuthMiddleware implements MiddlewareInterface
     public function __construct(
         private readonly UserTokenService $tokenService = new UserTokenService(),
         private readonly UserAccountsRepository $userAccountsRepository = new UserAccountsRepository(),
+        private readonly RefreshTokensRepository $refreshTokensRepository = new RefreshTokensRepository(),
     ) {
     }
 
@@ -38,10 +40,23 @@ class UserAuthMiddleware implements MiddlewareInterface
 
         $refreshToken = Cast::toStringOrNull($request->getCookie(UserTokenService::REFRESH_TOKEN_COOKIE));
         $refreshAuth = $this->tokenService->readRefreshToken($refreshToken);
-        if ($refreshAuth !== null && ($refreshAuth['account_id'] ?? null) === $account_id) {
+        $now = new DateTimeImmutable();
+        if (
+            $refreshAuth !== null
+            && ($refreshAuth['account_id'] ?? null) === $account_id
+            && isset($refreshAuth['refresh_token_id'])
+            && $this->refreshTokensRepository->isValid($refreshAuth['refresh_token_id'], $account_id, $now)
+        ) {
             $account = $this->userAccountsRepository->read($account_id);
             if ($account !== null && $this->canAuthenticate($account)) {
-                $tokenSet = $this->tokenService->createTokenSet($account, new DateTimeImmutable());
+                $tokenSet = $this->tokenService->createTokenSet($account, $now);
+                $this->refreshTokensRepository->rotate(
+                    currentId: $refreshAuth['refresh_token_id'],
+                    userAccountId: $account_id,
+                    nextId: $tokenSet['refresh_token_id'],
+                    expiresAt: $tokenSet['refresh_token_expires_at'],
+                    now: $now,
+                );
                 $response = $handler->handle(
                     $request->withAttribute(UserTokenService::REQUEST_ATTRIBUTE, $tokenSet['auth']),
                 );

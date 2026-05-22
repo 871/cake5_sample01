@@ -31,7 +31,7 @@ class CreateTableUserAccounts extends BaseMigration
                 INDEX user_accounts_idx06 (password_expires_at)
             ) ENGINE=InnoDB
             DEFAULT CHARSET=utf8mb4
-            AUTO_INCREMENT=100000
+            AUTO_INCREMENT=1000000
             COMMENT='ユーザーアカウント'
             COLLATE=utf8mb4_0900_ai_ci;
 
@@ -47,7 +47,7 @@ class CreateTableUserAccounts extends BaseMigration
                 created,
                 modified
             ) VALUES (
-                100000,
+                1000000,
                 'system-reserved-user@example.local',
                 'reserved',
                 'SYSTEM_RESERVED_USER',
@@ -59,6 +59,46 @@ class CreateTableUserAccounts extends BaseMigration
                 '1970-01-01 00:00:00'
             );
 
+            DROP TABLE IF EXISTS user_account_histories;
+
+            CREATE TABLE user_account_histories (
+                id CHAR(36) NOT NULL COMMENT '履歴ID',
+                user_account_id BIGINT NOT NULL COMMENT 'ユーザーアカウントID',
+                email VARCHAR(255) NOT NULL COMMENT 'ログインメールアドレス',
+                password VARCHAR(255) NOT NULL COMMENT 'ハッシュ化パスワード',
+                name VARCHAR(100) NOT NULL COMMENT '表示名',
+                account_status_master_id INT NOT NULL COMMENT 'アカウントステータスマスタID',
+                is_email_verified INT NOT NULL DEFAULT 0 COMMENT 'メール確認済フラグ',
+                password_changed_at DATETIME(0) NOT NULL COMMENT 'パスワード最終変更日時',
+                password_expires_at DATETIME(0) NOT NULL COMMENT 'パスワード有効期限',
+                created DATETIME(0) NOT NULL COMMENT '作成日時',
+                modified DATETIME(0) NOT NULL COMMENT '更新日時',
+                operation_type VARCHAR(10) NOT NULL COMMENT '操作種別 (INSERT / UPDATE / DELETE)',
+                history_created DATETIME(0) NOT NULL COMMENT '履歴作成日時',
+                PRIMARY KEY (id),
+                INDEX user_account_histories_idx01 (user_account_id, history_created),
+                INDEX user_account_histories_idx02 (history_created)
+            ) ENGINE=InnoDB
+            DEFAULT CHARSET=utf8mb4
+            COMMENT='ユーザーアカウント変更履歴'
+            COLLATE=utf8mb4_0900_ai_ci;
+
+            DROP TABLE IF EXISTS refresh_tokens;
+
+            CREATE TABLE refresh_tokens (
+                id CHAR(36) NOT NULL COMMENT 'リフレッシュトークンID(UUID7)',
+                user_account_id BIGINT NOT NULL COMMENT 'ユーザーアカウントID',
+                expires_at DATETIME(0) NOT NULL COMMENT '有効期限',
+                created DATETIME(0) NOT NULL COMMENT '作成日時',
+                modified DATETIME(0) NOT NULL COMMENT '更新日時',
+                PRIMARY KEY (id),
+                INDEX refresh_tokens_idx01 (user_account_id),
+                INDEX refresh_tokens_idx02 (expires_at)
+            ) ENGINE=InnoDB
+            DEFAULT CHARSET=utf8mb4
+            COMMENT='リフレッシュトークン'
+            COLLATE=utf8mb4_0900_ai_ci;
+
         SQL;
 
         $this->execute($sql);
@@ -69,6 +109,10 @@ class CreateTableUserAccounts extends BaseMigration
         $sql = <<<SQL
 
             DROP TABLE IF EXISTS user_accounts;
+
+            DROP TABLE IF EXISTS user_account_histories;
+
+            DROP TABLE IF EXISTS refresh_tokens;
 
         SQL;
 

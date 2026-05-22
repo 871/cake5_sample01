@@ -8,6 +8,7 @@ use App\Domain\Log\LoginLogs\Entity\LoginLog as LoginLogEntity;
 use App\Domain\Log\LoginLogs\ValueObject as LoginLogVo;
 use App\Exception\AuthException;
 use App\Infrastructure\Persistence\Cake\Log\LoginLogs\LoginLogsRepository;
+use App\Infrastructure\Persistence\Cake\User\RefreshTokensRepository;
 use App\Infrastructure\Persistence\Cake\User\UserAccountsRepository;
 use App\Lib\UUID\UUID;
 use App\Model\Entity\User\UserAccount;
@@ -140,6 +141,12 @@ final class Login implements ServiceInterface
     {
         $this->account_id = (string)$this->accountEntity->id;
         $tokenSet = (new UserTokenService())->createTokenSet($this->accountEntity, $this->datetime);
+        (new RefreshTokensRepository())->create(
+            id: $tokenSet['refresh_token_id'],
+            userAccountId: $this->account_id,
+            expiresAt: $tokenSet['refresh_token_expires_at'],
+            now: $this->datetime,
+        );
         $this->setCookieHeaders = $tokenSet['set_cookie_headers'];
 
         return $this;

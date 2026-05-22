@@ -6,7 +6,8 @@ namespace App\Model\Entity\User;
 use Cake\ORM\Entity;
 
 /**
- * @property int $id
+ * @property string $id
+ * @property int $user_account_id
  * @property string $email
  * @property string $password
  * @property string $name
@@ -16,16 +17,20 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\DateTime $password_expires_at
  * @property \Cake\I18n\DateTime $created
  * @property \Cake\I18n\DateTime $modified
+ * @property string $operation_type
+ * @property \Cake\I18n\DateTime $history_created
+ *
+ * @property \App\Model\Entity\User\UserAccount $user_account
  * @property \App\Model\Entity\Shared\AccountStatusMaster $account_status_master
- * @property \App\Model\Entity\User\UserAccountHistory[] $user_account_histories
- * @property \App\Model\Entity\User\RefreshToken[] $refresh_tokens
  */
-class UserAccount extends Entity
+class UserAccountHistory extends Entity
 {
     /**
      * @var array<string, bool>
      */
     protected array $_accessible = [
+        'id' => true,
+        'user_account_id' => true,
         'email' => true,
         'password' => true,
         'name' => true,
@@ -35,8 +40,9 @@ class UserAccount extends Entity
         'password_expires_at' => true,
         'created' => true,
         'modified' => true,
+        'operation_type' => true,
+        'history_created' => true,
+        'user_account' => true,
         'account_status_master' => true,
-        'user_account_histories' => true,
-        'refresh_tokens' => true,
     ];
 }
