@@ -11,6 +11,7 @@ use App\Model\Table\Grant\GrantRolesTable;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use DateTimeInterface;
+use DomainException;
 
 final class Delete
 {
@@ -65,9 +66,7 @@ final class Delete
                         'grant_role_id' => $domainGrantRole->grantRoleId()->toString(),
                         ])
                     ) {
-                        throw new RepositoryException(
-                            message: 'Cannot delete grant role with associated account roles',
-                        );
+                        throw new DomainException('Cannot delete grant role with associated account roles');
                     }
 
                     $this->table->GrantRolePermissions->deleteAll([

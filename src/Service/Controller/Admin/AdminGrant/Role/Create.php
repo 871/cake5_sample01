@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Service\Controller\Admin\AdminGrant\Role;
 
 use App\Domain\Admin\AdminGrant\Entity\GrantRole;
+use App\Domain\Admin\AdminGrant\Entity\GrantRolePermission;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\ValueObject\Created;
 use App\Domain\Shared\ValueObject\Modified;
@@ -12,6 +13,7 @@ use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepositor
 use App\Lib\UUID\UUID;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
+use App\Service\Controller\Admin\AdminGrant as CategoryService;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\Process\Process\InputProcess;
@@ -70,6 +72,7 @@ final class Create implements ServiceInterface
                 'description' => '',
                 'sort' => '0',
                 'is_active' => '1',
+                'grant_permission_ids' => [],
             ]),
         );
 
@@ -151,6 +154,9 @@ final class Create implements ServiceInterface
             'description' => $this->request->getData('description'),
             'sort' => $this->request->getData('sort'),
             'is_active' => $this->request->getData('is_active') ?? '1',
+            'grant_permission_ids' => $this->normalizeSelectedPermissionIds(
+                (array)$this->request->getData('grant_permission_ids', []),
+            ),
         ];
     }
 
@@ -195,6 +201,15 @@ final class Create implements ServiceInterface
             $errorInfos['is_active'] = ['invalid' => __('有効状態が不正です。')];
         }
 
+        foreach ((array)$input['grant_permission_ids'] as $value) {
+            try {
+                new Vo\GrantPermissionId(Cast::toStringOrNull($value));
+            } catch (DomainException) {
+                $errorInfos['grant_permission_ids'] = ['invalid' => __('権限設定が不正です。')];
+                break;
+            }
+        }
+
         if ($errorInfos !== []) {
             throw new ValidateException($errorInfos);
         }
@@ -211,9 +226,10 @@ final class Create implements ServiceInterface
         $input = $this->getInputProcess()->getProcessParams()->toArray();
 
         $now = $this->datetime->format('Y-m-d\\TH:i:s');
+        $grantRoleId = new Vo\GrantRoleId(null);
 
         (new AdminGrantRoleRepository($this->datetime))->create(new GrantRole(
-            grant_role_id: new Vo\GrantRoleId(null),
+            grant_role_id: $grantRoleId,
             code: new Vo\Code(Cast::toStringOrNull($input['code'])),
             name: new Vo\Name(Cast::toStringOrNull($input['name'])),
             description: new Vo\Description(Cast::toStringOrNull($input['description'])),
@@ -222,7 +238,18 @@ final class Create implements ServiceInterface
             created: new Created($now),
             modified: new Modified($now),
             grant_account_roles: [],
-            grant_role_permissions: [],
+            grant_role_permissions: array_map(
+                fn($grantPermissionId) => new GrantRolePermission(
+                    grant_role_permission_id: new Vo\GrantRolePermissionId(UUID::uuid4()),
+                    grant_role_id: $grantRoleId,
+                    grant_permission_id: new Vo\GrantPermissionId(Cast::toStringOrNull($grantPermissionId)),
+                    created: new Created($now),
+                    modified: new Modified($now),
+                    grant_role: null,
+                    grant_permission: null,
+                ),
+                (array)$input['grant_permission_ids'],
+            ),
         ));
 
         return $this;
@@ -267,5 +294,39 @@ final class Create implements ServiceInterface
         );
 
         return $this;
+    }
+
+    /**
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission>
+     */
+    public function getGrantPermissionOptions(): array
+    {
+        /** @var \App\Service\Controller\Admin\AdminGrant $categoryService */
+        $categoryService = $this->createService(CategoryService::class);
+
+        return $categoryService->getAllGrantPermissionOptions();
+    }
+
+    /**
+     * @param array<int|string, mixed> $values
+     * @return array<int, string>
+     */
+    private function normalizeSelectedPermissionIds(array $values): array
+    {
+        $selectedIds = [];
+        foreach ($values as $grantPermissionId => $selected) {
+            if (Cast::toStringOrNull((string)$selected) !== '1') {
+                continue;
+            }
+
+            $normalizedId = Cast::toStringOrNull((string)$grantPermissionId);
+            if ($normalizedId === null || $normalizedId === '') {
+                continue;
+            }
+
+            $selectedIds[] = $normalizedId;
+        }
+
+        return array_values(array_unique($selectedIds));
     }
 }

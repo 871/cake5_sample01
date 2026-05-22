@@ -143,6 +143,14 @@ final class GrantAccountRole
     }
 
     /**
+     * @return ?\App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant
+     */
+    public function adminAccountGrant(): ?AdminAccountGrant
+    {
+        return $this->admin_account_grant;
+    }
+
+    /**
      * @return ?\App\Domain\Admin\AdminGrant\Entity\GrantRole
      */
     public function grantRole(): ?GrantRole

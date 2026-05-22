@@ -58,6 +58,7 @@ class SearchController extends AppController
                     $this->ctlService->getSearchQuery(),
                     $this->ctlService->getPaginateSettings(),
                 ),
+                'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
             ]);
         } catch (NotFoundException $e) {
             Log::error(
