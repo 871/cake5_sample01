@@ -22,7 +22,7 @@ use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 
-final class Create implements ServiceInterface
+final class Edit implements ServiceInterface
 {
     use ServiceTrait;
 
@@ -50,10 +50,22 @@ final class Create implements ServiceInterface
     }
 
     /**
+     * @return \App\Domain\Admin\AdminGrant\Entity\GrantRole
+     */
+    public function getDomainEntity(): GrantRole
+    {
+        return (new AdminGrantRoleRepository($this->datetime))->read(
+            new Vo\GrantRoleId(StrictCast::toString($this->request->getParam('grant_role_id'))),
+        );
+    }
+
+    /**
      * @return \App\Service\Controller\Shared\Process\Process\InputProcess
      */
     public function startInputProcess(): InputProcess
     {
+        $grantRole = $this->getDomainEntity();
+
         /** @var \App\Service\Controller\Shared\Process\ProcessFactory $processFactory */
         $processFactory = $this->createService(ProcessFactory::class);
         /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $process */
@@ -64,11 +76,12 @@ final class Create implements ServiceInterface
                 '_errorMessages' => [],
                 '_errorFields' => [],
                 '_process_key' => UUID::uuid4(),
-                'code' => '',
-                'name' => '',
-                'description' => '',
-                'sort' => '0',
-                'is_active' => '1',
+                'grant_role_id' => $grantRole->grantRoleId()->toString(),
+                'code' => $grantRole->code()->toString(),
+                'name' => $grantRole->name()->toString(),
+                'description' => $grantRole->description()->toString(),
+                'sort' => $grantRole->sort()->toString(),
+                'is_active' => $grantRole->isActive()->toString(),
             ]),
         );
 
@@ -145,6 +158,7 @@ final class Create implements ServiceInterface
             '_errorMessages' => [],
             '_errorFields' => [],
             '_process_key' => UUID::uuid4(),
+            'grant_role_id' => $this->request->getData('grant_role_id'),
             'code' => $this->request->getData('code'),
             'name' => $this->request->getData('name'),
             'description' => $this->request->getData('description'),
@@ -163,6 +177,12 @@ final class Create implements ServiceInterface
 
         /** @var array<string, array<string, string>> $errorInfos */
         $errorInfos = [];
+
+        try {
+            new Vo\GrantRoleId(Cast::toStringOrNull($input['grant_role_id']));
+        } catch (\DomainException) {
+            $errorInfos['grant_role_id'] = ['invalid' => __('ロールIDが不正です。')];
+        }
 
         try {
             new Vo\Code(Cast::toStringOrNull($input['code']));
@@ -209,19 +229,20 @@ final class Create implements ServiceInterface
         /** @var array<string, mixed> $input */
         $input = $this->getInputProcess()->getProcessParams()->toArray();
 
-        $now = $this->datetime->format('Y-m-d\\TH:i:s');
+        $repository = new AdminGrantRoleRepository($this->datetime);
+        $current = $repository->read(new Vo\GrantRoleId(Cast::toStringOrNull($input['grant_role_id'])));
 
-        (new AdminGrantRoleRepository($this->datetime))->create(new GrantRole(
-            grant_role_id: new Vo\GrantRoleId(null),
+        $repository->update(new GrantRole(
+            grant_role_id: $current->grantRoleId(),
             code: new Vo\Code(Cast::toStringOrNull($input['code'])),
             name: new Vo\Name(Cast::toStringOrNull($input['name'])),
             description: new Vo\Description(Cast::toStringOrNull($input['description'])),
             sort: new Vo\Sort(Cast::toStringOrNull($input['sort']) ?? '0'),
             is_active: new Vo\IsActive(Cast::toStringOrNull($input['is_active']) ?? '1'),
-            created: new Created($now),
-            modified: new Modified($now),
+            created: new Created($current->created()->format('Y-m-d\\TH:i:s')),
+            modified: new Modified($this->datetime->format('Y-m-d\\TH:i:s')),
             grant_account_roles: [],
-            grant_role_permissions: [],
+            grant_role_permissions: $current->grantRolePermissions(),
         ));
 
         return $this;

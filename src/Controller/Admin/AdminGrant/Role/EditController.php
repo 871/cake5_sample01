@@ -6,15 +6,15 @@ namespace App\Controller\Admin\AdminGrant\Role;
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\AdminGrant\Role\Create as CtlService;
+use App\Service\Controller\Admin\AdminGrant\Role\Edit as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
 
-class CreateController extends AppController
+class EditController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\AdminGrant\Role\Create
+     * @var \App\Service\Controller\Admin\AdminGrant\Role\Edit
      */
     private CtlService $ctlService;
 
@@ -35,7 +35,10 @@ class CreateController extends AppController
         );
 
         if (!$this->ctlService->existsInputProcess(ignoreActions: ['index'])) {
+            $this->Flash->error('更新対象のロール権限が見つかりません。');
+
             return $this->redirect([
+                'controller' => 'Search',
                 'action' => 'index',
                 'account_id' => $this->request->getParam('account_id'),
                 '?' => $this->request->getQuery(),
@@ -67,7 +70,7 @@ class CreateController extends AppController
     {
         $this->set([
             'input' => $this->ctlService->getInputProcess(),
-            'isEdit' => false,
+            'isEdit' => true,
         ]);
 
         return $this->render('/Admin/AdminGrant/Role/input');
@@ -108,7 +111,7 @@ class CreateController extends AppController
     {
         $this->set([
             'input' => $this->ctlService->getInputProcess(),
-            'isEdit' => false,
+            'isEdit' => true,
         ]);
 
         return $this->render('/Admin/AdminGrant/Role/conf');
@@ -125,7 +128,7 @@ class CreateController extends AppController
                 ->saveInputProcess()
                 ->endInputProcess();
 
-            $this->Flash->success('ロール権限の作成が完了しました。');
+            $this->Flash->success('ロール権限の更新が完了しました。');
 
             return $this->redirect([
                 'prefix' => 'Admin/AdminGrant/Role',
@@ -138,6 +141,8 @@ class CreateController extends AppController
             $this->ctlService->inputProcessErrorUpdate($ex);
 
             return $this->redirect([
+                'prefix' => 'Admin/AdminGrant/Role',
+                'controller' => 'Edit',
                 'action' => 'input',
                 'account_id' => $this->request->getParam('account_id'),
                 'process_id' => $this->request->getParam('process_id'),

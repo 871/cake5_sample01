@@ -18,19 +18,18 @@ class DetailController extends AppController
 
     /**
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
-     * @return void
      */
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
+
+        $this->viewBuilder()->setLayout('admin_main');
 
         $this->ctlService = new CtlService(
             datetime: new DateTimeImmutable(),
             request: $this->request,
             authContext: AuthContextResolver::resolve($this->request),
         );
-
-        $this->viewBuilder()->setLayout('admin_main');
     }
 
     /**

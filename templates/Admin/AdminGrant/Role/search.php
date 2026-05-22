@@ -68,7 +68,7 @@ $pageOptions = [
                                 ]) ?>" class="btn btn-info btn-sm">詳細</a>
                                 <a href="<?= $this->Url->build([
                                     'prefix' => 'Admin/AdminGrant/Role',
-                                    'controller' => 'Update',
+                                    'controller' => 'Edit',
                                     'action' => 'index',
                                     'account_id' => $this->getRequest()->getParam('account_id'),
                                     'grant_role_id' => $row->id,
