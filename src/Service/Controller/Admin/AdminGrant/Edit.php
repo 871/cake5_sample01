@@ -79,7 +79,8 @@ final class Edit implements ServiceInterface
                     $adminAccountGrant->grantAccountRoles(),
                 )),
                 'grant_permission_ids' => array_values(array_map(
-                    fn(GrantAccountPermission $grantAccountPermission) => $grantAccountPermission->grantPermissionId()->toString(),
+                    fn(GrantAccountPermission $grantAccountPermission)
+                        => $grantAccountPermission->grantPermissionId()->toString(),
                     $adminAccountGrant->grantAccountPermissions(),
                 )),
             ]),
@@ -156,8 +157,12 @@ final class Edit implements ServiceInterface
             '_errorMessages' => [],
             '_errorFields' => [],
             '_process_key' => UUID::uuid4(),
-            'grant_role_ids' => $this->normalizeSelectedIds((array)$this->request->getData('grant_role_ids', [])),
-            'grant_permission_ids' => $this->normalizeSelectedIds((array)$this->request->getData('grant_permission_ids', [])),
+            'grant_role_ids' => $this->normalizeSelectedIds(
+                (array)$this->request->getData('grant_role_ids', []),
+            ),
+            'grant_permission_ids' => $this->normalizeSelectedIds(
+                (array)$this->request->getData('grant_permission_ids', []),
+            ),
         ];
     }
 

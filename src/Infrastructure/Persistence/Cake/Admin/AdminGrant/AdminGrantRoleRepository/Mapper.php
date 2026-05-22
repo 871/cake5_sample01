@@ -36,6 +36,12 @@ final class Mapper
         $this->table = $this->fetchTable(GrantRolesTable::class);
     }
 
+    /**
+     * ORMエンティティからロールエンティティへ変換する
+     *
+     * @param \App\Model\Entity\Grant\GrantRole $ormGrantRole
+     * @return \App\Domain\Admin\AdminGrant\Entity\GrantRole
+     */
     public function toDomainGrantRole(
         OrmGrantRole $ormGrantRole,
     ): De\GrantRole {
@@ -77,6 +83,13 @@ final class Mapper
         );
     }
 
+    /**
+     * ORMエンティティから付与ロールエンティティへ変換する
+     *
+     * @param \App\Model\Entity\Grant\GrantAccountRole $ormGrantAccountRole
+     * @param \App\Domain\Admin\AdminGrant\Entity\GrantRole $domainGrantRole
+     * @return \App\Domain\Admin\AdminGrant\Entity\GrantAccountRole
+     */
     private function toDomainGrantAccountRole(
         OrmGrantAccountRole $ormGrantAccountRole,
         De\GrantRole $domainGrantRole,
@@ -96,6 +109,13 @@ final class Mapper
         );
     }
 
+    /**
+     * ORMエンティティから管理者権限エンティティへ変換する
+     *
+     * @param \App\Model\Entity\Admin\AdminAccount $ormAdminAccount
+     * @param \App\Domain\Admin\AdminGrant\Entity\GrantAccountRole $domainGrantAccountRole
+     * @return \App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant
+     */
     private function toDomainAdminAccountGrant(
         OrmAdminAccount $ormAdminAccount,
         De\GrantAccountRole $domainGrantAccountRole,
@@ -105,9 +125,15 @@ final class Mapper
             email: new Vo\Email((string)$ormAdminAccount->email),
             name: new Vo\Name((string)$ormAdminAccount->name),
             admin_note: new Vo\AdminNote((string)$ormAdminAccount->admin_note),
-            account_status_master_id: new Vo\AccountStatusMasterId((string)$ormAdminAccount->account_status_master_id),
-            account_status_master_code: new Vo\AccountStatusMasterCode((string)$ormAdminAccount->account_status_master_code),
-            account_status_master_name: new Vo\AccountStatusMasterName((string)$ormAdminAccount->account_status_master_name),
+            account_status_master_id: new Vo\AccountStatusMasterId(
+                (string)$ormAdminAccount->account_status_master_id,
+            ),
+            account_status_master_code: new Vo\AccountStatusMasterCode(
+                (string)$ormAdminAccount->account_status_master_code,
+            ),
+            account_status_master_name: new Vo\AccountStatusMasterName(
+                (string)$ormAdminAccount->account_status_master_name,
+            ),
             grant_account_roles: [
                 $domainGrantAccountRole,
             ],
@@ -115,6 +141,13 @@ final class Mapper
         );
     }
 
+    /**
+     * ORMエンティティからロール権限エンティティへ変換する
+     *
+     * @param \App\Model\Entity\Grant\GrantRolePermission $ormGrantRolePermission
+     * @param \App\Domain\Admin\AdminGrant\Entity\GrantRole $domainGrantRole
+     * @return \App\Domain\Admin\AdminGrant\Entity\GrantRolePermission
+     */
     private function toDomainGrantRolePermission(
         OrmGrantRolePermission $ormGrantRolePermission,
         De\GrantRole $domainGrantRole,
@@ -130,6 +163,12 @@ final class Mapper
         );
     }
 
+    /**
+     * ORMエンティティから権限エンティティへ変換する
+     *
+     * @param \App\Model\Entity\Grant\GrantPermission $ormGrantPermission
+     * @return \App\Domain\Admin\AdminGrant\Entity\GrantPermission
+     */
     public function toDomainGrantPermission(
         OrmGrantPermission $ormGrantPermission,
     ): De\GrantPermission {
@@ -145,6 +184,12 @@ final class Mapper
         );
     }
 
+    /**
+     * 新規保存用のORMエンティティへ変換する
+     *
+     * @param \App\Domain\Admin\AdminGrant\Entity\GrantRole $domainGrantRole
+     * @return \App\Model\Entity\Grant\GrantRole
+     */
     public function toNewOrmGrantRole(
         De\GrantRole $domainGrantRole,
     ): OrmGrantRole {
