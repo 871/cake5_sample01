@@ -22,7 +22,7 @@
             ]) ?>" class="btn btn-secondary px-5">戻る</a>
             <a href="<?= $this->Url->build([
                 'prefix' => 'Admin/AdminGrant/Role',
-                'controller' => 'Update',
+                'controller' => 'Edit',
                 'action' => 'index',
                 'account_id' => $this->getRequest()->getParam('account_id'),
                 'grant_role_id' => $entity->grantRoleId()->toString(),
