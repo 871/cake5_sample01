@@ -13,6 +13,10 @@ class DetailController extends AppController
 {
     private CtlService $ctlService;
 
+    /**
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
+     * @return void
+     */
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
@@ -24,6 +28,9 @@ class DetailController extends AppController
         $this->viewBuilder()->setLayout('admin_main');
     }
 
+    /**
+     * @return \Cake\Http\Response|null|void
+     */
     public function index()
     {
         $this->set([

@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace App\Service\Controller\Admin\AdminGrant;
 
-
+use App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant;
 use App\Domain\Admin\AdminGrant\SearchAdminGrantPermissionCondition;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
-use App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantPermissionRepository;
 use App\Service\Controller\Shared\ServiceInterface;
@@ -19,7 +18,7 @@ final class Detail implements ServiceInterface
 
     /**
      * @param string $adminAccountId
-     * @return AdminAccountGrant
+     * @return \App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant
      */
     public function getAdminAccountGrant(string $adminAccountId): AdminAccountGrant
     {
