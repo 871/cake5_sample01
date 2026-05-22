@@ -35,6 +35,7 @@ class AdminGrantMiddleware implements MiddlewareInterface
             $accountId !== ''
             && $this->hasPageAccessPermission($request, $accountId)
         ) {
+            // Memo: 認証情報は別のミドルウェアで検証するため、ここではアクセス権限の有無のみを判定する
             return $handler->handle($request);
         }
 
@@ -50,7 +51,17 @@ class AdminGrantMiddleware implements MiddlewareInterface
 
     private function hasPageAccessPermission(ServerRequestInterface $request, string $accountId): bool
     {
-        // TODO 未実装 
+        // TODO 未実装
+        // リクエスト情報から権限コードを作成
+        //  'PageAccess.' . 先頭のAdminを除くコントローラのプレフィックス
+        // 例： App\Controller\Admin\AdminAccount\EditController => 'PageAccess.AdminAccount'
+        // 例： App\Controller\Admin\AdminGrant\Role => 'PageAccess.AdminGrant.Role'
+
+        // 権限コードが存在しない場合はアクセス可
+        // 権限コードが存在し、管理者アカウントIDと紐づいている場合はアクセス可
+        // SystemAdministrator権限があればアクセス可
+        // それ以外はアクセス不可
+
         return true;
     }
 }
