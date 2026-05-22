@@ -18,6 +18,24 @@
         </li>
         <li class="breadcrumb-item">
             <a href="<?= $this->Url->build([
+                'prefix' => 'Admin/AdminGrant/Role',
+                'controller' => 'Search',
+                'action' => 'index',
+                'account_id' => $this->getRequest()->getParam('account_id'),
+                '?' => $this->getRequest()->getQuery(),
+            ]) ?>">ロール権限</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="<?= $this->Url->build([
+                'prefix' => 'Admin/AdminGrant/Role',
+                'controller' => 'Create',
+                'action' => 'index',
+                'account_id' => $this->getRequest()->getParam('account_id'),
+                '?' => $this->getRequest()->getQuery(),
+            ]) ?>">新規作成</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="<?= $this->Url->build([
                 'prefix' => 'Admin/AdminGrant',
                 'controller' => 'Search',
                 'action' => 'index',

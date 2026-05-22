@@ -98,12 +98,14 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
                 $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
                 $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
                 $builder->get('/create', ['controller' => 'Create', 'action' => 'index']);
+                $builder->post('/create', ['controller' => 'Create', 'action' => 'indexPost']);
                 $builder->get('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'input']);
                 $builder->post('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'inputPost']);
                 $builder->get('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'conf']);
                 $builder->post('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'confPost']);
                 $builder->get('/detail/{grant_role_id}', ['controller' => 'Detail', 'action' => 'index']);
                 $builder->get('/edit/{grant_role_id}', ['controller' => 'Update', 'action' => 'index']);
+                $builder->post('/edit/{grant_role_id}', ['controller' => 'Update', 'action' => 'indexPost']);
                 $builder->get('/edit/{process_id}/input', ['controller' => 'Update', 'action' => 'input']);
                 $builder->post('/edit/{process_id}/input', ['controller' => 'Update', 'action' => 'inputPost']);
                 $builder->get('/edit/{process_id}/conf', ['controller' => 'Update', 'action' => 'conf']);

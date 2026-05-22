@@ -60,8 +60,13 @@ final class Update
 
                     $this->table->patchEntity(
                         $savedEntity, [
+                            'code' => $domainGrantRole->code()->toString(),
+                            'name' => $domainGrantRole->name()->toString(),
+                            'description' => $domainGrantRole->description()->toStringOrNull(),
+                            'sort' => $domainGrantRole->sort()->toInt(),
+                            'is_active' => $domainGrantRole->isActive()->toInt(),
                             'modified' => $domainGrantRole->modified()->format('Y-m-d\TH:i:s'),
-                            'grrant_role_permissions' => array_map(
+                            'grant_role_permissions' => array_map(
                                 function(De\GrantRolePermission $domainGrantRolePermission) use ($domainGrantRole) {
                                     return [
                                         'account_type' => self::ACCOUNT_TYPE,
