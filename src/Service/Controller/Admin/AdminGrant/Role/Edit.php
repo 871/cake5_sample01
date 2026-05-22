@@ -21,6 +21,7 @@ use App\Service\Controller\Shared\Process\ProcessProvider;
 use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
+use DomainException;
 
 final class Edit implements ServiceInterface
 {
@@ -180,37 +181,37 @@ final class Edit implements ServiceInterface
 
         try {
             new Vo\GrantRoleId(Cast::toStringOrNull($input['grant_role_id']));
-        } catch (\DomainException) {
+        } catch (DomainException) {
             $errorInfos['grant_role_id'] = ['invalid' => __('ロールIDが不正です。')];
         }
 
         try {
             new Vo\Code(Cast::toStringOrNull($input['code']));
-        } catch (\DomainException) {
+        } catch (DomainException) {
             $errorInfos['code'] = ['invalid' => __('コードが不正です。')];
         }
 
         try {
             new Vo\Name(Cast::toStringOrNull($input['name']));
-        } catch (\DomainException) {
+        } catch (DomainException) {
             $errorInfos['name'] = ['invalid' => __('名称が不正です。')];
         }
 
         try {
             new Vo\Description(Cast::toStringOrNull($input['description']));
-        } catch (\DomainException) {
+        } catch (DomainException) {
             $errorInfos['description'] = ['invalid' => __('説明が不正です。')];
         }
 
         try {
             new Vo\Sort(Cast::toStringOrNull($input['sort']) ?? '0');
-        } catch (\DomainException) {
+        } catch (DomainException) {
             $errorInfos['sort'] = ['invalid' => __('並び順が不正です。')];
         }
 
         try {
             new Vo\IsActive(Cast::toStringOrNull($input['is_active']) ?? '1');
-        } catch (\DomainException) {
+        } catch (DomainException) {
             $errorInfos['is_active'] = ['invalid' => __('有効状態が不正です。')];
         }
 
