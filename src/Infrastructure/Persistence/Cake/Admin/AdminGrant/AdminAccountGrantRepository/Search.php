@@ -19,7 +19,7 @@ final class Search
 {
     use LocatorAwareTrait;
 
-    const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
+    public const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
 
     /**
      * @var \App\Model\Table\Admin\AdminAccountsTable
@@ -72,8 +72,8 @@ final class Search
                 'grant_permission_id' => 'GrantPermissions.id',
                 'grant_permission_name' => 'GrantPermissions.name',
                 'grant_permission_code' => 'GrantPermissions.code',
-                'role_grant_exists' => "COALESCE(RoleGrantExists.role_grant_exists, 0)",
-                'account_grant_exists' => "COALESCE(AccoutGrantExists.account_grant_exists, 0)",
+                'role_grant_exists' => 'COALESCE(RoleGrantExists.role_grant_exists, 0)',
+                'account_grant_exists' => 'COALESCE(AccoutGrantExists.account_grant_exists, 0)',
             ])
             ->join([
                 // account_status_masters.PRIMARY KEY (id) を使用
@@ -97,15 +97,15 @@ final class Search
                     'conditions' => [
                         // grant_role_permissions.grant_role_permissions_idx02 (account_type, grant_permission_id)
                         // grant_account_roles.grant_account_roles_idx03 (grant_role_id)
-                        'EXISTS(' 
+                        'EXISTS('
                         . ' SELECT 1 FROM grant_role_permissions AS T1'
-                        . ' INNER JOIN grant_account_roles AS T2' 
+                        . ' INNER JOIN grant_account_roles AS T2'
                         . ' ON T1.account_type = GrantPermissions.account_type'
                         . ' AND T1.grant_permission_id = GrantPermissions.id'
                         . ' AND T2.grant_role_id = T1.grant_role_id'
                         . ' AND T2.account_id = AdminAccounts.id'
                         . ' AND T2.account_type = T1.account_type'
-                        . ')'
+                        . ')',
                     ],
                 ],
                 'AccoutGrantExists' => [
@@ -118,8 +118,8 @@ final class Search
                         . ' WHERE T3.account_type = GrantPermissions.account_type'
                         . ' AND T3.grant_permission_id = GrantPermissions.id'
                         . ' AND T3.account_id = AdminAccounts.id'
-                        . ')'
-                    ]
+                        . ')',
+                    ],
                 ],
             ])
             ->where(array_filter(
@@ -145,13 +145,14 @@ final class Search
                             fn(GrantRoleId $vo): int => $vo->toInt(),
                             $condition->getGrantRoleIds(),
                         );
+
                         return $grantRoleIds !== []
                             ? function (QueryExpression $exp) use ($grantRoleIds): QueryExpression {
                                 return $exp->exists(
                                     (function () use ($grantRoleIds) {
                                         return $this->table->GrantAccountRoles->find()
                                             ->select([
-                                                '_exists' => '1'
+                                                '_exists' => '1',
                                             ])
                                             ->where([
                                                 // grant_account_roles_idx01 (account_type, account_id, grant_role_id) の列順

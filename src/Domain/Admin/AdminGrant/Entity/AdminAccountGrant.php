@@ -4,17 +4,18 @@ declare(strict_types=1);
 namespace App\Domain\Admin\AdminGrant\Entity;
 
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
+use DomainException;
 
 final class AdminAccountGrant
 {
     /**
-     * @param Vo\AdminAccountId $admin_account_id
-     * @param Vo\Email $email
-     * @param Vo\Name $name
-     * @param Vo\AdminNote $admin_note
-     * @param Vo\AccountStatusMasterId $account_status_master_id
-     * @param Vo\AccountStatusMasterCode $account_status_master_code
-     * @param Vo\AccountStatusMasterName $account_status_master_name
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId $admin_account_id
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Email $email
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\Name $name
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\AdminNote $admin_note
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId $account_status_master_id
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterCode $account_status_master_code
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterName $account_status_master_name
      * @param array $grant_account_roles<App\Domain\Admin\AdminGrant\Entity\GrantAccountRole>
      * @param array $grant_account_permissions<App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission>
      */
@@ -31,13 +32,13 @@ final class AdminAccountGrant
     ) {
         foreach ($this->grant_account_roles as $grant_role) {
             if (!$grant_role->hasAdminAccountId($this->admin_account_id)) {
-                throw new \DomainException('GrantAccountRole admin_account_id does not match AdminAccountId');
+                throw new DomainException('GrantAccountRole admin_account_id does not match AdminAccountId');
             }
         }
 
         foreach ($this->grant_account_permissions as $grant_account_permission) {
             if (!$grant_account_permission->hasAdminAccountId($this->admin_account_id)) {
-                throw new \DomainException('GrantAccountPermission admin_account_id does not match AdminAccountId');
+                throw new DomainException('GrantAccountPermission admin_account_id does not match AdminAccountId');
             }
         }
     }
@@ -50,7 +51,7 @@ final class AdminAccountGrant
     {
         foreach ($grant_account_roles as $grant_account_role) {
             if (!$grant_account_role->hasAdminAccountId($this->admin_account_id)) {
-                throw new \DomainException('GrantAccountRole admin_account_id does not match AdminAccountId');
+                throw new DomainException('GrantAccountRole admin_account_id does not match AdminAccountId');
             }
         }
 
@@ -68,7 +69,7 @@ final class AdminAccountGrant
     {
         foreach ($grant_account_permissions as $grant_account_permission) {
             if (!$grant_account_permission->hasAdminAccountId($this->admin_account_id)) {
-                throw new \DomainException('GrantAccountPermission admin_account_id does not match AdminAccountId');
+                throw new DomainException('GrantAccountPermission admin_account_id does not match AdminAccountId');
             }
         }
 
@@ -92,29 +93,28 @@ final class AdminAccountGrant
      */
     public function hasPermissionCode(Vo\Code $code): bool
     {
-        return array_filter($this->grant_account_permissions, function($grant_account_permission) use ($code) {
+        return array_filter($this->grant_account_permissions, function ($grant_account_permission) use ($code) {
             return $grant_account_permission->hasPermissionCode($code);
         }) !== []
         ||
-        array_filter($this->grant_account_roles, function($grant_account_role) use ($code) {
+        array_filter($this->grant_account_roles, function ($grant_account_role) use ($code) {
             return $grant_account_role->hasPermissionCode($code);
         }) !== [];
     }
 
     /**
-     * 
      * @param \App\Domain\Admin\AdminGrant\ValueObject\Code $code
      * @return array<string>
      */
     public function grantSettings(Vo\Code $code): array
     {
         return array_filter([
-            array_filter($this->grant_account_permissions, function($grant_account_permission) use ($code) {
+            array_filter($this->grant_account_permissions, function ($grant_account_permission) use ($code) {
                 return $grant_account_permission->hasPermissionCode($code);
-            }) !== [] ? 'アカウント付与': null,
+            }) !== [] ? 'アカウント付与' : null,
 
-            ...array_map(function($grant_account_role) use ($code) {
-                return $grant_account_role->hasPermissionCode($code) 
+            ...array_map(function ($grant_account_role) use ($code) {
+                return $grant_account_role->hasPermissionCode($code)
                     ? $grant_account_role->grantRole()->name()
                     : null;
             }, $this->grant_account_roles),

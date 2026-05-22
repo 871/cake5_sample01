@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant;
 
+use App\Domain\Admin\AdminGrant\Entity\GrantRole as DomainEntity;
 use App\Domain\Admin\AdminGrant\Repository\AdminGrantRoleRepository as DomainAdminGrantRoleRepository;
 use App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition;
-use App\Domain\Admin\AdminGrant\Entity\GrantRole as DomainEntity;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
-use App\Model\Entity\Grant\GrantRole as OrmEntity;
 use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
 

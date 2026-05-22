@@ -3,25 +3,24 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
 
-use App\Domain\Admin\AdminGrant\Entity  as De;
+use App\Domain\Admin\AdminGrant\Entity as De;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\Enum as SEn;
 use App\Domain\Shared\ValueObject as SVo;
-use App\Model\Table\Grant\GrantRolesTable;
+use App\Model\Entity\Admin\AdminAccount as OrmAdminAccount;
+use App\Model\Entity\Grant\GrantAccountRole as OrmGrantAccountRole;
+use App\Model\Entity\Grant\GrantPermission as OrmGrantPermission;
 use App\Model\Entity\Grant\GrantRole as OrmGrantRole;
 use App\Model\Entity\Grant\GrantRolePermission as OrmGrantRolePermission;
-use App\Model\Entity\Grant\GrantPermission as OrmGrantPermission;
-use App\Model\Entity\Grant\GrantAccountRole as OrmGrantAccountRole;
-use App\Model\Entity\Admin\AdminAccount as OrmAdminAccount;
-
-
+use App\Model\Table\Grant\GrantRolesTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use DateTimeInterface;
 
 final class Mapper
 {
     use LocatorAwareTrait;
 
-    const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
+    public const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
 
     /**
      * @var \App\Model\Table\Grant\GrantRolesTable
@@ -32,13 +31,13 @@ final class Mapper
      * Constructor.
      */
     public function __construct(
-        public readonly \DateTimeInterface $datetime,
+        public readonly DateTimeInterface $datetime,
     ) {
         $this->table = $this->fetchTable(GrantRolesTable::class);
     }
 
     public function toDomainGrantRole(
-        OrmGrantRole $ormGrantRole
+        OrmGrantRole $ormGrantRole,
     ): De\GrantRole {
         $domainGrantRole = new De\GrantRole(
             grant_role_id: new Vo\GrantRoleId((string)$ormGrantRole->id),
@@ -55,26 +54,26 @@ final class Mapper
 
         return $domainGrantRole->assignGrantAccountRoles(
             array_map(
-                function(OrmGrantAccountRole $grantAccountRole) use ($domainGrantRole) {
+                function (OrmGrantAccountRole $grantAccountRole) use ($domainGrantRole) {
                     return $this->toDomainGrantAccountRole($grantAccountRole, $domainGrantRole);
                 },
                 $ormGrantRole->grant_account_roles ?? [],
-            )
+            ),
         )->assignGrantRolePermissions(
-            (function() use ($ormGrantRole, $domainGrantRole): array {
+            (function () use ($ormGrantRole, $domainGrantRole): array {
                 $domainGrantRolePermissions = array_map(
-                    function(OrmGrantRolePermission $grantRolePermission) use ($domainGrantRole) {
+                    function (OrmGrantRolePermission $grantRolePermission) use ($domainGrantRole) {
                         return $this->toDomainGrantRolePermission($grantRolePermission, $domainGrantRole);
                     },
                     $ormGrantRole->grant_role_permissions ?? [],
                 );
 
-                uksort($domainGrantRolePermissions, function(De\GrantRolePermission $a, De\GrantRolePermission $b) {
+                uksort($domainGrantRolePermissions, function (De\GrantRolePermission $a, De\GrantRolePermission $b) {
                     return $a->grantPermission()->sort()->toInt() <=> $b->grantPermission()->sort()->toInt();
                 });
 
                 return $domainGrantRolePermissions;
-            })()
+            })(),
         );
     }
 
@@ -91,6 +90,7 @@ final class Mapper
             admin_account_grant: null,
             grant_role: $domainGrantRole,
         );
+
         return $grantAccountRole->assignAdminAccountGrant(
             $this->toDomainAdminAccountGrant($ormGrantAccountRole->admin_account, $grantAccountRole),
         );
@@ -146,7 +146,7 @@ final class Mapper
     }
 
     public function toNewOrmGrantRole(
-        De\GrantRole $domainGrantRole
+        De\GrantRole $domainGrantRole,
     ): OrmGrantRole {
         /** @var \App\Model\Entity\Grant\GrantRole */
         return $this->table->newEntity([

@@ -5,6 +5,7 @@ namespace App\Domain\Admin\AdminGrant\Entity;
 
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
+use DomainException;
 
 final class GrantRole
 {
@@ -34,13 +35,13 @@ final class GrantRole
     ) {
         foreach ($this->grant_account_roles as $grant_account_role) {
             if (!$grant_account_role->hasGrantRoleId($this->grant_role_id)) {
-                throw new \DomainException('GrantAccountRole grant_role_id does not match grant_role_id');
+                throw new DomainException('GrantAccountRole grant_role_id does not match grant_role_id');
             }
         }
 
         foreach ($this->grant_role_permissions as $grant_role_permission) {
             if (!$grant_role_permission->hasGrantRoleId($this->grant_role_id)) {
-                throw new \DomainException('GrantRolePermission grant_role_id does not match grant_role_id');
+                throw new DomainException('GrantRolePermission grant_role_id does not match grant_role_id');
             }
         }
     }
@@ -49,7 +50,7 @@ final class GrantRole
     {
         foreach ($grant_account_roles as $grant_account_role) {
             if (!$grant_account_role->hasGrantRoleId($this->grant_role_id)) {
-                throw new \DomainException('GrantAccountRole grant_role_id does not match grant_role_id');
+                throw new DomainException('GrantAccountRole grant_role_id does not match grant_role_id');
             }
         }
 
@@ -63,7 +64,7 @@ final class GrantRole
     {
         foreach ($grant_role_permissions as $grant_role_permission) {
             if (!$grant_role_permission->hasGrantRoleId($this->grant_role_id)) {
-                throw new \DomainException('GrantRolePermission grant_role_id does not match grant_role_id');
+                throw new DomainException('GrantRolePermission grant_role_id does not match grant_role_id');
             }
         }
 
@@ -90,7 +91,7 @@ final class GrantRole
     {
         return array_filter(
             $this->grant_role_permissions,
-            fn($grant_role_permission) => $grant_role_permission->hasPermissionCode($code)
+            fn($grant_role_permission) => $grant_role_permission->hasPermissionCode($code),
         ) !== [];
     }
 

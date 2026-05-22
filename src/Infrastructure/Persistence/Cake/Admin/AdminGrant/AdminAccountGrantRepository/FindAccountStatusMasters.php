@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 
-use App\Domain\Admin\AdminGrant\Entity\AccountStatusMaster as DomainEntity;
-use App\Domain\Admin\AdminGrant\ValueObject as Vo;
-use App\Model\Table\Shared\AccountStatusMastersTable;
 use App\Model\Entity\Shared\AccountStatusMaster as OrmEntity;
+use App\Model\Table\Shared\AccountStatusMastersTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 final class FindAccountStatusMasters
@@ -31,7 +29,7 @@ final class FindAccountStatusMasters
      */
     public function run(): array
     {
-        return array_map(function(OrmEntity $ormEntity) {
+        return array_map(function (OrmEntity $ormEntity) {
             return FromOrmToDomainMapper::toAccountStatusMaster($ormEntity);
         }, $this->table
             ->find()
@@ -40,7 +38,6 @@ final class FindAccountStatusMasters
                 'AccountStatusMasters.id' => 'ASC',
             ])
             ->all()
-            ->toArray()
-        );
+            ->toArray());
     }
 }
