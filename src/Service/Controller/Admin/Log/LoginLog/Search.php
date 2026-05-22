@@ -36,14 +36,14 @@ final class Search implements ServiceInterface
                 Vo\LoginResult::FAILURE,
             ],
             'failure_reason_code' => [
-                Vo\FailureReasonCode::LOGIN_ID_NOT_FOUND,
-                Vo\FailureReasonCode::INVALID_PASSWORD,
-                Vo\FailureReasonCode::PASSWORD_EXPIRED,
-                Vo\FailureReasonCode::LOGIN_FAIL_COUNT_OVER,
-                Vo\FailureReasonCode::ACCOUNT_LOCKED,
-                Vo\FailureReasonCode::ACCOUNT_SUSPENDED,
-                Vo\FailureReasonCode::ACCOUNT_DELETED,
-                Vo\FailureReasonCode::AUTHENTICATION_FAILED,
+                // Vo\FailureReasonCode::LOGIN_ID_NOT_FOUND,
+                // Vo\FailureReasonCode::INVALID_PASSWORD,
+                // Vo\FailureReasonCode::PASSWORD_EXPIRED,
+                // Vo\FailureReasonCode::LOGIN_FAIL_COUNT_OVER,
+                // Vo\FailureReasonCode::ACCOUNT_LOCKED,
+                // Vo\FailureReasonCode::ACCOUNT_SUSPENDED,
+                // Vo\FailureReasonCode::ACCOUNT_DELETED,
+                // Vo\FailureReasonCode::AUTHENTICATION_FAILED,
             ],
         ];
     }

@@ -140,7 +140,7 @@ final class Search
                         $condition->getGrantPermissionIds(),
                     ),
                     // ロール絞り込み（オプション）: grant_account_roles_idx01 (account_type, account_id, grant_role_id) を使用
-                    (function () {
+                    (function () use ($condition) {
                         $grantRoleIds = array_map(
                             fn(GrantRoleId $vo): int => $vo->toInt(),
                             $condition->getGrantRoleIds(),

@@ -3,16 +3,16 @@ use App\Domain\Mail\Entity\Mail;
 use App\Domain\Mail\ValueObject as Vo;
 use App\Domain\Mail\SearchCondition;
 
-/* @var \Cake\View\View $this */
-/* @var array<\App\Domain\Mail\Entity\Mail> $rows */
-/* @var bool $isPrevExists */
-/* @var bool $isNextExists */
-/* @var array<string> $errorMeesasges */
-/* @var array<string> $errorFields */
+/** @var \Cake\View\View $this */
+/** @var array<\App\Domain\Mail\Entity\Mail> $rows */
+/** @var bool $isPrevExists */
+/** @var bool $isNextExists */
+/** @var array<string> $errorMessages */
+/** @var array<string> $errorFields */
 ?>
 <!-- 検索フォーム -->
 <div class="card mb-3">
-<?php foreach ($errorMeesasges as $message) { ?>
+<?php foreach ($errorMessages as $message) { ?>
     <div class="alert alert-error-custom" onclick="this.style.display='none'">
         <?= h($message) ?>
     </div>

@@ -56,7 +56,7 @@ final class AdminAccountsTable extends Table
             'conditions' => [
             ],
             'sort' => [
-                'GrantAccountPermissions.sort' => 'ASC',
+                'GrantAccountPermissions.created' => 'DESC',
             ],
         ]);
 
