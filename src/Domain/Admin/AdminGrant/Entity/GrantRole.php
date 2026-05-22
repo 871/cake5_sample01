@@ -172,6 +172,13 @@ final class GrantRole
     }
 
     /**
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountRole>
+     */    public function grantAccountRoles(): array
+    {
+        return $this->grant_account_roles;
+    }
+
+    /**
      * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantRolePermission>
      */
     public function grantRolePermissions(): array

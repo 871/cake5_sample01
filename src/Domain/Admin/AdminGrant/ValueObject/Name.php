@@ -12,6 +12,8 @@ class Name implements Stringable
     use StringTrait;
 
     public const MAX_LENGTH = 100;
+    
+    public const ERROR_CODE_LENGTH = 1001;
 
     private ?string $value;
 
@@ -28,9 +30,10 @@ class Name implements Stringable
 
         if (mb_strlen($value) > self::MAX_LENGTH) {
             throw new DomainException(
-                self::class . ' value too long'
+                message: self::class . ' value too long'
                 . '[maxLength: ' . (string)self::MAX_LENGTH . ']'
                 . '[value: ' . mb_strimwidth($value, 0, 200, '...') . ']',
+                code: self::ERROR_CODE_LENGTH,
             );
         }
 

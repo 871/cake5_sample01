@@ -86,7 +86,7 @@ $selectedGrantPermissionIds = (array)$this->getRequest()->getQuery('grant_permis
                             <td><?= h((string)$row->name) ?></td>
                             <td><?= h((string)$row->sort) ?></td>
                             <td><?= (int)$row->is_active === 1 ? '<span class="badge bg-success">有効</span>' : '<span class="badge bg-secondary">無効</span>' ?></td>
-                            <td><?= h((string)$row->modified) ?></td>
+                            <td><?= h((string)$row->modified?->format('Y-m-d H:i:s')) ?></td>
                             <td class="text-nowrap">
                                 <a href="<?= $this->Url->build([
                                     'prefix' => 'Admin/AdminGrant/Role',

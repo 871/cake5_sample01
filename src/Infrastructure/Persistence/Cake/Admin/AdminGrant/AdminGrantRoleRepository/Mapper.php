@@ -75,7 +75,7 @@ final class Mapper
                 );
 
                 usort($domainGrantRolePermissions, function (De\GrantRolePermission $a, De\GrantRolePermission $b) {
-                    return $a->grantPermission()->sort()->toInt() <=> $b->grantPermission()->sort()->toInt();
+                    return $a->grantPermission()?->sort()->toInt() <=> $b->grantPermission()?->sort()->toInt();
                 });
 
                 return $domainGrantRolePermissions;
@@ -159,7 +159,9 @@ final class Mapper
             created: new SVo\Created($ormGrantRolePermission->created->format('Y-m-d\TH:i:s')),
             modified: new SVo\Modified($ormGrantRolePermission->modified->format('Y-m-d\TH:i:s')),
             grant_role: $domainGrantRole,
-            grant_permission: $this->toDomainGrantPermission($ormGrantRolePermission->grant_permission),
+            grant_permission: $ormGrantRolePermission->grant_permission
+                ? $this->toDomainGrantPermission($ormGrantRolePermission->grant_permission)
+                : null,
         );
     }
 

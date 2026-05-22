@@ -14,7 +14,7 @@
             <tr><th>有効状態</th><td><?= $entity->isActive()->toInt() === 1 ? '有効' : '無効' ?></td></tr>
         </table>
         <div class="mt-4">
-            <h5>紐づくアカウント情報</h5>
+            <h5>アカウント設定</h5>
             <table class="table table-bordered mb-0">
                 <thead class="table-light">
                     <tr>
@@ -25,37 +25,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if ($entity->grantAccountRoles() === []) { ?>
-                        <tr><td colspan="4" class="text-center text-muted">紐づくアカウントはありません</td></tr>
-                    <?php } else { ?>
-                        <?php foreach ($entity->grantAccountRoles() as $grantAccountRole) { ?>
-                            <?php $adminAccountGrant = $grantAccountRole->adminAccountGrant(); ?>
-                            <tr>
-                                <td><?= h($grantAccountRole->adminAccountId()->toString()) ?></td>
-                                <td><?= h($adminAccountGrant?->name()->toString() ?? '') ?></td>
-                                <td><?= h($adminAccountGrant?->email()->toString() ?? '') ?></td>
-                                <td><?= h($adminAccountGrant?->accountStatusMasterName()->toString() ?? '') ?></td>
-                            </tr>
-                        <?php } ?>
-                    <?php } ?>
+                <?php if ($entity->grantAccountRoles() === []) { ?>
+                    <tr><td colspan="4" class="text-center text-muted">紐づくアカウントはありません</td></tr>
+                <?php } ?>
+                <?php foreach ($entity->grantAccountRoles() as $grantAccountRole) { ?>
+                    <?php $adminAccountGrant = $grantAccountRole->adminAccountGrant(); ?>
+                    <tr>
+                        <td><?= h($grantAccountRole->adminAccountId()->toString()) ?></td>
+                        <td><?= h($adminAccountGrant?->name()->toString() ?? '') ?></td>
+                        <td><?= h($adminAccountGrant?->email()->toString() ?? '') ?></td>
+                        <td><?= h($adminAccountGrant?->accountStatusMasterName()->toString() ?? '') ?></td>
+                    </tr>
+                <?php } ?>
                 </tbody>
             </table>
         </div>
         <div class="mt-4">
-            <h5>紐づく権限情報</h5>
+            <h5>権限設定</h5>
             <table class="table table-bordered mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th style="width: 15%">権限ID</th>
-                        <th style="width: 25%">権限名</th>
+                        <th style="width: 100px;">権限ID</th>
+                        <th>権限コード</th>
+                        <th>権限名</th>
                         <th>説明</th>
-                        <th style="width: 15%">設定</th>
+                        <th style="width: 150px;">設定</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($grantPermissionOptions as $option) { ?>
                         <tr>
                             <td><?= h($option->grantPermissionId()->toString()) ?></td>
+                            <td><?= h($option->code()->toString()) ?></td>
                             <td><?= h($option->name()->toString()) ?></td>
                             <td><?= h($option->description()->toString()) ?></td>
                             <td><?= $entity->hasPermissionCode($option->code()) ? 'あり' : 'なし' ?></td>

@@ -23,6 +23,7 @@ use App\Service\Controller\Shared\Process\ProcessProvider;
 use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
+use Cake\Validation\Validator;
 use DomainException;
 
 final class Edit implements ServiceInterface
@@ -79,6 +80,7 @@ final class Edit implements ServiceInterface
                 '_errorMessages' => [],
                 '_errorFields' => [],
                 '_process_key' => UUID::uuid4(),
+                'modified' => $grantRole->modified()->format('Y-m-d\\TH:i:s'),
                 'grant_role_id' => $grantRole->grantRoleId()->toString(),
                 'code' => $grantRole->code()->toString(),
                 'name' => $grantRole->name()->toString(),
@@ -165,7 +167,6 @@ final class Edit implements ServiceInterface
             '_errorMessages' => [],
             '_errorFields' => [],
             '_process_key' => UUID::uuid4(),
-            'grant_role_id' => $this->request->getData('grant_role_id'),
             'code' => $this->request->getData('code'),
             'name' => $this->request->getData('name'),
             'description' => $this->request->getData('description'),
@@ -183,61 +184,39 @@ final class Edit implements ServiceInterface
     public function inputProcessValidation(): self
     {
         /** @var array<string, mixed> $input */
-        $input = $this->getInputProcess()->getProcessParams()->toArray();
-
-        /** @var array<string, array<string, string>> $errorInfos */
-        $errorInfos = [];
-
-        try {
-            new Vo\GrantRoleId(Cast::toStringOrNull($input['grant_role_id']));
-        } catch (DomainException) {
-            $errorInfos['grant_role_id'] = ['invalid' => __('ロールIDが不正です。')];
-        }
-
-        try {
-            new Vo\Code(Cast::toStringOrNull($input['code']));
-        } catch (DomainException) {
-            $errorInfos['code'] = ['invalid' => __('コードが不正です。')];
-        }
-
-        try {
-            new Vo\Name(Cast::toStringOrNull($input['name']));
-        } catch (DomainException) {
-            $errorInfos['name'] = ['invalid' => __('名称が不正です。')];
-        }
-
-        try {
-            new Vo\Description(Cast::toStringOrNull($input['description']));
-        } catch (DomainException) {
-            $errorInfos['description'] = ['invalid' => __('説明が不正です。')];
-        }
-
-        try {
-            new Vo\Sort(Cast::toStringOrNull($input['sort']) ?? '0');
-        } catch (DomainException) {
-            $errorInfos['sort'] = ['invalid' => __('並び順が不正です。')];
-        }
-
-        try {
-            new Vo\IsActive(Cast::toStringOrNull($input['is_active']) ?? '1');
-        } catch (DomainException) {
-            $errorInfos['is_active'] = ['invalid' => __('有効状態が不正です。')];
-        }
-
-        foreach ((array)$input['grant_permission_ids'] as $value) {
-            try {
-                new Vo\GrantPermissionId(Cast::toStringOrNull($value));
-            } catch (DomainException) {
-                $errorInfos['grant_permission_ids'] = ['invalid' => __('権限設定が不正です。')];
-                break;
-            }
-        }
-
+        $input = $this->getInputProcess()
+            ->getProcessParams()
+            ->toArray();
+        /** @var array<string, array<string, string|array<int|string, mixed>>> $errorInfos */
+        $errorInfos = $this->getValidator()
+            ->validate($input);
         if ($errorInfos !== []) {
             throw new ValidateException($errorInfos);
         }
 
         return $this;
+    }
+
+    /**
+     * @return \Cake\Validation\Validator
+     */
+    private function getValidator(): Validator
+    {
+        $validator = new Validator();
+        /** @var \App\Service\Controller\Admin\AdminGrant\Role\Shared\ValidatorSetting $validatorSetting */
+        $validatorSetting = $this->createService(Shared\ValidatorSetting::class);
+        $validatorSetting
+            ->id($validator)
+            ->modified($validator)
+            ->code($validator)
+            ->name($validator)
+            ->description($validator)
+            ->sort($validator)
+            ->isActive($validator)
+            ->grantPermissionIds($validator)
+            ;
+
+        return $validator;
     }
 
     /**
@@ -259,8 +238,8 @@ final class Edit implements ServiceInterface
             description: new Vo\Description(Cast::toStringOrNull($input['description'])),
             sort: new Vo\Sort(Cast::toStringOrNull($input['sort']) ?? '0'),
             is_active: new Vo\IsActive(Cast::toStringOrNull($input['is_active']) ?? '1'),
-            created: new Created($current->created()->format('Y-m-d\\TH:i:s')),
-            modified: new Modified($now),
+            created: new Created($current->created()->format('Y-m-d\TH:i:s')),
+            modified: new Modified($current->modified()->format('Y-m-d\TH:i:s')),
             grant_account_roles: [],
             grant_role_permissions: array_map(
                 fn($grantPermissionId) => new GrantRolePermission(

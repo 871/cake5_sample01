@@ -101,9 +101,9 @@ final class GrantRolePermission
     }
 
     /**
-     * @return \App\Domain\Admin\AdminGrant\Entity\GrantPermission
+     * @return ?\App\Domain\Admin\AdminGrant\Entity\GrantPermission
      */
-    public function grantPermission(): GrantPermission
+    public function grantPermission(): ?GrantPermission
     {
         return $this->grant_permission;
     }
