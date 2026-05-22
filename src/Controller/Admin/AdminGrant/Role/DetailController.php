@@ -39,6 +39,7 @@ class DetailController extends AppController
     {
         $this->set([
             'entity' => $this->ctlService->getDomainEntity(),
+            'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
         ]);
 
         return $this->render('/Admin/AdminGrant/Role/detail');

@@ -1,11 +1,15 @@
 <?php
 /** @var iterable<\App\Model\Entity\Grant\GrantRole> $rows */
+/** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission> $grantPermissionOptions */
 
 $pageOptions = [
     'url' => [
         'account_id' => $this->getRequest()->getParam('account_id'),
     ],
 ];
+
+$selectedIsActives = (array)$this->getRequest()->getQuery('is_active', ['1']);
+$selectedGrantPermissionIds = (array)$this->getRequest()->getQuery('grant_permission_id', []);
 ?>
 <div class="card mb-3">
     <div class="card-header bg-secondary text-white">ロール権限検索</div>
@@ -17,10 +21,36 @@ $pageOptions = [
             </div>
             <div class="col-md-3">
                 <label class="form-label">有効状態</label>
-                <select name="is_active" class="form-select">
-                    <?php $isActive = (string)$this->getRequest()->getQuery('is_active', '1'); ?>
-                    <option value="1" <?= $isActive === '1' ? 'selected' : '' ?>>有効</option>
-                    <option value="0" <?= $isActive === '0' ? 'selected' : '' ?>>無効</option>
+                <div class="form-control">
+                    <label class="form-check-label me-3">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="is_active[]"
+                            value="1"
+                            <?= in_array('1', $selectedIsActives, true) ? 'checked' : '' ?>
+                        >有効
+                    </label>
+                    <label class="form-check-label">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="is_active[]"
+                            value="0"
+                            <?= in_array('0', $selectedIsActives, true) ? 'checked' : '' ?>
+                        >無効
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">権限</label>
+                <select name="grant_permission_id[]" class="form-select" multiple size="4">
+                    <?php foreach ($grantPermissionOptions as $option) { ?>
+                        <option
+                            value="<?= h($option->grantPermissionId()->toString()) ?>"
+                            <?= in_array($option->grantPermissionId()->toString(), $selectedGrantPermissionIds, true) ? 'selected' : '' ?>
+                        ><?= h($option->name()->toString()) ?></option>
+                    <?php } ?>
                 </select>
             </div>
             <div class="col-md-2 d-flex align-items-end">
@@ -74,17 +104,21 @@ $pageOptions = [
                                     'grant_role_id' => $row->id,
                                     '?' => $this->getRequest()->getQuery(),
                                 ]) ?>" class="btn btn-primary btn-sm">更新</a>
-                                <?= $this->Form->postLink('削除', [
-                                    'prefix' => 'Admin/AdminGrant/Role',
-                                    'controller' => 'Delete',
-                                    'action' => 'index',
-                                    'account_id' => $this->getRequest()->getParam('account_id'),
-                                    'grant_role_id' => $row->id,
-                                    '?' => $this->getRequest()->getQuery(),
-                                ], [
-                                    'class' => 'btn btn-danger btn-sm',
-                                    'confirm' => '削除しますか？',
-                                ]) ?>
+                                <?php if (count($row->grant_account_roles ?? []) > 0) { ?>
+                                   <a class="btn btn-danger btn-sm disabled" aria-disabled="true" tabindex="-1">削除</a>
+                                <?php } else { ?>
+                                   <?= $this->Form->postLink('削除', [
+                                       'prefix' => 'Admin/AdminGrant/Role',
+                                       'controller' => 'Delete',
+                                       'action' => 'index',
+                                       'account_id' => $this->getRequest()->getParam('account_id'),
+                                       'grant_role_id' => $row->id,
+                                       '?' => $this->getRequest()->getQuery(),
+                                   ], [
+                                       'class' => 'btn btn-danger btn-sm',
+                                       'confirm' => '削除しますか？',
+                                   ]) ?>
+                                <?php } ?>
                             </td>
                         </tr>
                     <?php } ?>

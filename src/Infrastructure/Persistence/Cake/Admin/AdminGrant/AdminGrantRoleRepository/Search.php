@@ -46,12 +46,36 @@ final class Search
             ->find()
             ->where([
                 'GrantRoles.account_type' => self::ACCOUNT_TYPE,
-                'GrantRoles.is_active' => $condition->getIsActive()->toInt(),
             ])
             ->orderBy([
                 'GrantRoles.sort' => 'ASC',
                 'GrantRoles.id' => 'ASC',
             ]);
+
+        $isActives = array_map(
+            fn($isActive) => $isActive->toInt(),
+            $condition->getIsActives(),
+        );
+        if ($isActives !== []) {
+            $query->where([
+                'GrantRoles.is_active IN' => $isActives,
+            ]);
+        }
+
+        $grantPermissionIds = array_map(
+            fn($grantPermissionId) => $grantPermissionId->toInt(),
+            $condition->getGrantPermissionIds(),
+        );
+        if ($grantPermissionIds !== []) {
+            $query
+                ->matching('GrantRolePermissions', function ($query) use ($grantPermissionIds) {
+                    return $query->where([
+                        'GrantRolePermissions.account_type' => self::ACCOUNT_TYPE,
+                        'GrantRolePermissions.grant_permission_id IN' => $grantPermissionIds,
+                    ]);
+                })
+                ->distinct(['GrantRoles.id']);
+        }
 
         if ($condition->getSearchText()->toString() !== '') {
             $query->where(new QueryExpression(

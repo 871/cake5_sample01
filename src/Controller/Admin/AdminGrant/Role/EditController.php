@@ -71,6 +71,7 @@ class EditController extends AppController
         $this->set([
             'input' => $this->ctlService->getInputProcess(),
             'isEdit' => true,
+            'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
         ]);
 
         return $this->render('/Admin/AdminGrant/Role/input');
@@ -112,6 +113,7 @@ class EditController extends AppController
         $this->set([
             'input' => $this->ctlService->getInputProcess(),
             'isEdit' => true,
+            'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
         ]);
 
         return $this->render('/Admin/AdminGrant/Role/conf');

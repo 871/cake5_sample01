@@ -25,7 +25,10 @@ final class AdminGrant implements ServiceInterface
         return (new AdminGrantRoleRepository($this->datetime))->search(
             condition: new SearchAdminGrantRoleCondition(
                 searchText: new SVo\SearchText(null),
-                isActive: new Vo\IsActive('1'),
+                isActives: [
+                    new Vo\IsActive('1'),
+                ],
+                grantPermissionIds: [],
             ),
         );
     }
@@ -41,6 +44,34 @@ final class AdminGrant implements ServiceInterface
                 isActive: new Vo\IsActive('1'),
             ),
         );
+    }
+
+    /**
+     * @return array<int, array<string, string>>
+     */
+    public function getAllGrantPermissionOptions(): array
+    {
+        $grantPermissions = [
+            ...(new AdminGrantPermissionRepository($this->datetime))->search(
+                condition: new SearchAdminGrantPermissionCondition(
+                    searchText: new SVo\SearchText(null),
+                    isActive: new Vo\IsActive('1'),
+                ),
+            ),
+            ...(new AdminGrantPermissionRepository($this->datetime))->search(
+                condition: new SearchAdminGrantPermissionCondition(
+                    searchText: new SVo\SearchText(null),
+                    isActive: new Vo\IsActive('0'),
+                ),
+            ),
+        ];
+
+        usort($grantPermissions, static function ($a, $b): int {
+            return $a->sort()->toInt() <=> $b->sort()->toInt()
+                ?: $a->grantPermissionId()->toInt() <=> $b->grantPermissionId()->toInt();
+        });
+
+        return $grantPermissions;
     }
 
     /**
