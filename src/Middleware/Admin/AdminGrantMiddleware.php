@@ -43,6 +43,13 @@ class AdminGrantMiddleware implements MiddlewareInterface
         return (new Response())->withLocation('/v1/ad/' . rawurlencode($accountId));
     }
 
+    /**
+     * ページアクセス権限を判定する
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param string $accountId
+     * @return bool
+     */
     private function hasPageAccessPermission(ServerRequestInterface $request, string $accountId): bool
     {
         // TODO 未実装

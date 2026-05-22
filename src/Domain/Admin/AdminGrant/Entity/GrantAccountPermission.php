@@ -40,6 +40,12 @@ final class GrantAccountPermission
         }
     }
 
+    /**
+     * 関連する管理者権限を設定する
+     *
+     * @param \App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant $admin_account_grant
+     * @return self
+     */
     public function assignAdminAccountGrant(AdminAccountGrant $admin_account_grant): self
     {
         if (!$admin_account_grant->hasAdminAccountId($this->admin_account_id)) {
@@ -52,6 +58,12 @@ final class GrantAccountPermission
         return $ther;
     }
 
+    /**
+     * 関連する権限情報を設定する
+     *
+     * @param \App\Domain\Admin\AdminGrant\Entity\GrantPermission $grant_permission
+     * @return self
+     */
     public function assignGrantPermission(GrantPermission $grant_permission): self
     {
         if (!$grant_permission->hasGrantPermissionId($this->grant_permission_id)) {

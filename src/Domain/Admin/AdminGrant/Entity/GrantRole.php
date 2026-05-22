@@ -46,6 +46,12 @@ final class GrantRole
         }
     }
 
+    /**
+     * 関連する付与ロールを設定する
+     *
+     * @param array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountRole> $grant_account_roles
+     * @return self
+     */
     public function assignGrantAccountRoles(array $grant_account_roles): self
     {
         foreach ($grant_account_roles as $grant_account_role) {
@@ -60,6 +66,12 @@ final class GrantRole
         return $ther;
     }
 
+    /**
+     * 関連するロール権限を設定する
+     *
+     * @param array<\App\Domain\Admin\AdminGrant\Entity\GrantRolePermission> $grant_role_permissions
+     * @return self
+     */
     public function assignGrantRolePermissions(array $grant_role_permissions): self
     {
         foreach ($grant_role_permissions as $grant_role_permission) {

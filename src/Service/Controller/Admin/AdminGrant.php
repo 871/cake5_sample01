@@ -10,39 +10,18 @@ use App\Domain\Shared\ValueObject as SVo;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantPermissionRepository;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
-use App\Model\Table\Grant\GrantRolesTable;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
-use Cake\ORM\Locator\LocatorAwareTrait;
 
 final class AdminGrant implements ServiceInterface
 {
     use ServiceTrait;
-    use LocatorAwareTrait;
 
     /**
      * @return array<int, array<string, string>>
      */
     public function getGrantRoleOptions(): array
     {
-        /** @var \App\Model\Table\Grant\GrantRolesTable $table */
-        $table = $this->fetchTable(GrantRolesTable::class);
-        /*
-        return $table->find()
-            ->select(['id', 'name'])
-            ->where([
-                'account_type' => 'ADMIN',
-                'is_active' => 1,
-            ])
-            ->orderBy(['sort' => 'ASC', 'id' => 'ASC'])
-            ->all()
-            ->map(fn(GrantRole $e): array => [
-                'value' => (string)$e->id,
-                'label' => (string)$e->name,
-            ])
-            ->toList();
-            */
-
         return (new AdminGrantRoleRepository($this->datetime))->search(
             condition: new SearchAdminGrantRoleCondition(
                 searchText: new SVo\SearchText(null),

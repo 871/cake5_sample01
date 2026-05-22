@@ -69,11 +69,15 @@ final class Update
                             'is_active' => $domainGrantRole->isActive()->toInt(),
                             'modified' => $domainGrantRole->modified()->format('Y-m-d\TH:i:s'),
                             'grant_role_permissions' => array_map(
-                                function (De\GrantRolePermission $domainGrantRolePermission) use ($domainGrantRole) {
+                                function (
+                                    De\GrantRolePermission $domainGrantRolePermission
+                                ) use ($domainGrantRole) {
                                     return [
                                         'account_type' => self::ACCOUNT_TYPE,
                                         'grant_role_id' => $domainGrantRolePermission->grantRoleId()->toString(),
-                                        'grant_permission_id' => $domainGrantRolePermission->grantPermissionId()->toString(),
+                                        'grant_permission_id' => $domainGrantRolePermission
+                                            ->grantPermissionId()
+                                            ->toString(),
                                         'created' => $domainGrantRolePermission->created()->format('Y-m-d\TH:i:s'),
                                         'modified' => $domainGrantRolePermission->modified()->format('Y-m-d\TH:i:s'),
                                     ];

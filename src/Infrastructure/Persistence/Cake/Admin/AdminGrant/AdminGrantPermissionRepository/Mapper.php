@@ -18,6 +18,12 @@ final class Mapper
         // 処理なし
     }
 
+    /**
+     * ORMエンティティから権限エンティティへ変換する
+     *
+     * @param \App\Model\Entity\Grant\GrantPermission $ormGrantPermission
+     * @return \App\Domain\Admin\AdminGrant\Entity\GrantPermission
+     */
     public static function toDomainGrantPermission(
         OrmEntityGrantPermission $ormGrantPermission,
     ): DomainEntityGrantPermission {
