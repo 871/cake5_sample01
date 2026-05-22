@@ -10,6 +10,15 @@
         管理者権限詳細
         （
         管理者ID：<span class="badge bg-light text-dark"><?= h($adminAccountGrant->adminAccountId()) ?></span>
+        ステータス：
+        <?= match($adminAccountGrant->accountStatusMasterCode()->toString()) {
+            'PENDING' => '<span class="badge bg-primary">' . h($adminAccountGrant->accountStatusMasterName()) . '</span>',
+            'ACTIVE' => '<span class="badge bg-success">' . h($adminAccountGrant->accountStatusMasterName()) . '</span>',
+            'SUSPENDED' => '<span class="badge bg-warning">' . h($adminAccountGrant->accountStatusMasterName()) . '</span>',
+            'LOCKED' => '<span class="badge bg-danger">' . h($adminAccountGrant->accountStatusMasterName()) . '</span>',
+            'DELETED' => '<span class="badge bg-secondary">' . h($adminAccountGrant->accountStatusMasterName()) . '</span>',
+            default => '<span class="badge bg-secondary">' . h($adminAccountGrant->accountStatusMasterName()) . '</span>',
+        } ?>  
         管理者名：<span class="badge bg-light text-dark"><?= h($adminAccountGrant->name()) ?></span>
         メールアドレス：<span class="badge bg-light text-dark"><?= h($adminAccountGrant->email()) ?></span>
         ）

@@ -113,7 +113,7 @@ $pageOptions = [
                                     'LOCKED' => '<span class="badge bg-danger">' . h($row->account_status_master_name) . '</span>',
                                     'DELETED' => '<span class="badge bg-secondary">' . h($row->account_status_master_name) . '</span>',
                                     default => '<span class="badge bg-secondary">' . h($row->account_status_master_name) . '</span>',
-                                } ?>                            
+                                } ?>
                             </td>
                             <td>
                                 <?= h((string)$row->name) ?>
