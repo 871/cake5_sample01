@@ -1,3 +1,7 @@
+<?php
+
+/** @var \App\Service\Controller\Shared\Process\Process\InputProcess $input */
+?>
 <!-- Breadcrumb -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb mb-3">
@@ -42,7 +46,28 @@
                 '?' => $this->getRequest()->getQuery(),
             ]) ?>">更新</a>
         </li>
-        
+    <?php endif ?>
+    <?php if ($this->getRequest()->getParam('process_id')): ?>
+        <li class="breadcrumb-item">
+            <a href="<?= $this->Url->build([
+                'prefix' => 'Admin/AdminGrant',
+                'controller' => 'Detail',
+                'action' => 'index',
+                'account_id' => $this->getRequest()->getParam('account_id'),
+                'admin_account_id' => $input->getInput('admin_account_id'),
+                '?' => $this->getRequest()->getQuery(),
+            ]) ?>">詳細</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="<?= $this->Url->build([
+                'prefix' => 'Admin/AdminGrant',
+                'controller' => 'Edit',
+                'action' => 'input',
+                'account_id' => $this->getRequest()->getParam('account_id'),
+                'process_id' => $this->getRequest()->getParam('process_id'),
+                '?' => $this->getRequest()->getQuery(),
+            ]) ?>">更新</a>
+        </li>
     <?php endif ?>
     </ol>
 </nav>
