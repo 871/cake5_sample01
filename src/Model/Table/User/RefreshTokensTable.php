@@ -8,6 +8,14 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
+/**
+ * RefreshTokens Model
+ *
+ * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\User\UserAccountsTable> $UserAccounts
+ * @method \App\Model\Entity\User\RefreshToken newEmptyEntity()
+ * @method \App\Model\Entity\User\RefreshToken newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method list<\App\Model\Entity\User\RefreshToken> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
+ */
 final class RefreshTokensTable extends Table
 {
     /**

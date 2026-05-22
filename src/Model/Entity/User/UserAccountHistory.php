@@ -6,6 +6,8 @@ namespace App\Model\Entity\User;
 use Cake\ORM\Entity;
 
 /**
+ * UserAccountHistory Entity
+ *
  * @property string $id
  * @property int $user_account_id
  * @property string $email
@@ -16,7 +18,11 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\DateTime $password_changed_at
  * @property \Cake\I18n\DateTime $password_expires_at
  * @property \Cake\I18n\DateTime $created
+ * @property int|null $created_by
+ * @property string|null $created_ip
  * @property \Cake\I18n\DateTime $modified
+ * @property int|null $modified_by
+ * @property string|null $modified_ip
  * @property string $operation_type
  * @property \Cake\I18n\DateTime $history_created
  *
@@ -39,7 +45,11 @@ class UserAccountHistory extends Entity
         'password_changed_at' => true,
         'password_expires_at' => true,
         'created' => true,
+        'created_by' => true,
+        'created_ip' => true,
         'modified' => true,
+        'modified_by' => true,
+        'modified_ip' => true,
         'operation_type' => true,
         'history_created' => true,
         'user_account' => true,

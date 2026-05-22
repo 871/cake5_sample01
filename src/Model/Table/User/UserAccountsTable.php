@@ -9,6 +9,16 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
+/**
+ * UserAccounts Model
+ *
+ * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Shared\AccountStatusMastersTable> $AccountStatusMasters
+ * @property \Cake\ORM\Association\HasMany<\App\Model\Table\User\UserAccountHistoriesTable> $UserAccountHistories
+ * @property \Cake\ORM\Association\HasMany<\App\Model\Table\User\RefreshTokensTable> $RefreshTokens
+ * @method \App\Model\Entity\User\UserAccount newEmptyEntity()
+ * @method \App\Model\Entity\User\UserAccount newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
+ * @method list<\App\Model\Entity\User\UserAccount> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
+ */
 final class UserAccountsTable extends Table
 {
     /**
