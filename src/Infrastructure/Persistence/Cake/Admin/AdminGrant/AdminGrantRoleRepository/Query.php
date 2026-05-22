@@ -6,17 +6,16 @@ namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRep
 use App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition;
 use App\Domain\Shared\Enum as SEn;
 use App\Model\Table\Grant\GrantRolesTable;
-use App\Model\Entity\Grant\GrantRole as OrmEntityGrantRole;
-use App\Domain\Admin\AdminGrant\Entity\GrantRole as DomainEntityGrantRole;
-use Cake\ORM\Query\SelectQuery;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Query\SelectQuery;
+use DateTimeInterface;
 
 final class Query
 {
     use LocatorAwareTrait;
 
-    const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
+    public const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
 
     /**
      * @var \App\Model\Table\Grant\GrantRolesTable
@@ -27,7 +26,7 @@ final class Query
      * @param \App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition $condition
      */
     public function __construct(
-        private readonly \DateTimeInterface $datetime,
+        private readonly DateTimeInterface $datetime,
     ) {
         $this->table = $this->fetchTable(GrantRolesTable::class);
     }

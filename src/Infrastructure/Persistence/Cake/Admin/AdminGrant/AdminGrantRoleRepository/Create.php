@@ -3,16 +3,17 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
 
+use App\Domain\Admin\AdminGrant\Entity\GrantRole as DomainEntity;
 use App\Domain\Shared\Enum as SEn;
 use App\Model\Table\Grant\GrantRolesTable;
-use App\Domain\Admin\AdminGrant\Entity\GrantRole as DomainEntity;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use DateTimeInterface;
 
 final class Create
 {
     use LocatorAwareTrait;
 
-    const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
+    public const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
 
     /**
      * @var \App\Model\Table\Grant\GrantRolesTable
@@ -28,7 +29,7 @@ final class Create
      * @param \DateTimeInterface $datetime
      */
     public function __construct(
-        private readonly \DateTimeInterface $datetime,
+        private readonly DateTimeInterface $datetime,
     ) {
         $this->table = $this->fetchTable(GrantRolesTable::class);
         $this->mapper = new Mapper($this->datetime);

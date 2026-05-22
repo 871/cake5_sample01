@@ -36,13 +36,13 @@ final class Search implements ServiceInterface
             adminAccountIds: $this->request->getQuery('admin_account_id') ? [
                 new AdminAccountId(Cast::toStringOrNull($this->request->getQuery('admin_account_id'))),
             ] : [],
-            accountStatusMasterIds: array_map(function($val) {
+            accountStatusMasterIds: array_map(function ($val) {
                 return new AccountStatusMasterId(Cast::toStringOrNull($val));
             }, (array)$this->request->getQuery('account_status_master_id', [])),
-            grantRoleIds: array_map(function($val) {
+            grantRoleIds: array_map(function ($val) {
                 return new GrantRoleId(Cast::toStringOrNull($val));
             }, (array)$this->request->getQuery('grant_role_id', [])),
-            grantPermissionIds: array_map(function($val) {
+            grantPermissionIds: array_map(function ($val) {
                 return new GrantPermissionId(Cast::toStringOrNull($val));
             }, (array)$this->request->getQuery('grant_permission_id', [])),
         ));

@@ -8,10 +8,9 @@ use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 final class AccountStatusMaster
 {
     /**
-     * 
-     * @param Vo\AccountStatusMasterId $account_status_master_id
-     * @param Vo\AccountStatusMasterCode $account_status_master_code
-     * @param Vo\AccountStatusMasterName $account_status_master_name
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId $account_status_master_id
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterCode $account_status_master_code
+     * @param \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterName $account_status_master_name
      */
     public function __construct(
         private readonly Vo\AccountStatusMasterId $account_status_master_id,

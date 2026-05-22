@@ -27,7 +27,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Shared\AccountStatusMaster $account_status_master
  * @property \App\Model\Entity\Admin\AdminAccountHistory[] $admin_account_histories
  * @property \App\Model\Entity\Grant\GrantAccountPermission[] $grant_account_permissions
- * @property \App\Model\Entity\Grant\GrantAccountRole[] $grant_account_roles     
+ * @property \App\Model\Entity\Grant\GrantAccountRole[] $grant_account_roles
  */
 class AdminAccount extends Entity
 {

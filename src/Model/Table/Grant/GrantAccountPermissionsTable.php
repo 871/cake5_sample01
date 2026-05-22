@@ -36,7 +36,7 @@ final class GrantAccountPermissionsTable extends Table
             'className' => AdminAccountsTable::class,
             'foreignKey' => 'account_id',
             'conditions' => [
-                'GrantAccountPermissions.account_type' => 'ADMIN'
+                'GrantAccountPermissions.account_type' => 'ADMIN',
             ],
             'joinType' => 'INNER',
         ]);

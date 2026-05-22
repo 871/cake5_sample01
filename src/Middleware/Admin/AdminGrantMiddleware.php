@@ -3,14 +3,8 @@ declare(strict_types=1);
 
 namespace App\Middleware\Admin;
 
-use App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId;
-use App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId;
-use App\Infrastructure\Persistence\Cake\Admin\AdminGrantMapper;
-use App\Infrastructure\Persistence\Cake\Admin\AdminGrantRepository;
-use App\Model\Table\Grant\GrantPermissionsTable;
 use Cake\Http\Response;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use DateTimeImmutable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -20,7 +14,7 @@ class AdminGrantMiddleware implements MiddlewareInterface
 {
     use LocatorAwareTrait;
 
-    const ACCOUNT_TYPE = 'ADMIN';
+    public const ACCOUNT_TYPE = 'ADMIN';
 
     /**
      * @param \Psr\Http\Message\ServerRequestInterface $request

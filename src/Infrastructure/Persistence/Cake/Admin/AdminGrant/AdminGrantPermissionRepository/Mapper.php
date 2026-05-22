@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantPermissionRepository;
 
-use App\Model\Entity\Grant\GrantPermission as OrmEntityGrantPermission;
-use App\Domain\Admin\AdminGrant\Entity\GrantPermission  as DomainEntityGrantPermission;
+use App\Domain\Admin\AdminGrant\Entity\GrantPermission as DomainEntityGrantPermission;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
+use App\Model\Entity\Grant\GrantPermission as OrmEntityGrantPermission;
 
 final class Mapper
 {
@@ -19,7 +19,7 @@ final class Mapper
     }
 
     public static function toDomainGrantPermission(
-        OrmEntityGrantPermission $ormGrantPermission
+        OrmEntityGrantPermission $ormGrantPermission,
     ): DomainEntityGrantPermission {
         return new DomainEntityGrantPermission(
             grant_permission_id: new Vo\GrantPermissionId((string)$ormGrantPermission->id),

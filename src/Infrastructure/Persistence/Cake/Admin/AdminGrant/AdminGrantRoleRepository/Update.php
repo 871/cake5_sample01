@@ -3,19 +3,20 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
 
-use App\Domain\Shared\Enum as SEn;
-use App\Domain\Exception\RepositoryException;
-use App\Model\Table\Grant\GrantRolesTable;
-use App\Model\Entity\Grant\GrantRole as OrmGrantRole;
 use App\Domain\Admin\AdminGrant\Entity as De;
-use Cake\ORM\Locator\LocatorAwareTrait;
+use App\Domain\Exception\RepositoryException;
+use App\Domain\Shared\Enum as SEn;
+use App\Model\Entity\Grant\GrantRole as OrmGrantRole;
+use App\Model\Table\Grant\GrantRolesTable;
 use Cake\ORM\Exception\PersistenceFailedException;
+use Cake\ORM\Locator\LocatorAwareTrait;
+use DateTimeInterface;
 
 final class Update
 {
     use LocatorAwareTrait;
 
-    const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
+    public const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
 
     /**
      * @var \App\Model\Table\Grant\GrantRolesTable
@@ -31,7 +32,7 @@ final class Update
      * @param \DateTimeInterface $datetime
      */
     public function __construct(
-        private readonly \DateTimeInterface $datetime,
+        private readonly DateTimeInterface $datetime,
     ) {
         $this->table = $this->fetchTable(GrantRolesTable::class);
         $this->mapper = new Mapper($this->datetime);
@@ -46,23 +47,24 @@ final class Update
         try {
             /** @var \App\Model\Entity\Grant\GrantRole $ormEntity */
             $ormEntity = $this->table->getConnection()->transactional(
-                function() use ($domainGrantRole): OrmGrantRole {
+                function () use ($domainGrantRole): OrmGrantRole {
                     // テーブルロック
                     $savedEntity = $this->table->find()
                         ->contain([
                             // Memo: Acount側の情報はここでは更新しない
                             'GrantRolePermissions',
                         ])->where([
-                            'id' => $domainGrantRole->grantRoleId()->toString()
+                            'id' => $domainGrantRole->grantRoleId()->toString(),
                         ])
                         ->epilog('FOR UPDATE')
                         ->firstOrFail();
 
                     $this->table->patchEntity(
-                        $savedEntity, [
+                        $savedEntity,
+                        [
                             'modified' => $domainGrantRole->modified()->format('Y-m-d\TH:i:s'),
                             'grrant_role_permissions' => array_map(
-                                function(De\GrantRolePermission $domainGrantRolePermission) use ($domainGrantRole) {
+                                function (De\GrantRolePermission $domainGrantRolePermission) use ($domainGrantRole) {
                                     return [
                                         'account_type' => self::ACCOUNT_TYPE,
                                         'grant_role_id' => $domainGrantRolePermission->grantRoleId()->toString(),
@@ -83,7 +85,7 @@ final class Update
                     $this->table->saveOrFail($savedEntity, [
                         'checkExisting' => false,
                         'associated' => [
-                            'GrantRolePermissions'
+                            'GrantRolePermissions',
                         ],
                     ]);
 

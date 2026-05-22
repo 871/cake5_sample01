@@ -17,6 +17,6 @@ class AdminNote implements Stringable
      */
     public function __construct(?string $value)
     {
-        $this->value = ($value === null || $value === '') ? null : $value;
+        $this->value = $value === null || $value === '' ? null : $value;
     }
 }

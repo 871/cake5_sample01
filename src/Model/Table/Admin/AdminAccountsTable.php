@@ -4,10 +4,9 @@ declare(strict_types=1);
 namespace App\Model\Table\Admin;
 
 use App\Model\Entity\Admin\AdminAccount;
-use App\Model\Table\Shared\AccountStatusMastersTable;
-use App\Model\Table\Admin\AdminAccountHistoriesTable;
 use App\Model\Table\Grant\GrantAccountPermissionsTable;
 use App\Model\Table\Grant\GrantAccountRolesTable;
+use App\Model\Table\Shared\AccountStatusMastersTable;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;

@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
 
-use App\Model\Table\Grant\GrantRolesTable;
 use App\Domain\Admin\AdminGrant\Entity\GrantRole as DomainEntity;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
+use App\Model\Table\Grant\GrantRolesTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use DateTimeInterface;
 
 final class Detail
 {
@@ -26,7 +27,7 @@ final class Detail
      * @param \DateTimeInterface $datetime
      */
     public function __construct(
-        private readonly \DateTimeInterface $datetime,
+        private readonly DateTimeInterface $datetime,
     ) {
         $this->table = $this->fetchTable(GrantRolesTable::class);
         $this->mapper = new Mapper($this->datetime);

@@ -17,7 +17,7 @@ class AdminGrantHelper extends Helper
     use LocatorAwareTrait;
 
     /**
-     * @param int|string $permissionId
+     * @param string|int $permissionId
      * @return bool
      */
     public function hasPermission(int|string $permissionId): bool

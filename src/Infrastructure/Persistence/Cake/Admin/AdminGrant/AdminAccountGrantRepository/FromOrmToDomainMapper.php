@@ -3,22 +3,22 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 
-use App\Model\Entity\Admin\AdminAccount as OrmEntityAdminAccount;
-use App\Model\Entity\Grant\GrantAccountRole as OrmEntityGrantAccountRole;
-use App\Model\Entity\Grant\GrantRole as OrmEntityGrantRole;
-use App\Model\Entity\Grant\GrantRolePermission as OrmEntityGrantRolePermission;
-use App\Model\Entity\Grant\GrantAccountPermission as OrmEntityGrantAccountPermission;
-use App\Model\Entity\Grant\GrantPermission as OrmEntityGrantPermission;
-use App\Model\Entity\Shared\AccountStatusMaster as OrmAccountStatusMaster;
+use App\Domain\Admin\AdminGrant\Entity\AccountStatusMaster as DomainAccountStatusMaster;
 use App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant as DomainEntityAdminAccountGrant;
+use App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission as DomainEntityGrantAccountPermission;
 use App\Domain\Admin\AdminGrant\Entity\GrantAccountRole as DomainEntityGrantAccountRole;
+use App\Domain\Admin\AdminGrant\Entity\GrantPermission as DomainEntityGrantPermission;
 use App\Domain\Admin\AdminGrant\Entity\GrantRole as DomainEntityGrantRole;
 use App\Domain\Admin\AdminGrant\Entity\GrantRolePermission as DomainEntityGrantRolePermission;
-use App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission  as DomainEntityGrantAccountPermission;
-use App\Domain\Admin\AdminGrant\Entity\GrantPermission  as DomainEntityGrantPermission;
-use App\Domain\Admin\AdminGrant\Entity\AccountStatusMaster as DomainAccountStatusMaster;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
+use App\Model\Entity\Admin\AdminAccount as OrmEntityAdminAccount;
+use App\Model\Entity\Grant\GrantAccountPermission as OrmEntityGrantAccountPermission;
+use App\Model\Entity\Grant\GrantAccountRole as OrmEntityGrantAccountRole;
+use App\Model\Entity\Grant\GrantPermission as OrmEntityGrantPermission;
+use App\Model\Entity\Grant\GrantRole as OrmEntityGrantRole;
+use App\Model\Entity\Grant\GrantRolePermission as OrmEntityGrantRolePermission;
+use App\Model\Entity\Shared\AccountStatusMaster as OrmAccountStatusMaster;
 
 final class FromOrmToDomainMapper
 {
@@ -50,16 +50,18 @@ final class FromOrmToDomainMapper
 
         return $domainEntityAdminAccountGrant->assignGrantAccountRoles(
             array_map(
-                function(OrmEntityGrantAccountRole $grantAccountRole) use ($domainEntityAdminAccountGrant) {
+                function (OrmEntityGrantAccountRole $grantAccountRole) use ($domainEntityAdminAccountGrant) {
                     return self::toGrantAccountRole($grantAccountRole, $domainEntityAdminAccountGrant);
-                }, $ormEntity->grant_account_roles
-            )
+                },
+                $ormEntity->grant_account_roles,
+            ),
         )->assignGrantAccountPermissions(
             array_map(
                 function (OrmEntityGrantAccountPermission $grantAccountPermission) use ($domainEntityAdminAccountGrant) {
                     return self::toGrantAccountPermission($grantAccountPermission, $domainEntityAdminAccountGrant);
-                }, $ormEntity->grant_account_permissions
-            )
+                },
+                $ormEntity->grant_account_permissions,
+            ),
         );
     }
 
@@ -68,7 +70,7 @@ final class FromOrmToDomainMapper
      * @return \App\Domain\Admin\AdminGrant\Entity\AccountStatusMaster
      */
     public static function toAccountStatusMaster(
-        OrmAccountStatusMaster $ormAccountStatusMaster
+        OrmAccountStatusMaster $ormAccountStatusMaster,
     ): DomainAccountStatusMaster {
         return new DomainAccountStatusMaster(
             account_status_master_id: new Vo\AccountStatusMasterId((string)$ormAccountStatusMaster->id),
@@ -83,8 +85,8 @@ final class FromOrmToDomainMapper
      * @return \App\Domain\Admin\AdminGrant\Entity\GrantAccountRole
      */
     private static function toGrantAccountRole(
-        OrmEntityGrantAccountRole $ormGrantAccountRole, 
-        DomainEntityAdminAccountGrant $domainEntityAdminAccountGrant
+        OrmEntityGrantAccountRole $ormGrantAccountRole,
+        DomainEntityAdminAccountGrant $domainEntityAdminAccountGrant,
     ): DomainEntityGrantAccountRole {
         $domainEntityGrantAccountRole = new DomainEntityGrantAccountRole(
             grant_account_role_id: new Vo\GrantAccountRoleId((string)$ormGrantAccountRole->id),
@@ -92,13 +94,13 @@ final class FromOrmToDomainMapper
             grant_role_id: new Vo\GrantRoleId((string)$ormGrantAccountRole->grant_role_id),
             created: new SVo\Created($ormGrantAccountRole->created->format('Y-m-d\TH:i:s')),
             modified: new SVo\Modified($ormGrantAccountRole->modified->format('Y-m-d\TH:i:s')),
-            admin_account_grant : $domainEntityAdminAccountGrant,
-            grant_role: null
+            admin_account_grant: $domainEntityAdminAccountGrant,
+            grant_role: null,
         );
 
         return $domainEntityGrantAccountRole->assignGrantRole(
             self::toGrantRole($ormGrantAccountRole->grant_role, [
-                $domainEntityGrantAccountRole
+                $domainEntityGrantAccountRole,
             ]),
         );
     }
@@ -109,7 +111,7 @@ final class FromOrmToDomainMapper
      * @return \App\Domain\Admin\AdminGrant\Entity\GrantRole
      */
     private static function toGrantRole(
-        OrmEntityGrantRole $ormGrantRole, 
+        OrmEntityGrantRole $ormGrantRole,
         array $grant_account_roles = [],
     ): DomainEntityGrantRole {
         $domainEntityGrantRole = new DomainEntityGrantRole(
@@ -129,8 +131,9 @@ final class FromOrmToDomainMapper
             array_map(
                 function (OrmEntityGrantRolePermission $grantRolePermission) use ($domainEntityGrantRole) {
                     return self::toGrantRolePermission($grantRolePermission, $domainEntityGrantRole);
-                }, $ormGrantRole->grant_role_permissions
-            )
+                },
+                $ormGrantRole->grant_role_permissions,
+            ),
         );
     }
 
@@ -150,7 +153,7 @@ final class FromOrmToDomainMapper
             created: new SVo\Created($ormGrantRolePermission->created->format('Y-m-d\TH:i:s')),
             modified: new SVo\Modified($ormGrantRolePermission->modified->format('Y-m-d\TH:i:s')),
             grant_role: $domainEntityGrantRole,
-            grant_permission : self::toGrantPermission($ormGrantRolePermission->grant_permission),
+            grant_permission: self::toGrantPermission($ormGrantRolePermission->grant_permission),
         );
     }
 
@@ -170,7 +173,7 @@ final class FromOrmToDomainMapper
             created: new SVo\Created($ormGrantAccountPermission->created->format('Y-m-d\TH:i:s')),
             modified: new SVo\Modified($ormGrantAccountPermission->modified->format('Y-m-d\TH:i:s')),
             admin_account_grant: $domainEntityAdminAccountGrant,
-            grant_permission : self::toGrantPermission($ormGrantAccountPermission->grant_permission),
+            grant_permission: self::toGrantPermission($ormGrantAccountPermission->grant_permission),
         );
     }
 
@@ -179,7 +182,7 @@ final class FromOrmToDomainMapper
      * @return \App\Domain\Admin\AdminGrant\Entity\GrantPermission
      */
     private static function toGrantPermission(
-        OrmEntityGrantPermission $ormGrantPermission
+        OrmEntityGrantPermission $ormGrantPermission,
     ): DomainEntityGrantPermission {
         return new DomainEntityGrantPermission(
             grant_permission_id: new Vo\GrantPermissionId((string)$ormGrantPermission->id),
