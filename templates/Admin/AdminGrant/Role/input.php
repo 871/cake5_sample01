@@ -1,6 +1,9 @@
 <?php
 /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $input */
 /** @var bool $isEdit */
+/** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission> $grantPermissionOptions */
+
+$selectedGrantPermissionIds = (array)$input->getInput('grant_permission_ids', []);
 ?>
 <div class="card shadow-sm">
 <?php foreach ($input->getInput('_errorMessages') as $message) { ?>
@@ -48,6 +51,52 @@
                 <div class="col-md-12">
                     <label class="form-label">説明</label>
                     <input type="text" name="description" class="form-control <?= h($input->getInput('_errorFields.description')) ?>" value="<?= h($input->getInput('description')) ?>">
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label class="form-label">権限設定</label>
+                <div class="<?= h($input->getInput('_errorFields.grant_permission_ids')) ?>">
+                    <table class="table table-bordered mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 20%">権限ID</th>
+                                <th style="width: 25%">権限名</th>
+                                <th>説明</th>
+                                <th style="width: 20%">設定</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($grantPermissionOptions as $option) { ?>
+                                <?php $isGranted = in_array($option->grantPermissionId()->toString(), $selectedGrantPermissionIds, true); ?>
+                                <tr>
+                                    <td><?= h($option->grantPermissionId()->toString()) ?></td>
+                                    <td><?= h($option->name()->toString()) ?></td>
+                                    <td><?= h($option->description()->toString()) ?></td>
+                                    <td>
+                                        <label class="form-check-label me-3">
+                                            <input
+                                                type="radio"
+                                                class="form-check-input"
+                                                name="grant_permission_ids[<?= h($option->grantPermissionId()->toString()) ?>]"
+                                                value="1"
+                                                <?= $isGranted ? 'checked' : '' ?>
+                                            >あり
+                                        </label>
+                                        <label class="form-check-label">
+                                            <input
+                                                type="radio"
+                                                class="form-check-input"
+                                                name="grant_permission_ids[<?= h($option->grantPermissionId()->toString()) ?>]"
+                                                value="0"
+                                                <?= !$isGranted ? 'checked' : '' ?>
+                                            >なし
+                                        </label>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

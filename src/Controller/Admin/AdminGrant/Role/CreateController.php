@@ -68,6 +68,7 @@ class CreateController extends AppController
         $this->set([
             'input' => $this->ctlService->getInputProcess(),
             'isEdit' => false,
+            'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
         ]);
 
         return $this->render('/Admin/AdminGrant/Role/input');
@@ -109,6 +110,7 @@ class CreateController extends AppController
         $this->set([
             'input' => $this->ctlService->getInputProcess(),
             'isEdit' => false,
+            'grantPermissionOptions' => $this->ctlService->getGrantPermissionOptions(),
         ]);
 
         return $this->render('/Admin/AdminGrant/Role/conf');

@@ -9,6 +9,7 @@ use App\Service\Controller\Admin\AdminGrant\Role\Delete as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\MethodNotAllowedException;
 use DateTimeImmutable;
+use DomainException;
 
 class DeleteController extends AppController
 {
@@ -45,8 +46,12 @@ class DeleteController extends AppController
      */
     public function indexPost()
     {
-        $this->ctlService->delete();
-        $this->Flash->success('ロール権限を削除しました。');
+        try {
+            $this->ctlService->delete();
+            $this->Flash->success('ロール権限を削除しました。');
+        } catch (DomainException) {
+            $this->Flash->error('使用者がいるロールは削除できません');
+        }
 
         return $this->redirect([
             'prefix' => 'Admin/AdminGrant/Role',

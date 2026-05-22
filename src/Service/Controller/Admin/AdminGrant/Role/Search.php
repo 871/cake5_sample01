@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace App\Service\Controller\Admin\AdminGrant\Role;
 
 use App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition;
+use App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId;
 use App\Domain\Admin\AdminGrant\ValueObject\IsActive;
 use App\Domain\Shared\ValueObject\SearchText;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
 use App\Security\Input\Cast;
+use App\Service\Controller\Admin\AdminGrant as CategoryService;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\ORM\Query\SelectQuery;
@@ -17,12 +19,12 @@ final class Search implements ServiceInterface
     use ServiceTrait;
 
     /**
-     * @return array<string, string>
+     * @return array<string, array<int, string>>
      */
     public function getInitParams(): array
     {
         return [
-            'is_active' => '1',
+            'is_active' => ['1'],
         ];
     }
 
@@ -31,14 +33,10 @@ final class Search implements ServiceInterface
      */
     public function getSearchQuery(): SelectQuery
     {
-        $isActive = Cast::toStringOrNull($this->request->getQuery('is_active'));
-        if (!in_array($isActive, ['0', '1'], true)) {
-            $isActive = '1';
-        }
-
         return (new AdminGrantRoleRepository($this->datetime))->query(new SearchAdminGrantRoleCondition(
             searchText: new SearchText(Cast::toStringOrNull($this->request->getQuery('keyword'))),
-            isActive: new IsActive($isActive),
+            isActives: $this->getSearchIsActives(),
+            grantPermissionIds: $this->getSearchGrantPermissionIds(),
         ));
     }
 
@@ -62,5 +60,50 @@ final class Search implements ServiceInterface
                 'GrantRoles.id' => 'ASC',
             ],
         ];
+    }
+
+    /**
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission>
+     */
+    public function getGrantPermissionOptions(): array
+    {
+        /** @var \App\Service\Controller\Admin\AdminGrant $categoryService */
+        $categoryService = $this->createService(CategoryService::class);
+
+        return $categoryService->getAllGrantPermissionOptions();
+    }
+
+    /**
+     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\IsActive>
+     */
+    private function getSearchIsActives(): array
+    {
+        $values = array_values(array_unique(array_filter(array_map(
+            fn($value) => Cast::toStringOrNull((string)$value),
+            (array)$this->request->getQuery('is_active', ['1']),
+        ), fn($value) => in_array($value, ['0', '1'], true))));
+
+        if ($values === []) {
+            $values = ['1'];
+        }
+
+        return array_map(
+            fn($value) => new IsActive($value),
+            $values,
+        );
+    }
+
+    /**
+     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId>
+     */
+    private function getSearchGrantPermissionIds(): array
+    {
+        return array_map(
+            fn($value) => new GrantPermissionId($value),
+            array_values(array_unique(array_filter(array_map(
+                fn($value) => Cast::toStringOrNull((string)$value),
+                (array)$this->request->getQuery('grant_permission_id', []),
+            )))),
+        );
     }
 }

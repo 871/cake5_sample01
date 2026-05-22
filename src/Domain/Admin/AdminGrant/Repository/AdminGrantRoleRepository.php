@@ -19,8 +19,6 @@ interface AdminGrantRoleRepository
     /**
      * ロール権限の検索
      *
-     * 検索条件は search_text のキーワード検索のみ
-     *
      * Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。 --- IGNORE ---
      *
      * @param \App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition $condition
@@ -30,9 +28,6 @@ interface AdminGrantRoleRepository
 
     /**
      * ロール権限の検索
-     *
-     * 検索条件は search_text のキーワード検索のみ
-     *
      * @param \App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition $condition
      * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantRole>
      */

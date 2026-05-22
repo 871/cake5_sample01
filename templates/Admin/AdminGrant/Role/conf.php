@@ -1,6 +1,9 @@
 <?php
 /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $input */
 /** @var bool $isEdit */
+/** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission> $grantPermissionOptions */
+
+$selectedGrantPermissionIds = (array)$input->getInput('grant_permission_ids', []);
 ?>
 <div class="card shadow-sm">
     <div class="card-header bg-success text-white">
@@ -39,6 +42,27 @@
                     <th>有効状態</th>
                     <td><?= (string)$input->getInput('is_active') === '1' ? '有効' : '無効' ?></td>
                 </tr>
+            </table>
+
+            <table class="table table-bordered mb-4">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 20%">権限ID</th>
+                        <th style="width: 25%">権限名</th>
+                        <th>説明</th>
+                        <th style="width: 15%">設定</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($grantPermissionOptions as $option) { ?>
+                        <tr>
+                            <td><?= h($option->grantPermissionId()->toString()) ?></td>
+                            <td><?= h($option->name()->toString()) ?></td>
+                            <td><?= h($option->description()->toString()) ?></td>
+                            <td><?= in_array($option->grantPermissionId()->toString(), $selectedGrantPermissionIds, true) ? 'あり' : 'なし' ?></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
             </table>
 
             <div class="text-center mt-4">

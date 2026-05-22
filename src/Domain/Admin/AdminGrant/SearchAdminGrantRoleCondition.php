@@ -10,10 +10,13 @@ class SearchAdminGrantRoleCondition
 {
     /**
      * @param \App\Domain\Shared\ValueObject\SearchText $searchText
+     * @param array<\App\Domain\Admin\AdminGrant\ValueObject\IsActive> $isActives
+     * @param array<\App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId> $grantPermissionIds
      */
     public function __construct(
         private readonly SearchText $searchText,
-        private readonly IsActive $isActive,
+        private readonly array $isActives = [],
+        private readonly array $grantPermissionIds = [],
     ) {
         // 処理なし
     }
@@ -27,10 +30,18 @@ class SearchAdminGrantRoleCondition
     }
 
     /**
-     * @return \App\Domain\Admin\AdminGrant\ValueObject\IsActive
+     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\IsActive>
      */
-    public function getIsActive(): IsActive
+    public function getIsActives(): array
     {
-        return $this->isActive;
+        return $this->isActives;
+    }
+
+    /**
+     * @return array<\App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId>
+     */
+    public function getGrantPermissionIds(): array
+    {
+        return $this->grantPermissionIds;
     }
 }
