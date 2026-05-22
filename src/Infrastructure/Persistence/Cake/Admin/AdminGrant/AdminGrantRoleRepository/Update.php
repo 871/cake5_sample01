@@ -70,7 +70,7 @@ final class Update
                             'modified' => $domainGrantRole->modified()->format('Y-m-d\TH:i:s'),
                             'grant_role_permissions' => array_map(
                                 function (
-                                    De\GrantRolePermission $domainGrantRolePermission
+                                    De\GrantRolePermission $domainGrantRolePermission,
                                 ) use ($domainGrantRole) {
                                     return [
                                         'account_type' => self::ACCOUNT_TYPE,

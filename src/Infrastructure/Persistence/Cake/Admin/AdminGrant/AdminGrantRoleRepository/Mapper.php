@@ -74,7 +74,7 @@ final class Mapper
                     $ormGrantRole->grant_role_permissions ?? [],
                 );
 
-                uksort($domainGrantRolePermissions, function (De\GrantRolePermission $a, De\GrantRolePermission $b) {
+                usort($domainGrantRolePermissions, function (De\GrantRolePermission $a, De\GrantRolePermission $b) {
                     return $a->grantPermission()->sort()->toInt() <=> $b->grantPermission()->sort()->toInt();
                 });
 

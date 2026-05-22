@@ -75,12 +75,15 @@ final class Edit implements ServiceInterface
                 'email' => $adminAccountGrant->email()->toString(),
                 'name' => $adminAccountGrant->name()->toString(),
                 'grant_role_ids' => array_values(array_map(
-                    fn(GrantAccountRole $grantAccountRole) => $grantAccountRole->grantRoleId()->toString(),
+                    function (GrantAccountRole $grantAccountRole) {
+                        return $grantAccountRole->grantRoleId()->toString();
+                    },
                     $adminAccountGrant->grantAccountRoles(),
                 )),
                 'grant_permission_ids' => array_values(array_map(
-                    fn(GrantAccountPermission $grantAccountPermission)
-                        => $grantAccountPermission->grantPermissionId()->toString(),
+                    function (GrantAccountPermission $grantAccountPermission) {
+                        return $grantAccountPermission->grantPermissionId()->toString();
+                    },
                     $adminAccountGrant->grantAccountPermissions(),
                 )),
             ]),

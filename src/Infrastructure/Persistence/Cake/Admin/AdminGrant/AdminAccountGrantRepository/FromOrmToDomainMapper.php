@@ -58,7 +58,7 @@ final class FromOrmToDomainMapper
         )->assignGrantAccountPermissions(
             array_map(
                 function (
-                    OrmEntityGrantAccountPermission $grantAccountPermission
+                    OrmEntityGrantAccountPermission $grantAccountPermission,
                 ) use ($domainEntityAdminAccountGrant) {
                     return self::toGrantAccountPermission($grantAccountPermission, $domainEntityAdminAccountGrant);
                 },
