@@ -185,26 +185,4 @@ final class Mapper
             modified: new SVo\Modified($ormGrantPermission->modified->format('Y-m-d\TH:i:s')),
         );
     }
-
-    /**
-     * 新規保存用のORMエンティティへ変換する
-     *
-     * @param \App\Domain\Admin\AdminGrant\Entity\GrantRole $domainGrantRole
-     * @return \App\Model\Entity\Grant\GrantRole
-     */
-    public function toNewOrmGrantRole(
-        De\GrantRole $domainGrantRole,
-    ): OrmGrantRole {
-        /** @var \App\Model\Entity\Grant\GrantRole */
-        return $this->table->newEntity([
-            'account_type' => self::ACCOUNT_TYPE,
-            'code' => $domainGrantRole->code()->toString(),
-            'name' => $domainGrantRole->name()->toString(),
-            'description' => $domainGrantRole->description()->toString(),
-            'sort' => $domainGrantRole->sort()->toInt(),
-            'is_active' => $domainGrantRole->isActive()->toInt(),
-            'created' => $domainGrantRole->created()->format('Y-m-d\TH:i:s'),
-            'modified' => $domainGrantRole->modified()->format('Y-m-d\TH:i:s'),
-        ]);
-    }
 }
