@@ -28,7 +28,7 @@ final class Search
     private Mapper $mapper;
 
     /**
-     * @param \App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition $condition
+     * @param \DateTimeInterface $datetime
      */
     public function __construct(
         private readonly DateTimeInterface $datetime,

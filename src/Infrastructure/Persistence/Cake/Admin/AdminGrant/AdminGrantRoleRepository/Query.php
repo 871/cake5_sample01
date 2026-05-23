@@ -23,7 +23,7 @@ final class Query
     private GrantRolesTable $table;
 
     /**
-     * @param \App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition $condition
+     * @param \DateTimeInterface $datetime
      */
     public function __construct(
         private readonly DateTimeInterface $datetime,

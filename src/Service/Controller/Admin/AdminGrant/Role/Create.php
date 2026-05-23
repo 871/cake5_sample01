@@ -23,6 +23,7 @@ use App\Service\Controller\Shared\Process\ProcessProvider;
 use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
+use Cake\Validation\Validator;
 use DomainException;
 
 final class Create implements ServiceInterface
@@ -166,55 +167,37 @@ final class Create implements ServiceInterface
     public function inputProcessValidation(): self
     {
         /** @var array<string, mixed> $input */
-        $input = $this->getInputProcess()->getProcessParams()->toArray();
-
-        /** @var array<string, array<string, string>> $errorInfos */
-        $errorInfos = [];
-
-        try {
-            new Vo\Code(Cast::toStringOrNull($input['code']));
-        } catch (DomainException) {
-            $errorInfos['code'] = ['invalid' => __('コードが不正です。')];
-        }
-
-        try {
-            new Vo\Name(Cast::toStringOrNull($input['name']));
-        } catch (DomainException) {
-            $errorInfos['name'] = ['invalid' => __('名称が不正です。')];
-        }
-
-        try {
-            new Vo\Description(Cast::toStringOrNull($input['description']));
-        } catch (DomainException) {
-            $errorInfos['description'] = ['invalid' => __('説明が不正です。')];
-        }
-
-        try {
-            new Vo\Sort(Cast::toStringOrNull($input['sort']) ?? '0');
-        } catch (DomainException) {
-            $errorInfos['sort'] = ['invalid' => __('並び順が不正です。')];
-        }
-
-        try {
-            new Vo\IsActive(Cast::toStringOrNull($input['is_active']) ?? '1');
-        } catch (DomainException) {
-            $errorInfos['is_active'] = ['invalid' => __('有効状態が不正です。')];
-        }
-
-        foreach ((array)$input['grant_permission_ids'] as $value) {
-            try {
-                new Vo\GrantPermissionId(Cast::toStringOrNull($value));
-            } catch (DomainException) {
-                $errorInfos['grant_permission_ids'] = ['invalid' => __('権限設定が不正です。')];
-                break;
-            }
-        }
-
+        $input = $this->getInputProcess()
+            ->getProcessParams()
+            ->toArray();
+        /** @var array<string, array<string, string|array<int|string, mixed>>> $errorInfos */
+        $errorInfos = $this->getValidator()
+            ->validate($input);
         if ($errorInfos !== []) {
             throw new ValidateException($errorInfos);
         }
-
+        
         return $this;
+    }
+
+    /**
+     * @return \Cake\Validation\Validator
+     */
+    private function getValidator(): Validator
+    {
+        $validator = new Validator();
+        /** @var \App\Service\Controller\Admin\AdminGrant\Role\Shared\ValidatorSetting $validatorSetting */
+        $validatorSetting = $this->createService(Shared\ValidatorSetting::class);
+        $validatorSetting
+            ->code($validator)
+            ->name($validator)
+            ->description($validator)
+            ->sort($validator)
+            ->isActive($validator)
+            ->grantPermissionIds($validator)
+            ;
+
+        return $validator;
     }
 
     /**
@@ -225,26 +208,23 @@ final class Create implements ServiceInterface
         /** @var array<string, mixed> $input */
         $input = $this->getInputProcess()->getProcessParams()->toArray();
 
-        $now = $this->datetime->format('Y-m-d\\TH:i:s');
-        $grantRoleId = new Vo\GrantRoleId(null);
-
         (new AdminGrantRoleRepository($this->datetime))->create(new GrantRole(
-            grant_role_id: $grantRoleId,
+            grant_role_id: new Vo\GrantRoleId(null),
             code: new Vo\Code(Cast::toStringOrNull($input['code'])),
             name: new Vo\Name(Cast::toStringOrNull($input['name'])),
             description: new Vo\Description(Cast::toStringOrNull($input['description'])),
             sort: new Vo\Sort(Cast::toStringOrNull($input['sort']) ?? '0'),
             is_active: new Vo\IsActive(Cast::toStringOrNull($input['is_active']) ?? '1'),
-            created: new Created($now),
-            modified: new Modified($now),
+            created: new Created(null),
+            modified: new Modified(null),
             grant_account_roles: [],
             grant_role_permissions: array_map(
                 fn($grantPermissionId) => new GrantRolePermission(
                     grant_role_permission_id: new Vo\GrantRolePermissionId(UUID::uuid4()),
-                    grant_role_id: $grantRoleId,
+                    grant_role_id: new Vo\GrantRoleId(null),
                     grant_permission_id: new Vo\GrantPermissionId(Cast::toStringOrNull($grantPermissionId)),
-                    created: new Created($now),
-                    modified: new Modified($now),
+                    created: new Created(null),
+                    modified: new Modified(null),
                     grant_role: null,
                     grant_permission: null,
                 ),
