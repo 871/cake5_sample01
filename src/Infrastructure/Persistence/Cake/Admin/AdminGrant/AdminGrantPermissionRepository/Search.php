@@ -31,7 +31,7 @@ final class Search
     }
 
     /**
-     * @return array
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission>
      */
     public function run(): array
     {
@@ -52,8 +52,11 @@ final class Search
             ))->bind(':search_text', $this->condition->getSearchText()->toString(), 'string');
         }
 
+        /** @var list<\App\Model\Entity\Grant\GrantPermission> $rows */
+        $rows = $query->all()->toArray();
+
         return array_map(function (OrmEntityGrantPermission $row) {
             return Mapper::toDomainGrantPermission($row);
-        }, $query->all()->toArray());
+        }, $rows);
     }
 }

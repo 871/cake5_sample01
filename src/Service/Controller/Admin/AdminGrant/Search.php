@@ -69,7 +69,7 @@ final class Search implements ServiceInterface
     }
 
     /**
-     * @return array<int, array<string, string>>
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantRole>
      */
     public function getGrantRoleOptions(): array
     {
@@ -80,7 +80,7 @@ final class Search implements ServiceInterface
     }
 
     /**
-     * @return array<int, array<string, string>>
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission>
      */
     public function getGrantPermissionOptions(): array
     {
@@ -91,7 +91,7 @@ final class Search implements ServiceInterface
     }
 
     /**
-     * @return array<int, array<string, string>>
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\AccountStatusMaster>
      */
     public function getAccountStatusOptions(): array
     {

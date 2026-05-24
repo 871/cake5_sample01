@@ -13,7 +13,6 @@ use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query\SelectQuery;
-use DateTimeInterface;
 
 final class Search
 {
@@ -26,12 +25,8 @@ final class Search
      */
     private AdminAccountsTable $table;
 
-    /**
-     * @param \DateTimeInterface $datetime
-     */
-    public function __construct(
-        private readonly DateTimeInterface $datetime,
-    ) {
+    public function __construct()
+    {
         $this->table = $this->fetchTable(AdminAccountsTable::class);
     }
 

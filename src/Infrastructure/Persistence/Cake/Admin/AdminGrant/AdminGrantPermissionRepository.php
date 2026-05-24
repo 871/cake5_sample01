@@ -5,16 +5,11 @@ namespace App\Infrastructure\Persistence\Cake\Admin\AdminGrant;
 
 use App\Domain\Admin\AdminGrant\Repository\AdminGrantPermissionRepository as DomainAdminGrantPermissionRepository;
 use App\Domain\Admin\AdminGrant\SearchAdminGrantPermissionCondition;
-use DateTimeInterface;
 
 final class AdminGrantPermissionRepository implements DomainAdminGrantPermissionRepository
 {
-    /**
-     * @param \DateTimeInterface $datetime
-     */
-    public function __construct(
-        private readonly DateTimeInterface $datetime,
-    ) {
+    public function __construct()
+    {
         // do nothing
     }
 

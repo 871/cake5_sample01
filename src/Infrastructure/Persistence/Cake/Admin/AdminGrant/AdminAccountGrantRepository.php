@@ -33,7 +33,7 @@ final class AdminAccountGrantRepository implements DomainAdminAccountGrantReposi
      */
     public function search(SearchAdminAccountGrantCondition $condition): SelectQuery
     {
-        return (new AdminAccountGrantRepository\Search($this->datetime))->run($condition);
+        return (new AdminAccountGrantRepository\Search())->run($condition);
     }
 
     /**

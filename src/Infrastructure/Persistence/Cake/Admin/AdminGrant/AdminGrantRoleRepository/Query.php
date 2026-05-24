@@ -9,7 +9,6 @@ use App\Model\Table\Grant\GrantRolesTable;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query\SelectQuery;
-use DateTimeInterface;
 
 final class Query
 {
@@ -22,10 +21,7 @@ final class Query
      */
     private GrantRolesTable $table;
 
-    /**
-     * @param \DateTimeInterface $datetime
-     */
-    public function __construct(DateTimeInterface $datetime)
+    public function __construct()
     {
         $this->table = $this->fetchTable(GrantRolesTable::class);
     }
