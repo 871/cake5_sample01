@@ -40,7 +40,7 @@ final class Update
     }
 
     /**
-     * @param \App\Domain\Admin\AdminGrant\Entity\GrantRole $domainEntity
+     * @param \App\Domain\Admin\AdminGrant\Entity\GrantRole $domainGrantRole
      * @return \App\Domain\Admin\AdminGrant\Entity\GrantRole
      */
     public function run(De\GrantRole $domainGrantRole): De\GrantRole
@@ -50,6 +50,7 @@ final class Update
             $ormEntity = $this->table->getConnection()->transactional(
                 function () use ($domainGrantRole): OrmGrantRole {
                     // テーブルロック
+                    /** @var \App\Model\Entity\Grant\GrantRole $savedEntity */
                     $savedEntity = $this->table->find()
                         ->contain([
                             // Memo: Acount側の情報はここでは更新しない

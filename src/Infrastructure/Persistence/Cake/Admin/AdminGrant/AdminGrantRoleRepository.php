@@ -31,7 +31,7 @@ final class AdminGrantRoleRepository implements DomainAdminGrantRoleRepository
      */
     public function query(SearchAdminGrantRoleCondition $condition): SelectQuery
     {
-        return (new AdminGrantRoleRepository\Query($this->datetime))->run($condition);
+        return (new AdminGrantRoleRepository\Query())->run($condition);
     }
 
     /**

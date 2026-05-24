@@ -24,18 +24,12 @@ final class Create
     private GrantRolesTable $table;
 
     /**
-     * @var \App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository\Mapper
-     */
-    private Mapper $mapper;
-
-    /**
      * @param \DateTimeInterface $datetime
      */
     public function __construct(
         private readonly DateTimeInterface $datetime,
     ) {
         $this->table = $this->fetchTable(GrantRolesTable::class);
-        $this->mapper = new Mapper($this->datetime);
     }
 
     /**
@@ -60,7 +54,8 @@ final class Create
                 'checkExisting' => false,
             ]);
 
-            $grantRolePermissions = $this->table->GrantRolePermissions->newEntities(array_map(
+            /** @var array<int, array<string, mixed>> $grantRolePermissionsData */
+            $grantRolePermissionsData = array_map(
                 fn(De\GrantRolePermission $grantRolePermission) => [
                     'id' => UUID::uuid7(),
                     'account_type' => self::ACCOUNT_TYPE,
@@ -70,7 +65,8 @@ final class Create
                     'modified' => $this->datetime->format('Y-m-d\TH:i:s'),
                 ],
                 $domainEntity->grantRolePermissions(),
-            ));
+            );
+            $grantRolePermissions = $this->table->GrantRolePermissions->newEntities($grantRolePermissionsData);
             $this->table->GrantRolePermissions->saveManyOrFail($grantRolePermissions, [
                 'checkExisting' => false,
             ]);

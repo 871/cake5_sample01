@@ -39,10 +39,13 @@ final class Detail
      */
     public function run(Vo\GrantRoleId $id): DomainEntity
     {
+        /** @var \App\Model\Entity\Grant\GrantRole $ormGrantRole */
         $ormGrantRole = $this->table->find()
             ->contain([
                 'GrantAccountRoles' => [
-                    'AdminAccounts',
+                    'AdminAccounts' => [
+                        'AccountStatusMasters',
+                    ],
                 ],
                 'GrantRolePermissions' => [
                     'GrantPermissions',
