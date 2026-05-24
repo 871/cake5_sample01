@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Model\Table\Admin;
 
 use App\Model\Entity\Admin\AdminAccount;
+use App\Model\Table\Grant\GrantAccountPermissionsTable;
+use App\Model\Table\Grant\GrantAccountRolesTable;
 use App\Model\Table\Shared\AccountStatusMastersTable;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -14,6 +16,8 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Shared\AccountStatusMastersTable> $AccountStatusMasters
  * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Admin\AdminAccountHistoriesTable> $AdminAccountHistories
+ * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Grant\GrantAccountPermissionsTable> $GrantAccountPermissions
+ * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Grant\GrantAccountRolesTable> $GrantAccountRoles
  * @method \App\Model\Entity\Admin\AdminAccount newEmptyEntity()
  * @method \App\Model\Entity\Admin\AdminAccount newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
  * @method list<\App\Model\Entity\Admin\AdminAccount> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])
@@ -42,6 +46,29 @@ final class AdminAccountsTable extends Table
         $this->hasMany('AdminAccountHistories', [
             'className' => AdminAccountHistoriesTable::class,
             'foreignKey' => 'admin_account_id',
+            'sort' => [
+                'AdminAccountHistories.created' => 'DESC',
+            ],
+        ]);
+
+        $this->hasMany('GrantAccountPermissions', [
+            'className' => GrantAccountPermissionsTable::class,
+            'foreignKey' => 'account_id',
+            'conditions' => [
+            ],
+            'sort' => [
+                'GrantAccountPermissions.created' => 'DESC',
+            ],
+        ]);
+
+        $this->hasMany('GrantAccountRoles', [
+            'className' => GrantAccountRolesTable::class,
+            'foreignKey' => 'account_id',
+            'conditions' => [
+            ],
+            'sort' => [
+                'GrantAccountRoles.created' => 'DESC',
+            ],
         ]);
     }
 

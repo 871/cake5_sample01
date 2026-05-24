@@ -295,7 +295,7 @@ final class Create implements ServiceInterface
             process: $inputProcess->setProcessParams(
                 processParams: $inputProcessParams->with(
                     overrides: [
-                        '_errorMessages' => $ex->getErrorMeesasges(),
+                        '_errorMessages' => $ex->getErrorMessages(),
                         '_errorFields' => $ex->getErrorFields(),
                     ],
                 ),

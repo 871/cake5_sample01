@@ -21,7 +21,7 @@ class ValidateException extends Exception
     /**
      * @return list<string>
      */
-    public function getErrorMeesasges(): array
+    public function getErrorMessages(): array
     {
         $flatten = Hash::flatten($this->errorInfos);
 

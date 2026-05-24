@@ -37,6 +37,7 @@ class AppView extends View
      */
     public function initialize(): void
     {
+        $this->loadHelper('AdminGrant');
         $this->loadHelper('Paginator', [
             'templates' => [
                 'number' => '<li class="page-item"><a class="page-link" href="{{url}}">{{text}}</a></li>',

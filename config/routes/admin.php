@@ -2,9 +2,11 @@
 
 
 use App\Middleware\Admin\AdminAuthMiddleware;
+use App\Middleware\Admin\AdminGrantMiddleware;
 use App\Middleware\Admin\PageAccessLogMiddleware;
 use Cake\Routing\RouteBuilder;
 
+/** @var \Cake\Routing\RouteBuilder $builder */
 $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $builder) {
 
     // エラー（未ログイン）
@@ -16,12 +18,13 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
     // ログイン済ルート
     $builder->registerMiddleware('adminAuth', new AdminAuthMiddleware());
     $builder->registerMiddleware('pageAccessLog', new PageAccessLogMiddleware());
+    $builder->registerMiddleware('adminGrant', new AdminGrantMiddleware());
     $builder->scope('/{account_id}', static function (RouteBuilder $builder) {
         // ログアウト Memo: 認証ミドルウェアより前に置かないとログアウト後のリダイレクトで不備が出るため注意
         $builder->get('/logout', ['controller' => 'Logout', 'action' => 'index']);
         $builder->post('/logout', ['controller' => 'Logout', 'action' => 'indexPost']);
         // 認証チェック
-        $builder->applyMiddleware('adminAuth', 'pageAccessLog');
+        $builder->applyMiddleware('adminAuth', 'pageAccessLog', 'adminGrant');
         // エラー
         $builder->get('/error', ['controller' => 'Error', 'action' => 'index']);
         $builder->get('/error/{message_id}', ['controller' => 'Error', 'action' => 'index']);
@@ -77,6 +80,37 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
             // 削除
             $builder->get('/delete/{admin_account_id}', ['controller' => 'Delete', 'action' => 'index']);
             $builder->post('/delete/{admin_account_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
+        });
+
+        // 管理者権限管理
+        $builder->prefix('AdminGrant', ['path' => '/admin_grant'], static function (RouteBuilder $builder) {
+            // 管理者権限
+            $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
+            $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+            $builder->get('/detail/{admin_account_id}', ['controller' => 'Detail', 'action' => 'index']);
+            $builder->get('/edit/{admin_account_id}', ['controller' => 'Edit', 'action' => 'index']);
+            $builder->get('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'input']);
+            $builder->post('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
+            $builder->get('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
+            $builder->post('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
+            // ロール権限
+            $builder->prefix('Role', ['path' => '/role'], static function (RouteBuilder $builder) {
+                $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
+                $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+                $builder->get('/create', ['controller' => 'Create', 'action' => 'index']);
+                $builder->get('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'input']);
+                $builder->post('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'inputPost']);
+                $builder->get('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'conf']);
+                $builder->post('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'confPost']);
+                $builder->get('/detail/{grant_role_id}', ['controller' => 'Detail', 'action' => 'index']);
+                $builder->get('/edit/{grant_role_id}', ['controller' => 'Edit', 'action' => 'index']);
+                $builder->get('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'input']);
+                $builder->post('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
+                $builder->get('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
+                $builder->post('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
+                $builder->get('/delete/{grant_role_id}', ['controller' => 'Delete', 'action' => 'index']);
+                $builder->post('/delete/{grant_role_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
+            });
         });
 
         // ログ

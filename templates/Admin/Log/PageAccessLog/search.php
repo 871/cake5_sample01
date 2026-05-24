@@ -3,14 +3,17 @@ use App\Domain\Log\PageAccessLogs\Entity\PageAccessLog;
 use App\Domain\Log\PageAccessLogs\ValueObject as Vo;
 use App\Domain\Log\PageAccessLogs\SearchCondition;
 
-/* @var \Cake\View\View $this */
-/* @var array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog> $rows */
-/* @var array<string, string>|null $prevCursor */
-/* @var array<string, string>|null $nextCursor */
+/** @var \Cake\View\View $this */
+/** @var array<string> $errorMessages */
+/** @var array<\App\Domain\Log\PageAccessLogs\Entity\PageAccessLog> $rows */
+/** @var bool $isPrevExists */
+/** @var bool $isNextExists */
+/** @var array<string, string>|null $prevCursor */
+/** @var array<string, string>|null $nextCursor */
 ?>
 <!-- 検索フォーム -->
 <div class="card mb-3">
-<?php foreach ($errorMeesasges as $message) { ?>
+<?php foreach ($errorMessages as $message) { ?>
     <div class="alert alert-error-custom" onclick="this.style.display='none'">
         <?= h($message) ?>
     </div>
