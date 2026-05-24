@@ -79,7 +79,7 @@ final class Search implements ServiceInterface
     private function getSearchIsActives(): array
     {
         $values = array_values(array_unique(array_filter(array_map(
-            fn($value) => Cast::toStringOrNull((string)$value),
+            fn($value) => Cast::toStringOrNull($value),
             (array)$this->request->getQuery('is_active', ['1']),
         ), fn($value) => in_array($value, ['0', '1'], true))));
 
@@ -101,7 +101,7 @@ final class Search implements ServiceInterface
         return array_map(
             fn($value) => new GrantPermissionId($value),
             array_values(array_unique(array_filter(array_map(
-                fn($value) => Cast::toStringOrNull((string)$value),
+                fn($value) => Cast::toStringOrNull($value),
                 (array)$this->request->getQuery('grant_permission_id', []),
             )))),
         );

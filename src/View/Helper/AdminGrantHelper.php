@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace App\View\Helper;
 
+use App\Domain\Admin\AdminGrant\ValueObject\Code;
 use App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId;
-use App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId;
-use App\Infrastructure\Persistence\Cake\Admin\AdminGrantMapper;
-use App\Infrastructure\Persistence\Cake\Admin\AdminGrantRepository;
+use App\Domain\Shared\Enum as SEn;
+use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
+use App\Security\Input\Cast;
 use App\Model\Table\Grant\GrantPermissionsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\View\Helper;
@@ -22,15 +23,34 @@ class AdminGrantHelper extends Helper
      */
     public function hasPermission(int|string $permissionId): bool
     {
-        $accountId = (string)$this->getView()->getRequest()->getParam('account_id');
-        if ($accountId === '') {
+        $accountId = Cast::toStringOrNull($this->getView()->getRequest()->getParam('account_id'));
+        if ($accountId === null || $accountId === '') {
             return false;
         }
 
-        return (new AdminGrantRepository(new DateTimeImmutable()))->hasPermission(
-            new AdminAccountId($accountId),
-            new GrantPermissionId((string)$permissionId),
-        );
+        /** @var \App\Model\Table\Grant\GrantPermissionsTable $table */
+        $table = $this->fetchTable(GrantPermissionsTable::class);
+        /** @var \App\Model\Entity\Grant\GrantPermission|null $permission */
+        $permission = $table->find()
+            ->select(['code'])
+            ->where([
+                'account_type' => SEn\AccountType::ADMIN->value,
+                'id' => $permissionId,
+                'is_active' => 1,
+            ])
+            ->first();
+
+        if ($permission === null) {
+            return false;
+        }
+        $permissionCode = Cast::toStringOrNull($permission->code);
+        if ($permissionCode === null || $permissionCode === '') {
+            return false;
+        }
+
+        return (new AdminAccountGrantRepository(new DateTimeImmutable()))
+            ->detail(new AdminAccountId($accountId))
+            ->hasPermissionCode(new Code($permissionCode));
     }
 
     /**
@@ -45,7 +65,7 @@ class AdminGrantHelper extends Helper
         $permission = $table->find()
             ->select(['id'])
             ->where([
-                'account_type' => AdminGrantMapper::ACCOUNT_TYPE,
+                'account_type' => SEn\AccountType::ADMIN->value,
                 'code' => $permissionCode,
                 'is_active' => 1,
             ])
