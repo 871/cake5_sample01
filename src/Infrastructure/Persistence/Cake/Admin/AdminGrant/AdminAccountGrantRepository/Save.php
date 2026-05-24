@@ -8,6 +8,8 @@ use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Domain\Exception\RepositoryException;
 use App\Domain\Shared\Enum as SEn;
 use App\Lib\UUID\UUID;
+use App\Model\Entity\Grant\GrantPermission as OrmGrantPermission;
+use App\Model\Entity\Grant\GrantRole as OrmGrantRole;
 use App\Model\Table\Admin\AdminAccountsTable;
 use App\Model\Table\Grant\GrantPermissionsTable;
 use App\Model\Table\Grant\GrantRolesTable;
@@ -75,7 +77,7 @@ final class Save
                 $grantRoleIds = $selectedGrantRoleIds === []
                     ? []
                     : array_map(
-                        fn($row) => (int)$row->id,
+                        fn(OrmGrantRole $row) => (int)$row->id,
                         $this->grantRolesTable->find()
                             ->select(['GrantRoles.id'])
                             ->where([
@@ -91,7 +93,7 @@ final class Save
                 $grantPermissionIds = $selectedGrantPermissionIds === []
                     ? []
                     : array_map(
-                        fn($row) => (int)$row->id,
+                        fn(OrmGrantPermission $row) => (int)$row->id,
                         $this->grantPermissionsTable->find()
                             ->select(['GrantPermissions.id'])
                             ->where([
