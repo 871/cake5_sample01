@@ -28,6 +28,7 @@ interface AdminGrantRoleRepository
 
     /**
      * ロール権限の検索
+     *
      * @param \App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition $condition
      * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantRole>
      */

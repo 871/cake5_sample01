@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\AdminGrant;
 
-use App\Domain\Admin\AdminGrant\ValueObject\IsActive;
 use App\Domain\Shared\ValueObject\SearchText;
 
 class SearchAdminGrantRoleCondition

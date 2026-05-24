@@ -55,13 +55,10 @@ final class Save
     {
         try {
             $this->table->getConnection()->transactional(function () use ($adminAccountGrant): void {
-                $accountId = $adminAccountGrant->adminAccountId()->toString();
-                $now = $this->datetime->format('Y-m-d H:i:s');
-
                 $this->table->find()
                     ->select(['AdminAccounts.id'])
                     ->where([
-                        'AdminAccounts.id' => $accountId,
+                        'AdminAccounts.id' => $adminAccountGrant->adminAccountId()->toString(),
                     ])
                     ->epilog('FOR UPDATE')
                     ->firstOrFail();
@@ -109,11 +106,11 @@ final class Save
 
                 $this->table->GrantAccountRoles->deleteAll([
                     'GrantAccountRoles.account_type' => self::ACCOUNT_TYPE,
-                    'GrantAccountRoles.account_id' => $accountId,
+                    'GrantAccountRoles.account_id' => $adminAccountGrant->adminAccountId()->toString(),
                 ]);
                 $this->table->GrantAccountPermissions->deleteAll([
                     'GrantAccountPermissions.account_type' => self::ACCOUNT_TYPE,
-                    'GrantAccountPermissions.account_id' => $accountId,
+                    'GrantAccountPermissions.account_id' => $adminAccountGrant->adminAccountId()->toString(),
                 ]);
 
                 $this->table->GrantAccountRoles->saveManyOrFail(
@@ -122,10 +119,10 @@ final class Save
                             fn(int $grantRoleId): array => [
                                 'id' => UUID::uuid7(),
                                 'account_type' => self::ACCOUNT_TYPE,
-                                'account_id' => $accountId,
+                                'account_id' => $adminAccountGrant->adminAccountId()->toString(),
                                 'grant_role_id' => $grantRoleId,
-                                'created' => $now,
-                                'modified' => $now,
+                                'created' => $this->datetime->format('Y-m-d\TH:i:s'),
+                                'modified' => $this->datetime->format('Y-m-d\TH:i:s'),
                             ],
                             $grantRoleIds,
                         ),
@@ -146,10 +143,10 @@ final class Save
                             fn(int $grantPermissionId): array => [
                                 'id' => UUID::uuid7(),
                                 'account_type' => self::ACCOUNT_TYPE,
-                                'account_id' => $accountId,
+                                'account_id' => $adminAccountGrant->adminAccountId()->toString(),
                                 'grant_permission_id' => $grantPermissionId,
-                                'created' => $now,
-                                'modified' => $now,
+                                'created' => $this->datetime->format('Y-m-d\TH:i:s'),
+                                'modified' => $this->datetime->format('Y-m-d\TH:i:s'),
                             ],
                             $grantPermissionIds,
                         ),
