@@ -29,15 +29,17 @@ final class FindAccountStatusMasters
      */
     public function run(): array
     {
-        return array_map(function (OrmEntity $ormEntity) {
-            return FromOrmToDomainMapper::toAccountStatusMaster($ormEntity);
-        }, $this->table
+        /** @var \App\Model\Entity\Shared\AccountStatusMaster[] $rows */
+        $rows = $this->table
             ->find()
             ->orderBy([
                 'AccountStatusMasters.sort' => 'ASC',
                 'AccountStatusMasters.id' => 'ASC',
             ])
             ->all()
-            ->toArray());
+            ->toArray();
+        return array_map(function (OrmEntity $ormEntity) {
+            return FromOrmToDomainMapper::toAccountStatusMaster($ormEntity);
+        }, $rows);
     }
 }

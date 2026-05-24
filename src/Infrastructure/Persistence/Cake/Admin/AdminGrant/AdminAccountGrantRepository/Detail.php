@@ -19,11 +19,10 @@ final class Detail
     private AdminAccountsTable $table;
 
     /**
-     * @param \DateTimeInterface $datetime
+     * コンストラクタ
      */
-    public function __construct(
-        private readonly DateTimeInterface $datetime,
-    ) {
+    public function __construct() 
+    {
         $this->table = $this->fetchTable(AdminAccountsTable::class);
     }
 
