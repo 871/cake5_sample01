@@ -5,9 +5,9 @@ namespace App\Service\Controller\Admin\AdminGrant\Role;
 
 use App\Domain\Admin\AdminGrant\Entity\GrantRole as DomainEntity;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId;
-use App\Service\Controller\Admin\AdminGrant as CategoryService;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
 use App\Security\Input\StrictCast;
+use App\Service\Controller\Admin\AdminGrant as CategoryService;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 

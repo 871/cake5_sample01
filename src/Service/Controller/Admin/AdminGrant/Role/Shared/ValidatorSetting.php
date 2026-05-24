@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace App\Service\Controller\Admin\AdminGrant\Role\Shared;
 
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
-use App\Model\Table\Admin\AdminAccountsTable;
-use App\Model\Table\Grant\GrantRolesTable;
 use App\Model\Table\Grant\GrantPermissionsTable;
+use App\Model\Table\Grant\GrantRolesTable;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Log\Log;
@@ -119,7 +118,8 @@ final class ValidatorSetting implements ServiceInterface
                             return true;
                         } catch (DomainException $ex) {
                             return match ($ex->getCode()) {
-                                Vo\Code::ERROR_CODE_LENGTH => __('{0}は{1}文字以内で入力してください。', '権限ロールコード', Vo\Code::MAX_LENGTH),
+                                Vo\Code::ERROR_CODE_LENGTH
+                                    => __('{0}は{1}文字以内で入力してください。', '権限ロールコード', Vo\Code::MAX_LENGTH),
                                 default => __('{0}が不正です。', '権限ロールコード'),
                             };
                         }
@@ -148,7 +148,8 @@ final class ValidatorSetting implements ServiceInterface
                             return true;
                         } catch (DomainException $ex) {
                             return match ($ex->getCode()) {
-                                Vo\Name::ERROR_CODE_LENGTH => __('{0}は{1}文字以内で入力してください。', '権限ロール名', Vo\Name::MAX_LENGTH),
+                                Vo\Name::ERROR_CODE_LENGTH
+                                    => __('{0}は{1}文字以内で入力してください。', '権限ロール名', Vo\Name::MAX_LENGTH),
                                 default => __('{0}が不正です。', '権限ロール名'),
                             };
                         }
@@ -176,7 +177,8 @@ final class ValidatorSetting implements ServiceInterface
                             return true;
                         } catch (DomainException $ex) {
                             return match ($ex->getCode()) {
-                                Vo\Description::ERROR_CODE_LENGTH => __('{0}は{1}文字以内で入力してください。', '権限ロール説明', Vo\Description::MAX_LENGTH),
+                                Vo\Description::ERROR_CODE_LENGTH
+                                    => __('{0}は{1}文字以内で入力してください。', '権限ロール説明', Vo\Description::MAX_LENGTH),
                                 default => __('{0}が不正です。', '権限ロール説明'),
                             };
                         }
@@ -230,6 +232,7 @@ final class ValidatorSetting implements ServiceInterface
                     'rule' => function (string $value) {
                         try {
                             new Vo\IsActive($value);
+
                             return true;
                         } catch (DomainException $ex) {
                             return match ($ex->getCode()) {

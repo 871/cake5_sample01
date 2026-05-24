@@ -24,7 +24,6 @@ use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Validation\Validator;
-use DomainException;
 
 final class Create implements ServiceInterface
 {
@@ -176,7 +175,7 @@ final class Create implements ServiceInterface
         if ($errorInfos !== []) {
             throw new ValidateException($errorInfos);
         }
-        
+
         return $this;
     }
 
@@ -194,8 +193,7 @@ final class Create implements ServiceInterface
             ->description($validator)
             ->sort($validator)
             ->isActive($validator)
-            ->grantPermissionIds($validator)
-            ;
+            ->grantPermissionIds($validator);
 
         return $validator;
     }

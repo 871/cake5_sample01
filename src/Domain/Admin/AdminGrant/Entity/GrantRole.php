@@ -173,7 +173,8 @@ final class GrantRole
 
     /**
      * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountRole>
-     */    public function grantAccountRoles(): array
+     */
+    public function grantAccountRoles(): array
     {
         return $this->grant_account_roles;
     }

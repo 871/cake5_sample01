@@ -24,7 +24,6 @@ use App\Service\Controller\Shared\Process\ProcessRepository;
 use App\Service\Controller\Shared\ServiceInterface;
 use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Validation\Validator;
-use DomainException;
 
 final class Edit implements ServiceInterface
 {
@@ -88,7 +87,9 @@ final class Edit implements ServiceInterface
                 'sort' => $grantRole->sort()->toString(),
                 'is_active' => $grantRole->isActive()->toString(),
                 'grant_permission_ids' => array_values(array_map(
-                    fn(GrantRolePermission $grantRolePermission) => $grantRolePermission->grantPermissionId()->toString(),
+                    function (GrantRolePermission $grantRolePermission) {
+                        return $grantRolePermission->grantPermissionId()->toString();
+                    },
                     $grantRole->grantRolePermissions(),
                 )),
             ]),
@@ -213,8 +214,7 @@ final class Edit implements ServiceInterface
             ->description($validator)
             ->sort($validator)
             ->isActive($validator)
-            ->grantPermissionIds($validator)
-            ;
+            ->grantPermissionIds($validator);
 
         return $validator;
     }
