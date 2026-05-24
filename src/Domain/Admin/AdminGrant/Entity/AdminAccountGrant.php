@@ -27,7 +27,9 @@ final class AdminAccountGrant
         private readonly Vo\AccountStatusMasterId $account_status_master_id,
         private readonly Vo\AccountStatusMasterCode $account_status_master_code,
         private readonly Vo\AccountStatusMasterName $account_status_master_name,
+        /** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountRole> */
         private array $grant_account_roles = [],
+        /** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission> */
         private array $grant_account_permissions = [],
     ) {
         foreach ($this->grant_account_roles as $grant_role) {

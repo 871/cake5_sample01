@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Middleware\Admin;
 
+use App\Security\Input\StrictCast;
 use Cake\Http\Response;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Psr\Http\Message\ResponseInterface;
@@ -24,7 +25,7 @@ class AdminGrantMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /** @var \Cake\Http\ServerRequest $request */
-        $accountId = (string)$request->getParam('account_id');
+        $accountId = StrictCast::toString($request->getParam('account_id'));
         if (
             $accountId !== ''
             && $this->hasPageAccessPermission($request, $accountId)

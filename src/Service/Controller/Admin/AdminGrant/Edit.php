@@ -337,13 +337,13 @@ final class Edit implements ServiceInterface
     }
 
     /**
-     * @param array<int, mixed> $values
+     * @param array<array-key, mixed> $values
      * @return array<int, string>
      */
     private function normalizeSelectedIds(array $values): array
     {
         return array_values(array_unique(array_filter(array_map(
-            fn($value) => Cast::toStringOrNull((string)$value),
+            fn($value) => Cast::toStringOrNull($value),
             $values,
         ))));
     }
