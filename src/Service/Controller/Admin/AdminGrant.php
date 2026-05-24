@@ -38,7 +38,7 @@ final class AdminGrant implements ServiceInterface
      */
     public function getGrantPermissionOptions(): array
     {
-        return (new AdminGrantPermissionRepository($this->datetime))->search(
+        return (new AdminGrantPermissionRepository())->search(
             condition: new SearchAdminGrantPermissionCondition(
                 searchText: new SVo\SearchText(null),
                 isActive: new Vo\IsActive('1'),
@@ -52,13 +52,13 @@ final class AdminGrant implements ServiceInterface
     public function getAllGrantPermissionOptions(): array
     {
         $grantPermissions = [
-            ...(new AdminGrantPermissionRepository($this->datetime))->search(
+            ...(new AdminGrantPermissionRepository())->search(
                 condition: new SearchAdminGrantPermissionCondition(
                     searchText: new SVo\SearchText(null),
                     isActive: new Vo\IsActive('1'),
                 ),
             ),
-            ...(new AdminGrantPermissionRepository($this->datetime))->search(
+            ...(new AdminGrantPermissionRepository())->search(
                 condition: new SearchAdminGrantPermissionCondition(
                     searchText: new SVo\SearchText(null),
                     isActive: new Vo\IsActive('0'),

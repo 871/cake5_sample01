@@ -30,7 +30,7 @@ final class Detail implements ServiceInterface
      */
     public function getGrantPermissions(): array
     {
-        return (new AdminGrantPermissionRepository($this->datetime))->search(new SearchAdminGrantPermissionCondition(
+        return (new AdminGrantPermissionRepository())->search(new SearchAdminGrantPermissionCondition(
             searchText: new SVo\SearchText(''),
             isActive: new Vo\IsActive('1'),
         ));

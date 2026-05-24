@@ -12,20 +12,11 @@ use App\Model\Entity\Grant\GrantAccountRole as OrmGrantAccountRole;
 use App\Model\Entity\Grant\GrantPermission as OrmGrantPermission;
 use App\Model\Entity\Grant\GrantRole as OrmGrantRole;
 use App\Model\Entity\Grant\GrantRolePermission as OrmGrantRolePermission;
-use App\Model\Table\Grant\GrantRolesTable;
-use Cake\ORM\Locator\LocatorAwareTrait;
 use DateTimeInterface;
 
 final class Mapper
 {
-    use LocatorAwareTrait;
-
     public const ACCOUNT_TYPE = SEn\AccountType::ADMIN->value;
-
-    /**
-     * @var \App\Model\Table\Grant\GrantRolesTable
-     */
-    private GrantRolesTable $table;
 
     /**
      * Constructor.
@@ -33,7 +24,6 @@ final class Mapper
     public function __construct(
         public readonly DateTimeInterface $datetime,
     ) {
-        $this->table = $this->fetchTable(GrantRolesTable::class);
     }
 
     /**
@@ -129,10 +119,10 @@ final class Mapper
                 (string)$ormAdminAccount->account_status_master_id,
             ),
             account_status_master_code: new Vo\AccountStatusMasterCode(
-                (string)$ormAdminAccount->account_status_master_code,
+                (string)$ormAdminAccount->account_status_master->code,
             ),
             account_status_master_name: new Vo\AccountStatusMasterName(
-                (string)$ormAdminAccount->account_status_master_name,
+                (string)$ormAdminAccount->account_status_master->name,
             ),
             grant_account_roles: [
                 $domainGrantAccountRole,
