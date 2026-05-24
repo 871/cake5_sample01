@@ -25,9 +25,8 @@ final class Query
     /**
      * @param \DateTimeInterface $datetime
      */
-    public function __construct(
-        private readonly DateTimeInterface $datetime,
-    ) {
+    public function __construct(DateTimeInterface $datetime)
+    {
         $this->table = $this->fetchTable(GrantRolesTable::class);
     }
 
