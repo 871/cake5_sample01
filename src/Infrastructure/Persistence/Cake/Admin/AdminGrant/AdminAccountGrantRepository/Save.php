@@ -74,37 +74,41 @@ final class Save
                     $adminAccountGrant->grantAccountPermissions(),
                 ))));
 
-                $grantRoleIds = $selectedGrantRoleIds === []
+                /** @var list<\App\Model\Entity\Grant\GrantRole> $grantRoleRows */
+                $grantRoleRows = $selectedGrantRoleIds === []
                     ? []
-                    : array_map(
-                        fn(OrmGrantRole $row) => (int)$row->id,
-                        $this->grantRolesTable->find()
-                            ->select(['GrantRoles.id'])
-                            ->where([
-                                'GrantRoles.account_type' => self::ACCOUNT_TYPE,
-                                'GrantRoles.is_active' => Vo\IsActive::ACTIVE,
-                                'GrantRoles.id IN' => $selectedGrantRoleIds,
-                            ])
-                            ->epilog('FOR UPDATE')
-                            ->all()
-                            ->toList(),
-                    );
+                    : $this->grantRolesTable->find()
+                        ->select(['GrantRoles.id'])
+                        ->where([
+                            'GrantRoles.account_type' => self::ACCOUNT_TYPE,
+                            'GrantRoles.is_active' => Vo\IsActive::ACTIVE,
+                            'GrantRoles.id IN' => $selectedGrantRoleIds,
+                        ])
+                        ->epilog('FOR UPDATE')
+                        ->all()
+                        ->toList();
+                $grantRoleIds = array_map(
+                    fn(OrmGrantRole $row) => (int)$row->id,
+                    $grantRoleRows,
+                );
 
-                $grantPermissionIds = $selectedGrantPermissionIds === []
+                /** @var list<\App\Model\Entity\Grant\GrantPermission> $grantPermissionRows */
+                $grantPermissionRows = $selectedGrantPermissionIds === []
                     ? []
-                    : array_map(
-                        fn(OrmGrantPermission $row) => (int)$row->id,
-                        $this->grantPermissionsTable->find()
-                            ->select(['GrantPermissions.id'])
-                            ->where([
-                                'GrantPermissions.account_type' => self::ACCOUNT_TYPE,
-                                'GrantPermissions.is_active' => Vo\IsActive::ACTIVE,
-                                'GrantPermissions.id IN' => $selectedGrantPermissionIds,
-                            ])
-                            ->epilog('FOR UPDATE')
-                            ->all()
-                            ->toList(),
-                    );
+                    : $this->grantPermissionsTable->find()
+                        ->select(['GrantPermissions.id'])
+                        ->where([
+                            'GrantPermissions.account_type' => self::ACCOUNT_TYPE,
+                            'GrantPermissions.is_active' => Vo\IsActive::ACTIVE,
+                            'GrantPermissions.id IN' => $selectedGrantPermissionIds,
+                        ])
+                        ->epilog('FOR UPDATE')
+                        ->all()
+                        ->toList();
+                $grantPermissionIds = array_map(
+                    fn(OrmGrantPermission $row) => (int)$row->id,
+                    $grantPermissionRows,
+                );
 
                 $this->table->GrantAccountRoles->deleteAll([
                     'GrantAccountRoles.account_type' => self::ACCOUNT_TYPE,
