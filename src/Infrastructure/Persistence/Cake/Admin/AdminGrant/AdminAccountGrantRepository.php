@@ -56,7 +56,7 @@ final class AdminAccountGrantRepository implements DomainAdminAccountGrantReposi
      */
     public function detail(Vo\AdminAccountId $adminAccountId): AdminAccountGrant
     {
-        return (new AdminAccountGrantRepository\Detail($this->datetime))->run($adminAccountId);
+        return (new AdminAccountGrantRepository\Detail())->run($adminAccountId);
     }
 
     /**
