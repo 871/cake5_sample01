@@ -7,6 +7,9 @@ use App\Domain\Admin\AdminGrant\SearchAdminGrantPermissionCondition;
 
 interface AdminGrantPermissionRepository
 {
+    /**
+     * コンストラクタ
+     */
     public function __construct();
 
     /**

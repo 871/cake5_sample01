@@ -8,6 +8,9 @@ use App\Domain\Admin\AdminGrant\SearchAdminGrantPermissionCondition;
 
 final class AdminGrantPermissionRepository implements DomainAdminGrantPermissionRepository
 {
+    /**
+     * コンストラクタ
+     */
     public function __construct()
     {
         // do nothing

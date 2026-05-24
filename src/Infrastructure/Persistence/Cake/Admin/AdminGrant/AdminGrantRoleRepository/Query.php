@@ -21,6 +21,9 @@ final class Query
      */
     private GrantRolesTable $table;
 
+    /**
+     * コンストラクタ
+     */
     public function __construct()
     {
         $this->table = $this->fetchTable(GrantRolesTable::class);
