@@ -16,8 +16,8 @@ final class AdminAccountGrant
      * @param \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId $account_status_master_id
      * @param \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterCode $account_status_master_code
      * @param \App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterName $account_status_master_name
-     * @param array $grant_account_roles<App\Domain\Admin\AdminGrant\Entity\GrantAccountRole>
-     * @param array $grant_account_permissions<App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission>
+     * @param array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountRole> $grant_account_roles
+     * @param array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission> $grant_account_permissions
      */
     public function __construct(
         private readonly Vo\AdminAccountId $admin_account_id,
@@ -27,7 +27,9 @@ final class AdminAccountGrant
         private readonly Vo\AccountStatusMasterId $account_status_master_id,
         private readonly Vo\AccountStatusMasterCode $account_status_master_code,
         private readonly Vo\AccountStatusMasterName $account_status_master_name,
+        /** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountRole> */
         private array $grant_account_roles = [],
+        /** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantAccountPermission> */
         private array $grant_account_permissions = [],
     ) {
         foreach ($this->grant_account_roles as $grant_role) {
@@ -93,13 +95,19 @@ final class AdminAccountGrant
      */
     public function hasPermissionCode(Vo\Code $code): bool
     {
-        return array_filter($this->grant_account_permissions, function ($grant_account_permission) use ($code) {
-            return $grant_account_permission->hasPermissionCode($code);
-        }) !== []
-        ||
-        array_filter($this->grant_account_roles, function ($grant_account_role) use ($code) {
-            return $grant_account_role->hasPermissionCode($code);
-        }) !== [];
+        foreach ($this->grant_account_permissions as $grant_account_permission) {
+            if ($grant_account_permission->hasPermissionCode($code)) {
+                return true;
+            }
+        }
+
+        foreach ($this->grant_account_roles as $grant_account_role) {
+            if ($grant_account_role->hasPermissionCode($code)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -108,17 +116,22 @@ final class AdminAccountGrant
      */
     public function grantSettings(Vo\Code $code): array
     {
-        return array_filter([
-            array_filter($this->grant_account_permissions, function ($grant_account_permission) use ($code) {
-                return $grant_account_permission->hasPermissionCode($code);
-            }) !== [] ? 'アカウント付与' : null,
+        $settings = [];
 
-            ...array_map(function ($grant_account_role) use ($code) {
-                return $grant_account_role->hasPermissionCode($code)
-                    ? $grant_account_role->grantRole()->name()
-                    : null;
-            }, $this->grant_account_roles),
-        ], fn($v) => $v !== null);
+        foreach ($this->grant_account_permissions as $grant_account_permission) {
+            if ($grant_account_permission->hasPermissionCode($code)) {
+                $settings[] = 'アカウント付与';
+                break;
+            }
+        }
+
+        foreach ($this->grant_account_roles as $grant_account_role) {
+            if ($grant_account_role->hasPermissionCode($code)) {
+                $settings[] = $grant_account_role->grantRole()->name();
+            }
+        }
+
+        return $settings;
     }
 
     /**

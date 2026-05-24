@@ -45,6 +45,6 @@ final class GrantAccountRoleTest extends TestCase
         );
 
         $this->assertSame($adminAccountGrant, $grantAccountRole->adminAccountGrant());
-        $this->assertSame('管理者', $grantAccountRole->adminAccountGrant()?->name()->toString());
+        $this->assertSame('管理者', $grantAccountRole->adminAccountGrant()->name()->toString());
     }
 }

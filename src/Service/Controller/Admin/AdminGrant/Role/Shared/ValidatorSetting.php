@@ -74,9 +74,11 @@ final class ValidatorSetting implements ServiceInterface
                     'rule' => function (string $value, array $context) {
                         /** @var \App\Model\Table\Grant\GrantRolesTable $table */
                         $table = $this->fetchTable(GrantRolesTable::class);
+                        $data = is_array($context['data'] ?? null) ? $context['data'] : [];
+                        $grantRoleId = $data['grant_role_id'] ?? null;
 
                         return $table->exists([
-                            'id' => $context['data']['grant_role_id'],
+                            'id' => is_scalar($grantRoleId) ? (string)$grantRoleId : '',
                             'modified' => $value,
                         ]);
                     },
@@ -101,11 +103,13 @@ final class ValidatorSetting implements ServiceInterface
                     'rule' => function (string $value, array $context) {
                         /** @var \App\Model\Table\Grant\GrantRolesTable $table */
                         $table = $this->fetchTable(GrantRolesTable::class);
+                        $data = is_array($context['data'] ?? null) ? $context['data'] : [];
+                        $grantRoleId = $data['grant_role_id'] ?? null;
 
                         return !$table->exists([
                             'account_type' => 'ADMIN',
                             'code' => $value,
-                            'id !=' => $context['data']['grant_role_id'],
+                            'id !=' => is_scalar($grantRoleId) ? (string)$grantRoleId : '',
                         ]);
                     },
                     'message' => __('入力された{0}は既に存在します。', '権限ロールコード'),

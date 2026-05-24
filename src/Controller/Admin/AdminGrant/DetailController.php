@@ -5,6 +5,7 @@ namespace App\Controller\Admin\AdminGrant;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
+use App\Security\Input\StrictCast;
 use App\Service\Controller\Admin\AdminGrant\Detail as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
@@ -35,7 +36,7 @@ class DetailController extends AppController
     {
         $this->set([
             'adminAccountGrant' => $this->ctlService->getAdminAccountGrant(
-                adminAccountId: (string)$this->request->getParam('admin_account_id'),
+                adminAccountId: StrictCast::toString($this->request->getParam('admin_account_id')),
             ),
             'grantPermissions' => $this->ctlService->getGrantPermissions(),
         ]);

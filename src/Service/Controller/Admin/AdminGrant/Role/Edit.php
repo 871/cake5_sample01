@@ -318,11 +318,11 @@ final class Edit implements ServiceInterface
     {
         $selectedIds = [];
         foreach ($values as $grantPermissionId => $selected) {
-            if (Cast::toStringOrNull((string)$selected) !== '1') {
+            if (Cast::toStringOrNull($selected) !== '1') {
                 continue;
             }
 
-            $normalizedId = Cast::toStringOrNull((string)$grantPermissionId);
+            $normalizedId = Cast::toStringOrNull($grantPermissionId);
             if ($normalizedId === null || $normalizedId === '') {
                 continue;
             }
