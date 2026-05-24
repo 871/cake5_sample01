@@ -9,6 +9,7 @@ use App\Model\Entity\Grant\GrantRole as OrmEntityGrantRole;
 use App\Model\Table\Grant\GrantRolesTable;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
 
 final class Search
@@ -68,7 +69,7 @@ final class Search
         );
         if ($grantPermissionIds !== []) {
             $query
-                ->matching('GrantRolePermissions', function ($query) use ($grantPermissionIds) {
+                ->matching('GrantRolePermissions', function (SelectQuery $query) use ($grantPermissionIds) {
                     return $query->where([
                         'GrantRolePermissions.account_type' => self::ACCOUNT_TYPE,
                         'GrantRolePermissions.grant_permission_id IN' => $grantPermissionIds,
@@ -83,8 +84,12 @@ final class Search
             ))->bind(':search_text', $condition->getSearchText()->toString(), 'string');
         }
 
-        return array_map(function (OrmEntityGrantRole $row) {
-            return $this->mapper->toDomainGrantRole($row);
-        }, $query->all()->toArray());
+        /** @var list<OrmEntityGrantRole> $rows */
+        $rows = $query->all()->toList();
+
+        return array_map(
+            fn(OrmEntityGrantRole $row) => $this->mapper->toDomainGrantRole($row),
+            $rows,
+        );
     }
 }
