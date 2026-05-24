@@ -84,7 +84,7 @@ final class Search
             ))->bind(':search_text', $condition->getSearchText()->toString(), 'string');
         }
 
-        /** @var list<OrmEntityGrantRole> $rows */
+        /** @var list<\App\Model\Entity\Grant\GrantRole> $rows */
         $rows = $query->all()->toList();
 
         return array_map(

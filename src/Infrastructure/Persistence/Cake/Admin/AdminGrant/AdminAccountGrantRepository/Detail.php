@@ -7,7 +7,6 @@ use App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use DateTimeInterface;
 
 final class Detail
 {
@@ -21,7 +20,7 @@ final class Detail
     /**
      * コンストラクタ
      */
-    public function __construct() 
+    public function __construct()
     {
         $this->table = $this->fetchTable(AdminAccountsTable::class);
     }

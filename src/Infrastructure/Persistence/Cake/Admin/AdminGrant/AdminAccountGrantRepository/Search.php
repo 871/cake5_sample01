@@ -25,6 +25,9 @@ final class Search
      */
     private AdminAccountsTable $table;
 
+    /**
+     * コンストラクタ
+     */
     public function __construct()
     {
         $this->table = $this->fetchTable(AdminAccountsTable::class);

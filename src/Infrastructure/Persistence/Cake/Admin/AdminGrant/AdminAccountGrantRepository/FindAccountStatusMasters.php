@@ -29,7 +29,7 @@ final class FindAccountStatusMasters
      */
     public function run(): array
     {
-        /** @var \App\Model\Entity\Shared\AccountStatusMaster[] $rows */
+        /** @var array<\App\Model\Entity\Shared\AccountStatusMaster> $rows */
         $rows = $this->table
             ->find()
             ->orderBy([
@@ -38,6 +38,7 @@ final class FindAccountStatusMasters
             ])
             ->all()
             ->toArray();
+
         return array_map(function (OrmEntity $ormEntity) {
             return FromOrmToDomainMapper::toAccountStatusMaster($ormEntity);
         }, $rows);
