@@ -112,7 +112,7 @@ final class AdminAccountGrant
 
     /**
      * @param \App\Domain\Admin\AdminGrant\ValueObject\Code $code
-     * @return array<string>
+     * @return list<string>
      */
     public function grantSettings(Vo\Code $code): array
     {
@@ -127,7 +127,10 @@ final class AdminAccountGrant
 
         foreach ($this->grant_account_roles as $grant_account_role) {
             if ($grant_account_role->hasPermissionCode($code)) {
-                $settings[] = $grant_account_role->grantRole()->name();
+                $grant_role = $grant_account_role->grantRole();
+                if ($grant_role !== null) {
+                    $settings[] = $grant_role->name()->toString();
+                }
             }
         }
 
