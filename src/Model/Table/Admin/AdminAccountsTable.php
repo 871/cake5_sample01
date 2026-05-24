@@ -16,6 +16,8 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Shared\AccountStatusMastersTable> $AccountStatusMasters
  * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Admin\AdminAccountHistoriesTable> $AdminAccountHistories
+ * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Grant\GrantAccountPermissionsTable> $GrantAccountPermissions
+ * @property \Cake\ORM\Association\HasMany<\App\Model\Table\Grant\GrantAccountRolesTable> $GrantAccountRoles
  * @method \App\Model\Entity\Admin\AdminAccount newEmptyEntity()
  * @method \App\Model\Entity\Admin\AdminAccount newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
  * @method list<\App\Model\Entity\Admin\AdminAccount> newEntities(array<int, array<string, mixed>> $data, array<string, mixed> $options = [])

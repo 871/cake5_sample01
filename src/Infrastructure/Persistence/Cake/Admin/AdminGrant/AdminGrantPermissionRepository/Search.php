@@ -31,7 +31,7 @@ final class Search
     }
 
     /**
-     * @return array
+     * @return array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission>
      */
     public function run(): array
     {
