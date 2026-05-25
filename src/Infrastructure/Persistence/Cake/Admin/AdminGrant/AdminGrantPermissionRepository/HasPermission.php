@@ -45,6 +45,8 @@ final class HasPermission
                 INNER JOIN
                     grant_permissions AS gp
                 ON 
+                    -- `grant_account_permissions_idx01` (`account_type`,`account_id`,`grant_permission_id`),
+                    -- grant_permissions PRIMARY KEY (`id`),
                     gap.account_type = :account_type1
                 AND 
                     gap.account_id = :account_id1
@@ -62,6 +64,8 @@ final class HasPermission
                 INNER JOIN
                     grant_roles AS gr
                 ON
+                    -- `grant_account_roles_idx01` (`account_type`,`account_id`,`grant_role_id`),
+                    -- grant_roles PRIMARY KEY (`id`),
                     gar.account_type = :account_type2
                 AND
                     gar.account_id = :account_id2
@@ -70,12 +74,14 @@ final class HasPermission
                 INNER JOIN
                     grant_role_permissions AS grp
                 ON
+                    -- `grant_role_permissions_idx01` (`account_type`,`grant_role_id`,`grant_permission_id`),
                     grp.account_type = gr.account_type
                 AND
                     grp.grant_role_id = gr.id
                 INNER JOIN
                     grant_permissions AS gp
                 ON
+                    -- grant_permissions PRIMARY KEY (`id`),
                     gp.account_type = grp.account_type
                 AND
                     gp.id = grp.grant_permission_id
