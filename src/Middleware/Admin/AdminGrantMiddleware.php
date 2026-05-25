@@ -5,12 +5,10 @@ namespace App\Middleware\Admin;
 
 use App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId;
 use App\Domain\Admin\AdminGrant\ValueObject\Code;
-use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
-use App\Model\Table\Grant\GrantPermissionsTable;
+use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantPermissionRepository;
 use App\Security\Input\StrictCast;
 use Cake\Http\Response;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use DateTimeImmutable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -25,7 +23,17 @@ class AdminGrantMiddleware implements MiddlewareInterface
     /**
      * SystemAdministrator 権限コード
      */
-    public const PERMISSION_CODE_SYSTEM_ADMINISTRATOR = 'SystemAdministrator';
+    private const PERMISSION_CODE_SYSTEM_ADMINISTRATOR = 'SystemAdministrator';
+
+    /**
+     * アクセス権限の判定を行う際の、許可するコントローラのプレフィックスリスト
+     * 例： 'Admin' => App\Controller\Admin\XxxController, App\Controller\Admin\YyyController などを許可
+     * 
+     * @var array<string>
+     */
+    private array $allowPrefixList = [
+        'Admin',
+    ];
 
     /**
      * @param \Psr\Http\Message\ServerRequestInterface $request
@@ -65,42 +73,22 @@ class AdminGrantMiddleware implements MiddlewareInterface
     {
         // リクエスト情報から権限コードを作成
         //  'PageAccess.' . コントローラのプレフィックス（'/'を'.'に変換）
-        // 例： App\Controller\Admin\AdminAccount\EditController => 'PageAccess.Admin.AdminAccount'
-        // 例： App\Controller\Admin\AdminGrant\Role => 'PageAccess.Admin.AdminGrant.Role'
+        // 例： App\Controller\Admin\AdminAccount\XxxController => 'PageAccess.Admin.AdminAccount'
+        // 例： App\Controller\Admin\AdminGrant\Role\XxxController => 'PageAccess.Admin.AdminGrant.Role'
         /** @var \Cake\Http\ServerRequest $request */
         $prefix = StrictCast::toString($request->getParam('prefix'));
-        if ($prefix === '') {
-            return true;
-        }
-        $permissionCode = 'PageAccess.' . str_replace('/', '.', $prefix);
-
-        // grant_permissions テーブルで権限コードの存在確認
-        /** @var \App\Model\Table\Grant\GrantPermissionsTable $table */
-        $table = $this->fetchTable(GrantPermissionsTable::class);
-        $permission = $table->find()
-            ->select(['id'])
-            ->where([
-                'account_type' => self::ACCOUNT_TYPE,
-                'code' => $permissionCode,
-                'is_active' => 1,
-            ])
-            ->first();
-
-        // 権限コードが存在しない場合はアクセス可
-        if ($permission === null) {
+        if ($prefix === '' || in_array($prefix, $this->allowPrefixList, true)) {
             return true;
         }
 
-        // 管理者アカウントの権限情報を取得
-        $adminAccountGrant = (new AdminAccountGrantRepository(new DateTimeImmutable()))
-            ->detail(new AdminAccountId($accountId));
+        $adminGrantPermission = new AdminGrantPermissionRepository();
 
-        // SystemAdministrator権限があればアクセス可
-        if ($adminAccountGrant->hasPermissionCode(new Code(self::PERMISSION_CODE_SYSTEM_ADMINISTRATOR))) {
-            return true;
-        }
-
-        // 権限コードが存在し、管理者アカウントIDと紐づいている場合はアクセス可
-        return $adminAccountGrant->hasPermissionCode(new Code($permissionCode));
+        return $adminGrantPermission->hasPermission(
+            new Code('PageAccess.' . str_replace('/', '.', $prefix)),
+            new AdminAccountId($accountId),
+        ) || $adminGrantPermission->hasPermission(
+            new Code(self::PERMISSION_CODE_SYSTEM_ADMINISTRATOR),
+            new AdminAccountId($accountId),
+        );
     }
 }
