@@ -172,7 +172,7 @@ final class Login implements ServiceInterface
     }
 
     /**
-     * @return string|array<string, string>
+     * @return array<string, string>|string
      */
     public function getRedirect(): string|array
     {

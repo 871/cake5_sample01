@@ -30,7 +30,7 @@ class LogoutController extends AppController
         );
     }
 
-    public function index()
+    public function index(): void
     {
         throw new MethodNotAllowedException();
     }

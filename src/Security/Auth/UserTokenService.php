@@ -10,6 +10,7 @@ use Cake\Utility\Security;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Psr\Http\Message\ResponseInterface;
 
 final class UserTokenService
 {
@@ -102,9 +103,9 @@ final class UserTokenService
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function withCookieHeaders(
-        \Psr\Http\Message\ResponseInterface $response,
+        ResponseInterface $response,
         array $setCookieHeaders,
-    ): \Psr\Http\Message\ResponseInterface {
+    ): ResponseInterface {
         foreach ($setCookieHeaders as $header) {
             $response = $response->withAddedHeader('Set-Cookie', $header);
         }
@@ -179,7 +180,7 @@ final class UserTokenService
         }
 
         /** @var array<string, string> */
-        return array_map(static fn (mixed $value): string => (string)$value, $claims);
+        return array_map(static fn(mixed $value): string => (string)$value, $claims);
     }
 
     /**
