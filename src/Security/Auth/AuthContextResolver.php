@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Security\Auth;
 
-use App\Security\Input\StrictCast;
 use Cake\Http\ServerRequest;
 
 final class AuthContextResolver
@@ -13,13 +12,14 @@ final class AuthContextResolver
      */
     public static function resolve(ServerRequest $request): AuthContext
     {
-        $type = StrictCast::toString(
-            preg_replace('/^\/([^\/]+)\/([^\/]+)\/([\d]+)\/.*$/', '$2', $request->getPath()),
-        );
+        preg_match('/^\/v1\/([^\/]+)\/[\d]+(?:\/.*)?$/', $request->getPath(), $matches);
+        $type = $matches[1] ?? '';
 
         return match ($type) {
             // 管理者アカウントのAuthContextを生成する
             'ad' => new AuthContext\AdminAuthContext($request),
+            // ユーザーアカウントのAuthContextを生成する
+            'us' => new AuthContext\UserAuthContext($request),
             // 未認証の場合は匿名のAuthContextを生成する
             default => new AuthContext\AnonymousAuthContext($request),
         };
