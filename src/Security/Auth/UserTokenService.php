@@ -23,7 +23,14 @@ final class UserTokenService
     /**
      * @param \App\Model\Entity\User\UserAccount $account
      * @param \DateTimeInterface $now
-     * @return array{auth: array<string, string>, access_token: string, refresh_token: string, refresh_token_id: string, refresh_token_expires_at: \DateTimeImmutable, set_cookie_headers: array<int, string>}
+     * @return array{
+     *     auth: array<string, string>,
+     *     access_token: string,
+     *     refresh_token: string,
+     *     refresh_token_id: string,
+     *     refresh_token_expires_at: \DateTimeImmutable,
+     *     set_cookie_headers: array<int, string>
+     * }
      */
     public function createTokenSet(UserAccount $account, DateTimeInterface $now): array
     {
@@ -153,7 +160,12 @@ final class UserTokenService
         }
 
         [$encodedHeader, $encodedPayload, $encodedSignature] = $parts;
-        $expectedSignature = $this->base64UrlEncode(hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, Security::getSalt(), true));
+        $expectedSignature = $this->base64UrlEncode(hash_hmac(
+            'sha256',
+            $encodedHeader . '.' . $encodedPayload,
+            Security::getSalt(),
+            true,
+        ));
         if (!hash_equals($expectedSignature, $encodedSignature)) {
             return null;
         }
@@ -170,7 +182,12 @@ final class UserTokenService
 
         $tokenType = $claims['token_type'] ?? null;
         $expiresAt = $claims['exp'] ?? null;
-        if (!is_string($tokenType) || $tokenType !== $expectedTokenType || !is_string($expiresAt) || !ctype_digit($expiresAt)) {
+        if (
+            !is_string($tokenType)
+            || $tokenType !== $expectedTokenType
+            || !is_string($expiresAt)
+            || !ctype_digit($expiresAt)
+        ) {
             return null;
         }
 
@@ -196,7 +213,12 @@ final class UserTokenService
             $claims,
             JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ));
-        $signature = $this->base64UrlEncode(hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, Security::getSalt(), true));
+        $signature = $this->base64UrlEncode(hash_hmac(
+            'sha256',
+            $encodedHeader . '.' . $encodedPayload,
+            Security::getSalt(),
+            true,
+        ));
 
         return $encodedHeader . '.' . $encodedPayload . '.' . $signature;
     }

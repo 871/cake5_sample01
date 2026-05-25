@@ -28,16 +28,25 @@ class UserAccountId implements AccountId
         $this->value = (int)$value;
     }
 
+    /**
+     * @return int
+     */
     public function toInt(): int
     {
         return $this->value;
     }
 
+    /**
+     * @return string
+     */
     public function toString(): string
     {
         return (string)$this->value;
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         return $this->toString();
