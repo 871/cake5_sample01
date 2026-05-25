@@ -7,6 +7,7 @@ use App\Controller\AppController;
 use App\Security\Auth\UserTokenService;
 use App\Security\Input\Cast;
 use Cake\Event\EventInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class TopController extends AppController
 {
@@ -17,7 +18,7 @@ class TopController extends AppController
         $this->viewBuilder()->setLayout('user_main');
     }
 
-    public function index()
+    public function index(): ResponseInterface
     {
         $auth = $this->request->getAttribute(UserTokenService::REQUEST_ATTRIBUTE);
         $accountName = is_array($auth)

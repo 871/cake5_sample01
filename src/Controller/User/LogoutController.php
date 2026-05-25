@@ -10,6 +10,7 @@ use App\Service\Controller\User\Logout as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\MethodNotAllowedException;
 use DateTimeImmutable;
+use Psr\Http\Message\ResponseInterface;
 
 class LogoutController extends AppController
 {
@@ -30,18 +31,21 @@ class LogoutController extends AppController
         );
     }
 
-    public function index()
+    public function index(): never
     {
         throw new MethodNotAllowedException();
     }
 
-    public function indexPost()
+    public function indexPost(): ResponseInterface
     {
         $response = $this->redirect([
             'prefix' => 'User',
             'controller' => 'Login',
             'action' => 'index',
         ]);
+        if ($response === null) {
+            return $this->response;
+        }
         $response = (new UserTokenService())->withCookieHeaders(
             $response,
             $this->ctlService->logout(),

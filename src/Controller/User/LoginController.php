@@ -11,6 +11,7 @@ use App\Security\Input\StrictCast;
 use App\Service\Controller\User\Login as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
+use Psr\Http\Message\ResponseInterface;
 
 class LoginController extends AppController
 {
@@ -31,12 +32,12 @@ class LoginController extends AppController
         );
     }
 
-    public function index()
+    public function index(): ResponseInterface
     {
         return $this->render('/User/login');
     }
 
-    public function indexPost()
+    public function indexPost(): ResponseInterface
     {
         try {
             $redirect = $this->ctlService
@@ -48,6 +49,9 @@ class LoginController extends AppController
                 ->getRedirect();
 
             $response = $this->redirect($redirect);
+            if ($response === null) {
+                return $this->render('/User/login');
+            }
 
             return (new UserTokenService())->withCookieHeaders(
                 $response,

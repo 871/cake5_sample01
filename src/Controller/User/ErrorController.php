@@ -5,6 +5,7 @@ namespace App\Controller\User;
 
 use App\Controller\AppController;
 use Cake\Event\EventInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class ErrorController extends AppController
 {
@@ -15,7 +16,7 @@ class ErrorController extends AppController
         $this->viewBuilder()->setLayout('user_login');
     }
 
-    public function index()
+    public function index(): ResponseInterface
     {
         return $this->render('/User/error');
     }

@@ -24,8 +24,11 @@ final class UserAuthContext implements AuthContext
     ) {
         $auth = $this->request->getAttribute(UserTokenService::REQUEST_ATTRIBUTE);
         if (is_array($auth)) {
-            /** @var array<string, string> */
-            $this->auth = array_map(static fn (mixed $value): string => (string)$value, $auth);
+            /** @var array<string, mixed> $auth */
+            $this->auth = array_map(
+                static fn (mixed $value): string => StrictCast::toString($value),
+                $auth,
+            );
 
             return;
         }
