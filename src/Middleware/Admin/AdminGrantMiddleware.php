@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Middleware\Admin;
 
+use App\Domain\Admin\AdminGrant\ValueObject\AdminAccountId;
+use App\Domain\Admin\AdminGrant\ValueObject\Code;
+use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantPermissionRepository;
 use App\Security\Input\StrictCast;
 use Cake\Http\Response;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -16,6 +19,21 @@ class AdminGrantMiddleware implements MiddlewareInterface
     use LocatorAwareTrait;
 
     public const ACCOUNT_TYPE = 'ADMIN';
+
+    /**
+     * SystemAdministrator 権限コード
+     */
+    private const PERMISSION_CODE_SYSTEM_ADMINISTRATOR = 'SystemAdministrator';
+
+    /**
+     * アクセス権限の判定を行う際の、許可するコントローラのプレフィックスリスト
+     * 例： 'Admin' => App\Controller\Admin\XxxController, App\Controller\Admin\YyyController などを許可
+     *
+     * @var array<string>
+     */
+    private array $allowPrefixList = [
+        'Admin',
+    ];
 
     /**
      * @param \Psr\Http\Message\ServerRequestInterface $request
@@ -53,17 +71,24 @@ class AdminGrantMiddleware implements MiddlewareInterface
      */
     private function hasPageAccessPermission(ServerRequestInterface $request, string $accountId): bool
     {
-        // TODO 未実装
         // リクエスト情報から権限コードを作成
-        //  'PageAccess.' . 先頭のAdminを除くコントローラのプレフィックス
-        // 例： App\Controller\Admin\AdminAccount\EditController => 'PageAccess.AdminAccount'
-        // 例： App\Controller\Admin\AdminGrant\Role => 'PageAccess.AdminGrant.Role'
+        //  'PageAccess.' . コントローラのプレフィックス（'/'を'.'に変換）
+        // 例： App\Controller\Admin\AdminAccount\XxxController => 'PageAccess.Admin.AdminAccount'
+        // 例： App\Controller\Admin\AdminGrant\Role\XxxController => 'PageAccess.Admin.AdminGrant.Role'
+        /** @var \Cake\Http\ServerRequest $request */
+        $prefix = StrictCast::toString($request->getParam('prefix'));
+        if ($prefix === '' || in_array($prefix, $this->allowPrefixList, true)) {
+            return true;
+        }
 
-        // 権限コードが存在しない場合はアクセス可
-        // 権限コードが存在し、管理者アカウントIDと紐づいている場合はアクセス可
-        // SystemAdministrator権限があればアクセス可
-        // それ以外はアクセス不可
+        $adminGrantPermission = new AdminGrantPermissionRepository();
 
-        return true;
+        return $adminGrantPermission->hasPermission(
+            new Code('PageAccess.' . str_replace('/', '.', $prefix)),
+            new AdminAccountId($accountId),
+        ) || $adminGrantPermission->hasPermission(
+            new Code(self::PERMISSION_CODE_SYSTEM_ADMINISTRATOR),
+            new AdminAccountId($accountId),
+        );
     }
 }
