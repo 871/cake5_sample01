@@ -49,6 +49,10 @@ final class UserAccountsTable extends Table
         ]);
     }
 
+    /**
+     * @param \Cake\Validation\Validator $validator
+     * @return \Cake\Validation\Validator
+     */
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -93,6 +97,10 @@ final class UserAccountsTable extends Table
         return $validator;
     }
 
+    /**
+     * @param \Cake\ORM\RulesChecker $rules
+     * @return \Cake\ORM\RulesChecker
+     */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['email']), ['errorField' => 'email']);
