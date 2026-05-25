@@ -28,7 +28,6 @@ class AdminGrantMiddleware implements MiddlewareInterface
     /**
      * アクセス権限の判定を行う際の、許可するコントローラのプレフィックスリスト
      * 例： 'Admin' => App\Controller\Admin\XxxController, App\Controller\Admin\YyyController などを許可
-     * 
      * @var array<string>
      */
     private array $allowPrefixList = [
