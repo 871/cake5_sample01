@@ -55,9 +55,9 @@ class AdminGrantMiddleware implements MiddlewareInterface
     {
         // TODO 未実装
         // リクエスト情報から権限コードを作成
-        //  'PageAccess.' . 先頭のAdminを除くコントローラのプレフィックス
-        // 例： App\Controller\Admin\AdminAccount\EditController => 'PageAccess.AdminAccount'
-        // 例： App\Controller\Admin\AdminGrant\Role => 'PageAccess.AdminGrant.Role'
+        //  'PageAccess.' . コントローラのプレフィックス
+        // 例： App\Controller\Admin\AdminAccount\EditController => 'PageAccess.Admin.AdminAccount'
+        // 例： App\Controller\Admin\AdminGrant\Role => 'PageAccess.Admin.AdminGrant.Role'
 
         // 権限コードが存在しない場合はアクセス可
         // 権限コードが存在し、管理者アカウントIDと紐づいている場合はアクセス可
