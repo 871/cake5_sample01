@@ -43,10 +43,11 @@ class LogoutController extends AppController
     }
 
     /**
-     * @return \Cake\Http\Response|null|void Renders view
+     * @return \Cake\Http\Response|null|void
      */
     public function indexPost()
     {
+        /** @var \Cake\Http\Response $response */
         $response = $this->redirect([
             'prefix' => 'User',
             'controller' => 'Login',

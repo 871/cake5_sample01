@@ -6,6 +6,7 @@ namespace App\Security\Auth;
 use App\Lib\UUID\UUID;
 use App\Model\Entity\User\UserAccount;
 use App\Security\Auth\AuthContext\Fields\Type;
+use App\Security\Input\StrictCast;
 use Cake\Utility\Security;
 use DateInterval;
 use DateTimeImmutable;
@@ -61,8 +62,10 @@ final class UserTokenService
     }
 
     /**
-     * @param ?string $token
-     * @return ?array<string, string>
+     * @return array{
+     *     account_id: string,
+     *     type: string
+     * }|null
      */
     public function readAccessToken(?string $token): ?array
     {
@@ -73,7 +76,7 @@ final class UserTokenService
 
         unset($claims['token_type'], $claims['iat'], $claims['exp']);
 
-        /** @var array<string, string> */
+        /** @var array{ account_id: string, type: string } */
         return $claims;
     }
 
@@ -100,7 +103,7 @@ final class UserTokenService
     /**
      * @param \Psr\Http\Message\ResponseInterface $response
      * @param array<int, string> $setCookieHeaders
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return \Cake\Http\Response
      */
     public function withCookieHeaders(
         ResponseInterface $response,
@@ -110,6 +113,7 @@ final class UserTokenService
             $response = $response->withAddedHeader('Set-Cookie', $header);
         }
 
+        /** @var \Cake\Http\Response $response */
         return $response;
     }
 
@@ -190,7 +194,10 @@ final class UserTokenService
         }
 
         /** @var array<string, string> */
-        return array_map(static fn(mixed $value): string => (string)$value, $claims);
+        return array_map(
+            static fn(mixed $value): string => StrictCast::toString($value),
+            $claims,
+        );
     }
 
     /**

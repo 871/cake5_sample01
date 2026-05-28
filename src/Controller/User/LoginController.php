@@ -56,7 +56,7 @@ class LoginController extends AppController
                 )
                 ->recordLoginSuccess()
                 ->getRedirect();
-
+            /** @var \Cake\Http\Response $response */
             $response = $this->redirect($redirect);
 
             return (new UserTokenService())->withCookieHeaders(

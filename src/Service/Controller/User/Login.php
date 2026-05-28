@@ -50,7 +50,7 @@ final class Login implements ServiceInterface
     /**
      * @param string $login_id
      * @param string $password
-     * @return $this
+     * @return self
      */
     public function login(string $login_id, string $password): self
     {
@@ -73,7 +73,7 @@ final class Login implements ServiceInterface
     }
 
     /**
-     * @return $this
+     * @return self
      */
     private function checkLoginFailureCount(): self
     {
@@ -88,7 +88,7 @@ final class Login implements ServiceInterface
     }
 
     /**
-     * @return $this
+     * @return self
      */
     private function loadAccountEntity(): self
     {
@@ -102,7 +102,7 @@ final class Login implements ServiceInterface
     }
 
     /**
-     * @return $this
+     * @return self
      */
     private function verifyPassword(): self
     {
@@ -117,7 +117,7 @@ final class Login implements ServiceInterface
     }
 
     /**
-     * @return $this
+     * @return self
      */
     private function checkPasswordExpiresAt(): self
     {
@@ -132,7 +132,7 @@ final class Login implements ServiceInterface
     }
 
     /**
-     * @return $this
+     * @return self
      */
     private function checkAccountStatus(): self
     {
@@ -158,7 +158,7 @@ final class Login implements ServiceInterface
     }
 
     /**
-     * @return $this
+     * @return self
      */
     private function createTokens(): self
     {
@@ -176,7 +176,7 @@ final class Login implements ServiceInterface
     }
 
     /**
-     * @return $this
+     * @return self
      */
     public function recordLoginSuccess(): self
     {
@@ -226,7 +226,7 @@ final class Login implements ServiceInterface
 
     /**
      * @param \App\Exception\AuthException $e
-     * @return $this
+     * @return self
      */
     public function recordLoginFailure(AuthException $e): self
     {

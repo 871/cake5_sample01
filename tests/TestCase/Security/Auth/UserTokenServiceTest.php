@@ -19,9 +19,16 @@ final class UserTokenServiceTest extends TestCase
 
         $this->assertSame('100001', $tokenSet['auth']['account_id']);
         $this->assertSame('user', $tokenSet['auth']['type']);
-        $this->assertSame('100001', $service->readAccessToken($tokenSet['access_token'])['account_id']);
-        $this->assertSame('100001', $service->readRefreshToken($tokenSet['refresh_token'])['account_id']);
-        $this->assertSame($tokenSet['refresh_token_id'], $service->readRefreshToken($tokenSet['refresh_token'])['refresh_token_id']);
+
+        $access = $service->readAccessToken($tokenSet['access_token']);
+        $this->assertNotNull($access);
+        $this->assertSame('100001', $access['account_id']);
+
+        $refresh = $service->readRefreshToken($tokenSet['refresh_token']);
+        $this->assertNotNull($refresh);
+        $this->assertSame('100001', $refresh['account_id']);
+        $this->assertSame($tokenSet['refresh_token_id'], $refresh['refresh_token_id']);
+
         $this->assertCount(2, $tokenSet['set_cookie_headers']);
     }
 
@@ -34,7 +41,9 @@ final class UserTokenServiceTest extends TestCase
         );
 
         $this->assertNull($service->readAccessToken($tokenSet['access_token']));
-        $this->assertSame('100001', $service->readRefreshToken($tokenSet['refresh_token'])['account_id']);
+        $refresh = $service->readRefreshToken($tokenSet['refresh_token']);
+        $this->assertNotNull($refresh);
+        $this->assertSame('100001', $refresh['account_id']);
     }
 
     private function makeAccount(): UserAccount

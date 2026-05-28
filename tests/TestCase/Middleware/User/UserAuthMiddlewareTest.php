@@ -80,7 +80,7 @@ final class UserAuthMiddlewareTest extends TestCase
             ->with(
                 $tokenSet['refresh_token_id'],
                 '100001',
-                $this->isString(),
+                $this->isType('string'),
                 $this->isInstanceOf(DateTimeImmutable::class),
                 $this->isInstanceOf(DateTimeImmutable::class),
             );
