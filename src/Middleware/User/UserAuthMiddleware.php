@@ -20,6 +20,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class UserAuthMiddleware implements MiddlewareInterface
 {
+    /**
+     * @param \App\Security\Auth\UserTokenService $tokenService
+     * @param \App\Infrastructure\Persistence\Cake\User\UserAccountsRepository $userAccountsRepository
+     * @param \App\Infrastructure\Persistence\Cake\User\RefreshTokensRepository $refreshTokensRepository
+     */
     public function __construct(
         private readonly UserTokenService $tokenService = new UserTokenService(),
         private readonly UserAccountsRepository $userAccountsRepository = new UserAccountsRepository(),
@@ -27,6 +32,11 @@ class UserAuthMiddleware implements MiddlewareInterface
     ) {
     }
 
+    /**
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Server\RequestHandlerInterface $handler
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /** @var \Cake\Http\ServerRequest $request */
@@ -92,6 +102,10 @@ class UserAuthMiddleware implements MiddlewareInterface
             && ($auth['account_id'] ?? null) === $account_id;
     }
 
+    /**
+     * @param \App\Model\Entity\User\UserAccount $account
+     * @return bool
+     */
     private function canAuthenticate(UserAccount $account): bool
     {
         if ($account->password_expires_at->getTimestamp() < (new DateTimeImmutable())->getTimestamp()) {

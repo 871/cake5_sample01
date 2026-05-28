@@ -19,6 +19,10 @@ class LoginController extends AppController
      */
     private CtlService $ctlService;
 
+    /**
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
+     * @return void
+     */
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
@@ -31,11 +35,17 @@ class LoginController extends AppController
         );
     }
 
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
     public function index()
     {
         return $this->render('/User/login');
     }
 
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
     public function indexPost()
     {
         try {

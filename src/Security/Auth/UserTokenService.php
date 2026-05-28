@@ -154,7 +154,12 @@ final class UserTokenService
         }
 
         [$encodedHeader, $encodedPayload, $encodedSignature] = $parts;
-        $expectedSignature = $this->base64UrlEncode(hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, Security::getSalt(), true));
+        $expectedSignature = $this->base64UrlEncode(hash_hmac(
+            'sha256',
+            $encodedHeader . '.' . $encodedPayload,
+            Security::getSalt(),
+            true,
+        ));
         if (!hash_equals($expectedSignature, $encodedSignature)) {
             return null;
         }
@@ -171,7 +176,12 @@ final class UserTokenService
 
         $tokenType = $claims['token_type'] ?? null;
         $expiresAt = $claims['exp'] ?? null;
-        if (!is_string($tokenType) || $tokenType !== $expectedTokenType || !is_string($expiresAt) || !ctype_digit($expiresAt)) {
+        if (
+            !is_string($tokenType)
+            || $tokenType !== $expectedTokenType
+            || !is_string($expiresAt)
+            || !ctype_digit($expiresAt)
+        ) {
             return null;
         }
 
@@ -197,7 +207,12 @@ final class UserTokenService
             $claims,
             JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
         ));
-        $signature = $this->base64UrlEncode(hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, Security::getSalt(), true));
+        $signature = $this->base64UrlEncode(hash_hmac(
+            'sha256',
+            $encodedHeader . '.' . $encodedPayload,
+            Security::getSalt(),
+            true,
+        ));
 
         return $encodedHeader . '.' . $encodedPayload . '.' . $signature;
     }

@@ -47,6 +47,11 @@ final class Login implements ServiceInterface
      */
     private array $setCookieHeaders = [];
 
+    /**
+     * @param string $login_id
+     * @param string $password
+     * @return $this
+     */
     public function login(string $login_id, string $password): self
     {
         $this->login_id = $login_id;
@@ -67,6 +72,9 @@ final class Login implements ServiceInterface
         }
     }
 
+    /**
+     * @return $this
+     */
     private function checkLoginFailureCount(): self
     {
         if (!(new LoginLogsRepository())->checkFailureLoginLimit(LoginLogVo\LoginId::fromString($this->login_id))) {
@@ -79,6 +87,9 @@ final class Login implements ServiceInterface
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     private function loadAccountEntity(): self
     {
         $this->accountEntity = (new UserAccountsRepository())->findByEmail($this->login_id)
@@ -90,6 +101,9 @@ final class Login implements ServiceInterface
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     private function verifyPassword(): self
     {
         if (!(new DefaultPasswordHasher())->check($this->password, (string)$this->accountEntity->password)) {
@@ -102,6 +116,9 @@ final class Login implements ServiceInterface
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     private function checkPasswordExpiresAt(): self
     {
         if ($this->accountEntity->password_expires_at->getTimestamp() < $this->datetime->getTimestamp()) {
@@ -114,6 +131,9 @@ final class Login implements ServiceInterface
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     private function checkAccountStatus(): self
     {
         return match ((string)$this->accountEntity->account_status_master->code) {
@@ -137,6 +157,9 @@ final class Login implements ServiceInterface
         };
     }
 
+    /**
+     * @return $this
+     */
     private function createTokens(): self
     {
         $this->account_id = (string)$this->accountEntity->id;
@@ -152,6 +175,9 @@ final class Login implements ServiceInterface
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function recordLoginSuccess(): self
     {
         (new LoginLogsRepository())->create(new LoginLogEntity(
@@ -198,6 +224,10 @@ final class Login implements ServiceInterface
         return $this->setCookieHeaders;
     }
 
+    /**
+     * @param \App\Exception\AuthException $e
+     * @return $this
+     */
     public function recordLoginFailure(AuthException $e): self
     {
         if ($e->getFailureReasonCode() === AuthException::LOGIN_FAIL_COUNT_OVER) {

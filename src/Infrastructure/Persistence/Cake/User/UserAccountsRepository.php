@@ -16,6 +16,9 @@ class UserAccountsRepository
      */
     private UserAccountsTable $table;
 
+    /**
+     * @return void
+     */
     public function __construct()
     {
         $this->table = $this->fetchTable(UserAccountsTable::class);

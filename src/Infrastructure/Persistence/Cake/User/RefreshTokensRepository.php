@@ -17,11 +17,21 @@ class RefreshTokensRepository
      */
     private RefreshTokensTable $table;
 
+    /**
+     * @return void
+     */
     public function __construct()
     {
         $this->table = $this->fetchTable(RefreshTokensTable::class);
     }
 
+    /**
+     * @param string $id
+     * @param string $userAccountId
+     * @param \DateTimeInterface $expiresAt
+     * @param \DateTimeInterface $now
+     * @return void
+     */
     public function create(
         string $id,
         string $userAccountId,
@@ -43,6 +53,12 @@ class RefreshTokensRepository
         ]);
     }
 
+    /**
+     * @param string $id
+     * @param string $userAccountId
+     * @param \DateTimeInterface $now
+     * @return bool
+     */
     public function isValid(
         string $id,
         string $userAccountId,
@@ -51,6 +67,14 @@ class RefreshTokensRepository
         return $this->readValid($id, $userAccountId, $now) !== null;
     }
 
+    /**
+     * @param string $currentId
+     * @param string $userAccountId
+     * @param string $nextId
+     * @param \DateTimeInterface $expiresAt
+     * @param \DateTimeInterface $now
+     * @return void
+     */
     public function rotate(
         string $currentId,
         string $userAccountId,
@@ -70,6 +94,10 @@ class RefreshTokensRepository
         });
     }
 
+    /**
+     * @param string $id
+     * @return void
+     */
     public function delete(string $id): void
     {
         $this->table->deleteAll([

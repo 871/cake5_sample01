@@ -8,6 +8,10 @@ use Cake\Event\EventInterface;
 
 class ErrorController extends AppController
 {
+    /**
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
+     * @return void
+     */
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
@@ -15,6 +19,9 @@ class ErrorController extends AppController
         $this->viewBuilder()->setLayout('user_login');
     }
 
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
     public function index()
     {
         return $this->render('/User/error');

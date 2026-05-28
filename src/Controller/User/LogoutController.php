@@ -18,6 +18,10 @@ class LogoutController extends AppController
      */
     private CtlService $ctlService;
 
+    /**
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
+     * @return void
+     */
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
@@ -30,11 +34,17 @@ class LogoutController extends AppController
         );
     }
 
+    /**
+     * @return void
+     */
     public function index(): void
     {
         throw new MethodNotAllowedException();
     }
 
+    /**
+     * @return \Cake\Http\Response|null|void Renders view
+     */
     public function indexPost()
     {
         $response = $this->redirect([

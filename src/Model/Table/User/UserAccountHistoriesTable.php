@@ -45,6 +45,10 @@ final class UserAccountHistoriesTable extends Table
         ]);
     }
 
+    /**
+     * @param \Cake\Validation\Validator $validator
+     * @return \Cake\Validation\Validator
+     */
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -99,6 +103,10 @@ final class UserAccountHistoriesTable extends Table
         return $validator;
     }
 
+    /**
+     * @param \Cake\ORM\RulesChecker $rules
+     * @return \Cake\ORM\RulesChecker
+     */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_account_id'], 'UserAccounts'), ['errorField' => 'user_account_id']);
