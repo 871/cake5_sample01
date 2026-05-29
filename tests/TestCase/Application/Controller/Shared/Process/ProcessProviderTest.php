@@ -1,0 +1,89 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Test\TestCase\Application\Controller\Shared\Process;
+
+use App\Security\Auth\AuthContext\AnonymousAuthContext;
+use App\Application\Controller\Shared\Process\Process\InputProcess;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessId;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessParams;
+use App\Application\Controller\Shared\Process\ProcessProvider;
+use Cake\Http\ServerRequest;
+use Cake\Http\Session;
+use Cake\TestSuite\TestCase;
+use DomainException;
+
+final class ProcessProviderTest extends TestCase
+{
+    private ProcessProvider $provider;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $authContext = new AnonymousAuthContext($this->createMock(ServerRequest::class));
+
+        // Session モック
+        $session = $this->createMock(Session::class);
+        $session->method('check')->willReturn(true);
+        $session->method('read')->willReturn(['foo' => 'bar']);
+
+        // Request モック
+        $request = $this->createMock(ServerRequest::class);
+        $request->method('getSession')->willReturn($session);
+
+        $this->provider = new ProcessProvider(
+            datetime: new \DateTimeImmutable(),
+            request: $request,
+            authContext: $authContext,
+        );
+    }
+
+    public function testProvideReturnsProcess(): void
+    {
+        $processId = new ProcessId('abc123');
+
+        $process = $this->provider->provide(
+            InputProcess::class,
+            $processId
+        );
+
+        $this->assertInstanceOf(InputProcess::class, $process);
+        $this->assertInstanceOf(ProcessParams::class, $process->getProcessParams());
+    }
+
+    public function testProvideReturnsNullWhenSessionMissing(): void
+    {
+        $session = $this->createMock(Session::class);
+        $session->method('check')->willReturn(false);
+
+        $request = $this->createMock(ServerRequest::class);
+        $request->method('getSession')->willReturn($session);
+
+        $this->provider = new ProcessProvider(
+            datetime: new \DateTimeImmutable(),
+            request: $request,
+            authContext: new AnonymousAuthContext($this->createMock(ServerRequest::class)),
+        );
+
+        $processId = new ProcessId('123456');
+
+        $result = $this->provider->provide(
+            InputProcess::class,
+            $processId
+        );
+
+        $this->assertNull($result);
+    }
+
+    public function testThrowsOnInvalidProcessClass(): void
+    {
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Process class must implement');
+
+        $this->provider->provide(
+            \stdClass::class,
+            new ProcessId('x')
+        );
+    }
+}

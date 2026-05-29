@@ -14,7 +14,7 @@ final class UserTokenServiceTest extends TestCase
     public function testCreateTokenSetAndReadTokens(): void
     {
         $service = new UserTokenService();
-        $now = new DateTimeImmutable('2026-05-17 12:00:00');
+        $now = new DateTimeImmutable();
         $tokenSet = $service->createTokenSet($this->makeAccount(), $now);
 
         $this->assertSame('100001', $tokenSet['auth']['account_id']);

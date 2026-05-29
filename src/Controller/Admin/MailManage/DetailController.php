@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\MailManage;
 
+use App\Application\Controller\Admin\MailManage\Detail as CtlService;
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\MailManage\Detail as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 
 class DetailController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\MailManage\Detail
+     * @var \App\Application\Controller\Admin\MailManage\Detail
      */
     private CtlService $ctlService;
 

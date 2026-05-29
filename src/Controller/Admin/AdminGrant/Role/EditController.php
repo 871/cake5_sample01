@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\AdminGrant\Role;
 
+use App\Application\Controller\Admin\AdminGrant\Role\Edit as CtlService;
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\AdminGrant\Role\Edit as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class EditController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\AdminGrant\Role\Edit
+     * @var \App\Application\Controller\Admin\AdminGrant\Role\Edit
      */
     private CtlService $ctlService;
 

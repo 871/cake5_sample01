@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\AdminAccount;
 
+use App\Application\Controller\Admin\AdminAccount\Create as CtlService;
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\AdminAccount\Create as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class CreateController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\AdminAccount\Create
+     * @var \App\Application\Controller\Admin\AdminAccount\Create
      */
     private CtlService $ctlService;
 

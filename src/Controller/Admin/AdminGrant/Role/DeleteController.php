@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\AdminGrant\Role;
 
+use App\Application\Controller\Admin\AdminGrant\Role\Delete as CtlService;
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\AdminGrant\Role\Delete as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\MethodNotAllowedException;
 use DateTimeImmutable;
@@ -14,7 +14,7 @@ use DomainException;
 class DeleteController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\AdminGrant\Role\Delete
+     * @var \App\Application\Controller\Admin\AdminGrant\Role\Delete
      */
     private CtlService $ctlService;
 

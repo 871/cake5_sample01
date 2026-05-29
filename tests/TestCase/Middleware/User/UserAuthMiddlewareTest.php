@@ -110,7 +110,6 @@ final class UserAuthMiddlewareTest extends TestCase
     private function makeRequest(string $account_id, array $cookies = [], string $url = '/v1/us/100001/'): ServerRequest
     {
         $session = $this->createMock(Session::class);
-        $session->method('write')->willReturn(null);
 
         return (new ServerRequest([
             'url' => $url,

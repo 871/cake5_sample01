@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\Log\LoginLog;
 
+use App\Application\Controller\Admin\Log\LoginLog\Detail as CtlService;
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\Log\LoginLog\Detail as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 
 class DetailController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\Log\LoginLog\Detail
+     * @var \App\Application\Controller\Admin\Log\LoginLog\Detail
      */
     private CtlService $ctlService;
 
