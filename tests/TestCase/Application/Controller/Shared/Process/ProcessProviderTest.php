@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Test\TestCase\Service\Controller\Shared\Process;
+namespace App\Test\TestCase\Application\Controller\Shared\Process;
 
 use App\Security\Auth\AuthContext\AnonymousAuthContext;
 use App\Application\Controller\Shared\Process\Process\InputProcess;

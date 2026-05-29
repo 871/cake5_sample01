@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Test\TestCase\Service\Controller\Shared\Process\Process\Fields;
+namespace App\Test\TestCase\Application\Controller\Shared\Process\Process\Fields;
 
 use ArrayIterator;
 use App\Application\Controller\Shared\Process\Process\Fields\ProcessParams;

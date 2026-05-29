@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Test\TestCase\Service\Input\Pipeline;
+namespace App\Test\TestCase\Application\Input\Pipeline;
 
 use App\Application\Input\InputNormalizer;
 use App\Application\Input\Pipeline\InputNormalizationPipeline;

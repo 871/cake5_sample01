@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Test\TestCase\Service\Input\Normalizer;
+namespace App\Test\TestCase\Application\Input\Normalizer;
 
 use App\Application\Input\Normalizer\RecursiveEmptyStringToNullNormalizer;
 use PHPUnit\Framework\TestCase;
