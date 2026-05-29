@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Admin\MailManage;
 
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use App\Domain\Mail\Entity\Mail as DomainEntity;
 use App\Domain\Mail\ValueObject\Id;
 use App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 use App\Security\Input\StrictCast;
-use App\Application\Controller\Shared\ServiceInterface;
-use App\Application\Controller\Shared\ServiceTrait;
 
 final class Detail implements ServiceInterface
 {

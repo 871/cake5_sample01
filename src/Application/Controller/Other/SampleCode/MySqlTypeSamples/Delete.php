@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Other\SampleCode\MySqlTypeSamples;
 
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample;
 use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
 use App\Security\Input\StrictCast;
-use App\Application\Controller\Shared\ServiceInterface;
-use App\Application\Controller\Shared\ServiceTrait;
 
 final class Delete implements ServiceInterface
 {

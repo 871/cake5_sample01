@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Admin\Log\LoginLog;
 
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use App\Domain\Log\LoginLogs\Entity\LoginLog as DomainEntity;
 use App\Domain\Log\LoginLogs\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Log\LoginLogs\LoginLogsRepository;
 use App\Security\Input\StrictCast;
-use App\Application\Controller\Shared\ServiceInterface;
-use App\Application\Controller\Shared\ServiceTrait;
 
 final class Detail implements ServiceInterface
 {

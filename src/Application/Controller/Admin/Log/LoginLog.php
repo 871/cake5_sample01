@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Admin\Log;
 
-use App\Domain\Log\LoginLogs\ValueObject as Vo;
 use App\Application\Controller\Shared\ServiceInterface;
 use App\Application\Controller\Shared\ServiceTrait;
+use App\Domain\Log\LoginLogs\ValueObject as Vo;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 final class LoginLog implements ServiceInterface

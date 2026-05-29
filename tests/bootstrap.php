@@ -27,6 +27,12 @@ use Migrations\TestSuite\Migrator;
  * Add additional configuration/setup your application needs when running
  * unit tests in this file.
  */
+
+// ヘッダー未送信時のみ固定の session id を設定する。
+if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+    session_id('cli');
+}
+
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 require dirname(__DIR__) . '/config/bootstrap.php';
@@ -51,11 +57,6 @@ ConnectionManager::alias('test_debug_kit', 'debug_kit');
 
 // Fixate now to avoid one-second-leap-issues
 Chronos::setTestNow(Chronos::now());
-
-// Fixate sessionid early on, as php7.2+
-// does not allow the sessionid to be set after stdout
-// has been written to.
-session_id('cli');
 
 // Connection aliasing needs to happen before migrations are run.
 // Otherwise, table objects inside migrations would use the default datasource

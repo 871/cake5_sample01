@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Admin\AdminGrant\Role;
 
+use App\Application\Controller\Admin\AdminGrant as CategoryService;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use App\Domain\Admin\AdminGrant\Entity\GrantRole as DomainEntity;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
 use App\Security\Input\StrictCast;
-use App\Application\Controller\Admin\AdminGrant as CategoryService;
-use App\Application\Controller\Shared\ServiceInterface;
-use App\Application\Controller\Shared\ServiceTrait;
 
 final class Detail implements ServiceInterface
 {

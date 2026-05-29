@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Other\AdminAccount;
 
+use App\Application\Controller\Other\AdminAccount\Delete as CtlService;
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Application\Controller\Other\AdminAccount\Delete as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\MethodNotAllowedException;
 use DateTimeImmutable;

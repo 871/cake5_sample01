@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Application\Controller\Admin\Login as CtlService;
 use App\Controller\AppController;
 use App\Exception\AuthException;
 use App\Security\Auth\AuthContextResolver;
 use App\Security\Input\StrictCast;
-use App\Application\Controller\Admin\Login as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 

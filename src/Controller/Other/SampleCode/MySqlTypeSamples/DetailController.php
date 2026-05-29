@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Other\SampleCode\MySqlTypeSamples;
 
+use App\Application\Controller\Other\SampleCode\MySqlTypeSamples\Detail as CtlService;
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Application\Controller\Other\SampleCode\MySqlTypeSamples\Detail as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 

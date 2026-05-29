@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Admin;
 
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use App\Security\Auth\AuthContext\Fields\Type;
 use App\Security\Auth\AuthSession;
 use App\Security\Input\StrictCast;
-use App\Application\Controller\Shared\ServiceInterface;
-use App\Application\Controller\Shared\ServiceTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 final class Logout implements ServiceInterface

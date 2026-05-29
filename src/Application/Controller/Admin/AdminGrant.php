@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Admin;
 
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use App\Domain\Admin\AdminGrant\SearchAdminGrantPermissionCondition;
 use App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
@@ -10,8 +12,6 @@ use App\Domain\Shared\ValueObject as SVo;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantPermissionRepository;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
-use App\Application\Controller\Shared\ServiceInterface;
-use App\Application\Controller\Shared\ServiceTrait;
 
 final class AdminGrant implements ServiceInterface
 {

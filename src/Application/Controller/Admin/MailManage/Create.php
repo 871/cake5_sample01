@@ -3,13 +3,6 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Admin\MailManage;
 
-use App\Domain\Mail\Entity\Mail;
-use App\Domain\Mail\ValueObject as Vo;
-use App\Exception\ValidateException;
-use App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
-use App\Lib\UUID\UUID;
-use App\Security\Input\Cast;
-use App\Security\Input\StrictCast;
 use App\Application\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Application\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Application\Controller\Shared\Process\Process\InputProcess;
@@ -19,6 +12,13 @@ use App\Application\Controller\Shared\Process\ProcessProvider;
 use App\Application\Controller\Shared\Process\ProcessRepository;
 use App\Application\Controller\Shared\ServiceInterface;
 use App\Application\Controller\Shared\ServiceTrait;
+use App\Domain\Mail\Entity\Mail;
+use App\Domain\Mail\ValueObject as Vo;
+use App\Exception\ValidateException;
+use App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
+use App\Lib\UUID\UUID;
+use App\Security\Input\Cast;
+use App\Security\Input\StrictCast;
 use Cake\Core\Configure;
 use Cake\Validation\Validator;
 use DomainException;

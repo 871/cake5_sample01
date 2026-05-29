@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\Log\LoginLog;
 
+use App\Application\Controller\Admin\Log\LoginLog\Search as CtlService;
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Application\Controller\Admin\Log\LoginLog\Search as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Log\Log;

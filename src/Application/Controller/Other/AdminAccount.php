@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Other;
 
-use App\Model\Entity\Shared\AccountStatusMaster;
-use App\Model\Table\Shared\AccountStatusMastersTable;
 use App\Application\Controller\Shared\ServiceInterface;
 use App\Application\Controller\Shared\ServiceTrait;
+use App\Model\Entity\Shared\AccountStatusMaster;
+use App\Model\Table\Shared\AccountStatusMastersTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 final class AdminAccount implements ServiceInterface

@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\MailManage;
 
+use App\Application\Controller\Admin\MailManage\Create as CtlService;
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Application\Controller\Admin\MailManage\Create as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;

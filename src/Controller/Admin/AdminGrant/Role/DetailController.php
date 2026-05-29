@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\AdminGrant\Role;
 
+use App\Application\Controller\Admin\AdminGrant\Role\Detail as CtlService;
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Application\Controller\Admin\AdminGrant\Role\Detail as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 

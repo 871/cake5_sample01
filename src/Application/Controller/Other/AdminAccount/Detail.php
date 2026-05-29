@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Other\AdminAccount;
 
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 use App\Security\Input\StrictCast;
-use App\Application\Controller\Shared\ServiceInterface;
-use App\Application\Controller\Shared\ServiceTrait;
 
 final class Detail implements ServiceInterface
 {

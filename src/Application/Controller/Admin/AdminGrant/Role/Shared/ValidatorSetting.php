@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Admin\AdminGrant\Role\Shared;
 
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
 use App\Model\Table\Grant\GrantPermissionsTable;
 use App\Model\Table\Grant\GrantRolesTable;
-use App\Application\Controller\Shared\ServiceInterface;
-use App\Application\Controller\Shared\ServiceTrait;
 use Cake\Log\Log;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Validation\Validator;

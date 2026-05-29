@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\AdminGrant;
 
+use App\Application\Controller\Admin\AdminGrant\Detail as CtlService;
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
 use App\Security\Input\StrictCast;
-use App\Application\Controller\Admin\AdminGrant\Detail as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 

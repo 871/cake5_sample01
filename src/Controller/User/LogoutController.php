@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\User;
 
+use App\Application\Controller\User\Logout as CtlService;
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
 use App\Security\Auth\UserTokenService;
-use App\Application\Controller\User\Logout as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\MethodNotAllowedException;
 use DateTimeImmutable;

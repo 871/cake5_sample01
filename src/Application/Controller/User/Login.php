@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\User;
 
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterCode;
 use App\Domain\Log\LoginLogs\Entity\LoginLog as LoginLogEntity;
 use App\Domain\Log\LoginLogs\ValueObject as LoginLogVo;
@@ -14,8 +16,6 @@ use App\Lib\UUID\UUID;
 use App\Model\Entity\User\UserAccount;
 use App\Security\Auth\UserTokenService;
 use App\Security\Input\Cast;
-use App\Application\Controller\Shared\ServiceInterface;
-use App\Application\Controller\Shared\ServiceTrait;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 
 final class Login implements ServiceInterface
