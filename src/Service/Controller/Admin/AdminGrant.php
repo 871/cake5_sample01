@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin;
+namespace App\Application\Controller\Admin;
 
 use App\Domain\Admin\AdminGrant\SearchAdminGrantPermissionCondition;
 use App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition;
@@ -10,8 +10,8 @@ use App\Domain\Shared\ValueObject as SVo;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantPermissionRepository;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 
 final class AdminGrant implements ServiceInterface
 {

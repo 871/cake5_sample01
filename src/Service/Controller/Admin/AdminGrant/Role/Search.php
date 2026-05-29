@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin\AdminGrant\Role;
+namespace App\Application\Controller\Admin\AdminGrant\Role;
 
 use App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId;
@@ -9,9 +9,9 @@ use App\Domain\Admin\AdminGrant\ValueObject\IsActive;
 use App\Domain\Shared\ValueObject\SearchText;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
 use App\Security\Input\Cast;
-use App\Service\Controller\Admin\AdminGrant as CategoryService;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Admin\AdminGrant as CategoryService;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Cake\ORM\Query\SelectQuery;
 
 final class Search implements ServiceInterface
@@ -67,7 +67,7 @@ final class Search implements ServiceInterface
      */
     public function getGrantPermissionOptions(): array
     {
-        /** @var \App\Service\Controller\Admin\AdminGrant $categoryService */
+        /** @var \App\Application\Controller\Admin\AdminGrant $categoryService */
         $categoryService = $this->createService(CategoryService::class);
 
         return $categoryService->getAllGrantPermissionOptions();

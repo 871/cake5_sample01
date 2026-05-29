@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Shared\Process\Process;
+namespace App\Application\Controller\Shared\Process\Process;
 
-use App\Service\Controller\Shared\Process\ProcessInterface;
+use App\Application\Controller\Shared\Process\ProcessInterface;
 use Cake\Utility\Hash;
 
 final class InputProcess implements ProcessInterface
 {
     /**
-     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId
-     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
+     * @param \App\Application\Controller\Shared\Process\Process\Fields\ProcessId $processId
+     * @param \App\Application\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
      */
     public function __construct(
         private readonly Fields\ProcessId $processId,
@@ -20,7 +20,7 @@ final class InputProcess implements ProcessInterface
     }
 
     /**
-     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
+     * @param \App\Application\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
      * @return self
      */
     public function setProcessParams(Fields\ProcessParams $processParams): self
@@ -29,7 +29,7 @@ final class InputProcess implements ProcessInterface
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\Fields\ProcessId
+     * @return \App\Application\Controller\Shared\Process\Process\Fields\ProcessId
      */
     public function getId(): Fields\ProcessId
     {
@@ -37,7 +37,7 @@ final class InputProcess implements ProcessInterface
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams
+     * @return \App\Application\Controller\Shared\Process\Process\Fields\ProcessParams
      */
     public function getProcessParams(): Fields\ProcessParams
     {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin;
+namespace App\Application\Controller\Admin;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as AccountEntity;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
@@ -15,8 +15,8 @@ use App\Lib\UUID\UUID;
 use App\Security\Auth\AuthContext\Fields\Type;
 use App\Security\Auth\AuthSession;
 use App\Security\Input\Cast;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 
 final class Login implements ServiceInterface

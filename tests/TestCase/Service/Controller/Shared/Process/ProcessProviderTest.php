@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace App\Test\TestCase\Service\Controller\Shared\Process;
 
 use App\Security\Auth\AuthContext\AnonymousAuthContext;
-use App\Service\Controller\Shared\Process\Process\InputProcess;
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
-use App\Service\Controller\Shared\Process\ProcessProvider;
+use App\Application\Controller\Shared\Process\Process\InputProcess;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessId;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessParams;
+use App\Application\Controller\Shared\Process\ProcessProvider;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
 use Cake\TestSuite\TestCase;

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Input\Normalizer;
+namespace App\Application\Input\Normalizer;
 
-use App\Service\Input\InputNormalizer;
+use App\Application\Input\InputNormalizer;
 
 final class RecursiveEmptyStringToNullNormalizer implements InputNormalizer
 {

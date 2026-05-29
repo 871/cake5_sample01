@@ -6,8 +6,8 @@ namespace App\Test\TestCase\Service\Controller\Shared\Process;
 use App\Security\Auth\AuthContext\Fields;
 use App\Security\Auth\AuthContext\Fields\AccountId\AdminAccountId;
 use App\Security\Auth\AuthContext\Fields\AccountId\AnonymousAccountId;
-use App\Service\Controller\Shared\Process\SessionKey;
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
+use App\Application\Controller\Shared\Process\SessionKey;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessId;
 use Cake\TestSuite\TestCase;
 
 final class SessionKeyTest extends TestCase

@@ -6,7 +6,7 @@ namespace App\Controller\Admin\MailManage;
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\MailManage\Search as CtlService;
+use App\Application\Controller\Admin\MailManage\Search as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 

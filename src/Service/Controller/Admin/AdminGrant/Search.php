@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin\AdminGrant;
+namespace App\Application\Controller\Admin\AdminGrant;
 
 use App\Domain\Admin\AdminGrant\SearchAdminAccountGrantCondition;
 use App\Domain\Admin\AdminGrant\ValueObject\AccountStatusMasterId;
@@ -10,9 +10,9 @@ use App\Domain\Admin\AdminGrant\ValueObject\GrantPermissionId;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminAccountGrantRepository;
 use App\Security\Input\Cast;
-use App\Service\Controller\Admin\AdminGrant as CategoryService;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Admin\AdminGrant as CategoryService;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Cake\ORM\Query\SelectQuery;
 
 final class Search implements ServiceInterface
@@ -73,7 +73,7 @@ final class Search implements ServiceInterface
      */
     public function getGrantRoleOptions(): array
     {
-        /** @var \App\Service\Controller\Admin\AdminGrant $category */
+        /** @var \App\Application\Controller\Admin\AdminGrant $category */
         $category = $this->createService(CategoryService::class);
 
         return $category->getGrantRoleOptions();
@@ -84,7 +84,7 @@ final class Search implements ServiceInterface
      */
     public function getGrantPermissionOptions(): array
     {
-        /** @var \App\Service\Controller\Admin\AdminGrant $category */
+        /** @var \App\Application\Controller\Admin\AdminGrant $category */
         $category = $this->createService(CategoryService::class);
 
         return $category->getGrantPermissionOptions();
@@ -95,7 +95,7 @@ final class Search implements ServiceInterface
      */
     public function getAccountStatusOptions(): array
     {
-        /** @var \App\Service\Controller\Admin\AdminGrant $category */
+        /** @var \App\Application\Controller\Admin\AdminGrant $category */
         $category = $this->createService(CategoryService::class);
 
         return $category->getAccountStatusOptions();

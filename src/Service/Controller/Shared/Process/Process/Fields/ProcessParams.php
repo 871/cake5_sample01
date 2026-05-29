@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Shared\Process\Process\Fields;
+namespace App\Application\Controller\Shared\Process\Process\Fields;
 
 use ArrayIterator;
 use Cake\Utility\Hash;

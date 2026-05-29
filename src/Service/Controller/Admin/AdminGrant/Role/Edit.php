@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin\AdminGrant\Role;
+namespace App\Application\Controller\Admin\AdminGrant\Role;
 
 use App\Domain\Admin\AdminGrant\Entity\GrantRole;
 use App\Domain\Admin\AdminGrant\Entity\GrantRolePermission;
@@ -13,16 +13,16 @@ use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepositor
 use App\Lib\UUID\UUID;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\Admin\AdminGrant as CategoryService;
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
-use App\Service\Controller\Shared\Process\Process\InputProcess;
-use App\Service\Controller\Shared\Process\ProcessDeleter;
-use App\Service\Controller\Shared\Process\ProcessFactory;
-use App\Service\Controller\Shared\Process\ProcessProvider;
-use App\Service\Controller\Shared\Process\ProcessRepository;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Admin\AdminGrant as CategoryService;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessId;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessParams;
+use App\Application\Controller\Shared\Process\Process\InputProcess;
+use App\Application\Controller\Shared\Process\ProcessDeleter;
+use App\Application\Controller\Shared\Process\ProcessFactory;
+use App\Application\Controller\Shared\Process\ProcessProvider;
+use App\Application\Controller\Shared\Process\ProcessRepository;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Cake\Validation\Validator;
 
 final class Edit implements ServiceInterface
@@ -39,7 +39,7 @@ final class Edit implements ServiceInterface
             return true;
         }
 
-        /** @var \App\Service\Controller\Shared\Process\ProcessProvider $processProvider */
+        /** @var \App\Application\Controller\Shared\Process\ProcessProvider $processProvider */
         $processProvider = $this->createService(ProcessProvider::class);
         $inputProcess = $processProvider->provide(
             processClassName: InputProcess::class,
@@ -62,15 +62,15 @@ final class Edit implements ServiceInterface
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\InputProcess
+     * @return \App\Application\Controller\Shared\Process\Process\InputProcess
      */
     public function startInputProcess(): InputProcess
     {
         $grantRole = $this->getDomainEntity();
 
-        /** @var \App\Service\Controller\Shared\Process\ProcessFactory $processFactory */
+        /** @var \App\Application\Controller\Shared\Process\ProcessFactory $processFactory */
         $processFactory = $this->createService(ProcessFactory::class);
-        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $process */
+        /** @var \App\Application\Controller\Shared\Process\Process\InputProcess $process */
         $process = $processFactory->start(
             processClassName: InputProcess::class,
             processParams: new ProcessParams([
@@ -97,13 +97,13 @@ final class Edit implements ServiceInterface
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\InputProcess
+     * @return \App\Application\Controller\Shared\Process\Process\InputProcess
      */
     public function getInputProcess(): InputProcess
     {
-        /** @var \App\Service\Controller\Shared\Process\ProcessProvider $processProvider */
+        /** @var \App\Application\Controller\Shared\Process\ProcessProvider $processProvider */
         $processProvider = $this->createService(ProcessProvider::class);
-        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $inputProcess */
+        /** @var \App\Application\Controller\Shared\Process\Process\InputProcess $inputProcess */
         $inputProcess = $processProvider->provide(
             processClassName: InputProcess::class,
             processId: new ProcessId(
@@ -130,7 +130,7 @@ final class Edit implements ServiceInterface
             ]);
         }
 
-        /** @var \App\Service\Controller\Shared\Process\ProcessRepository $processRepository */
+        /** @var \App\Application\Controller\Shared\Process\ProcessRepository $processRepository */
         $processRepository = $this->createService(ProcessRepository::class);
         $processRepository->save(
             process: $inputProcess->setProcessParams(
@@ -144,7 +144,7 @@ final class Edit implements ServiceInterface
     }
 
     /**
-     * @param \App\Service\Controller\Shared\Process\Process\InputProcess $inputProcess
+     * @param \App\Application\Controller\Shared\Process\Process\InputProcess $inputProcess
      * @return bool
      */
     private function checkProcessKey(InputProcess $inputProcess): bool
@@ -200,7 +200,7 @@ final class Edit implements ServiceInterface
     private function getValidator(): Validator
     {
         $validator = new Validator();
-        /** @var \App\Service\Controller\Admin\AdminGrant\Role\Shared\ValidatorSetting $validatorSetting */
+        /** @var \App\Application\Controller\Admin\AdminGrant\Role\Shared\ValidatorSetting $validatorSetting */
         $validatorSetting = $this->createService(Shared\ValidatorSetting::class);
         $validatorSetting
             ->id($validator)
@@ -259,7 +259,7 @@ final class Edit implements ServiceInterface
      */
     public function endInputProcess(): self
     {
-        /** @var \App\Service\Controller\Shared\Process\ProcessDeleter $processDeleter */
+        /** @var \App\Application\Controller\Shared\Process\ProcessDeleter $processDeleter */
         $processDeleter = $this->createService(ProcessDeleter::class);
         $processDeleter->delete(
             process: $this->getInputProcess(),
@@ -277,7 +277,7 @@ final class Edit implements ServiceInterface
         $inputProcess = $this->getInputProcess();
         $inputProcessParams = $inputProcess->getProcessParams();
 
-        /** @var \App\Service\Controller\Shared\Process\ProcessRepository $processRepository */
+        /** @var \App\Application\Controller\Shared\Process\ProcessRepository $processRepository */
         $processRepository = $this->createService(ProcessRepository::class);
         $processRepository->save(
             process: $inputProcess->setProcessParams(
@@ -298,7 +298,7 @@ final class Edit implements ServiceInterface
      */
     public function getGrantPermissionOptions(): array
     {
-        /** @var \App\Service\Controller\Admin\AdminGrant $categoryService */
+        /** @var \App\Application\Controller\Admin\AdminGrant $categoryService */
         $categoryService = $this->createService(CategoryService::class);
 
         return $categoryService->getAllGrantPermissionOptions();

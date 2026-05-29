@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\User;
+namespace App\Application\Controller\User;
 
 use App\Infrastructure\Persistence\Cake\User\RefreshTokensRepository;
 use App\Security\Auth\UserTokenService;
 use App\Security\Input\Cast;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 
 final class Logout implements ServiceInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-/** @var \App\Service\Controller\Shared\Process\Process\InputProcess $input */
+/** @var \App\Application\Controller\Shared\Process\Process\InputProcess $input */
 ?>
 <!-- Breadcrumb -->
 <nav aria-label="breadcrumb">

@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin\Log\LoginLog;
+namespace App\Application\Controller\Admin\Log\LoginLog;
 
 use App\Domain\Log\LoginLogs\SearchCondition;
 use App\Domain\Log\LoginLogs\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Log\LoginLogs\LoginLogsRepository;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\Admin\Log\LoginLog as CategoryService;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Admin\Log\LoginLog as CategoryService;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query\SelectQuery;
 
@@ -106,11 +106,11 @@ final class Search implements ServiceInterface
     }
 
     /**
-     * @return \App\Service\Controller\Admin\Log\LoginLog
+     * @return \App\Application\Controller\Admin\Log\LoginLog
      */
     public function createCategoryService(): CategoryService
     {
-        /** @var \App\Service\Controller\Admin\Log\LoginLog */
+        /** @var \App\Application\Controller\Admin\Log\LoginLog */
         return $this->createService(CategoryService::class);
     }
 }

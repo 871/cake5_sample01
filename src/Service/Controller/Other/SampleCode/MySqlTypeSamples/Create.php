@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Other\SampleCode\MySqlTypeSamples;
+namespace App\Application\Controller\Other\SampleCode\MySqlTypeSamples;
 
 use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample;
 use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
@@ -10,16 +10,16 @@ use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
 use App\Lib\UUID\UUID;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting;
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
-use App\Service\Controller\Shared\Process\Process\InputProcess;
-use App\Service\Controller\Shared\Process\ProcessDeleter;
-use App\Service\Controller\Shared\Process\ProcessFactory;
-use App\Service\Controller\Shared\Process\ProcessProvider;
-use App\Service\Controller\Shared\Process\ProcessRepository;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Other\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessId;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessParams;
+use App\Application\Controller\Shared\Process\Process\InputProcess;
+use App\Application\Controller\Shared\Process\ProcessDeleter;
+use App\Application\Controller\Shared\Process\ProcessFactory;
+use App\Application\Controller\Shared\Process\ProcessProvider;
+use App\Application\Controller\Shared\Process\ProcessRepository;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Cake\Validation\Validator;
 
 final class Create implements ServiceInterface
@@ -36,7 +36,7 @@ final class Create implements ServiceInterface
             return true;
         }
 
-        /** @var \App\Service\Controller\Shared\Process\ProcessProvider $processProvider */
+        /** @var \App\Application\Controller\Shared\Process\ProcessProvider $processProvider */
         $processProvider = $this->createService(ProcessProvider::class);
         $inputProcess = $processProvider->provide(
             processClassName: InputProcess::class,
@@ -49,13 +49,13 @@ final class Create implements ServiceInterface
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\InputProcess
+     * @return \App\Application\Controller\Shared\Process\Process\InputProcess
      */
     public function startInputProcess(): InputProcess
     {
-        /** @var \App\Service\Controller\Shared\Process\ProcessFactory $processFactory */
+        /** @var \App\Application\Controller\Shared\Process\ProcessFactory $processFactory */
         $processFactory = $this->createService(ProcessFactory::class);
-        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $process */
+        /** @var \App\Application\Controller\Shared\Process\Process\InputProcess $process */
         $process = $processFactory->start(
             processClassName: InputProcess::class,
             processParams: new ProcessParams([
@@ -83,7 +83,7 @@ final class Create implements ServiceInterface
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\InputProcess
+     * @return \App\Application\Controller\Shared\Process\Process\InputProcess
      */
     public function startInputProcessForCopy(): InputProcess
     {
@@ -93,9 +93,9 @@ final class Create implements ServiceInterface
             ),
         );
 
-        /** @var \App\Service\Controller\Shared\Process\ProcessFactory $processFactory */
+        /** @var \App\Application\Controller\Shared\Process\ProcessFactory $processFactory */
         $processFactory = $this->createService(ProcessFactory::class);
-        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $process */
+        /** @var \App\Application\Controller\Shared\Process\Process\InputProcess $process */
         $process = $processFactory->start(
             processClassName: InputProcess::class,
             processParams: new ProcessParams([
@@ -123,13 +123,13 @@ final class Create implements ServiceInterface
     }
 
     /**
-     * @return \App\Service\Controller\Shared\Process\Process\InputProcess
+     * @return \App\Application\Controller\Shared\Process\Process\InputProcess
      */
     public function getInputProcess(): InputProcess
     {
-        /** @var \App\Service\Controller\Shared\Process\ProcessProvider $processProvider */
+        /** @var \App\Application\Controller\Shared\Process\ProcessProvider $processProvider */
         $processProvider = $this->createService(ProcessProvider::class);
-        /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $inputProcess */
+        /** @var \App\Application\Controller\Shared\Process\Process\InputProcess $inputProcess */
         $inputProcess = $processProvider->provide(
             processClassName: InputProcess::class,
             processId: new ProcessId(
@@ -156,7 +156,7 @@ final class Create implements ServiceInterface
                 ],
             ]);
         }
-        /** @var \App\Service\Controller\Shared\Process\ProcessRepository $processRepository */
+        /** @var \App\Application\Controller\Shared\Process\ProcessRepository $processRepository */
         $processRepository = $this->createService(ProcessRepository::class);
         $processRepository->save(
             process: $inputProcess->setProcessParams(
@@ -170,7 +170,7 @@ final class Create implements ServiceInterface
     }
 
     /**
-     * @param \App\Service\Controller\Shared\Process\Process\InputProcess $inputProcess
+     * @param \App\Application\Controller\Shared\Process\Process\InputProcess $inputProcess
      * @return bool
      */
     private function checkProcessKey(InputProcess $inputProcess): bool
@@ -231,7 +231,7 @@ final class Create implements ServiceInterface
     private function getValidator(): Validator
     {
         $validator = new Validator();
-        /** @var \App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting $validatorSetting */
+        /** @var \App\Application\Controller\Other\SampleCode\MySqlTypeSamples\Shared\ValidatorSetting $validatorSetting */
         $validatorSetting = $this->createService(ValidatorSetting::class);
         $validatorSetting
             ->intCol($validator)
@@ -288,7 +288,7 @@ final class Create implements ServiceInterface
      */
     public function endInputProcess(): self
     {
-        /** @var \App\Service\Controller\Shared\Process\ProcessDeleter $processDeleter */
+        /** @var \App\Application\Controller\Shared\Process\ProcessDeleter $processDeleter */
         $processDeleter = $this->createService(ProcessDeleter::class);
         $processDeleter->delete(
             process: $this->getInputProcess(),
@@ -305,7 +305,7 @@ final class Create implements ServiceInterface
     {
         $inputProcess = $this->getInputProcess();
         $inputProcessParams = $inputProcess->getProcessParams();
-        /** @var \App\Service\Controller\Shared\Process\ProcessRepository $processRepository */
+        /** @var \App\Application\Controller\Shared\Process\ProcessRepository $processRepository */
         $processRepository = $this->createService(ProcessRepository::class);
         $processRepository->save(
             process: $inputProcess->setProcessParams(

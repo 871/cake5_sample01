@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Service\Input\Normalizer;
 
-use App\Service\Input\Normalizer\RecursiveEmptyStringToNullNormalizer;
+use App\Application\Input\Normalizer\RecursiveEmptyStringToNullNormalizer;
 use PHPUnit\Framework\TestCase;
 
 final class RecursiveEmptyStringToNullNormalizerTest extends TestCase

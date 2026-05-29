@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Shared;
+namespace App\Application\Controller\Other\SampleCode\MySqlTypeSamples\Shared;
 
 use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
 use App\Model\Table\Sample\MySqlTypeSamplesTable;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Cake\Log\Log;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Validation\Validator;

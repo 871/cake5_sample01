@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Shared\Process;
+namespace App\Application\Controller\Shared\Process;
 
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessParams;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use DomainException;
 
 final class ProcessFactory implements ServiceInterface
@@ -16,8 +16,8 @@ final class ProcessFactory implements ServiceInterface
      * ProcessInstanceの内容（ProcessParams）をSessionに保存してからProcessInstanceを作成する
      *
      * @param string $processClassName
-     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
-     * @return \App\Service\Controller\Shared\Process\ProcessInterface
+     * @param \App\Application\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
+     * @return \App\Application\Controller\Shared\Process\ProcessInterface
      */
     public function start(
         string $processClassName,
@@ -37,8 +37,8 @@ final class ProcessFactory implements ServiceInterface
     }
 
     /**
-     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
-     * @return \App\Service\Controller\Shared\Process\Process\Fields\ProcessId
+     * @param \App\Application\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
+     * @return \App\Application\Controller\Shared\Process\Process\Fields\ProcessId
      */
     private function storeAndGenerateId(
         ProcessParams $processParams,

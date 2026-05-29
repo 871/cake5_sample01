@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Shared\Process;
+namespace App\Application\Controller\Shared\Process;
 
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessId;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessParams;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use DomainException;
 
 final class ProcessProvider implements ServiceInterface
@@ -17,8 +17,8 @@ final class ProcessProvider implements ServiceInterface
      * Sessionに保存されたProcessInstanceの内容からProcessInstanceを取得する
      *
      * @param string $processClassName
-     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId
-     * @return ?\App\Service\Controller\Shared\Process\ProcessInterface
+     * @param \App\Application\Controller\Shared\Process\Process\Fields\ProcessId $processId
+     * @return ?\App\Application\Controller\Shared\Process\ProcessInterface
      */
     public function provide(string $processClassName, ProcessId $processId): ?ProcessInterface
     {
@@ -38,8 +38,8 @@ final class ProcessProvider implements ServiceInterface
     }
 
     /**
-     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId
-     * @return ?\App\Service\Controller\Shared\Process\Process\Fields\ProcessParams
+     * @param \App\Application\Controller\Shared\Process\Process\Fields\ProcessId $processId
+     * @return ?\App\Application\Controller\Shared\Process\Process\Fields\ProcessParams
      */
     private function getProcessParams(ProcessId $processId): ?ProcessParams
     {

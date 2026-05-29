@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Other;
+namespace App\Application\Controller\Other;
 
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 
 final class SampleCode implements ServiceInterface
 {

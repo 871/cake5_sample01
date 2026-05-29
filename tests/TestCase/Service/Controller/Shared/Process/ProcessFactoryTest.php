@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Test\TestCase\Service\Controller\Shared\Process;
 
 use App\Security\Auth\AuthContext\AnonymousAuthContext;
-use App\Service\Controller\Shared\Process\ProcessFactory;
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
-use App\Service\Controller\Shared\Process\Process\InputProcess;
+use App\Application\Controller\Shared\Process\ProcessFactory;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessParams;
+use App\Application\Controller\Shared\Process\Process\InputProcess;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
 use Cake\TestSuite\TestCase;

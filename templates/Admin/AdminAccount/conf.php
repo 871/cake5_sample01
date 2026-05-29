@@ -1,5 +1,5 @@
 <?php
-/* @var \App\Service\Controller\Shared\Process\Process\InputProcess $input */
+/* @var \App\Application\Controller\Shared\Process\Process\InputProcess $input */
 /* @var array $accountStatusOptions */
 
 $statusLabel = '';

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin\Log;
+namespace App\Application\Controller\Admin\Log;
 
 use App\Domain\Log\LoginLogs\ValueObject as Vo;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 final class LoginLog implements ServiceInterface

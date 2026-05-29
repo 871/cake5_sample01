@@ -6,7 +6,7 @@ namespace App\Controller\Other\SampleCode\MySqlTypeSamples;
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Edit as CtlService;
+use App\Application\Controller\Other\SampleCode\MySqlTypeSamples\Edit as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class EditController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Edit
+     * @var \App\Application\Controller\Other\SampleCode\MySqlTypeSamples\Edit
      */
     private CtlService $ctlService;
 

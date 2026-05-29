@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin\AdminAccount;
+namespace App\Application\Controller\Admin\AdminAccount;
 
 use App\Domain\Admin\AdminAccounts\SearchCondition;
 use App\Domain\Admin\AdminAccounts\ValueObject;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
-use App\Service\Controller\Admin\AdminAccount as CategoryService;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Admin\AdminAccount as CategoryService;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query\SelectQuery;
 
@@ -70,7 +70,7 @@ final class Search implements ServiceInterface
      */
     public function getAccountStatusOptions(): array
     {
-        /** @var \App\Service\Controller\Admin\AdminAccount $categoryService */
+        /** @var \App\Application\Controller\Admin\AdminAccount $categoryService */
         $categoryService = $this->createService(CategoryService::class);
 
         return $categoryService->getAccountStatusOptions();

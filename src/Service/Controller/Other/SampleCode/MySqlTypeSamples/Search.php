@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Other\SampleCode\MySqlTypeSamples;
+namespace App\Application\Controller\Other\SampleCode\MySqlTypeSamples;
 
 use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
 use App\Domain\Sample\MySqlTypeSamples\ValueObject;
 use App\Infrastructure\Persistence\Cake\Sample\MySqlTypeSamplesRepository;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Cake\ORM\Query\SelectQuery;
 
 final class Search implements ServiceInterface

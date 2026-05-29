@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin\AdminGrant\Role;
+namespace App\Application\Controller\Admin\AdminGrant\Role;
 
 use App\Domain\Admin\AdminGrant\Entity\GrantRole;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 
 final class Delete implements ServiceInterface
 {

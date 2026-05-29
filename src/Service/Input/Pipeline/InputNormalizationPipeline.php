@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Input\Pipeline;
+namespace App\Application\Input\Pipeline;
 
-use App\Service\Input\InputNormalizer;
+use App\Application\Input\InputNormalizer;
 use InvalidArgumentException;
 
 final class InputNormalizationPipeline
@@ -30,7 +30,7 @@ final class InputNormalizationPipeline
     public function process(mixed $input): mixed
     {
         foreach ($this->normalizers as $normalizer) {
-            /** @var \App\Service\Input\InputNormalizer $normalizer */
+            /** @var \App\Application\Input\InputNormalizer $normalizer */
             $input = $normalizer->normalize($input);
         }
 

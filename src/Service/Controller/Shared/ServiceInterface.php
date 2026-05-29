@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Shared;
+namespace App\Application\Controller\Shared;
 
 use App\Security\Auth\AuthContext;
 use Cake\Http\ServerRequest;

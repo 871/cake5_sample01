@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Other\AdminAccount;
+namespace App\Application\Controller\Other\AdminAccount;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 
 final class Delete implements ServiceInterface
 {

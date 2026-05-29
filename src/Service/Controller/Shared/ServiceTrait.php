@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Shared;
+namespace App\Application\Controller\Shared;
 
 use App\Security\Auth\AuthContext;
 use Cake\Http\ServerRequest;
@@ -25,7 +25,7 @@ trait ServiceTrait
 
     /**
      * @param string $serviceClassName
-     * @return \App\Service\Controller\Shared\ServiceInterface
+     * @return \App\Application\Controller\Shared\ServiceInterface
      */
     public function createService(string $serviceClassName): ServiceInterface
     {

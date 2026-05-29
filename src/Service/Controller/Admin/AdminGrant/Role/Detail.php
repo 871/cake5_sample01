@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin\AdminGrant\Role;
+namespace App\Application\Controller\Admin\AdminGrant\Role;
 
 use App\Domain\Admin\AdminGrant\Entity\GrantRole as DomainEntity;
 use App\Domain\Admin\AdminGrant\ValueObject\GrantRoleId;
 use App\Infrastructure\Persistence\Cake\Admin\AdminGrant\AdminGrantRoleRepository;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\Admin\AdminGrant as CategoryService;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Admin\AdminGrant as CategoryService;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 
 final class Detail implements ServiceInterface
 {
@@ -30,7 +30,7 @@ final class Detail implements ServiceInterface
      */
     public function getGrantPermissionOptions(): array
     {
-        /** @var \App\Service\Controller\Admin\AdminGrant $categoryService */
+        /** @var \App\Application\Controller\Admin\AdminGrant $categoryService */
         $categoryService = $this->createService(CategoryService::class);
 
         return $categoryService->getAllGrantPermissionOptions();

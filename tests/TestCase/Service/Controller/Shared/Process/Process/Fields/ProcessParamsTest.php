@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Test\TestCase\Service\Controller\Shared\Process\Process\Fields;
 
 use ArrayIterator;
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessParams;
 use DomainException;
 use PHPUnit\Framework\TestCase;
 

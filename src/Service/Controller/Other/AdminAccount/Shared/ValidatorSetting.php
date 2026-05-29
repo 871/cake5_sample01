@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Other\AdminAccount\Shared;
+namespace App\Application\Controller\Other\AdminAccount\Shared;
 
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Model\Table\Admin\AdminAccountsTable;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Cake\Log\Log;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Validation\Validator;

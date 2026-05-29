@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin\MailManage;
+namespace App\Application\Controller\Admin\MailManage;
 
 use App\Domain\Mail\Entity\Mail as DomainEntity;
 use App\Domain\Mail\ValueObject\Id;
 use App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 
 final class Detail implements ServiceInterface
 {

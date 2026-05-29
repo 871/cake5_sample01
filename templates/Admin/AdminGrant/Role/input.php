@@ -1,5 +1,5 @@
 <?php
-/** @var \App\Service\Controller\Shared\Process\Process\InputProcess $input */
+/** @var \App\Application\Controller\Shared\Process\Process\InputProcess $input */
 /** @var bool $isEdit */
 /** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission> $grantPermissionOptions */
 

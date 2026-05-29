@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Shared\Process;
+namespace App\Application\Controller\Shared\Process;
 
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use DomainException;
 
 final class ProcessDeleter implements ServiceInterface
@@ -14,7 +14,7 @@ final class ProcessDeleter implements ServiceInterface
     /**
      * Sessionに保存されたProcess Instance の内容を削除する
      *
-     * @param \App\Service\Controller\Shared\Process\ProcessInterface $process
+     * @param \App\Application\Controller\Shared\Process\ProcessInterface $process
      * @return void
      */
     public function delete(ProcessInterface $process): void

@@ -5,7 +5,7 @@ namespace App\Controller\Admin\AdminGrant;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\AdminGrant\Search as CtlService;
+use App\Application\Controller\Admin\AdminGrant\Search as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Log\Log;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class SearchController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\AdminGrant\Search
+     * @var \App\Application\Controller\Admin\AdminGrant\Search
      */
     private CtlService $ctlService;
 

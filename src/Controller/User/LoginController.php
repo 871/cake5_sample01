@@ -8,14 +8,14 @@ use App\Exception\AuthException;
 use App\Security\Auth\AuthContextResolver;
 use App\Security\Auth\UserTokenService;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\User\Login as CtlService;
+use App\Application\Controller\User\Login as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 
 class LoginController extends AppController
 {
     /**
-     * @var \App\Service\Controller\User\Login
+     * @var \App\Application\Controller\User\Login
      */
     private CtlService $ctlService;
 

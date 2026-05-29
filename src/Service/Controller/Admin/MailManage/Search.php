@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Admin\MailManage;
+namespace App\Application\Controller\Admin\MailManage;
 
 use App\Domain\Mail\SearchCondition;
 use App\Domain\Mail\ValueObject as Vo;
@@ -9,8 +9,8 @@ use App\Exception\ValidateException;
 use App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 use App\Security\Input\Cast;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
+use App\Application\Controller\Shared\ServiceInterface;
+use App\Application\Controller\Shared\ServiceTrait;
 use Cake\Validation\Validator;
 use DateTimeImmutable;
 

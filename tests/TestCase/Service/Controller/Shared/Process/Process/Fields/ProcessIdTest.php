@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Service\Controller\Shared\Process\Process\Fields;
 
-use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
+use App\Application\Controller\Shared\Process\Process\Fields\ProcessId;
 use DomainException;
 use PHPUnit\Framework\TestCase;
 

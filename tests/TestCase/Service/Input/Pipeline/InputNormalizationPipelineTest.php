@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Service\Input\Pipeline;
 
-use App\Service\Input\InputNormalizer;
-use App\Service\Input\Pipeline\InputNormalizationPipeline;
+use App\Application\Input\InputNormalizer;
+use App\Application\Input\Pipeline\InputNormalizationPipeline;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

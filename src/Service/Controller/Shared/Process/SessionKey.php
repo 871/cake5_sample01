@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Controller\Shared\Process;
+namespace App\Application\Controller\Shared\Process;
 
 use App\Security\Auth\AuthContext\Fields;
 use Stringable;
@@ -12,7 +12,7 @@ final class SessionKey implements Stringable
      * @param string $prefix
      * @param \App\Security\Auth\AuthContext\Fields\Type $type
      * @param ?\App\Security\Auth\AuthContext\Fields\AccountId $accountId
-     * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId
+     * @param \App\Application\Controller\Shared\Process\Process\Fields\ProcessId $processId
      */
     public function __construct(
         private readonly string $prefix,
