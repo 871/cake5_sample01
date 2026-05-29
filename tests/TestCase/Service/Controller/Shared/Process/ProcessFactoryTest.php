@@ -40,7 +40,6 @@ final class ProcessFactoryTest extends TestCase
         $params = new ProcessParams(['foo' => 'bar']);
         $process = $this->factory->start(
             InputProcess::class,
-            get_class($this->factory),
             $params
         );
 
@@ -56,21 +55,8 @@ final class ProcessFactoryTest extends TestCase
         $params = new ProcessParams([]);
         $this->factory->start(
             \stdClass::class, // Process ではない
-            get_class($this->factory),
             $params
         );
     }
 
-    public function testStartThrowsOnInvalidServiceClass(): void
-    {
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Service class must implement');
-
-        $params = new ProcessParams([]);
-        $this->factory->start(
-            InputProcess::class,
-            \stdClass::class, // ServiceInterface ではない
-            $params
-        );
-    }
 }

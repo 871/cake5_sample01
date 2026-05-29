@@ -41,7 +41,6 @@ final class Edit implements ServiceInterface
         $processProvider = $this->createService(ProcessProvider::class);
         $inputProcess = $processProvider->provide(
             processClassName: InputProcess::class,
-            serviceClassName: self::class,
             processId: new ProcessId(
                 process_id: StrictCast::toString($this->request->getParam('process_id')),
             ),
@@ -66,7 +65,6 @@ final class Edit implements ServiceInterface
         /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $process */
         $process = $processFactory->start(
             processClassName: InputProcess::class,
-            serviceClassName: self::class,
             processParams: new ProcessParams([
                 '_errorMessages' => [],
                 '_errorFields' => [],
@@ -96,7 +94,6 @@ final class Edit implements ServiceInterface
         /** @var \App\Service\Controller\Shared\Process\Process\InputProcess $inputProcess */
         $inputProcess = $processProvider->provide(
             processClassName: InputProcess::class,
-            serviceClassName: self::class,
             processId: new ProcessId(
                 process_id: StrictCast::toString($this->request->getParam('process_id')),
             ),
@@ -122,7 +119,6 @@ final class Edit implements ServiceInterface
         /** @var \App\Service\Controller\Shared\Process\ProcessRepository $processRepository */
         $processRepository = $this->createService(ProcessRepository::class);
         $processRepository->save(
-            serviceClassName: self::class,
             process: $inputProcess->setProcessParams(
                 processParams: $inputProcessParams->with(
                     overrides: $this->getOverwriteParams(),
@@ -246,7 +242,6 @@ final class Edit implements ServiceInterface
         /** @var \App\Service\Controller\Shared\Process\ProcessDeleter $processDeleter */
         $processDeleter = $this->createService(ProcessDeleter::class);
         $processDeleter->delete(
-            serviceClassName: self::class,
             process: $this->getInputProcess(),
         );
 
@@ -264,7 +259,6 @@ final class Edit implements ServiceInterface
         /** @var \App\Service\Controller\Shared\Process\ProcessRepository $processRepository */
         $processRepository = $this->createService(ProcessRepository::class);
         $processRepository->save(
-            serviceClassName: self::class,
             process: $inputProcess->setProcessParams(
                 processParams: $inputProcessParams->with(
                     overrides: [

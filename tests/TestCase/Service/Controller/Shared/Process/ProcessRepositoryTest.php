@@ -8,8 +8,6 @@ use App\Service\Controller\Shared\Process\Process\InputProcess;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\Process\ProcessRepository;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
 use Cake\TestSuite\TestCase;
@@ -56,7 +54,6 @@ final class ProcessRepositoryTest extends TestCase
             ->method('write');
 
         $this->repository->save(
-            ProcessRepositoryTestDummyService::class,
             $process
         );
     }
@@ -74,29 +71,7 @@ final class ProcessRepositoryTest extends TestCase
         $this->session->method('check')->willReturn(false);
 
         $this->repository->save(
-            ProcessRepositoryTestDummyService::class,
             $process
         );
     }
-
-    public function testSaveThrowsOnInvalidServiceClass(): void
-    {
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Service class must implement');
-
-        $process = new InputProcess(
-            processId: new ProcessId('testid'),
-            processParams: new ProcessParams([])
-        );
-
-        $this->repository->save(
-            \stdClass::class,
-            $process
-        );
-    }
-}
-
-final class ProcessRepositoryTestDummyService implements ServiceInterface
-{
-    use ServiceTrait;
 }

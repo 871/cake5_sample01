@@ -8,8 +8,6 @@ use App\Service\Controller\Shared\Process\Process\InputProcess;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessId;
 use App\Service\Controller\Shared\Process\Process\Fields\ProcessParams;
 use App\Service\Controller\Shared\Process\ProcessProvider;
-use App\Service\Controller\Shared\ServiceInterface;
-use App\Service\Controller\Shared\ServiceTrait;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
 use Cake\TestSuite\TestCase;
@@ -47,7 +45,6 @@ final class ProcessProviderTest extends TestCase
 
         $process = $this->provider->provide(
             InputProcess::class,
-            ProcessProviderTestDummyService::class,
             $processId
         );
 
@@ -73,7 +70,6 @@ final class ProcessProviderTest extends TestCase
 
         $result = $this->provider->provide(
             InputProcess::class,
-            ProcessProviderTestDummyService::class,
             $processId
         );
 
@@ -87,25 +83,7 @@ final class ProcessProviderTest extends TestCase
 
         $this->provider->provide(
             \stdClass::class,
-            ProcessProviderTestDummyService::class,
             new ProcessId('x')
         );
     }
-
-    public function testThrowsOnInvalidServiceClass(): void
-    {
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Service class must implement');
-
-        $this->provider->provide(
-            InputProcess::class,
-            \stdClass::class,
-            new ProcessId('x')
-        );
-    }
-}
-
-final class ProcessProviderTestDummyService implements ServiceInterface
-{
-    use ServiceTrait;
 }

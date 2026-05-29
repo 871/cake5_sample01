@@ -22,11 +22,10 @@ final class SessionKeyTest extends TestCase
             prefix: 'process',
             type: $type,
             accountId: $accountId,
-            serviceClassName: 'App\Service\DummyService',
             processId: $processId,
         );
 
-        $expected = 'process.anonymous.0.App\Service\DummyService.000000000abc123';
+        $expected = 'process.anonymous.0.000000000abc123';
 
         $this->assertSame($expected, $sessionKey->toString());
     }
@@ -41,7 +40,6 @@ final class SessionKeyTest extends TestCase
             prefix: 'p',
             type: $type,
             accountId: $accountId,
-            serviceClassName: 'Service',
             processId: $processId,
         );
 

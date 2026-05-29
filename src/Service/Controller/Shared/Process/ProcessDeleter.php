@@ -14,24 +14,15 @@ final class ProcessDeleter implements ServiceInterface
     /**
      * Sessionに保存されたProcess Instance の内容を削除する
      *
-     * @param string $serviceClassName
      * @param \App\Service\Controller\Shared\Process\ProcessInterface $process
      * @return void
      */
-    public function delete(string $serviceClassName, ProcessInterface $process): void
+    public function delete(ProcessInterface $process): void
     {
-        if (!is_subclass_of($serviceClassName, ServiceInterface::class)) {
-            throw new DomainException(
-                'Service class must implement ' . ServiceInterface::class
-                . '[serviceClassName: ' . $serviceClassName . ']',
-            );
-        }
-
         $sessionKey = new SessionKey(
             prefix: ProcessInterface::PREFIX,
             type: $this->authContext->getType(),
             accountId: $this->authContext->getAccountId(),
-            serviceClassName: $serviceClassName,
             processId: $process->getId(),
         );
 

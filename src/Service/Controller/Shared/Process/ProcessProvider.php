@@ -17,11 +17,10 @@ final class ProcessProvider implements ServiceInterface
      * Sessionに保存されたProcessInstanceの内容からProcessInstanceを取得する
      *
      * @param string $processClassName
-     * @param string $serviceClassName
      * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId
      * @return ?\App\Service\Controller\Shared\Process\ProcessInterface
      */
-    public function provide(string $processClassName, string $serviceClassName, ProcessId $processId): ?ProcessInterface
+    public function provide(string $processClassName, ProcessId $processId): ?ProcessInterface
     {
         if (!is_subclass_of($processClassName, ProcessInterface::class)) {
             throw new DomainException(
@@ -30,14 +29,7 @@ final class ProcessProvider implements ServiceInterface
             );
         }
 
-        if (!is_subclass_of($serviceClassName, ServiceInterface::class)) {
-            throw new DomainException(
-                'Service class must implement ' . ServiceInterface::class
-                . '[serviceClassName: ' . $serviceClassName . ']',
-            );
-        }
-
-        $processParams = $this->getProcessParams($serviceClassName, $processId);
+        $processParams = $this->getProcessParams($processId);
 
         return $processParams === null ? null : new $processClassName(
             processId: $processId,
@@ -46,17 +38,15 @@ final class ProcessProvider implements ServiceInterface
     }
 
     /**
-     * @param string $serviceClassName
      * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessId $processId
      * @return ?\App\Service\Controller\Shared\Process\Process\Fields\ProcessParams
      */
-    private function getProcessParams(string $serviceClassName, ProcessId $processId): ?ProcessParams
+    private function getProcessParams(ProcessId $processId): ?ProcessParams
     {
         $sessionKey = new SessionKey(
             prefix: ProcessInterface::PREFIX,
             type: $this->authContext->getType(),
             accountId: $this->authContext->getAccountId(),
-            serviceClassName: $serviceClassName,
             processId: $processId,
         );
 

@@ -16,13 +16,11 @@ final class ProcessFactory implements ServiceInterface
      * ProcessInstanceの内容（ProcessParams）をSessionに保存してからProcessInstanceを作成する
      *
      * @param string $processClassName
-     * @param string $serviceClassName
      * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
      * @return \App\Service\Controller\Shared\Process\ProcessInterface
      */
     public function start(
         string $processClassName,
-        string $serviceClassName,
         ProcessParams $processParams,
     ): ProcessInterface {
         if (!is_subclass_of($processClassName, ProcessInterface::class)) {
@@ -32,26 +30,17 @@ final class ProcessFactory implements ServiceInterface
             );
         }
 
-        if (!is_subclass_of($serviceClassName, ServiceInterface::class)) {
-            throw new DomainException(
-                'Service class must implement ' . ServiceInterface::class
-                . '[serviceClassName: ' . $serviceClassName . ']',
-            );
-        }
-
         return new $processClassName(
-            processId: $this->storeAndGenerateId($serviceClassName, $processParams),
+            processId: $this->storeAndGenerateId($processParams),
             processParams: $processParams,
         );
     }
 
     /**
-     * @param string $serviceClassName
      * @param \App\Service\Controller\Shared\Process\Process\Fields\ProcessParams $processParams
      * @return \App\Service\Controller\Shared\Process\Process\Fields\ProcessId
      */
     private function storeAndGenerateId(
-        string $serviceClassName,
         ProcessParams $processParams,
     ): Process\Fields\ProcessId {
         $processId = new Process\Fields\ProcessId(uniqid());
@@ -59,12 +48,11 @@ final class ProcessFactory implements ServiceInterface
             prefix: ProcessInterface::PREFIX,
             type: $this->authContext->getType(),
             accountId: $this->authContext->getAccountId(),
-            serviceClassName: $serviceClassName,
             processId: $processId,
         );
 
         return $this->request->getSession()->check((string)$sessionKey)
-            ? $this->storeAndGenerateId($serviceClassName, $processParams)
+            ? $this->storeAndGenerateId($processParams)
             : (function () use ($processId, $sessionKey, $processParams): Process\Fields\ProcessId {
 
                 $this->request->getSession()->write((string)$sessionKey, $processParams->toArray());
