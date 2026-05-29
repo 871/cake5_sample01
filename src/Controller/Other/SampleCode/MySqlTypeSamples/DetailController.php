@@ -5,14 +5,14 @@ namespace App\Controller\Other\SampleCode\MySqlTypeSamples;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Detail as CtlService;
+use App\Application\Controller\Other\SampleCode\MySqlTypeSamples\Detail as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 
 class DetailController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Other\SampleCode\MySqlTypeSamples\Detail
+     * @var \App\Application\Controller\Other\SampleCode\MySqlTypeSamples\Detail
      */
     private CtlService $ctlService;
 

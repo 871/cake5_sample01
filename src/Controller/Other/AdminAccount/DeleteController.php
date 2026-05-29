@@ -5,7 +5,7 @@ namespace App\Controller\Other\AdminAccount;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Other\AdminAccount\Delete as CtlService;
+use App\Application\Controller\Other\AdminAccount\Delete as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\MethodNotAllowedException;
 use DateTimeImmutable;
@@ -13,7 +13,7 @@ use DateTimeImmutable;
 class DeleteController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Other\AdminAccount\Delete
+     * @var \App\Application\Controller\Other\AdminAccount\Delete
      */
     private CtlService $ctlService;
 

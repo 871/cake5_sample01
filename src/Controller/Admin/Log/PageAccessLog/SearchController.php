@@ -6,7 +6,7 @@ namespace App\Controller\Admin\Log\PageAccessLog;
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\Log\PageAccessLog\Search as CtlService;
+use App\Application\Controller\Admin\Log\PageAccessLog\Search as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 

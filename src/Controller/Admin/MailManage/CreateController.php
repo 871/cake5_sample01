@@ -6,7 +6,7 @@ namespace App\Controller\Admin\MailManage;
 use App\Controller\AppController;
 use App\Exception\ValidateException;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Admin\MailManage\Create as CtlService;
+use App\Application\Controller\Admin\MailManage\Create as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use DateTimeImmutable;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class CreateController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\MailManage\Create
+     * @var \App\Application\Controller\Admin\MailManage\Create
      */
     private CtlService $ctlService;
 

@@ -6,7 +6,7 @@ namespace App\Controller\User;
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
 use App\Security\Auth\UserTokenService;
-use App\Service\Controller\User\Logout as CtlService;
+use App\Application\Controller\User\Logout as CtlService;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\MethodNotAllowedException;
 use DateTimeImmutable;
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 class LogoutController extends AppController
 {
     /**
-     * @var \App\Service\Controller\User\Logout
+     * @var \App\Application\Controller\User\Logout
      */
     private CtlService $ctlService;
 

@@ -5,14 +5,14 @@ namespace App\Controller\Other\AdminAccount;
 
 use App\Controller\AppController;
 use App\Security\Auth\AuthContextResolver;
-use App\Service\Controller\Other\AdminAccount\Detail as CtlService;
+use App\Application\Controller\Other\AdminAccount\Detail as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 
 class DetailController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Other\AdminAccount\Detail
+     * @var \App\Application\Controller\Other\AdminAccount\Detail
      */
     private CtlService $ctlService;
 

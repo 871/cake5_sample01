@@ -7,14 +7,14 @@ use App\Controller\AppController;
 use App\Exception\AuthException;
 use App\Security\Auth\AuthContextResolver;
 use App\Security\Input\StrictCast;
-use App\Service\Controller\Admin\Login as CtlService;
+use App\Application\Controller\Admin\Login as CtlService;
 use Cake\Event\EventInterface;
 use DateTimeImmutable;
 
 class LoginController extends AppController
 {
     /**
-     * @var \App\Service\Controller\Admin\Login
+     * @var \App\Application\Controller\Admin\Login
      */
     private CtlService $ctlService;
 
