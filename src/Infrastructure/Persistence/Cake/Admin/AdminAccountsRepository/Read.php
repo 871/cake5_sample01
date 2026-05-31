@@ -22,7 +22,7 @@ final class Read
      * @var \App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository\Mapper
      */
     private Mapper $mapper;
-    
+
     /**
      * @param \App\Domain\Admin\AdminAccounts\ValueObject\Id $id
      */
