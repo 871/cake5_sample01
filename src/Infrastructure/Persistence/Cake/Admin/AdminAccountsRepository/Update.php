@@ -6,7 +6,6 @@ namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
 use App\Domain\Exception\RepositoryException;
 use App\Domain\Shared\ValueObject as SVo;
-use App\Model\Entity\Admin\AdminAccount as OrmEntity;
 use App\Model\Table\Admin\AdminAccountHistoriesTable;
 use App\Model\Table\Admin\AdminAccountsTable;
 use Cake\ORM\Exception\PersistenceFailedException;
@@ -48,9 +47,8 @@ final class Update
     public function run(): DomainEntity
     {
         try {
-            /** @var \App\Model\Entity\Admin\AdminAccount $ormEntity */
-            $ormEntity = $this->table->getConnection()->transactional(
-                function (): OrmEntity {
+            $this->table->getConnection()->transactional(
+                function (): void {
                     $savedEntity = $this->table->saveOrFail(
                         $this->mapper->toPatchOrmEntity($this->domainEntity),
                         [
@@ -68,12 +66,10 @@ final class Update
                             'checkExisting' => false,
                         ],
                     );
-
-                    return $savedEntity;
                 },
             );
 
-            return $this->mapper->toDomainEntity($ormEntity);
+            return (new Read($this->domainEntity->id()))->run();
         } catch (PersistenceFailedException $ex) {
             throw new RepositoryException(
                 message: 'AdminAccountsRepository Update Error',

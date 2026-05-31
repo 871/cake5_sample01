@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Model\Table\User;
 
 use App\Model\Entity\User\UserAccount;
+use App\Model\Table\Grant\GrantAccountPermissionsTable;
+use App\Model\Table\Grant\GrantAccountRolesTable;
 use App\Model\Table\Shared\AccountStatusMastersTable;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -46,6 +48,24 @@ final class UserAccountsTable extends Table
         $this->hasMany('RefreshTokens', [
             'className' => RefreshTokensTable::class,
             'foreignKey' => 'user_account_id',
+        ]);
+        $this->hasMany('GrantAccountPermissions', [
+            'className' => GrantAccountPermissionsTable::class,
+            'foreignKey' => 'account_id',
+            'conditions' => [
+            ],
+            'sort' => [
+                'GrantAccountPermissions.created' => 'DESC',
+            ],
+        ]);
+        $this->hasMany('GrantAccountRoles', [
+            'className' => GrantAccountRolesTable::class,
+            'foreignKey' => 'account_id',
+            'conditions' => [
+            ],
+            'sort' => [
+                'GrantAccountRoles.created' => 'DESC',
+            ],
         ]);
     }
 

@@ -5,6 +5,7 @@ namespace App\Model\Table\Grant;
 
 use App\Model\Entity\Grant\GrantAccountRole;
 use App\Model\Table\Admin\AdminAccountsTable;
+use App\Model\Table\User\UserAccountsTable;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -12,6 +13,7 @@ use Cake\Validation\Validator;
  * GrantAccountRoles Model
  *
  * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Admin\AdminAccountsTable> $AdminAccounts
+ * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\User\UserAccountsTable> $UserAccounts
  * @property \Cake\ORM\Association\BelongsTo<\App\Model\Table\Grant\GrantRolesTable> $GrantRoles
  * @method \App\Model\Entity\Grant\GrantAccountRole newEmptyEntity()
  * @method \App\Model\Entity\Grant\GrantAccountRole newEntity(array<string, mixed> $data, array<string, mixed> $options = [])
@@ -35,13 +37,27 @@ final class GrantAccountRolesTable extends Table
         $this->belongsTo('AdminAccounts', [
             'className' => AdminAccountsTable::class,
             'foreignKey' => 'account_id',
-            'conditions' => ['GrantAccountRoles.account_type' => 'ADMIN'],
+            'conditions' => [
+                'GrantAccountRoles.account_type' => 'ADMIN',
+            ],
+            'joinType' => 'INNER',
+        ]);
+
+        $this->belongsTo('UserAccounts', [
+            'className' => UserAccountsTable::class,
+            'foreignKey' => 'account_id',
+            'conditions' => [
+                'GrantAccountRoles.account_type' => 'USER',
+            ],
             'joinType' => 'INNER',
         ]);
 
         $this->belongsTo('GrantRoles', [
             'className' => GrantRolesTable::class,
             'foreignKey' => 'grant_role_id',
+            'conditions' => [
+                'GrantRoles.account_type = GrantAccountRoles.account_type',
+            ],
             'joinType' => 'INNER',
         ]);
     }
