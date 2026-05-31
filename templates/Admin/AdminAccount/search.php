@@ -1,11 +1,11 @@
 <?php
 // Memo: 静的解析ツールのチェックとFW依存のページ機能を両立させるための措置として、CakePHPのViewファイル内で直接ドメインエンティティへのマッピングを行っています。 --- IGNORE ---
-use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
+use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository\Mapper as AdminAccountMapper;
 use App\Model\Entity\Admin\AdminAccount as OrmEntity;
 
 
-/* @var array $rows */
-/* @var array $accountStatusOptions */
+/** @var array $rows */
+/** @var array $accountStatusOptions */
 ?>
 <!-- 検索フォーム -->
 <div class="card mb-3">

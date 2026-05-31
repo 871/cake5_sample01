@@ -6,7 +6,6 @@ namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
 use App\Domain\Exception\RepositoryException;
 use App\Domain\Shared\ValueObject as SVo;
-use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
 use App\Model\Entity\Admin\AdminAccount as OrmEntity;
 use App\Model\Table\Admin\AdminAccountHistoriesTable;
 use App\Model\Table\Admin\AdminAccountsTable;
@@ -28,9 +27,9 @@ final class Create
     private AdminAccountHistoriesTable $historyTable;
 
     /**
-     * @var \App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper
+     * @var \App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository\Mapper
      */
-    private AdminAccountMapper $mapper;
+    private Mapper $mapper;
 
     /**
      * @param \App\Domain\Admin\AdminAccounts\Entity\AdminAccount $domainEntity
@@ -40,7 +39,7 @@ final class Create
     ) {
         $this->table = $this->fetchTable(AdminAccountsTable::class);
         $this->historyTable = $this->fetchTable(AdminAccountHistoriesTable::class);
-        $this->mapper = new AdminAccountMapper();
+        $this->mapper = new Mapper();
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Infrastructure\Persistence\Cake\Admin;
+namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory as DomainHistoryEntity;
@@ -15,7 +15,7 @@ use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use DateTimeInterface;
 
-final class AdminAccountMapper
+final class Mapper
 {
     use LocatorAwareTrait;
 

@@ -32,6 +32,32 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
         $builder->get('/', ['controller' => 'Top', 'action' => 'index']);
         $builder->get('/error_test', ['controller' => 'Top', 'action' => 'errorTest']);
 
+        // ユーザアカウント管理
+        $builder->prefix('AdminAccount', ['path' => '/user_account'], static function (RouteBuilder $builder) {
+            // 検索
+            $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
+            $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+            // 詳細
+            $builder->get('/detail/{user_account_id}', ['controller' => 'Detail', 'action' => 'index']);
+            // 登録
+            $builder->get('/create', ['controller' => 'Create', 'action' => 'index']);
+            $builder->get('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'input']);
+            $builder->post('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'inputPost']);
+            $builder->get('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'conf']);
+            $builder->post('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'confPost']);
+            // 複製登録
+            $builder->get('/create/{user_account_id}/copy', ['controller' => 'Create', 'action' => 'copy']);
+            // 更新
+            $builder->get('/edit/{user_account_id}', ['controller' => 'Edit', 'action' => 'index']);
+            $builder->get('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'input']);
+            $builder->post('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
+            $builder->get('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
+            $builder->post('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
+            // 削除
+            $builder->get('/delete/{user_account_id}', ['controller' => 'Delete', 'action' => 'index']);
+            $builder->post('/delete/{user_account_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
+        });
+
         // メール管理
         $builder->prefix('MailManage', ['path' => '/mail_manage'], static function (RouteBuilder $builder) {
             // メールサーバ接続確認

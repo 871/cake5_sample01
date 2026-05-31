@@ -5,7 +5,6 @@ namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory as DomainHistoryEntity;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
-use App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper;
 use App\Model\Entity\Admin\AdminAccountHistory as OrmHistoryEntity;
 use App\Model\Table\Admin\AdminAccountHistoriesTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -20,9 +19,9 @@ final class ReadHistories
     private AdminAccountHistoriesTable $table;
 
     /**
-     * @var \App\Infrastructure\Persistence\Cake\Admin\AdminAccountMapper
+     * @var \App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository\Mapper
      */
-    private AdminAccountMapper $mapper;
+    private Mapper $mapper;
 
     /**
      * @param \App\Domain\Admin\AdminAccounts\ValueObject\Id $adminAccountId
@@ -31,7 +30,7 @@ final class ReadHistories
         private readonly Vo\Id $adminAccountId,
     ) {
         $this->table = $this->fetchTable(AdminAccountHistoriesTable::class);
-        $this->mapper = new AdminAccountMapper();
+        $this->mapper = new Mapper();
     }
 
     /**
