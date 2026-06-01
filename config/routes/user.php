@@ -1,6 +1,7 @@
 <?php
 
 use App\Middleware\User\UserAuthMiddleware;
+use App\Middleware\User\PageAccessLogMiddleware;
 use Cake\Routing\RouteBuilder;
 
 /** @var \Cake\Routing\RouteBuilder $builder */
@@ -18,11 +19,14 @@ $builder->prefix('User', ['path' => '/us'], static function (RouteBuilder $build
         $builder->get('/logout', ['controller' => 'Logout', 'action' => 'index']);
         $builder->post('/logout', ['controller' => 'Logout', 'action' => 'indexPost']);
         // 認証チェック
-        $builder->applyMiddleware('userAuth');
+        $builder->registerMiddleware('pageAccessLog', new PageAccessLogMiddleware());
+        $builder->applyMiddleware('userAuth', 'pageAccessLog');
         // エラー
         $builder->get('/error', ['controller' => 'Error', 'action' => 'index']);
         $builder->get('/error/{message_id}', ['controller' => 'Error', 'action' => 'index']);
         // TOP
         $builder->get('/', ['controller' => 'Top', 'action' => 'index']);
+
+        
     });
 });
