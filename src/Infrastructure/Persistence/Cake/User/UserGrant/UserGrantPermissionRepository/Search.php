@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\User\UserGrant\UserGrantPermissionRepository;
 
 use App\Domain\Shared\Enum as SEn;
-use App\Domain\Admin\AdminGrant\SearchAdminGrantPermissionCondition as SearchCondition;
+use App\Domain\User\UserGrant\SearchUserGrantPermissionCondition as SearchCondition;
 use App\Model\Entity\Grant\GrantPermission as OrmEntityGrantPermission;
 use App\Model\Table\Grant\GrantPermissionsTable;
 use Cake\Database\Expression\QueryExpression;
