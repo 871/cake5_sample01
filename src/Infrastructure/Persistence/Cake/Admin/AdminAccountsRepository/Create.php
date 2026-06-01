@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
 use App\Domain\Exception\RepositoryException;
+use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
 use App\Model\Entity\Admin\AdminAccount as OrmEntity;
 use App\Model\Table\Admin\AdminAccountHistoriesTable;
@@ -73,7 +74,7 @@ final class Create
                 },
             );
 
-            return $this->mapper->toDomainEntity($ormEntity);
+            return (new Read(new Vo\Id((string)$ormEntity->id)))->run();
         } catch (PersistenceFailedException $ex) {
             throw new RepositoryException(
                 message: 'AdminAccountsRepository Create Error',

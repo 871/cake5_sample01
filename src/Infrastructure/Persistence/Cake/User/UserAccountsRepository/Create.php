@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\User\UserAccountsRepository;
 
 use App\Domain\Exception\RepositoryException;
+use App\Domain\User\UserAccounts\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
 use App\Domain\User\UserAccounts\Entity\UserAccount as DomainEntity;
 use App\Model\Entity\User\UserAccount as OrmEntity;
@@ -73,7 +74,7 @@ final class Create
                 },
             );
 
-            return $this->mapper->toDomainEntity($ormEntity);
+            return (new Read(new Vo\Id((string)$ormEntity->id)))->run();
         } catch (PersistenceFailedException $ex) {
             throw new RepositoryException(
                 message: 'UserAccountsRepository Create Error',

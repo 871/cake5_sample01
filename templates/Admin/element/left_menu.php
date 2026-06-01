@@ -22,6 +22,26 @@ $prefix = (string)$request->getParam('prefix');
         </li>
         <li class="nav-item">
             <details class="admin-menu-group"<?= in_array((string)$request->getParam('prefix'), [
+                'Admin/UserAccount',
+            ], true) ? ' open' : '' ?>>
+                <summary class="nav-link text-white">ユーザ管理</summary>
+                <ul class="nav flex-column admin-submenu">
+                    <li class="nav-item">
+                        <a
+                            class="nav-link text-white"
+                            href="<?= $this->Url->build([
+                                'prefix' => 'Admin/UserAccount',
+                                'controller' => 'Search',
+                                'action' => 'init',
+                                'account_id' => $accountId,
+                            ]) ?>"
+                        >ユーザアカウント</a>
+                    </li>
+                </ul>
+            </details>
+        </li>
+        <li class="nav-item">
+            <details class="admin-menu-group"<?= in_array((string)$request->getParam('prefix'), [
                 'Admin/Log/LoginLog',
                 'Admin/Log/PageAccessLog',
             ], true) ? ' open' : '' ?>>
@@ -92,26 +112,6 @@ $prefix = (string)$request->getParam('prefix');
                                 'account_id' => $accountId,
                             ]) ?>"
                         >管理者権限</a>
-                    </li>
-                </ul>
-            </details>
-        </li>
-        <li class="nav-item">
-            <details class="admin-menu-group"<?= in_array((string)$request->getParam('prefix'), [
-                'Admin/UserAccount',
-            ], true) ? ' open' : '' ?>>
-                <summary class="nav-link text-white">ユーザ管理</summary>
-                <ul class="nav flex-column admin-submenu">
-                    <li class="nav-item">
-                        <a
-                            class="nav-link text-white"
-                            href="<?= $this->Url->build([
-                                'prefix' => 'Admin/UserAccount',
-                                'controller' => 'Search',
-                                'action' => 'init',
-                                'account_id' => $accountId,
-                            ]) ?>"
-                        >ユーザアカウント</a>
                     </li>
                 </ul>
             </details>

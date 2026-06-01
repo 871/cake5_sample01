@@ -3,6 +3,7 @@
 use App\Middleware\User\UserAuthMiddleware;
 use Cake\Routing\RouteBuilder;
 
+/** @var \Cake\Routing\RouteBuilder $builder */
 $builder->prefix('User', ['path' => '/us'], static function (RouteBuilder $builder) {
     // エラー（未ログイン）
     $builder->get('/error', ['controller' => 'Error', 'action' => 'index']);
