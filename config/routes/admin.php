@@ -33,7 +33,7 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
         $builder->get('/error_test', ['controller' => 'Top', 'action' => 'errorTest']);
 
         // ユーザアカウント管理
-        $builder->prefix('AdminAccount', ['path' => '/user_account'], static function (RouteBuilder $builder) {
+        $builder->prefix('UserAccount', ['path' => '/user_account'], static function (RouteBuilder $builder) {
             // 検索
             $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
             $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
