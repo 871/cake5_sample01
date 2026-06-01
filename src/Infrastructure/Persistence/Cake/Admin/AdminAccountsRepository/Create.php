@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
-use App\Domain\Exception\RepositoryException;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
+use App\Domain\Exception\RepositoryException;
 use App\Domain\Shared\ValueObject as SVo;
 use App\Model\Entity\Admin\AdminAccount as OrmEntity;
 use App\Model\Table\Admin\AdminAccountHistoriesTable;

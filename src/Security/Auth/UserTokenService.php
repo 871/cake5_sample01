@@ -126,18 +126,18 @@ final class UserTokenService
     {
         return [
             'type' => Type::TYPE_USER,
-            'account_id' => $account->id()->toString(),
-            'account_email' => $account->email()->toString(),
-            'account_name' => $account->name()->toString(),
-            'account_status_master_id' => $account->accountStatusMasterId()->toString(),
-            'account_status_master_code' => $account->accountStatusMasterCode()->toString(),
-            'account_status_master_name' => $account->accountStatusMasterName()->toString(),
-            'is_email_verified' => $account->isEmailVerified()->toString(),
-            'password_changed_at' => $account->passwordChangedAt()->format('Y-m-d\TH:i:s'),
-            'password_expires_at' => $account->passwordExpiresAt()->format('Y-m-d\TH:i:s'),
-            'created' => $account->created()->format('Y-m-d\TH:i:s'),
-            'modified' => $account->modified()->format('Y-m-d\TH:i:s'),
-            'logined' => $now->format('Y-m-d\TH:i:s'),
+            'account_id' => (string)$account->id()->toString(),
+            'account_email' => (string)$account->email()->toString(),
+            'account_name' => (string)$account->name()->toString(),
+            'account_status_master_id' => (string)$account->accountStatusMasterId()->toString(),
+            'account_status_master_code' => (string)$account->accountStatusMasterCode()->toString(),
+            'account_status_master_name' => (string)$account->accountStatusMasterName()->toString(),
+            'is_email_verified' => (string)$account->isEmailVerified()->toString(),
+            'password_changed_at' => (string)$account->passwordChangedAt()->format('Y-m-d\TH:i:s'),
+            'password_expires_at' => (string)$account->passwordExpiresAt()->format('Y-m-d\TH:i:s'),
+            'created' => (string)$account->created()->format('Y-m-d\TH:i:s'),
+            'modified' => (string)$account->modified()->format('Y-m-d\TH:i:s'),
+            'logined' => (string)$now->format('Y-m-d\TH:i:s'),
         ];
     }
 

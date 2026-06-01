@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\User\UserAccountsRepository;
 
 use App\Domain\Exception\RepositoryException;
-use App\Domain\User\UserAccounts\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
 use App\Domain\User\UserAccounts\Entity\UserAccount as DomainEntity;
+use App\Domain\User\UserAccounts\ValueObject as Vo;
 use App\Model\Entity\User\UserAccount as OrmEntity;
 use App\Model\Table\User\UserAccountHistoriesTable;
 use App\Model\Table\User\UserAccountsTable;
