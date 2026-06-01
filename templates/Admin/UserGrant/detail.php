@@ -1,7 +1,7 @@
 <?php
 
 /** @var \App\Domain\User\UserGrant\Entity\UserAccountGrant $userAccountGrant */
-/** @var \App\Domain\Admin\AdminGrant\Entity\GrantPermission[] $grantPermissions */
+/** @var array<\App\Domain\User\UserGrant\Entity\GrantPermission> $grantPermissions */
 
 
 ?>

@@ -1,6 +1,6 @@
 <?php
 /** @var iterable<\App\Model\Entity\Grant\GrantRole> $rows */
-/** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission> $grantPermissionOptions */
+/** @var array<\App\Domain\User\UserGrant\Entity\GrantPermission> $grantPermissionOptions */
 
 $pageOptions = [
     'url' => [

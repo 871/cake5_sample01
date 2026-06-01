@@ -1,7 +1,7 @@
 <?php
 /** @var \App\Application\Controller\Shared\Process\Process\InputProcess $input */
 /** @var bool $isEdit */
-/** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission> $grantPermissionOptions */
+/** @var array<\App\Domain\User\UserGrant\Entity\GrantPermission> $grantPermissionOptions */
 
 $selectedGrantPermissionIds = (array)$input->getInput('grant_permission_ids');
 ?>

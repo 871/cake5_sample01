@@ -1,6 +1,6 @@
 <?php
-/** @var \App\Domain\Admin\AdminGrant\Entity\GrantRole $entity */
-/** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission> $grantPermissionOptions */
+/** @var \App\Domain\User\UserGrant\Entity\GrantRole $entity */
+/** @var array<\App\Domain\User\UserGrant\Entity\GrantPermission> $grantPermissionOptions */
 ?>
 <div class="card shadow-sm">
     <div class="card-header bg-info text-white">ロール権限詳細</div>

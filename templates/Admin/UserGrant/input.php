@@ -1,7 +1,7 @@
 <?php
 /** @var \App\Application\Controller\Shared\Process\Process\InputProcess $input */
-/** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantRole> $grantRoleOptions */
-/** @var array<\App\Domain\Admin\AdminGrant\Entity\GrantPermission> $grantPermissionOptions */
+/** @var array<\App\Domain\User\UserGrant\Entity\GrantRole> $grantRoleOptions */
+/** @var array<\App\Domain\User\UserGrant\Entity\GrantPermission> $grantPermissionOptions */
 ?>
 <div class="card shadow-sm">
 <?php foreach ($input->getInput('_errorMessages') as $message) { ?>
