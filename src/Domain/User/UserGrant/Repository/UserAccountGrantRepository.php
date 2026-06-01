@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace App\Domain\User\UserGrant\Repository;
 
-use App\Domain\User\UserGrant\Entity\GrantAccountRole;
-use App\Domain\User\UserGrant\Entity\GrantAccountPermission;
+use App\Domain\User\UserGrant\Entity\UserAccountGrant;
+use App\Domain\User\UserGrant\SearchUserAccountGrantCondition;
 use App\Domain\User\UserGrant\ValueObject as Vo;
+use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
 
 interface UserAccountGrantRepository
@@ -16,21 +17,25 @@ interface UserAccountGrantRepository
     public function __construct(DateTimeInterface $datetime);
 
     /**
-     * @param Vo\UserAccountId $userAccountId
-     * @return array<GrantAccountRole>
+     * @param \App\Domain\User\UserGrant\SearchUserAccountGrantCondition $condition
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\User\UserAccount>
      */
-    public function findRolesByUserAccountId(Vo\UserAccountId $userAccountId): array;
+    public function search(SearchUserAccountGrantCondition $condition): SelectQuery;
 
     /**
-     * @param Vo\UserAccountId $userAccountId
-     * @return array<GrantAccountPermission>
+     * @return array<\App\Domain\User\UserGrant\Entity\AccountStatusMaster>
      */
-    public function findPermissionsByUserAccountId(Vo\UserAccountId $userAccountId): array;
+    public function findAccountStatusMasters(): array;
 
     /**
-     * @param array<GrantAccountRole> $roles
-     * @param array<GrantAccountPermission> $permissions
-     * @return void
+     * @param \App\Domain\User\UserGrant\ValueObject\UserAccountId $userAccountId
+     * @return \App\Domain\User\UserGrant\Entity\UserAccountGrant
      */
-    public function save(array $roles, array $permissions): void;
+    public function detail(Vo\UserAccountId $userAccountId): UserAccountGrant;
+
+    /**
+     * @param \App\Domain\User\UserGrant\Entity\UserAccountGrant $userAccountGrant
+     * @return \App\Domain\User\UserGrant\Entity\UserAccountGrant
+     */
+    public function save(UserAccountGrant $userAccountGrant): UserAccountGrant;
 }

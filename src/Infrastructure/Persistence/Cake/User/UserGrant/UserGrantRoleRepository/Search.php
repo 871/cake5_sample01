@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\User\UserGrant\UserGrantRoleRepository;
 
-use App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition as SearchCondition; // reuse admin condition for now
+use App\Domain\User\UserGrant\SearchUserGrantRoleCondition as SearchCondition; 
 use App\Domain\Shared\Enum as SEn;
 use App\Model\Entity\Grant\GrantRole as OrmEntityGrantRole;
 use App\Model\Table\Grant\GrantRolesTable;
