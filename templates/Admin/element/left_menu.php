@@ -96,5 +96,25 @@ $prefix = (string)$request->getParam('prefix');
                 </ul>
             </details>
         </li>
+        <li class="nav-item">
+            <details class="admin-menu-group"<?= in_array((string)$request->getParam('prefix'), [
+                'Admin/UserAccount',
+            ], true) ? ' open' : '' ?>>
+                <summary class="nav-link text-white">ユーザ管理</summary>
+                <ul class="nav flex-column admin-submenu">
+                    <li class="nav-item">
+                        <a
+                            class="nav-link text-white"
+                            href="<?= $this->Url->build([
+                                'prefix' => 'Admin/UserAccount',
+                                'controller' => 'Search',
+                                'action' => 'init',
+                                'account_id' => $accountId,
+                            ]) ?>"
+                        >ユーザアカウント</a>
+                    </li>
+                </ul>
+            </details>
+        </li>
     </ul>
 </aside>
