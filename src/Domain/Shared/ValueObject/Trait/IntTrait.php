@@ -49,16 +49,16 @@ trait IntTrait
 
     /**
      * @param ?string $value
-     * @return self
+     * @return static
      */
-    public static function fromString(?string $value): self
+    public static function fromString(?string $value): static
     {
         if ($value === null || $value === '') {
-            return new self(null);
+            return new static(null);
         }
 
         if (preg_match('/^-?\d+$/', $value)) {
-            return new self($value);
+            return new static($value);
         }
 
         throw new DomainException(
