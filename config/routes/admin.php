@@ -58,6 +58,37 @@ $builder->prefix('Admin', ['path' => '/ad'], static function (RouteBuilder $buil
             $builder->post('/delete/{user_account_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
         });
 
+        // ユーザ権限管理
+        $builder->prefix('UserGrant', ['path' => '/user_grant'], static function (RouteBuilder $builder) {
+            // ユーザ権限
+            $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
+            $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+            $builder->get('/detail/{user_account_id}', ['controller' => 'Detail', 'action' => 'index']);
+            $builder->get('/edit/{user_account_id}', ['controller' => 'Edit', 'action' => 'index']);
+            $builder->get('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'input']);
+            $builder->post('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
+            $builder->get('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
+            $builder->post('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
+            // ロール権限
+            $builder->prefix('Role', ['path' => '/role'], static function (RouteBuilder $builder) {
+                $builder->get('/', ['controller' => 'Search', 'action' => 'init']);
+                $builder->get('/search', ['controller' => 'Search', 'action' => 'index']);
+                $builder->get('/create', ['controller' => 'Create', 'action' => 'index']);
+                $builder->get('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'input']);
+                $builder->post('/create/{process_id}/input', ['controller' => 'Create', 'action' => 'inputPost']);
+                $builder->get('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'conf']);
+                $builder->post('/create/{process_id}/conf', ['controller' => 'Create', 'action' => 'confPost']);
+                $builder->get('/detail/{grant_role_id}', ['controller' => 'Detail', 'action' => 'index']);
+                $builder->get('/edit/{grant_role_id}', ['controller' => 'Edit', 'action' => 'index']);
+                $builder->get('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'input']);
+                $builder->post('/edit/{process_id}/input', ['controller' => 'Edit', 'action' => 'inputPost']);
+                $builder->get('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'conf']);
+                $builder->post('/edit/{process_id}/conf', ['controller' => 'Edit', 'action' => 'confPost']);
+                $builder->get('/delete/{grant_role_id}', ['controller' => 'Delete', 'action' => 'index']);
+                $builder->post('/delete/{grant_role_id}', ['controller' => 'Delete', 'action' => 'indexPost']);
+            });
+        });
+
         // メール管理
         $builder->prefix('MailManage', ['path' => '/mail_manage'], static function (RouteBuilder $builder) {
             // メールサーバ接続確認
