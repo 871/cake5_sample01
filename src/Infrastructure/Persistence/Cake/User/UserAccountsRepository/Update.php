@@ -1,0 +1,80 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Infrastructure\Persistence\Cake\User\UserAccountsRepository;
+
+use App\Domain\Exception\RepositoryException;
+use App\Domain\Shared\ValueObject as SVo;
+use App\Domain\User\UserAccounts\Entity\UserAccount as DomainEntity;
+use App\Model\Table\User\UserAccountHistoriesTable;
+use App\Model\Table\User\UserAccountsTable;
+use Cake\ORM\Exception\PersistenceFailedException;
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+final class Update
+{
+    use LocatorAwareTrait;
+
+    /**
+     * @var \App\Model\Table\User\UserAccountsTable
+     */
+    private UserAccountsTable $table;
+
+    /**
+     * @var \App\Model\Table\User\UserAccountHistoriesTable
+     */
+    private UserAccountHistoriesTable $historyTable;
+
+    /**
+     * @var \App\Infrastructure\Persistence\Cake\User\UserAccountsRepository\Mapper
+     */
+    private Mapper $mapper;
+
+    /**
+     * @param \App\Domain\User\UserAccounts\Entity\UserAccount $domainEntity
+     */
+    public function __construct(
+        private readonly DomainEntity $domainEntity,
+    ) {
+        $this->table = $this->fetchTable(UserAccountsTable::class);
+        $this->historyTable = $this->fetchTable(UserAccountHistoriesTable::class);
+        $this->mapper = new Mapper();
+    }
+
+    /**
+     * @return \App\Domain\User\UserAccounts\Entity\UserAccount
+     */
+    public function run(): DomainEntity
+    {
+        try {
+            $this->table->getConnection()->transactional(
+                function (): void {
+                    $savedEntity = $this->table->saveOrFail(
+                        $this->mapper->toPatchOrmEntity($this->domainEntity),
+                        [
+                            'checkExisting' => false,
+                        ],
+                    );
+
+                    $this->historyTable->saveOrFail(
+                        $this->mapper->toNewOrmHistoryEntity(
+                            $savedEntity,
+                            SVo\OperationType::UPDATE,
+                            $savedEntity->modified,
+                        ),
+                        [
+                            'checkExisting' => false,
+                        ],
+                    );
+                },
+            );
+
+            return (new Read($this->domainEntity->id()))->run();
+        } catch (PersistenceFailedException $ex) {
+            throw new RepositoryException(
+                message: 'UserAccountsRepository Update Error',
+                previous: $ex,
+            );
+        }
+    }
+}

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Security\Auth;
 
+use App\Domain\User\UserAccounts\Entity\UserAccount;
 use App\Lib\UUID\UUID;
-use App\Model\Entity\User\UserAccount;
 use App\Security\Auth\AuthContext\Fields\Type;
 use App\Security\Input\StrictCast;
 use Cake\Utility\Security;
@@ -23,7 +23,7 @@ final class UserTokenService
     private const REFRESH_TOKEN_TTL = 'P30D';
 
     /**
-     * @param \App\Model\Entity\User\UserAccount $account
+     * @param \App\Domain\User\UserAccounts\Entity\UserAccount $account
      * @param \DateTimeInterface $now
      * @return array{auth: array<string, string>, access_token: string, refresh_token: string, refresh_token_id: string, refresh_token_expires_at: \DateTimeImmutable, set_cookie_headers: array<int, string>}
      */
@@ -118,7 +118,7 @@ final class UserTokenService
     }
 
     /**
-     * @param \App\Model\Entity\User\UserAccount $account
+     * @param \App\Domain\User\UserAccounts\Entity\UserAccount $account
      * @param \DateTimeInterface $now
      * @return array<string, string>
      */
@@ -126,17 +126,17 @@ final class UserTokenService
     {
         return [
             'type' => Type::TYPE_USER,
-            'account_id' => (string)$account->id,
-            'account_email' => (string)$account->email,
-            'account_name' => (string)$account->name,
-            'account_status_master_id' => (string)$account->account_status_master_id,
-            'account_status_master_code' => (string)$account->account_status_master->code,
-            'account_status_master_name' => (string)$account->account_status_master->name,
-            'is_email_verified' => (string)$account->is_email_verified,
-            'password_changed_at' => $account->password_changed_at->format('Y-m-d\TH:i:s'),
-            'password_expires_at' => $account->password_expires_at->format('Y-m-d\TH:i:s'),
-            'created' => $account->created->format('Y-m-d\TH:i:s'),
-            'modified' => $account->modified->format('Y-m-d\TH:i:s'),
+            'account_id' => $account->id()->toString(),
+            'account_email' => $account->email()->toString(),
+            'account_name' => $account->name()->toString(),
+            'account_status_master_id' => $account->accountStatusMasterId()->toString(),
+            'account_status_master_code' => $account->accountStatusMasterCode()->toString(),
+            'account_status_master_name' => $account->accountStatusMasterName()->toString(),
+            'is_email_verified' => $account->isEmailVerified()->toString(),
+            'password_changed_at' => $account->passwordChangedAt()->format('Y-m-d\TH:i:s'),
+            'password_expires_at' => $account->passwordExpiresAt()->format('Y-m-d\TH:i:s'),
+            'created' => $account->created()->format('Y-m-d\TH:i:s'),
+            'modified' => $account->modified()->format('Y-m-d\TH:i:s'),
             'logined' => $now->format('Y-m-d\TH:i:s'),
         ];
     }

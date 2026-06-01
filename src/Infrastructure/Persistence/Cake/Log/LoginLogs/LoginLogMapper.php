@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Log\LoginLogs;
 
 use App\Domain\Log\LoginLogs\Entity\LoginLog as DomainEntity;
+use App\Domain\Log\LoginLogs\ValueObject as Vo;
+use App\Domain\Shared\ValueObject as SVo;
 use App\Model\Entity\Log\LoginLog as OrmEntity;
 use App\Model\Table\Log\LoginLogsTable;
 use App\Security\Input\Cast;
@@ -58,17 +60,23 @@ final class LoginLogMapper
     public function toDomainEntity(OrmEntity $ormEntity): DomainEntity
     {
         return new DomainEntity(
-            id: Cast::toStringOrNull($ormEntity->id),
-            login_id: Cast::toStringOrNull($ormEntity->login_id),
-            login_actor_type: Cast::toStringOrNull($ormEntity->login_actor_type),
-            account_id: Cast::toStringOrNull($ormEntity->account_id),
-            impersonator_account_id: Cast::toStringOrNull($ormEntity->impersonator_account_id),
-            login_result: Cast::toStringOrNull($ormEntity->login_result),
-            ip_address: Cast::toStringOrNull($ormEntity->ip_address),
-            user_agent: Cast::toStringOrNull($ormEntity->user_agent),
-            failure_reason_code: Cast::toStringOrNull($ormEntity->failure_reason_code),
-            logged_in_at: Cast::toStringOrNull($ormEntity->logged_in_at->format('Y-m-d\TH:i:s')),
-            created: Cast::toStringOrNull($ormEntity->created->format('Y-m-d\TH:i:s')),
+            id: new Vo\Id(Cast::toStringOrNull($ormEntity->id)),
+            login_id: new Vo\LoginId(Cast::toStringOrNull($ormEntity->login_id)),
+            login_actor_type: new Vo\LoginActorType(Cast::toStringOrNull($ormEntity->login_actor_type)),
+            account_id: new Vo\AccountId(Cast::toStringOrNull($ormEntity->account_id)),
+            impersonator_account_id: new Vo\ImpersonatorAccountId(
+                Cast::toStringOrNull($ormEntity->impersonator_account_id),
+            ),
+            login_result: new Vo\LoginResult(Cast::toStringOrNull($ormEntity->login_result)),
+            ip_address: Vo\IpAddress::fromString(Cast::toStringOrNull($ormEntity->ip_address)),
+            user_agent: Vo\UserAgent::fromString(Cast::toStringOrNull($ormEntity->user_agent)),
+            failure_reason_code: Vo\FailureReasonCode::fromString(
+                Cast::toStringOrNull($ormEntity->failure_reason_code),
+            ),
+            logged_in_at: new Vo\LoggedInAt(
+                Cast::toStringOrNull($ormEntity->logged_in_at->format('Y-m-d\TH:i:s')),
+            ),
+            created: new SVo\Created(Cast::toStringOrNull($ormEntity->created->format('Y-m-d\TH:i:s'))),
         );
     }
 }

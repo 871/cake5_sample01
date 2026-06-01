@@ -9,24 +9,24 @@ use App\Domain\Shared\ValueObject as SVo;
 final class MailReceivedCheckLog
 {
     /**
-     * @param ?string $id
-     * @param ?string $mail_id
-     * @param ?string $original_message_id
-     * @param ?string $checked_address
-     * @param ?string $checked_at
-     * @param ?string $created
-     * @param ?string $created_by
-     * @param ?string $created_ip
+     * @param \App\Domain\Mail\ValueObject\MailReceivedCheckLogs\Id $id
+     * @param \App\Domain\Mail\ValueObject\MailReceivedCheckLogs\MailId $mail_id
+     * @param \App\Domain\Mail\ValueObject\MailReceivedCheckLogs\OriginalMessageId $original_message_id
+     * @param \App\Domain\Mail\ValueObject\MailReceivedCheckLogs\CheckedAddress $checked_address
+     * @param \App\Domain\Mail\ValueObject\MailReceivedCheckLogs\CheckedAt $checked_at
+     * @param \App\Domain\Shared\ValueObject\Created $created
+     * @param \App\Domain\Shared\ValueObject\CreatedBy $created_by
+     * @param \App\Domain\Shared\ValueObject\CreatedIp $created_ip
      */
     public function __construct(
-        private readonly ?string $id,
-        private readonly ?string $mail_id,
-        private readonly ?string $original_message_id,
-        private readonly ?string $checked_address,
-        private readonly ?string $checked_at,
-        private readonly ?string $created,
-        private readonly ?string $created_by,
-        private readonly ?string $created_ip,
+        private readonly Vo\Id $id,
+        private readonly Vo\MailId $mail_id,
+        private readonly Vo\OriginalMessageId $original_message_id,
+        private readonly Vo\CheckedAddress $checked_address,
+        private readonly Vo\CheckedAt $checked_at,
+        private readonly SVo\Created $created,
+        private readonly SVo\CreatedBy $created_by,
+        private readonly SVo\CreatedIp $created_ip,
     ) {
     }
 
@@ -35,7 +35,7 @@ final class MailReceivedCheckLog
      */
     public function id(): Vo\Id
     {
-        return Vo\Id::fromString($this->id);
+        return $this->id;
     }
 
     /**
@@ -43,7 +43,7 @@ final class MailReceivedCheckLog
      */
     public function mailId(): Vo\MailId
     {
-        return new Vo\MailId($this->mail_id);
+        return $this->mail_id;
     }
 
     /**
@@ -51,7 +51,7 @@ final class MailReceivedCheckLog
      */
     public function originalMessageId(): Vo\OriginalMessageId
     {
-        return Vo\OriginalMessageId::fromString($this->original_message_id);
+        return $this->original_message_id;
     }
 
     /**
@@ -59,7 +59,7 @@ final class MailReceivedCheckLog
      */
     public function checkedAddress(): Vo\CheckedAddress
     {
-        return Vo\CheckedAddress::fromString($this->checked_address);
+        return $this->checked_address;
     }
 
     /**
@@ -67,7 +67,7 @@ final class MailReceivedCheckLog
      */
     public function checkedAt(): Vo\CheckedAt
     {
-        return new Vo\CheckedAt($this->checked_at);
+        return $this->checked_at;
     }
 
     /**
@@ -75,7 +75,7 @@ final class MailReceivedCheckLog
      */
     public function created(): SVo\Created
     {
-        return new SVo\Created($this->created);
+        return $this->created;
     }
 
     /**
@@ -83,7 +83,7 @@ final class MailReceivedCheckLog
      */
     public function createdBy(): SVo\CreatedBy
     {
-        return new SVo\CreatedBy($this->created_by);
+        return $this->created_by;
     }
 
     /**
@@ -91,6 +91,6 @@ final class MailReceivedCheckLog
      */
     public function createdIp(): SVo\CreatedIp
     {
-        return new SVo\CreatedIp($this->created_ip);
+        return $this->created_ip;
     }
 }

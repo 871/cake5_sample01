@@ -9,47 +9,47 @@ use App\Domain\Shared\ValueObject as SVo;
 final class Mail
 {
     /**
-     * @param ?string $id
-     * @param ?string $original_message_id
-     * @param ?string $related_data_key
-     * @param ?string $send_status
-     * @param ?string $send_scheduled_at
-     * @param ?string $title
-     * @param ?string $body
-     * @param ?string $mail_to
-     * @param ?string $mail_cc
-     * @param ?string $mail_bcc
-     * @param ?string $mail_received_check
-     * @param ?string $mail_return_path
-     * @param ?string $created
-     * @param ?string $created_by
-     * @param ?string $created_ip
-     * @param ?string $modified
-     * @param ?string $modified_by
-     * @param ?string $modified_ip
+     * @param \App\Domain\Mail\ValueObject\Id $id
+     * @param \App\Domain\Mail\ValueObject\OriginalMessageId $original_message_id
+     * @param \App\Domain\Mail\ValueObject\RelatedDataKey $related_data_key
+     * @param \App\Domain\Mail\ValueObject\SendStatus $send_status
+     * @param \App\Domain\Mail\ValueObject\SendScheduledAt $send_scheduled_at
+     * @param \App\Domain\Mail\ValueObject\Title $title
+     * @param \App\Domain\Mail\ValueObject\Body $body
+     * @param \App\Domain\Mail\ValueObject\MailTo $mail_to
+     * @param \App\Domain\Mail\ValueObject\MailCc $mail_cc
+     * @param \App\Domain\Mail\ValueObject\MailBcc $mail_bcc
+     * @param \App\Domain\Mail\ValueObject\MailReceivedCheck $mail_received_check
+     * @param \App\Domain\Mail\ValueObject\MailReturnPath $mail_return_path
+     * @param \App\Domain\Shared\ValueObject\Created $created
+     * @param \App\Domain\Shared\ValueObject\CreatedBy $created_by
+     * @param \App\Domain\Shared\ValueObject\CreatedIp $created_ip
+     * @param \App\Domain\Shared\ValueObject\Modified $modified
+     * @param \App\Domain\Shared\ValueObject\ModifiedBy $modified_by
+     * @param \App\Domain\Shared\ValueObject\ModifiedIp $modified_ip
      * @param array<\App\Domain\Mail\Entity\MailSentLog> $mail_sent_logs
      * @param array<\App\Domain\Mail\Entity\MailReceivedCheckLog> $mail_received_check_logs
      * @param array<\App\Domain\Mail\Entity\MailBounceLog> $mail_bounce_logs
      */
     public function __construct(
-        private readonly ?string $id,
-        private readonly ?string $original_message_id,
-        private readonly ?string $related_data_key,
-        private readonly ?string $send_status,
-        private readonly ?string $send_scheduled_at,
-        private readonly ?string $title,
-        private readonly ?string $body,
-        private readonly ?string $mail_to,
-        private readonly ?string $mail_cc,
-        private readonly ?string $mail_bcc,
-        private readonly ?string $mail_received_check,
-        private readonly ?string $mail_return_path,
-        private readonly ?string $created,
-        private readonly ?string $created_by,
-        private readonly ?string $created_ip,
-        private readonly ?string $modified,
-        private readonly ?string $modified_by,
-        private readonly ?string $modified_ip,
+        private readonly Vo\Id $id,
+        private readonly Vo\OriginalMessageId $original_message_id,
+        private readonly Vo\RelatedDataKey $related_data_key,
+        private readonly Vo\SendStatus $send_status,
+        private readonly Vo\SendScheduledAt $send_scheduled_at,
+        private readonly Vo\Title $title,
+        private readonly Vo\Body $body,
+        private readonly Vo\MailTo $mail_to,
+        private readonly Vo\MailCc $mail_cc,
+        private readonly Vo\MailBcc $mail_bcc,
+        private readonly Vo\MailReceivedCheck $mail_received_check,
+        private readonly Vo\MailReturnPath $mail_return_path,
+        private readonly SVo\Created $created,
+        private readonly SVo\CreatedBy $created_by,
+        private readonly SVo\CreatedIp $created_ip,
+        private readonly SVo\Modified $modified,
+        private readonly SVo\ModifiedBy $modified_by,
+        private readonly SVo\ModifiedIp $modified_ip,
         private readonly array $mail_sent_logs = [],
         private readonly array $mail_received_check_logs = [],
         private readonly array $mail_bounce_logs = [],
@@ -61,7 +61,7 @@ final class Mail
      */
     public function id(): Vo\Id
     {
-        return new Vo\Id($this->id);
+        return $this->id;
     }
 
     /**
@@ -69,7 +69,7 @@ final class Mail
      */
     public function originalMessageId(): Vo\OriginalMessageId
     {
-        return Vo\OriginalMessageId::fromString($this->original_message_id);
+        return $this->original_message_id;
     }
 
     /**
@@ -77,7 +77,7 @@ final class Mail
      */
     public function relatedDataKey(): Vo\RelatedDataKey
     {
-        return Vo\RelatedDataKey::fromString($this->related_data_key);
+        return $this->related_data_key;
     }
 
     /**
@@ -85,7 +85,7 @@ final class Mail
      */
     public function sendStatus(): Vo\SendStatus
     {
-        return Vo\SendStatus::fromString($this->send_status ?? '');
+        return $this->send_status;
     }
 
     /**
@@ -93,7 +93,7 @@ final class Mail
      */
     public function sendScheduledAt(): Vo\SendScheduledAt
     {
-        return new Vo\SendScheduledAt($this->send_scheduled_at);
+        return $this->send_scheduled_at;
     }
 
     /**
@@ -101,7 +101,7 @@ final class Mail
      */
     public function title(): Vo\Title
     {
-        return Vo\Title::fromString($this->title);
+        return $this->title;
     }
 
     /**
@@ -109,7 +109,7 @@ final class Mail
      */
     public function body(): Vo\Body
     {
-        return Vo\Body::fromString($this->body);
+        return $this->body;
     }
 
     /**
@@ -117,7 +117,7 @@ final class Mail
      */
     public function mailTo(): Vo\MailTo
     {
-        return Vo\MailTo::fromString($this->mail_to);
+        return $this->mail_to;
     }
 
     /**
@@ -125,7 +125,7 @@ final class Mail
      */
     public function mailCc(): Vo\MailCc
     {
-        return Vo\MailCc::fromString($this->mail_cc);
+        return $this->mail_cc;
     }
 
     /**
@@ -133,7 +133,7 @@ final class Mail
      */
     public function mailBcc(): Vo\MailBcc
     {
-        return Vo\MailBcc::fromString($this->mail_bcc);
+        return $this->mail_bcc;
     }
 
     /**
@@ -141,7 +141,7 @@ final class Mail
      */
     public function mailReceivedCheck(): Vo\MailReceivedCheck
     {
-        return Vo\MailReceivedCheck::fromString($this->mail_received_check);
+        return $this->mail_received_check;
     }
 
     /**
@@ -149,7 +149,7 @@ final class Mail
      */
     public function mailReturnPath(): Vo\MailReturnPath
     {
-        return Vo\MailReturnPath::fromString($this->mail_return_path);
+        return $this->mail_return_path;
     }
 
     /**
@@ -157,7 +157,7 @@ final class Mail
      */
     public function created(): SVo\Created
     {
-        return new SVo\Created($this->created);
+        return $this->created;
     }
 
     /**
@@ -165,7 +165,7 @@ final class Mail
      */
     public function createdBy(): SVo\CreatedBy
     {
-        return new SVo\CreatedBy($this->created_by);
+        return $this->created_by;
     }
 
     /**
@@ -173,7 +173,7 @@ final class Mail
      */
     public function createdIp(): SVo\CreatedIp
     {
-        return new SVo\CreatedIp($this->created_ip);
+        return $this->created_ip;
     }
 
     /**
@@ -181,7 +181,7 @@ final class Mail
      */
     public function modified(): SVo\Modified
     {
-        return new SVo\Modified($this->modified);
+        return $this->modified;
     }
 
     /**
@@ -189,7 +189,7 @@ final class Mail
      */
     public function modifiedBy(): SVo\ModifiedBy
     {
-        return new SVo\ModifiedBy($this->modified_by);
+        return $this->modified_by;
     }
 
     /**
@@ -197,7 +197,7 @@ final class Mail
      */
     public function modifiedIp(): SVo\ModifiedIp
     {
-        return new SVo\ModifiedIp($this->modified_ip);
+        return $this->modified_ip;
     }
 
     /**

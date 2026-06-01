@@ -16,6 +16,7 @@ use App\Application\Controller\Shared\ServiceInterface;
 use App\Application\Controller\Shared\ServiceTrait;
 use App\Domain\Admin\AdminAccounts\Entity\AdminAccount;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
+use App\Domain\Shared\ValueObject as SVo;
 use App\Exception\ValidateException;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 use App\Lib\UUID\UUID;
@@ -212,23 +213,25 @@ final class Edit implements ServiceInterface
             ->toArray();
 
         (new AdminAccountsRepository($this->datetime))->update(new AdminAccount(
-            id: Cast::toStringOrNull($input['id']),
-            email: Cast::toStringOrNull($input['email']),
-            password: Cast::toStringOrNull($input['password']) ?? '',
-            name: Cast::toStringOrNull($input['name']),
-            admin_note: Cast::toStringOrNull($input['admin_note']),
-            account_status_master_id: Cast::toStringOrNull($input['account_status_master_id']),
-            account_status_master_code: null,
-            account_status_master_name: null,
-            is_email_verified: Cast::toStringOrNull($input['is_email_verified']),
-            password_changed_at: Cast::toStringOrNull($input['password_changed_at']),
-            password_expires_at: Cast::toStringOrNull($input['password_expires_at']),
-            created: null,
-            created_by: null,
-            created_ip: null,
-            modified: Cast::toStringOrNull($this->datetime->format('Y-m-d\TH:i:s')),
-            modified_by: Cast::toStringOrNull($this->authContext->getAccountId()),
-            modified_ip: Cast::toStringOrNull($this->request->clientIp()),
+            id: new Vo\Id(Cast::toStringOrNull($input['id'])),
+            email: Vo\Email::fromString(Cast::toStringOrNull($input['email'])),
+            password: Vo\Password::fromString(Cast::toStringOrNull($input['password']) ?? ''),
+            name: Vo\Name::fromString(Cast::toStringOrNull($input['name'])),
+            admin_note: Vo\AdminNote::fromString(Cast::toStringOrNull($input['admin_note'])),
+            account_status_master_id: new Vo\AccountStatusMasterId(
+                Cast::toStringOrNull($input['account_status_master_id']),
+            ),
+            account_status_master_code: new Vo\AccountStatusMasterCode(null),
+            account_status_master_name: new Vo\AccountStatusMasterName(null),
+            is_email_verified: new Vo\IsEmailVerified(Cast::toStringOrNull($input['is_email_verified'])),
+            password_changed_at: new Vo\PasswordChangedAt(Cast::toStringOrNull($input['password_changed_at'])),
+            password_expires_at: new Vo\PasswordExpiresAt(Cast::toStringOrNull($input['password_expires_at'])),
+            created: new SVo\Created(null),
+            created_by: new SVo\CreatedBy(null),
+            created_ip: new SVo\CreatedIp(null),
+            modified: new SVo\Modified(Cast::toStringOrNull($this->datetime->format('Y-m-d\TH:i:s'))),
+            modified_by: new SVo\ModifiedBy(Cast::toStringOrNull($this->authContext->getAccountId())),
+            modified_ip: new SVo\ModifiedIp(Cast::toStringOrNull($this->request->clientIp())),
         ));
 
         return $this;

@@ -229,21 +229,21 @@ final class Edit implements ServiceInterface
             ->toArray();
 
         (new MySqlTypeSamplesRepository())->update(new MySqlTypeSample(
-            id: Cast::toStringOrNull($input['id']),
-            int_col: Cast::toStringOrNull($input['int_col']),
-            bigint_col: Cast::toStringOrNull($input['bigint_col']),
-            decimal_col: Cast::toStringOrNull($input['decimal_col']),
-            float_col: Cast::toStringOrNull($input['float_col']),
-            double_col: Cast::toStringOrNull($input['double_col']),
-            date_col: Cast::toStringOrNull($input['date_col']),
-            time_col: Cast::toStringOrNull($input['time_col']),
-            datetime_col: Cast::toStringOrNull($input['datetime_col']),
-            char_col: Cast::toStringOrNull($input['char_col']),
-            varchar_col: Cast::toStringOrNull($input['varchar_col']),
-            text_col: Cast::toStringOrNull($input['text_col']),
-            mediumtext_col: Cast::toStringOrNull($input['mediumtext_col']),
-            longtext_col: Cast::toStringOrNull($input['longtext_col']),
-            json_col: Cast::toStringOrNull($input['json_col']),
+            id: Vo\Id::fromString(Cast::toStringOrNull($input['id'])),
+            int_col: Vo\IntCol::fromString(Cast::toStringOrNull($input['int_col'])),
+            bigint_col: Vo\BigintCol::fromString(Cast::toStringOrNull($input['bigint_col'])),
+            decimal_col: Vo\DecimalCol::fromString(Cast::toStringOrNull($input['decimal_col'])),
+            float_col: Vo\FloatCol::fromString(Cast::toStringOrNull($input['float_col'])),
+            double_col: Vo\DoubleCol::fromString(Cast::toStringOrNull($input['double_col'])),
+            date_col: Vo\DateCol::fromString(Cast::toStringOrNull($input['date_col'])),
+            time_col: Vo\TimeCol::fromString(Cast::toStringOrNull($input['time_col'])),
+            datetime_col: Vo\DateTimeCol::fromString(Cast::toStringOrNull($input['datetime_col'])),
+            char_col: Vo\CharCol::fromString(Cast::toStringOrNull($input['char_col'])),
+            varchar_col: Vo\VarcharCol::fromString(Cast::toStringOrNull($input['varchar_col'])),
+            text_col: Vo\TextCol::fromString(Cast::toStringOrNull($input['text_col'])),
+            mediumtext_col: Vo\MediumtextCol::fromString(Cast::toStringOrNull($input['mediumtext_col'])),
+            longtext_col: Vo\LongtextCol::fromString(Cast::toStringOrNull($input['longtext_col'])),
+            json_col: Vo\JsonCol::fromString(Cast::toStringOrNull($input['json_col'])),
         ));
 
         return $this;

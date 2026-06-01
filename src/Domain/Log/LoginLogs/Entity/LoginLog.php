@@ -9,30 +9,30 @@ use App\Domain\Shared\ValueObject as SVo;
 final class LoginLog
 {
     /**
-     * @param ?string $id
-     * @param ?string $login_id
-     * @param ?string $login_actor_type
-     * @param ?string $account_id
-     * @param ?string $impersonator_account_id
-     * @param ?string $login_result
-     * @param ?string $ip_address
-     * @param ?string $user_agent
-     * @param ?string $failure_reason_code
-     * @param ?string $logged_in_at
-     * @param ?string $created
+     * @param \App\Domain\Log\LoginLogs\ValueObject\Id $id
+     * @param \App\Domain\Log\LoginLogs\ValueObject\LoginId $login_id
+     * @param \App\Domain\Log\LoginLogs\ValueObject\LoginActorType $login_actor_type
+     * @param \App\Domain\Log\LoginLogs\ValueObject\AccountId $account_id
+     * @param \App\Domain\Log\LoginLogs\ValueObject\ImpersonatorAccountId $impersonator_account_id
+     * @param \App\Domain\Log\LoginLogs\ValueObject\LoginResult $login_result
+     * @param \App\Domain\Log\LoginLogs\ValueObject\IpAddress $ip_address
+     * @param \App\Domain\Log\LoginLogs\ValueObject\UserAgent $user_agent
+     * @param \App\Domain\Log\LoginLogs\ValueObject\FailureReasonCode $failure_reason_code
+     * @param \App\Domain\Log\LoginLogs\ValueObject\LoggedInAt $logged_in_at
+     * @param \App\Domain\Shared\ValueObject\Created $created
      */
     public function __construct(
-        private readonly ?string $id,
-        private readonly ?string $login_id,
-        private readonly ?string $login_actor_type,
-        private readonly ?string $account_id,
-        private readonly ?string $impersonator_account_id,
-        private readonly ?string $login_result,
-        private readonly ?string $ip_address,
-        private readonly ?string $user_agent,
-        private readonly ?string $failure_reason_code,
-        private readonly ?string $logged_in_at,
-        private readonly ?string $created,
+        private readonly Vo\Id $id,
+        private readonly Vo\LoginId $login_id,
+        private readonly Vo\LoginActorType $login_actor_type,
+        private readonly Vo\AccountId $account_id,
+        private readonly Vo\ImpersonatorAccountId $impersonator_account_id,
+        private readonly Vo\LoginResult $login_result,
+        private readonly Vo\IpAddress $ip_address,
+        private readonly Vo\UserAgent $user_agent,
+        private readonly Vo\FailureReasonCode $failure_reason_code,
+        private readonly Vo\LoggedInAt $logged_in_at,
+        private readonly SVo\Created $created,
     ) {
     }
 
@@ -41,7 +41,7 @@ final class LoginLog
      */
     public function id(): Vo\Id
     {
-        return Vo\Id::fromString($this->id);
+        return $this->id;
     }
 
     /**
@@ -49,7 +49,7 @@ final class LoginLog
      */
     public function loginId(): Vo\LoginId
     {
-        return Vo\LoginId::fromString($this->login_id);
+        return $this->login_id;
     }
 
     /**
@@ -57,7 +57,7 @@ final class LoginLog
      */
     public function loginActorType(): Vo\LoginActorType
     {
-        return Vo\LoginActorType::fromString($this->login_actor_type);
+        return $this->login_actor_type;
     }
 
     /**
@@ -65,7 +65,7 @@ final class LoginLog
      */
     public function accountId(): Vo\AccountId
     {
-        return new Vo\AccountId($this->account_id);
+        return $this->account_id;
     }
 
     /**
@@ -73,7 +73,7 @@ final class LoginLog
      */
     public function impersonatorAccountId(): Vo\ImpersonatorAccountId
     {
-        return new Vo\ImpersonatorAccountId($this->impersonator_account_id);
+        return $this->impersonator_account_id;
     }
 
     /**
@@ -81,7 +81,7 @@ final class LoginLog
      */
     public function loginResult(): Vo\LoginResult
     {
-        return Vo\LoginResult::fromString($this->login_result);
+        return $this->login_result;
     }
 
     /**
@@ -89,7 +89,7 @@ final class LoginLog
      */
     public function ipAddress(): Vo\IpAddress
     {
-        return Vo\IpAddress::fromString($this->ip_address);
+        return $this->ip_address;
     }
 
     /**
@@ -97,7 +97,7 @@ final class LoginLog
      */
     public function userAgent(): Vo\UserAgent
     {
-        return Vo\UserAgent::fromString($this->user_agent);
+        return $this->user_agent;
     }
 
     /**
@@ -105,7 +105,7 @@ final class LoginLog
      */
     public function failureReasonCode(): Vo\FailureReasonCode
     {
-        return Vo\FailureReasonCode::fromString($this->failure_reason_code);
+        return $this->failure_reason_code;
     }
 
     /**
@@ -113,7 +113,7 @@ final class LoginLog
      */
     public function loggedInAt(): Vo\LoggedInAt
     {
-        return new Vo\LoggedInAt($this->logged_in_at);
+        return $this->logged_in_at;
     }
 
     /**
@@ -121,6 +121,6 @@ final class LoginLog
      */
     public function created(): SVo\Created
     {
-        return new SVo\Created($this->created);
+        return $this->created;
     }
 }

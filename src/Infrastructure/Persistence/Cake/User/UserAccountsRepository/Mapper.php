@@ -1,17 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
+namespace App\Infrastructure\Persistence\Cake\User\UserAccountsRepository;
 
-use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as DomainEntity;
-use App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory as DomainHistoryEntity;
-use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
+use App\Domain\User\UserAccounts\Entity\UserAccount as DomainEntity;
+use App\Domain\User\UserAccounts\Entity\UserAccountHistory as DomainHistoryEntity;
+use App\Domain\User\UserAccounts\ValueObject as Vo;
 use App\Lib\UUID\UUID;
-use App\Model\Entity\Admin\AdminAccount as OrmEntity;
-use App\Model\Entity\Admin\AdminAccountHistory as OrmHistoryEntity;
-use App\Model\Table\Admin\AdminAccountHistoriesTable;
-use App\Model\Table\Admin\AdminAccountsTable;
+use App\Model\Entity\User\UserAccount as OrmEntity;
+use App\Model\Entity\User\UserAccountHistory as OrmHistoryEntity;
+use App\Model\Table\User\UserAccountHistoriesTable;
+use App\Model\Table\User\UserAccountsTable;
 use App\Security\Input\Cast;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -22,61 +22,58 @@ final class Mapper
     use LocatorAwareTrait;
 
     /**
-     * @var \App\Model\Table\Admin\AdminAccountsTable
+     * @var \App\Model\Table\User\UserAccountsTable
      */
-    private AdminAccountsTable $table;
+    private UserAccountsTable $table;
 
     /**
-     * @var \App\Model\Table\Admin\AdminAccountHistoriesTable
+     * @var \App\Model\Table\User\UserAccountHistoriesTable
      */
-    private AdminAccountHistoriesTable $historyTable;
+    private UserAccountHistoriesTable $historyTable;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->table = $this->fetchTable(AdminAccountsTable::class);
-        $this->historyTable = $this->fetchTable(AdminAccountHistoriesTable::class);
+        $this->table = $this->fetchTable(UserAccountsTable::class);
+        $this->historyTable = $this->fetchTable(UserAccountHistoriesTable::class);
     }
 
     /**
-     * @param \App\Domain\Admin\AdminAccounts\Entity\AdminAccount $domainEntity
-     * @return \App\Model\Entity\Admin\AdminAccount
+     * @param \App\Domain\User\UserAccounts\Entity\UserAccount $domainEntity
+     * @return \App\Model\Entity\User\UserAccount
      */
     public function toNewOrmEntity(DomainEntity $domainEntity): OrmEntity
     {
         $hasher = new DefaultPasswordHasher();
 
-        $entity = $this->table->newEntity([
+        return $this->table->newEntity([
             'email' => $domainEntity->email()->toString(),
             'password' => $hasher->hash($domainEntity->password()->toString()),
             'name' => $domainEntity->name()->toString(),
-            'admin_note' => $domainEntity->adminNote()->toString() ?: null,
             'account_status_master_id' => $domainEntity->accountStatusMasterId()->toInt(),
             'is_email_verified' => $domainEntity->isEmailVerified()->toInt(),
             'password_changed_at' => $domainEntity->passwordChangedAt()->format('Y-m-d\TH:i:s'),
             'password_expires_at' => $domainEntity->passwordExpiresAt()->format('Y-m-d\TH:i:s'),
             'created' => $domainEntity->created()->format('Y-m-d\TH:i:s'),
-            'created_by' => $domainEntity->createdBy()->toString(),
-            'created_ip' => $domainEntity->createdIp()->toString(),
+            'created_by' => $domainEntity->createdBy()->toStringOrNull(),
+            'created_ip' => $domainEntity->createdIp()->toStringOrNull(),
             'modified' => $domainEntity->modified()->format('Y-m-d\TH:i:s'),
-            'modified_by' => $domainEntity->modifiedBy()->toString(),
-            'modified_ip' => $domainEntity->modifiedIp()->toString(),
+            'modified_by' => $domainEntity->modifiedBy()->toStringOrNull(),
+            'modified_ip' => $domainEntity->modifiedIp()->toStringOrNull(),
         ], [
             'validate' => false,
         ]);
-
-        return $entity;
     }
 
     /**
-     * @param \App\Domain\Admin\AdminAccounts\Entity\AdminAccount $domainEntity
-     * @return \App\Model\Entity\Admin\AdminAccount
+     * @param \App\Domain\User\UserAccounts\Entity\UserAccount $domainEntity
+     * @return \App\Model\Entity\User\UserAccount
      */
     public function toPatchOrmEntity(DomainEntity $domainEntity): OrmEntity
     {
-        /** @var \App\Model\Entity\Admin\AdminAccount $ormEntity */
+        /** @var \App\Model\Entity\User\UserAccount $ormEntity */
         $ormEntity = $this->table->get($domainEntity->id()->toInt());
 
         $this->table->patchEntity($ormEntity, [
@@ -85,14 +82,13 @@ final class Mapper
                 ? $ormEntity->password
                 : (new DefaultPasswordHasher())->hash($domainEntity->password()->toString()),
             'name' => $domainEntity->name()->toString(),
-            'admin_note' => $domainEntity->adminNote()->toString() ?: null,
             'account_status_master_id' => $domainEntity->accountStatusMasterId()->toInt(),
             'is_email_verified' => $domainEntity->isEmailVerified()->toInt(),
             'password_changed_at' => $domainEntity->passwordChangedAt()->format('Y-m-d\TH:i:s'),
             'password_expires_at' => $domainEntity->passwordExpiresAt()->format('Y-m-d\TH:i:s'),
             'modified' => $domainEntity->modified()->format('Y-m-d\TH:i:s'),
-            'modified_by' => $domainEntity->modifiedBy()->toString(),
-            'modified_ip' => $domainEntity->modifiedIp()->toString(),
+            'modified_by' => $domainEntity->modifiedBy()->toStringOrNull(),
+            'modified_ip' => $domainEntity->modifiedIp()->toStringOrNull(),
         ], [
             'validate' => false,
         ]);
@@ -101,29 +97,29 @@ final class Mapper
     }
 
     /**
-     * @param \App\Model\Entity\Admin\AdminAccount $ormEntity
+     * @param \App\Model\Entity\User\UserAccount $ormEntity
      * @param string $operationType
-     * @param \DateTimeInterface $history_created
-     * @return \App\Model\Entity\Admin\AdminAccountHistory
+     * @param \DateTimeInterface $historyCreated
+     * @return \App\Model\Entity\User\UserAccountHistory
      */
     public function toNewOrmHistoryEntity(
         OrmEntity $ormEntity,
         string $operationType,
-        DateTimeInterface $history_created,
+        DateTimeInterface $historyCreated,
     ): OrmHistoryEntity {
         return $this->historyTable->newEntity(array_merge($ormEntity->toArray(), [
             'id' => UUID::uuid7(),
-            'admin_account_id' => $ormEntity->id,
+            'user_account_id' => $ormEntity->id,
             'operation_type' => $operationType,
-            'history_created' => $history_created->format('Y-m-d\TH:i:s'),
+            'history_created' => $historyCreated->format('Y-m-d\TH:i:s'),
         ]), [
             'validate' => false,
         ]);
     }
 
     /**
-     * @param \App\Model\Entity\Admin\AdminAccount $ormEntity
-     * @return \App\Domain\Admin\AdminAccounts\Entity\AdminAccount
+     * @param \App\Model\Entity\User\UserAccount $ormEntity
+     * @return \App\Domain\User\UserAccounts\Entity\UserAccount
      */
     public function toDomainEntity(OrmEntity $ormEntity): DomainEntity
     {
@@ -132,7 +128,6 @@ final class Mapper
             email: Vo\Email::fromString(Cast::toStringOrNull($ormEntity->email)),
             password: Vo\Password::fromString(Cast::toStringOrNull($ormEntity->password)),
             name: Vo\Name::fromString(Cast::toStringOrNull($ormEntity->name)),
-            admin_note: Vo\AdminNote::fromString(Cast::toStringOrNull($ormEntity->admin_note)),
             account_status_master_id: new Vo\AccountStatusMasterId(
                 Cast::toStringOrNull($ormEntity->account_status_master_id),
             ),
@@ -159,17 +154,17 @@ final class Mapper
     }
 
     /**
-     * @param \App\Model\Entity\Admin\AdminAccountHistory $ormEntity
-     * @return \App\Domain\Admin\AdminAccounts\Entity\AdminAccountHistory
+     * @param \App\Model\Entity\User\UserAccountHistory $ormEntity
+     * @return \App\Domain\User\UserAccounts\Entity\UserAccountHistory
      */
     public function toDomainHistoryEntity(OrmHistoryEntity $ormEntity): DomainHistoryEntity
     {
         return new DomainHistoryEntity(
             id: new SVo\Uuid(Cast::toStringOrNull($ormEntity->id)),
-            admin_account_id: new Vo\Id(Cast::toStringOrNull($ormEntity->admin_account_id)),
+            user_account_id: new Vo\Id(Cast::toStringOrNull($ormEntity->user_account_id)),
             email: Vo\Email::fromString(Cast::toStringOrNull($ormEntity->email)),
+            password: Vo\Password::fromString(Cast::toStringOrNull($ormEntity->password)),
             name: Vo\Name::fromString(Cast::toStringOrNull($ormEntity->name)),
-            admin_note: Vo\AdminNote::fromString(Cast::toStringOrNull($ormEntity->admin_note)),
             account_status_master_id: new Vo\AccountStatusMasterId(
                 Cast::toStringOrNull($ormEntity->account_status_master_id),
             ),
@@ -197,34 +192,5 @@ final class Mapper
                 Cast::toStringOrNull($ormEntity->history_created->format('Y-m-d\TH:i:s')),
             ),
         );
-    }
-
-    /**
-     * @param \App\Domain\Admin\AdminAccounts\Entity\AdminAccount $domainEntity
-     * @param \DateTimeInterface $nowDatetime
-     * @return array<string, string|null>
-     */
-    public function toAuthSessionParams(
-        DomainEntity $domainEntity,
-        DateTimeInterface $nowDatetime,
-    ): array {
-        return [
-            'account_id' => $domainEntity->id()->toString(),
-            'account_email' => $domainEntity->email()->toString(),
-            'account_name' => $domainEntity->name()->toString(),
-            'account_status_master_id' => $domainEntity->accountStatusMasterId()->toString(),
-            'account_status_master_code' => $domainEntity->accountStatusMasterCode()->toString(),
-            'account_status_master_name' => $domainEntity->accountStatusMasterName()->toString(),
-            'is_email_verified' => $domainEntity->isEmailVerified()->toString(),
-            'password_changed_at' => $domainEntity->passwordChangedAt()->format('Y-m-d\TH:i:s'),
-            'password_expires_at' => $domainEntity->passwordExpiresAt()->format('Y-m-d\TH:i:s'),
-            'created' => $domainEntity->created()->format('Y-m-d\TH:i:s'),
-            'created_by' => $domainEntity->createdBy()->toString(),
-            'created_ip' => $domainEntity->createdIp()->toString(),
-            'modified' => $domainEntity->modified()->format('Y-m-d\TH:i:s'),
-            'modified_by' => $domainEntity->modifiedBy()->toString(),
-            'modified_ip' => $domainEntity->modifiedIp()->toString(),
-            'logined' => $nowDatetime->format('Y-m-d\TH:i:s'),
-        ];
     }
 }

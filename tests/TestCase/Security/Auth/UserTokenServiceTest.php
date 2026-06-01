@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Security\Auth;
 
-use App\Model\Entity\User\UserAccount;
+use App\Domain\User\UserAccounts\Entity\UserAccount;
+use App\Domain\User\UserAccounts\ValueObject as UserAccountVo;
+use App\Domain\Shared\ValueObject as SVo;
 use App\Security\Auth\UserTokenService;
-use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 use DateTimeImmutable;
 
@@ -48,23 +49,23 @@ final class UserTokenServiceTest extends TestCase
 
     private function makeAccount(): UserAccount
     {
-        $account = new UserAccount([
-            'id' => 100001,
-            'email' => 'user@example.com',
-            'password' => 'hashed-password',
-            'name' => 'Sample User',
-            'account_status_master_id' => 200,
-            'is_email_verified' => 1,
-            'password_changed_at' => new DateTimeImmutable('2026-01-01 00:00:00'),
-            'password_expires_at' => new DateTimeImmutable('2027-01-01 00:00:00'),
-            'created' => new DateTimeImmutable('2026-01-01 00:00:00'),
-            'modified' => new DateTimeImmutable('2026-01-01 00:00:00'),
-        ]);
-        $account->set('account_status_master', new Entity([
-            'code' => 'ACTIVE',
-            'name' => '有効',
-        ]));
-
-        return $account;
+        return new UserAccount(
+            id: new UserAccountVo\Id('100001'),
+            email: UserAccountVo\Email::fromString('user@example.com'),
+            password: UserAccountVo\Password::fromString('hashed-password'),
+            name: UserAccountVo\Name::fromString('Sample User'),
+            account_status_master_id: new UserAccountVo\AccountStatusMasterId('200'),
+            account_status_master_code: new UserAccountVo\AccountStatusMasterCode('ACTIVE'),
+            account_status_master_name: new UserAccountVo\AccountStatusMasterName('有効'),
+            is_email_verified: new UserAccountVo\IsEmailVerified('1'),
+            password_changed_at: new UserAccountVo\PasswordChangedAt('2026-01-01T00:00:00'),
+            password_expires_at: new UserAccountVo\PasswordExpiresAt('2027-01-01T00:00:00'),
+            created: new SVo\Created('2026-01-01T00:00:00'),
+            created_by: new SVo\CreatedBy(null),
+            created_ip: new SVo\CreatedIp(null),
+            modified: new SVo\Modified('2026-01-01T00:00:00'),
+            modified_by: new SVo\ModifiedBy(null),
+            modified_ip: new SVo\ModifiedIp(null),
+        );
     }
 }

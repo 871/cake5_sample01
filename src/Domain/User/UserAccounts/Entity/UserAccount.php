@@ -1,40 +1,36 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Domain\Admin\AdminAccounts\Entity;
+namespace App\Domain\User\UserAccounts\Entity;
 
-use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Domain\Shared\ValueObject as SVo;
+use App\Domain\User\UserAccounts\ValueObject as Vo;
 
-final class AdminAccountHistory
+final class UserAccount
 {
     /**
-     * @param \App\Domain\Shared\ValueObject\Uuid $id
-     * @param \App\Domain\Admin\AdminAccounts\ValueObject\Id $admin_account_id
-     * @param \App\Domain\Admin\AdminAccounts\ValueObject\Email $email
-     * @param \App\Domain\Admin\AdminAccounts\ValueObject\Name $name
-     * @param \App\Domain\Admin\AdminAccounts\ValueObject\AdminNote $admin_note
-     * @param \App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterId $account_status_master_id
-     * @param \App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterCode $account_status_master_code
-     * @param \App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterName $account_status_master_name
-     * @param \App\Domain\Admin\AdminAccounts\ValueObject\IsEmailVerified $is_email_verified
-     * @param \App\Domain\Admin\AdminAccounts\ValueObject\PasswordChangedAt $password_changed_at
-     * @param \App\Domain\Admin\AdminAccounts\ValueObject\PasswordExpiresAt $password_expires_at
+     * @param \App\Domain\User\UserAccounts\ValueObject\Id $id
+     * @param \App\Domain\User\UserAccounts\ValueObject\Email $email
+     * @param \App\Domain\User\UserAccounts\ValueObject\Password $password
+     * @param \App\Domain\User\UserAccounts\ValueObject\Name $name
+     * @param \App\Domain\User\UserAccounts\ValueObject\AccountStatusMasterId $account_status_master_id
+     * @param \App\Domain\User\UserAccounts\ValueObject\AccountStatusMasterCode $account_status_master_code
+     * @param \App\Domain\User\UserAccounts\ValueObject\AccountStatusMasterName $account_status_master_name
+     * @param \App\Domain\User\UserAccounts\ValueObject\IsEmailVerified $is_email_verified
+     * @param \App\Domain\User\UserAccounts\ValueObject\PasswordChangedAt $password_changed_at
+     * @param \App\Domain\User\UserAccounts\ValueObject\PasswordExpiresAt $password_expires_at
      * @param \App\Domain\Shared\ValueObject\Created $created
      * @param \App\Domain\Shared\ValueObject\CreatedBy $created_by
      * @param \App\Domain\Shared\ValueObject\CreatedIp $created_ip
      * @param \App\Domain\Shared\ValueObject\Modified $modified
      * @param \App\Domain\Shared\ValueObject\ModifiedBy $modified_by
      * @param \App\Domain\Shared\ValueObject\ModifiedIp $modified_ip
-     * @param \App\Domain\Shared\ValueObject\OperationType $operation_type
-     * @param \App\Domain\Shared\ValueObject\HistoryCreated $history_created
      */
     public function __construct(
-        private readonly SVo\Uuid $id,
-        private readonly Vo\Id $admin_account_id,
+        private readonly Vo\Id $id,
         private readonly Vo\Email $email,
+        private readonly Vo\Password $password,
         private readonly Vo\Name $name,
-        private readonly Vo\AdminNote $admin_note,
         private readonly Vo\AccountStatusMasterId $account_status_master_id,
         private readonly Vo\AccountStatusMasterCode $account_status_master_code,
         private readonly Vo\AccountStatusMasterName $account_status_master_name,
@@ -47,29 +43,20 @@ final class AdminAccountHistory
         private readonly SVo\Modified $modified,
         private readonly SVo\ModifiedBy $modified_by,
         private readonly SVo\ModifiedIp $modified_ip,
-        private readonly SVo\OperationType $operation_type,
-        private readonly SVo\HistoryCreated $history_created,
     ) {
+        // 処理なし
     }
 
     /**
-     * @return \App\Domain\Shared\ValueObject\Uuid
+     * @return \App\Domain\User\UserAccounts\ValueObject\Id
      */
-    public function id(): SVo\Uuid
+    public function id(): Vo\Id
     {
         return $this->id;
     }
 
     /**
-     * @return \App\Domain\Admin\AdminAccounts\ValueObject\Id
-     */
-    public function adminAccountId(): Vo\Id
-    {
-        return $this->admin_account_id;
-    }
-
-    /**
-     * @return \App\Domain\Admin\AdminAccounts\ValueObject\Email
+     * @return \App\Domain\User\UserAccounts\ValueObject\Email
      */
     public function email(): Vo\Email
     {
@@ -77,7 +64,15 @@ final class AdminAccountHistory
     }
 
     /**
-     * @return \App\Domain\Admin\AdminAccounts\ValueObject\Name
+     * @return \App\Domain\User\UserAccounts\ValueObject\Password
+     */
+    public function password(): Vo\Password
+    {
+        return $this->password;
+    }
+
+    /**
+     * @return \App\Domain\User\UserAccounts\ValueObject\Name
      */
     public function name(): Vo\Name
     {
@@ -85,15 +80,7 @@ final class AdminAccountHistory
     }
 
     /**
-     * @return \App\Domain\Admin\AdminAccounts\ValueObject\AdminNote
-     */
-    public function adminNote(): Vo\AdminNote
-    {
-        return $this->admin_note;
-    }
-
-    /**
-     * @return \App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterId
+     * @return \App\Domain\User\UserAccounts\ValueObject\AccountStatusMasterId
      */
     public function accountStatusMasterId(): Vo\AccountStatusMasterId
     {
@@ -101,7 +88,7 @@ final class AdminAccountHistory
     }
 
     /**
-     * @return \App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterCode
+     * @return \App\Domain\User\UserAccounts\ValueObject\AccountStatusMasterCode
      */
     public function accountStatusMasterCode(): Vo\AccountStatusMasterCode
     {
@@ -109,7 +96,7 @@ final class AdminAccountHistory
     }
 
     /**
-     * @return \App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterName
+     * @return \App\Domain\User\UserAccounts\ValueObject\AccountStatusMasterName
      */
     public function accountStatusMasterName(): Vo\AccountStatusMasterName
     {
@@ -117,7 +104,7 @@ final class AdminAccountHistory
     }
 
     /**
-     * @return \App\Domain\Admin\AdminAccounts\ValueObject\IsEmailVerified
+     * @return \App\Domain\User\UserAccounts\ValueObject\IsEmailVerified
      */
     public function isEmailVerified(): Vo\IsEmailVerified
     {
@@ -125,7 +112,7 @@ final class AdminAccountHistory
     }
 
     /**
-     * @return \App\Domain\Admin\AdminAccounts\ValueObject\PasswordChangedAt
+     * @return \App\Domain\User\UserAccounts\ValueObject\PasswordChangedAt
      */
     public function passwordChangedAt(): Vo\PasswordChangedAt
     {
@@ -133,7 +120,7 @@ final class AdminAccountHistory
     }
 
     /**
-     * @return \App\Domain\Admin\AdminAccounts\ValueObject\PasswordExpiresAt
+     * @return \App\Domain\User\UserAccounts\ValueObject\PasswordExpiresAt
      */
     public function passwordExpiresAt(): Vo\PasswordExpiresAt
     {
@@ -186,21 +173,5 @@ final class AdminAccountHistory
     public function modifiedIp(): SVo\ModifiedIp
     {
         return $this->modified_ip;
-    }
-
-    /**
-     * @return \App\Domain\Shared\ValueObject\OperationType
-     */
-    public function operationType(): SVo\OperationType
-    {
-        return $this->operation_type;
-    }
-
-    /**
-     * @return \App\Domain\Shared\ValueObject\HistoryCreated
-     */
-    public function historyCreated(): SVo\HistoryCreated
-    {
-        return $this->history_created;
     }
 }

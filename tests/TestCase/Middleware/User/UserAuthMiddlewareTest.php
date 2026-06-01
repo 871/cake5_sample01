@@ -3,15 +3,18 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Middleware\User;
 
+use App\Domain\User\UserAccounts\Entity\UserAccount;
+use App\Domain\User\UserAccounts\Repository\UserAccountsRepository as UserAccountsRepositoryInterface;
+use App\Domain\User\UserAccounts\ValueObject as UserAccountVo;
+use App\Domain\User\UserAccounts\ValueObject\Id;
+use App\Domain\Shared\ValueObject as SVo;
 use App\Infrastructure\Persistence\Cake\User\RefreshTokensRepository;
 use App\Infrastructure\Persistence\Cake\User\UserAccountsRepository;
 use App\Middleware\User\UserAuthMiddleware;
-use App\Model\Entity\User\UserAccount;
 use App\Security\Auth\UserTokenService;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
-use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 use DateTimeImmutable;
 use Psr\Http\Message\ServerRequestInterface;
@@ -40,7 +43,7 @@ final class UserAuthMiddlewareTest extends TestCase
     {
         $tokenService = new UserTokenService();
         $tokenSet = $tokenService->createTokenSet($this->makeAccount(), new DateTimeImmutable());
-        $repository = $this->createMock(UserAccountsRepository::class);
+        $repository = $this->createMock(UserAccountsRepositoryInterface::class);
         $refreshTokensRepository = $this->createMock(RefreshTokensRepository::class);
         $middleware = new UserAuthMiddleware($tokenService, $repository, $refreshTokensRepository);
         $request = $this->makeRequest('100001', [
@@ -65,11 +68,13 @@ final class UserAuthMiddlewareTest extends TestCase
     {
         $tokenService = new UserTokenService();
         $tokenSet = $tokenService->createTokenSet($this->makeAccount(), new DateTimeImmutable('-20 minutes'));
-        $repository = $this->createMock(UserAccountsRepository::class);
+        $repository = $this->createMock(UserAccountsRepositoryInterface::class);
         $refreshTokensRepository = $this->createMock(RefreshTokensRepository::class);
         $repository->expects($this->once())
             ->method('read')
-            ->with('100001')
+            ->with($this->callback(
+                fn(mixed $id): bool => $id instanceof Id && $id->toString() === '100001',
+            ))
             ->willReturn($this->makeAccount());
         $refreshTokensRepository->expects($this->once())
             ->method('isValid')
@@ -120,23 +125,23 @@ final class UserAuthMiddlewareTest extends TestCase
 
     private function makeAccount(): UserAccount
     {
-        $account = new UserAccount([
-            'id' => 100001,
-            'email' => 'user@example.com',
-            'password' => 'hashed-password',
-            'name' => 'Sample User',
-            'account_status_master_id' => 200,
-            'is_email_verified' => 1,
-            'password_changed_at' => new DateTimeImmutable('2026-01-01 00:00:00'),
-            'password_expires_at' => new DateTimeImmutable('+1 year'),
-            'created' => new DateTimeImmutable('2026-01-01 00:00:00'),
-            'modified' => new DateTimeImmutable('2026-01-01 00:00:00'),
-        ]);
-        $account->set('account_status_master', new Entity([
-            'code' => 'ACTIVE',
-            'name' => '有効',
-        ]));
-
-        return $account;
+        return new UserAccount(
+            id: new UserAccountVo\Id('100001'),
+            email: UserAccountVo\Email::fromString('user@example.com'),
+            password: UserAccountVo\Password::fromString('hashed-password'),
+            name: UserAccountVo\Name::fromString('Sample User'),
+            account_status_master_id: new UserAccountVo\AccountStatusMasterId('200'),
+            account_status_master_code: new UserAccountVo\AccountStatusMasterCode('ACTIVE'),
+            account_status_master_name: new UserAccountVo\AccountStatusMasterName('有効'),
+            is_email_verified: new UserAccountVo\IsEmailVerified('1'),
+            password_changed_at: new UserAccountVo\PasswordChangedAt('2026-01-01T00:00:00'),
+            password_expires_at: new UserAccountVo\PasswordExpiresAt((new DateTimeImmutable('+1 year'))->format('Y-m-d\TH:i:s')),
+            created: new SVo\Created('2026-01-01T00:00:00'),
+            created_by: new SVo\CreatedBy(null),
+            created_ip: new SVo\CreatedIp(null),
+            modified: new SVo\Modified('2026-01-01T00:00:00'),
+            modified_by: new SVo\ModifiedBy(null),
+            modified_ip: new SVo\ModifiedIp(null),
+        );
     }
 }

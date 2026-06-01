@@ -14,6 +14,7 @@ use App\Application\Controller\Shared\ServiceInterface;
 use App\Application\Controller\Shared\ServiceTrait;
 use App\Domain\Mail\Entity\Mail;
 use App\Domain\Mail\ValueObject as Vo;
+use App\Domain\Shared\ValueObject as SVo;
 use App\Exception\ValidateException;
 use App\Infrastructure\Persistence\Cake\Mail\MailsRepository;
 use App\Lib\UUID\UUID;
@@ -374,32 +375,29 @@ final class Create implements ServiceInterface
             ->toArray();
 
         (new MailsRepository())->create(new Mail(
-            id: null,
-            original_message_id: null,
+            id: new Vo\Id(null),
+            original_message_id: Vo\OriginalMessageId::fromString(null),
             related_data_key: Vo\RelatedDataKey::fromString(
                 Cast::toStringOrNull($input['related_data_key']),
-            )->toStringOrNull(),
-            send_status: Vo\SendStatus::WAITING,
-            send_scheduled_at: Cast::toDateTimeStringOrNull($input['send_scheduled_at']) ?? $this->datetime->format(
-                self::DATE_TIME_FORMAT,
             ),
-            title: Vo\Title::fromString(Cast::toStringOrNull($input['title']))->toStringOrNull(),
-            body: Vo\Body::fromString(Cast::toStringOrNull($input['body']))->toStringOrNull(),
-            mail_to: Vo\MailTo::fromString(Cast::toStringOrNull($input['mail_to']))->toStringOrNull(),
-            mail_cc: Vo\MailCc::fromString(Cast::toStringOrNull($input['mail_cc']))->toStringOrNull(),
-            mail_bcc: Vo\MailBcc::fromString(Cast::toStringOrNull($input['mail_bcc']))->toStringOrNull(),
-            mail_received_check: Vo\MailReceivedCheck::fromString(
-                Cast::toStringOrNull($input['mail_received_check']),
-            )->toStringOrNull(),
-            mail_return_path: Vo\MailReturnPath::fromString(
-                Cast::toStringOrNull($input['mail_return_path']),
-            )->toStringOrNull(),
-            created: Cast::toStringOrNull($this->datetime->format(self::DATE_TIME_FORMAT)),
-            created_by: Cast::toStringOrNull($this->authContext->getAccountId()),
-            created_ip: Cast::toStringOrNull($this->request->clientIp()),
-            modified: Cast::toStringOrNull($this->datetime->format(self::DATE_TIME_FORMAT)),
-            modified_by: Cast::toStringOrNull($this->authContext->getAccountId()),
-            modified_ip: Cast::toStringOrNull($this->request->clientIp()),
+            send_status: Vo\SendStatus::fromString(Vo\SendStatus::WAITING),
+            send_scheduled_at: new Vo\SendScheduledAt(
+                Cast::toDateTimeStringOrNull($input['send_scheduled_at'])
+                    ?? $this->datetime->format(self::DATE_TIME_FORMAT),
+            ),
+            title: Vo\Title::fromString(Cast::toStringOrNull($input['title'])),
+            body: Vo\Body::fromString(Cast::toStringOrNull($input['body'])),
+            mail_to: Vo\MailTo::fromString(Cast::toStringOrNull($input['mail_to'])),
+            mail_cc: Vo\MailCc::fromString(Cast::toStringOrNull($input['mail_cc'])),
+            mail_bcc: Vo\MailBcc::fromString(Cast::toStringOrNull($input['mail_bcc'])),
+            mail_received_check: Vo\MailReceivedCheck::fromString(Cast::toStringOrNull($input['mail_received_check'])),
+            mail_return_path: Vo\MailReturnPath::fromString(Cast::toStringOrNull($input['mail_return_path'])),
+            created: new SVo\Created(Cast::toStringOrNull($this->datetime->format(self::DATE_TIME_FORMAT))),
+            created_by: new SVo\CreatedBy(Cast::toStringOrNull($this->authContext->getAccountId())),
+            created_ip: new SVo\CreatedIp(Cast::toStringOrNull($this->request->clientIp())),
+            modified: new SVo\Modified(Cast::toStringOrNull($this->datetime->format(self::DATE_TIME_FORMAT))),
+            modified_by: new SVo\ModifiedBy(Cast::toStringOrNull($this->authContext->getAccountId())),
+            modified_ip: new SVo\ModifiedIp(Cast::toStringOrNull($this->request->clientIp())),
         ));
 
         return $this;

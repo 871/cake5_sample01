@@ -7,6 +7,11 @@ use App\Domain\Mail\Entity\Mail as DomainEntity;
 use App\Domain\Mail\Entity\MailBounceLog as DomainBounceLogEntity;
 use App\Domain\Mail\Entity\MailReceivedCheckLog as DomainReceivedCheckLogEntity;
 use App\Domain\Mail\Entity\MailSentLog as DomainSentLogEntity;
+use App\Domain\Mail\ValueObject as Vo;
+use App\Domain\Mail\ValueObject\MailBounceLogs as BounceLogVo;
+use App\Domain\Mail\ValueObject\MailReceivedCheckLogs as ReceivedCheckLogVo;
+use App\Domain\Mail\ValueObject\MailSentLogs as SentLogVo;
+use App\Domain\Shared\ValueObject as SVo;
 use App\Model\Entity\Mail\Mail as OrmEntity;
 use App\Model\Entity\Mail\MailBounceLog as OrmBounceLogEntity;
 use App\Model\Entity\Mail\MailReceivedCheckLog as OrmReceivedCheckLogEntity;
@@ -94,24 +99,34 @@ final class MailMapper
     public function toDomainEntity(OrmEntity $ormEntity): DomainEntity
     {
         return new DomainEntity(
-            id: StrictCast::toString($ormEntity->id),
-            original_message_id: Cast::toStringOrNull($ormEntity->original_message_id),
-            related_data_key: StrictCast::toString($ormEntity->related_data_key),
-            send_status: StrictCast::toString($ormEntity->send_status),
-            send_scheduled_at: StrictCast::toString($ormEntity->send_scheduled_at->format('Y-m-d\TH:i:s')),
-            title: StrictCast::toString($ormEntity->title),
-            body: StrictCast::toString($ormEntity->body),
-            mail_to: StrictCast::toString($ormEntity->mail_to),
-            mail_cc: Cast::toStringOrNull($ormEntity->mail_cc),
-            mail_bcc: Cast::toStringOrNull($ormEntity->mail_bcc),
-            mail_received_check: StrictCast::toString($ormEntity->mail_received_check),
-            mail_return_path: StrictCast::toString($ormEntity->mail_return_path),
-            created: StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s')),
-            created_by: Cast::toStringOrNull($ormEntity->created_by),
-            created_ip: Cast::toStringOrNull($ormEntity->created_ip),
-            modified: StrictCast::toString($ormEntity->modified->format('Y-m-d\TH:i:s')),
-            modified_by: Cast::toStringOrNull($ormEntity->modified_by),
-            modified_ip: Cast::toStringOrNull($ormEntity->modified_ip),
+            id: new Vo\Id(StrictCast::toString($ormEntity->id)),
+            original_message_id: Vo\OriginalMessageId::fromString(
+                Cast::toStringOrNull($ormEntity->original_message_id),
+            ),
+            related_data_key: Vo\RelatedDataKey::fromString(
+                StrictCast::toString($ormEntity->related_data_key),
+            ),
+            send_status: Vo\SendStatus::fromString(StrictCast::toString($ormEntity->send_status)),
+            send_scheduled_at: new Vo\SendScheduledAt(
+                StrictCast::toString($ormEntity->send_scheduled_at->format('Y-m-d\TH:i:s')),
+            ),
+            title: Vo\Title::fromString(StrictCast::toString($ormEntity->title)),
+            body: Vo\Body::fromString(StrictCast::toString($ormEntity->body)),
+            mail_to: Vo\MailTo::fromString(StrictCast::toString($ormEntity->mail_to)),
+            mail_cc: Vo\MailCc::fromString(Cast::toStringOrNull($ormEntity->mail_cc)),
+            mail_bcc: Vo\MailBcc::fromString(Cast::toStringOrNull($ormEntity->mail_bcc)),
+            mail_received_check: Vo\MailReceivedCheck::fromString(
+                StrictCast::toString($ormEntity->mail_received_check),
+            ),
+            mail_return_path: Vo\MailReturnPath::fromString(
+                StrictCast::toString($ormEntity->mail_return_path),
+            ),
+            created: new SVo\Created(StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s'))),
+            created_by: new SVo\CreatedBy(Cast::toStringOrNull($ormEntity->created_by)),
+            created_ip: new SVo\CreatedIp(Cast::toStringOrNull($ormEntity->created_ip)),
+            modified: new SVo\Modified(StrictCast::toString($ormEntity->modified->format('Y-m-d\TH:i:s'))),
+            modified_by: new SVo\ModifiedBy(Cast::toStringOrNull($ormEntity->modified_by)),
+            modified_ip: new SVo\ModifiedIp(Cast::toStringOrNull($ormEntity->modified_ip)),
             mail_sent_logs: $ormEntity->mail_sent_logs !== null
                 ? array_map(
                     fn(OrmSentLogEntity $log): DomainSentLogEntity => $this->toDomainSentLogEntity($log),
@@ -164,15 +179,17 @@ final class MailMapper
     public function toDomainSentLogEntity(OrmSentLogEntity $ormEntity): DomainSentLogEntity
     {
         return new DomainSentLogEntity(
-            id: StrictCast::toString($ormEntity->id),
-            mail_id: StrictCast::toString($ormEntity->mail_id),
-            original_message_id: Cast::toStringOrNull($ormEntity->original_message_id),
-            send_status: StrictCast::toString($ormEntity->send_status),
-            error_message: Cast::toStringOrNull($ormEntity->error_message),
-            sent_at: StrictCast::toString($ormEntity->sent_at->format('Y-m-d\TH:i:s')),
-            created: StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s')),
-            created_by: Cast::toStringOrNull($ormEntity->created_by),
-            created_ip: Cast::toStringOrNull($ormEntity->created_ip),
+            id: SentLogVo\Id::fromString(StrictCast::toString($ormEntity->id)),
+            mail_id: new SentLogVo\MailId(StrictCast::toString($ormEntity->mail_id)),
+            original_message_id: SentLogVo\OriginalMessageId::fromString(
+                Cast::toStringOrNull($ormEntity->original_message_id),
+            ),
+            send_status: SentLogVo\SendStatus::fromString(StrictCast::toString($ormEntity->send_status)),
+            error_message: SentLogVo\ErrorMessage::fromString(Cast::toStringOrNull($ormEntity->error_message)),
+            sent_at: new SentLogVo\SentAt(StrictCast::toString($ormEntity->sent_at->format('Y-m-d\TH:i:s'))),
+            created: new SVo\Created(StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s'))),
+            created_by: new SVo\CreatedBy(Cast::toStringOrNull($ormEntity->created_by)),
+            created_ip: new SVo\CreatedIp(Cast::toStringOrNull($ormEntity->created_ip)),
         );
     }
 
@@ -205,14 +222,20 @@ final class MailMapper
     public function toDomainReceivedCheckLogEntity(OrmReceivedCheckLogEntity $ormEntity): DomainReceivedCheckLogEntity
     {
         return new DomainReceivedCheckLogEntity(
-            id: StrictCast::toString($ormEntity->id),
-            mail_id: StrictCast::toString($ormEntity->mail_id),
-            original_message_id: Cast::toStringOrNull($ormEntity->original_message_id),
-            checked_address: StrictCast::toString($ormEntity->checked_address),
-            checked_at: StrictCast::toString($ormEntity->checked_at->format('Y-m-d\TH:i:s')),
-            created: StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s')),
-            created_by: Cast::toStringOrNull($ormEntity->created_by),
-            created_ip: Cast::toStringOrNull($ormEntity->created_ip),
+            id: ReceivedCheckLogVo\Id::fromString(StrictCast::toString($ormEntity->id)),
+            mail_id: new ReceivedCheckLogVo\MailId(StrictCast::toString($ormEntity->mail_id)),
+            original_message_id: ReceivedCheckLogVo\OriginalMessageId::fromString(
+                Cast::toStringOrNull($ormEntity->original_message_id),
+            ),
+            checked_address: ReceivedCheckLogVo\CheckedAddress::fromString(
+                StrictCast::toString($ormEntity->checked_address),
+            ),
+            checked_at: new ReceivedCheckLogVo\CheckedAt(
+                StrictCast::toString($ormEntity->checked_at->format('Y-m-d\TH:i:s')),
+            ),
+            created: new SVo\Created(StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s'))),
+            created_by: new SVo\CreatedBy(Cast::toStringOrNull($ormEntity->created_by)),
+            created_ip: new SVo\CreatedIp(Cast::toStringOrNull($ormEntity->created_ip)),
         );
     }
 
@@ -258,28 +281,38 @@ final class MailMapper
     public function toDomainBounceLogEntity(OrmBounceLogEntity $ormEntity): DomainBounceLogEntity
     {
         return new DomainBounceLogEntity(
-            id: StrictCast::toString($ormEntity->id),
-            mail_id: StrictCast::toString($ormEntity->mail_id),
-            original_message_id: Cast::toStringOrNull($ormEntity->original_message_id),
-            bounced_email: StrictCast::toString($ormEntity->bounced_email),
-            recipient_type: Cast::toStringOrNull($ormEntity->recipient_type),
-            action: Cast::toStringOrNull($ormEntity->action),
-            status_code: Cast::toStringOrNull($ormEntity->status_code),
-            diagnostic_code: Cast::toStringOrNull($ormEntity->diagnostic_code),
-            bounce_type: StrictCast::toString($ormEntity->bounce_type),
-            remote_mta: Cast::toStringOrNull($ormEntity->remote_mta),
-            reporting_mta: Cast::toStringOrNull($ormEntity->reporting_mta),
-            arrival_date: Cast::toStringOrNull($ormEntity->arrival_date?->format('Y-m-d\TH:i:s')),
-            bounced_at: StrictCast::toString($ormEntity->bounced_at->format('Y-m-d\TH:i:s')),
-            raw_headers: Cast::toStringOrNull($ormEntity->raw_headers),
-            raw_body: Cast::toStringOrNull($ormEntity->raw_body),
-            raw_message: Cast::toStringOrNull($ormEntity->raw_message),
-            parsed_json: $this->toJsonStringOrNull($ormEntity->parsed_json),
-            provider: Cast::toStringOrNull($ormEntity->provider),
-            is_auto_generated: Cast::toStringOrNull($ormEntity->is_auto_generated),
-            created: StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s')),
-            created_by: Cast::toStringOrNull($ormEntity->created_by),
-            created_ip: Cast::toStringOrNull($ormEntity->created_ip),
+            id: BounceLogVo\Id::fromString(StrictCast::toString($ormEntity->id)),
+            mail_id: new BounceLogVo\MailId(StrictCast::toString($ormEntity->mail_id)),
+            original_message_id: BounceLogVo\OriginalMessageId::fromString(
+                Cast::toStringOrNull($ormEntity->original_message_id),
+            ),
+            bounced_email: BounceLogVo\BouncedEmail::fromString(StrictCast::toString($ormEntity->bounced_email)),
+            recipient_type: BounceLogVo\RecipientType::fromString(Cast::toStringOrNull($ormEntity->recipient_type)),
+            action: BounceLogVo\Action::fromString(Cast::toStringOrNull($ormEntity->action)),
+            status_code: BounceLogVo\StatusCode::fromString(Cast::toStringOrNull($ormEntity->status_code)),
+            diagnostic_code: BounceLogVo\DiagnosticCode::fromString(
+                Cast::toStringOrNull($ormEntity->diagnostic_code),
+            ),
+            bounce_type: BounceLogVo\BounceType::fromString(StrictCast::toString($ormEntity->bounce_type)),
+            remote_mta: BounceLogVo\RemoteMta::fromString(Cast::toStringOrNull($ormEntity->remote_mta)),
+            reporting_mta: BounceLogVo\ReportingMta::fromString(Cast::toStringOrNull($ormEntity->reporting_mta)),
+            arrival_date: new BounceLogVo\ArrivalDate(
+                Cast::toStringOrNull($ormEntity->arrival_date?->format('Y-m-d\TH:i:s')),
+            ),
+            bounced_at: new BounceLogVo\BouncedAt(StrictCast::toString($ormEntity->bounced_at->format('Y-m-d\TH:i:s'))),
+            raw_headers: BounceLogVo\RawHeaders::fromString(Cast::toStringOrNull($ormEntity->raw_headers)),
+            raw_body: BounceLogVo\RawBody::fromString(Cast::toStringOrNull($ormEntity->raw_body)),
+            raw_message: BounceLogVo\RawMessage::fromString(Cast::toStringOrNull($ormEntity->raw_message)),
+            parsed_json: BounceLogVo\ParsedJson::fromString(
+                $this->toJsonStringOrNull($ormEntity->parsed_json),
+            ),
+            provider: BounceLogVo\Provider::fromString(Cast::toStringOrNull($ormEntity->provider)),
+            is_auto_generated: BounceLogVo\IsAutoGenerated::fromString(
+                Cast::toStringOrNull($ormEntity->is_auto_generated),
+            ),
+            created: new SVo\Created(StrictCast::toString($ormEntity->created->format('Y-m-d\TH:i:s'))),
+            created_by: new SVo\CreatedBy(Cast::toStringOrNull($ormEntity->created_by)),
+            created_ip: new SVo\CreatedIp(Cast::toStringOrNull($ormEntity->created_ip)),
         );
     }
 

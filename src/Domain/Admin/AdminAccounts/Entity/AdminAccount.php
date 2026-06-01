@@ -9,42 +9,42 @@ use App\Domain\Shared\ValueObject as SVo;
 final class AdminAccount
 {
     /**
-     * @param ?string $id
-     * @param ?string $email
-     * @param ?string $password
-     * @param ?string $name
-     * @param ?string $admin_note
-     * @param ?string $account_status_master_id
-     * @param ?string $account_status_master_code
-     * @param ?string $account_status_master_name
-     * @param ?string $is_email_verified
-     * @param ?string $password_changed_at
-     * @param ?string $password_expires_at
-     * @param ?string $created
-     * @param ?string $created_by
-     * @param ?string $created_ip
-     * @param ?string $modified
-     * @param ?string $modified_by
-     * @param ?string $modified_ip
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\Id $id
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\Email $email
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\Password $password
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\Name $name
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\AdminNote $admin_note
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterId $account_status_master_id
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterCode $account_status_master_code
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterName $account_status_master_name
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\IsEmailVerified $is_email_verified
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\PasswordChangedAt $password_changed_at
+     * @param \App\Domain\Admin\AdminAccounts\ValueObject\PasswordExpiresAt $password_expires_at
+     * @param \App\Domain\Shared\ValueObject\Created $created
+     * @param \App\Domain\Shared\ValueObject\CreatedBy $created_by
+     * @param \App\Domain\Shared\ValueObject\CreatedIp $created_ip
+     * @param \App\Domain\Shared\ValueObject\Modified $modified
+     * @param \App\Domain\Shared\ValueObject\ModifiedBy $modified_by
+     * @param \App\Domain\Shared\ValueObject\ModifiedIp $modified_ip
      */
     public function __construct(
-        private readonly ?string $id,
-        private readonly ?string $email,
-        private readonly ?string $password,
-        private readonly ?string $name,
-        private readonly ?string $admin_note,
-        private readonly ?string $account_status_master_id,
-        private readonly ?string $account_status_master_code,
-        private readonly ?string $account_status_master_name,
-        private readonly ?string $is_email_verified,
-        private readonly ?string $password_changed_at,
-        private readonly ?string $password_expires_at,
-        private readonly ?string $created,
-        private readonly ?string $created_by,
-        private readonly ?string $created_ip,
-        private readonly ?string $modified,
-        private readonly ?string $modified_by,
-        private readonly ?string $modified_ip,
+        private readonly Vo\Id $id,
+        private readonly Vo\Email $email,
+        private readonly Vo\Password $password,
+        private readonly Vo\Name $name,
+        private readonly Vo\AdminNote $admin_note,
+        private readonly Vo\AccountStatusMasterId $account_status_master_id,
+        private readonly Vo\AccountStatusMasterCode $account_status_master_code,
+        private readonly Vo\AccountStatusMasterName $account_status_master_name,
+        private readonly Vo\IsEmailVerified $is_email_verified,
+        private readonly Vo\PasswordChangedAt $password_changed_at,
+        private readonly Vo\PasswordExpiresAt $password_expires_at,
+        private readonly SVo\Created $created,
+        private readonly SVo\CreatedBy $created_by,
+        private readonly SVo\CreatedIp $created_ip,
+        private readonly SVo\Modified $modified,
+        private readonly SVo\ModifiedBy $modified_by,
+        private readonly SVo\ModifiedIp $modified_ip,
     ) {
     }
 
@@ -53,7 +53,7 @@ final class AdminAccount
      */
     public function id(): Vo\Id
     {
-        return Vo\Id::fromString($this->id);
+        return $this->id;
     }
 
     /**
@@ -61,7 +61,7 @@ final class AdminAccount
      */
     public function email(): Vo\Email
     {
-        return Vo\Email::fromString($this->email);
+        return $this->email;
     }
 
     /**
@@ -69,7 +69,7 @@ final class AdminAccount
      */
     public function password(): Vo\Password
     {
-        return Vo\Password::fromString($this->password);
+        return $this->password;
     }
 
     /**
@@ -77,7 +77,7 @@ final class AdminAccount
      */
     public function name(): Vo\Name
     {
-        return Vo\Name::fromString($this->name);
+        return $this->name;
     }
 
     /**
@@ -85,7 +85,7 @@ final class AdminAccount
      */
     public function adminNote(): Vo\AdminNote
     {
-        return Vo\AdminNote::fromString($this->admin_note);
+        return $this->admin_note;
     }
 
     /**
@@ -93,7 +93,7 @@ final class AdminAccount
      */
     public function accountStatusMasterId(): Vo\AccountStatusMasterId
     {
-        return new Vo\AccountStatusMasterId($this->account_status_master_id);
+        return $this->account_status_master_id;
     }
 
     /**
@@ -101,7 +101,7 @@ final class AdminAccount
      */
     public function accountStatusMasterCode(): Vo\AccountStatusMasterCode
     {
-        return new Vo\AccountStatusMasterCode($this->account_status_master_code);
+        return $this->account_status_master_code;
     }
 
     /**
@@ -109,7 +109,7 @@ final class AdminAccount
      */
     public function accountStatusMasterName(): Vo\AccountStatusMasterName
     {
-        return new Vo\AccountStatusMasterName($this->account_status_master_name);
+        return $this->account_status_master_name;
     }
 
     /**
@@ -117,7 +117,7 @@ final class AdminAccount
      */
     public function isEmailVerified(): Vo\IsEmailVerified
     {
-        return new Vo\IsEmailVerified($this->is_email_verified);
+        return $this->is_email_verified;
     }
 
     /**
@@ -125,7 +125,7 @@ final class AdminAccount
      */
     public function passwordChangedAt(): Vo\PasswordChangedAt
     {
-        return new Vo\PasswordChangedAt($this->password_changed_at);
+        return $this->password_changed_at;
     }
 
     /**
@@ -133,7 +133,7 @@ final class AdminAccount
      */
     public function passwordExpiresAt(): Vo\PasswordExpiresAt
     {
-        return new Vo\PasswordExpiresAt($this->password_expires_at);
+        return $this->password_expires_at;
     }
 
     /**
@@ -141,7 +141,7 @@ final class AdminAccount
      */
     public function created(): SVo\Created
     {
-        return new SVo\Created($this->created);
+        return $this->created;
     }
 
     /**
@@ -149,7 +149,7 @@ final class AdminAccount
      */
     public function createdBy(): SVo\CreatedBy
     {
-        return new SVo\CreatedBy($this->created_by);
+        return $this->created_by;
     }
 
     /**
@@ -157,7 +157,7 @@ final class AdminAccount
      */
     public function createdIp(): SVo\CreatedIp
     {
-        return new SVo\CreatedIp($this->created_ip);
+        return $this->created_ip;
     }
 
     /**
@@ -165,7 +165,7 @@ final class AdminAccount
      */
     public function modified(): SVo\Modified
     {
-        return new SVo\Modified($this->modified);
+        return $this->modified;
     }
 
     /**
@@ -173,7 +173,7 @@ final class AdminAccount
      */
     public function modifiedBy(): SVo\ModifiedBy
     {
-        return new SVo\ModifiedBy($this->modified_by);
+        return $this->modified_by;
     }
 
     /**
@@ -181,6 +181,6 @@ final class AdminAccount
      */
     public function modifiedIp(): SVo\ModifiedIp
     {
-        return new SVo\ModifiedIp($this->modified_ip);
+        return $this->modified_ip;
     }
 }

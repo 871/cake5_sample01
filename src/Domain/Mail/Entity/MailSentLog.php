@@ -9,26 +9,26 @@ use App\Domain\Shared\ValueObject as SVo;
 final class MailSentLog
 {
     /**
-     * @param ?string $id
-     * @param ?string $mail_id
-     * @param ?string $original_message_id
-     * @param ?string $send_status
-     * @param ?string $error_message
-     * @param ?string $sent_at
-     * @param ?string $created
-     * @param ?string $created_by
-     * @param ?string $created_ip
+     * @param \App\Domain\Mail\ValueObject\MailSentLogs\Id $id
+     * @param \App\Domain\Mail\ValueObject\MailSentLogs\MailId $mail_id
+     * @param \App\Domain\Mail\ValueObject\MailSentLogs\OriginalMessageId $original_message_id
+     * @param \App\Domain\Mail\ValueObject\MailSentLogs\SendStatus $send_status
+     * @param \App\Domain\Mail\ValueObject\MailSentLogs\ErrorMessage $error_message
+     * @param \App\Domain\Mail\ValueObject\MailSentLogs\SentAt $sent_at
+     * @param \App\Domain\Shared\ValueObject\Created $created
+     * @param \App\Domain\Shared\ValueObject\CreatedBy $created_by
+     * @param \App\Domain\Shared\ValueObject\CreatedIp $created_ip
      */
     public function __construct(
-        private readonly ?string $id,
-        private readonly ?string $mail_id,
-        private readonly ?string $original_message_id,
-        private readonly ?string $send_status,
-        private readonly ?string $error_message,
-        private readonly ?string $sent_at,
-        private readonly ?string $created,
-        private readonly ?string $created_by,
-        private readonly ?string $created_ip,
+        private readonly Vo\Id $id,
+        private readonly Vo\MailId $mail_id,
+        private readonly Vo\OriginalMessageId $original_message_id,
+        private readonly Vo\SendStatus $send_status,
+        private readonly Vo\ErrorMessage $error_message,
+        private readonly Vo\SentAt $sent_at,
+        private readonly SVo\Created $created,
+        private readonly SVo\CreatedBy $created_by,
+        private readonly SVo\CreatedIp $created_ip,
     ) {
     }
 
@@ -37,7 +37,7 @@ final class MailSentLog
      */
     public function id(): Vo\Id
     {
-        return Vo\Id::fromString($this->id);
+        return $this->id;
     }
 
     /**
@@ -45,7 +45,7 @@ final class MailSentLog
      */
     public function mailId(): Vo\MailId
     {
-        return new Vo\MailId($this->mail_id);
+        return $this->mail_id;
     }
 
     /**
@@ -53,7 +53,7 @@ final class MailSentLog
      */
     public function originalMessageId(): Vo\OriginalMessageId
     {
-        return Vo\OriginalMessageId::fromString($this->original_message_id);
+        return $this->original_message_id;
     }
 
     /**
@@ -61,7 +61,7 @@ final class MailSentLog
      */
     public function sendStatus(): Vo\SendStatus
     {
-        return Vo\SendStatus::fromString($this->send_status ?? '');
+        return $this->send_status;
     }
 
     /**
@@ -69,7 +69,7 @@ final class MailSentLog
      */
     public function errorMessage(): Vo\ErrorMessage
     {
-        return Vo\ErrorMessage::fromString($this->error_message);
+        return $this->error_message;
     }
 
     /**
@@ -77,7 +77,7 @@ final class MailSentLog
      */
     public function sentAt(): Vo\SentAt
     {
-        return new Vo\SentAt($this->sent_at);
+        return $this->sent_at;
     }
 
     /**
@@ -85,7 +85,7 @@ final class MailSentLog
      */
     public function created(): SVo\Created
     {
-        return new SVo\Created($this->created);
+        return $this->created;
     }
 
     /**
@@ -93,7 +93,7 @@ final class MailSentLog
      */
     public function createdBy(): SVo\CreatedBy
     {
-        return new SVo\CreatedBy($this->created_by);
+        return $this->created_by;
     }
 
     /**
@@ -101,6 +101,6 @@ final class MailSentLog
      */
     public function createdIp(): SVo\CreatedIp
     {
-        return new SVo\CreatedIp($this->created_ip);
+        return $this->created_ip;
     }
 }

@@ -3,64 +3,97 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Cake\User;
 
-use App\Model\Entity\User\UserAccount;
-use App\Model\Table\User\UserAccountsTable;
-use Cake\ORM\Locator\LocatorAwareTrait;
+use App\Domain\User\UserAccounts\Entity\UserAccount as DomainEntity;
+use App\Domain\User\UserAccounts\Repository\UserAccountsRepository as DomainUserAccountsRepository;
+use App\Domain\User\UserAccounts\SearchCondition;
+use App\Domain\User\UserAccounts\ValueObject as Vo;
+use Cake\ORM\Query\SelectQuery;
+use DateTimeImmutable;
+use DateTimeInterface;
 
-class UserAccountsRepository
+final class UserAccountsRepository implements DomainUserAccountsRepository
 {
-    use LocatorAwareTrait;
-
     /**
-     * @var \App\Model\Table\User\UserAccountsTable
+     * @param \DateTimeInterface $datetime
      */
-    private UserAccountsTable $table;
-
-    /**
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->table = $this->fetchTable(UserAccountsTable::class);
+    public function __construct(
+        private readonly DateTimeInterface $datetime = new DateTimeImmutable(),
+    ) {
+        // do nothing
     }
 
     /**
-     * @param string $email
-     * @return ?\App\Model\Entity\User\UserAccount
+     * 検索
+     *
+     * @param \App\Domain\User\UserAccounts\SearchCondition $condition
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\User\UserAccount>
      */
-    public function findByEmail(string $email): ?UserAccount
+    public function search(SearchCondition $condition): SelectQuery
     {
-        /** @var \App\Model\Entity\User\UserAccount|null $account */
-        $account = $this->table
-            ->find()
-            ->contain(['AccountStatusMasters'])
-            ->where([
-                'UserAccounts.email' => $email,
-            ])
-            ->first();
-
-        return $account;
+        return (new UserAccountsRepository\Search($condition))->run();
     }
 
     /**
-     * @param string $id
-     * @return ?\App\Model\Entity\User\UserAccount
+     * 作成
+     *
+     * @param \App\Domain\User\UserAccounts\Entity\UserAccount $domainEntity
+     * @return \App\Domain\User\UserAccounts\Entity\UserAccount
      */
-    public function read(string $id): ?UserAccount
+    public function create(DomainEntity $domainEntity): DomainEntity
     {
-        if (!ctype_digit($id)) {
-            return null;
-        }
+        return (new UserAccountsRepository\Create($domainEntity))->run();
+    }
 
-        /** @var \App\Model\Entity\User\UserAccount|null $account */
-        $account = $this->table
-            ->find()
-            ->contain(['AccountStatusMasters'])
-            ->where([
-                'UserAccounts.id' => (int)$id,
-            ])
-            ->first();
+    /**
+     * 取得
+     *
+     * @param \App\Domain\User\UserAccounts\ValueObject\Id $id
+     * @return \App\Domain\User\UserAccounts\Entity\UserAccount
+     */
+    public function read(Vo\Id $id): DomainEntity
+    {
+        return (new UserAccountsRepository\Read($id))->run();
+    }
 
-        return $account;
+    /**
+     * 更新
+     *
+     * @param \App\Domain\User\UserAccounts\Entity\UserAccount $domainEntity
+     * @return \App\Domain\User\UserAccounts\Entity\UserAccount
+     */
+    public function update(DomainEntity $domainEntity): DomainEntity
+    {
+        return (new UserAccountsRepository\Update($domainEntity))->run();
+    }
+
+    /**
+     * 削除
+     *
+     * @param \App\Domain\User\UserAccounts\ValueObject\Id $id
+     * @return \App\Domain\User\UserAccounts\Entity\UserAccount
+     */
+    public function delete(Vo\Id $id): DomainEntity
+    {
+        return (new UserAccountsRepository\Delete($id, $this->datetime))->run();
+    }
+
+    /**
+     * 履歴取得
+     *
+     * @param \App\Domain\User\UserAccounts\ValueObject\Id $userAccountId
+     * @return array<\App\Domain\User\UserAccounts\Entity\UserAccountHistory>
+     */
+    public function readHistories(Vo\Id $userAccountId): array
+    {
+        return (new UserAccountsRepository\ReadHistories($userAccountId))->run();
+    }
+
+    /**
+     * @param \App\Domain\User\UserAccounts\ValueObject\Email $email
+     * @return ?\App\Domain\User\UserAccounts\Entity\UserAccount
+     */
+    public function findByEmail(Vo\Email $email): ?DomainEntity
+    {
+        return (new UserAccountsRepository\FindByEmail($email))->run();
     }
 }

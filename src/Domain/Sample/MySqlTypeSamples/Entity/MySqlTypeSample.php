@@ -8,38 +8,38 @@ use App\Domain\Sample\MySqlTypeSamples\ValueObject;
 final class MySqlTypeSample
 {
     /**
-     * @param ?string $id
-     * @param ?string $int_col
-     * @param ?string $bigint_col
-     * @param ?string $decimal_col
-     * @param ?string $float_col
-     * @param ?string $double_col
-     * @param ?string $date_col
-     * @param ?string $time_col
-     * @param ?string $datetime_col
-     * @param ?string $char_col
-     * @param ?string $varchar_col
-     * @param ?string $text_col
-     * @param ?string $mediumtext_col
-     * @param ?string $longtext_col
-     * @param ?string $json_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\Id $id
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\IntCol $int_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\BigintCol $bigint_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DecimalCol $decimal_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\FloatCol $float_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DoubleCol $double_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateCol $date_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\TimeCol $time_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\DateTimeCol $datetime_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\CharCol $char_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\VarcharCol $varchar_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\TextCol $text_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\MediumtextCol $mediumtext_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\LongtextCol $longtext_col
+     * @param \App\Domain\Sample\MySqlTypeSamples\ValueObject\JsonCol $json_col
      */
     public function __construct(
-        private readonly ?string $id,
-        private readonly ?string $int_col,
-        private readonly ?string $bigint_col,
-        private readonly ?string $decimal_col,
-        private readonly ?string $float_col,
-        private readonly ?string $double_col,
-        private readonly ?string $date_col,
-        private readonly ?string $time_col,
-        private readonly ?string $datetime_col,
-        private readonly ?string $char_col,
-        private readonly ?string $varchar_col,
-        private readonly ?string $text_col,
-        private readonly ?string $mediumtext_col,
-        private readonly ?string $longtext_col,
-        private readonly ?string $json_col,
+        private readonly ValueObject\Id $id,
+        private readonly ValueObject\IntCol $int_col,
+        private readonly ValueObject\BigintCol $bigint_col,
+        private readonly ValueObject\DecimalCol $decimal_col,
+        private readonly ValueObject\FloatCol $float_col,
+        private readonly ValueObject\DoubleCol $double_col,
+        private readonly ValueObject\DateCol $date_col,
+        private readonly ValueObject\TimeCol $time_col,
+        private readonly ValueObject\DateTimeCol $datetime_col,
+        private readonly ValueObject\CharCol $char_col,
+        private readonly ValueObject\VarcharCol $varchar_col,
+        private readonly ValueObject\TextCol $text_col,
+        private readonly ValueObject\MediumtextCol $mediumtext_col,
+        private readonly ValueObject\LongtextCol $longtext_col,
+        private readonly ValueObject\JsonCol $json_col,
     ) {
     }
 
@@ -48,7 +48,7 @@ final class MySqlTypeSample
      */
     public function id(): ValueObject\Id
     {
-        return ValueObject\Id::fromString($this->id);
+        return $this->id;
     }
 
     /**
@@ -56,7 +56,7 @@ final class MySqlTypeSample
      */
     public function intCol(): ValueObject\IntCol
     {
-        return ValueObject\IntCol::fromString($this->int_col);
+        return $this->int_col;
     }
 
     /**
@@ -64,7 +64,7 @@ final class MySqlTypeSample
      */
     public function bigintCol(): ValueObject\BigintCol
     {
-        return ValueObject\BigintCol::fromString($this->bigint_col);
+        return $this->bigint_col;
     }
 
     /**
@@ -72,7 +72,7 @@ final class MySqlTypeSample
      */
     public function decimalCol(): ValueObject\DecimalCol
     {
-        return ValueObject\DecimalCol::fromString($this->decimal_col);
+        return $this->decimal_col;
     }
 
     /**
@@ -80,7 +80,7 @@ final class MySqlTypeSample
      */
     public function floatCol(): ValueObject\FloatCol
     {
-        return ValueObject\FloatCol::fromString($this->float_col);
+        return $this->float_col;
     }
 
     /**
@@ -88,7 +88,7 @@ final class MySqlTypeSample
      */
     public function doubleCol(): ValueObject\DoubleCol
     {
-        return ValueObject\DoubleCol::fromString($this->double_col);
+        return $this->double_col;
     }
 
     /**
@@ -96,7 +96,7 @@ final class MySqlTypeSample
      */
     public function dateCol(): ValueObject\DateCol
     {
-        return ValueObject\DateCol::fromString($this->date_col);
+        return $this->date_col;
     }
 
     /**
@@ -104,7 +104,7 @@ final class MySqlTypeSample
      */
     public function timeCol(): ValueObject\TimeCol
     {
-        return ValueObject\TimeCol::fromString($this->time_col);
+        return $this->time_col;
     }
 
     /**
@@ -112,7 +112,7 @@ final class MySqlTypeSample
      */
     public function datetimeCol(): ValueObject\DateTimeCol
     {
-        return ValueObject\DateTimeCol::fromString($this->datetime_col);
+        return $this->datetime_col;
     }
 
     /**
@@ -120,7 +120,7 @@ final class MySqlTypeSample
      */
     public function charCol(): ValueObject\CharCol
     {
-        return ValueObject\CharCol::fromString($this->char_col);
+        return $this->char_col;
     }
 
     /**
@@ -128,7 +128,7 @@ final class MySqlTypeSample
      */
     public function varcharCol(): ValueObject\VarcharCol
     {
-        return ValueObject\VarcharCol::fromString($this->varchar_col);
+        return $this->varchar_col;
     }
 
     /**
@@ -136,7 +136,7 @@ final class MySqlTypeSample
      */
     public function textCol(): ValueObject\TextCol
     {
-        return ValueObject\TextCol::fromString($this->text_col);
+        return $this->text_col;
     }
 
     /**
@@ -144,7 +144,7 @@ final class MySqlTypeSample
      */
     public function mediumtextCol(): ValueObject\MediumtextCol
     {
-        return ValueObject\MediumtextCol::fromString($this->mediumtext_col);
+        return $this->mediumtext_col;
     }
 
     /**
@@ -152,7 +152,7 @@ final class MySqlTypeSample
      */
     public function longtextCol(): ValueObject\LongtextCol
     {
-        return ValueObject\LongtextCol::fromString($this->longtext_col);
+        return $this->longtext_col;
     }
 
     /**
@@ -160,6 +160,6 @@ final class MySqlTypeSample
      */
     public function jsonCol(): ValueObject\JsonCol
     {
-        return ValueObject\JsonCol::fromString($this->json_col);
+        return $this->json_col;
     }
 }

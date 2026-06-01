@@ -9,36 +9,36 @@ use App\Domain\Shared\ValueObject as SVo;
 final class PageAccessLog
 {
     /**
-     * @param string $id
-     * @param string $accessed
-     * @param string $account_type
-     * @param string $account_id
-     * @param string $method
-     * @param string $path
-     * @param ?string $query_string
-     * @param ?string $post_keys
-     * @param ?string $route_name
-     * @param ?string $referer
-     * @param ?string $ip_address
-     * @param ?string $user_agent
-     * @param ?string $created
-     * @param ?string $search_key
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\Id $id
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\Accessed $accessed
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\AccountType $account_type
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\AccountId $account_id
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\Method $method
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\Path $path
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\QueryString $query_string
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\PostKeys $post_keys
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\RouteName $route_name
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\Referer $referer
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\IpAddress $ip_address
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\UserAgent $user_agent
+     * @param \App\Domain\Shared\ValueObject\Created $created
+     * @param \App\Domain\Log\PageAccessLogs\ValueObject\SearchKey $search_key
      */
     public function __construct(
-        private readonly string $id,
-        private readonly string $accessed,
-        private readonly string $account_type,
-        private readonly string $account_id,
-        private readonly string $method,
-        private readonly string $path,
-        private readonly ?string $query_string,
-        private readonly ?string $post_keys,
-        private readonly ?string $route_name,
-        private readonly ?string $referer,
-        private readonly ?string $ip_address,
-        private readonly ?string $user_agent,
-        private readonly ?string $created,
-        private readonly ?string $search_key = null,
+        private readonly Vo\Id $id,
+        private readonly Vo\Accessed $accessed,
+        private readonly Vo\AccountType $account_type,
+        private readonly Vo\AccountId $account_id,
+        private readonly Vo\Method $method,
+        private readonly Vo\Path $path,
+        private readonly Vo\QueryString $query_string,
+        private readonly Vo\PostKeys $post_keys,
+        private readonly Vo\RouteName $route_name,
+        private readonly Vo\Referer $referer,
+        private readonly Vo\IpAddress $ip_address,
+        private readonly Vo\UserAgent $user_agent,
+        private readonly SVo\Created $created,
+        private readonly Vo\SearchKey $search_key,
     ) {
     }
 
@@ -47,7 +47,7 @@ final class PageAccessLog
      */
     public function id(): Vo\Id
     {
-        return Vo\Id::fromString($this->id);
+        return $this->id;
     }
 
     /**
@@ -55,7 +55,7 @@ final class PageAccessLog
      */
     public function accessed(): Vo\Accessed
     {
-        return new Vo\Accessed($this->accessed);
+        return $this->accessed;
     }
 
     /**
@@ -63,7 +63,7 @@ final class PageAccessLog
      */
     public function accountType(): Vo\AccountType
     {
-        return Vo\AccountType::fromString($this->account_type);
+        return $this->account_type;
     }
 
     /**
@@ -71,7 +71,7 @@ final class PageAccessLog
      */
     public function accountId(): Vo\AccountId
     {
-        return new Vo\AccountId($this->account_id);
+        return $this->account_id;
     }
 
     /**
@@ -79,7 +79,7 @@ final class PageAccessLog
      */
     public function method(): Vo\Method
     {
-        return Vo\Method::fromString($this->method);
+        return $this->method;
     }
 
     /**
@@ -87,7 +87,7 @@ final class PageAccessLog
      */
     public function path(): Vo\Path
     {
-        return Vo\Path::fromString($this->path);
+        return $this->path;
     }
 
     /**
@@ -95,7 +95,7 @@ final class PageAccessLog
      */
     public function queryString(): Vo\QueryString
     {
-        return Vo\QueryString::fromString($this->query_string);
+        return $this->query_string;
     }
 
     /**
@@ -103,7 +103,7 @@ final class PageAccessLog
      */
     public function postKeys(): Vo\PostKeys
     {
-        return Vo\PostKeys::fromString($this->post_keys);
+        return $this->post_keys;
     }
 
     /**
@@ -111,7 +111,7 @@ final class PageAccessLog
      */
     public function routeName(): Vo\RouteName
     {
-        return Vo\RouteName::fromString($this->route_name);
+        return $this->route_name;
     }
 
     /**
@@ -119,7 +119,7 @@ final class PageAccessLog
      */
     public function referer(): Vo\Referer
     {
-        return Vo\Referer::fromString($this->referer);
+        return $this->referer;
     }
 
     /**
@@ -127,7 +127,7 @@ final class PageAccessLog
      */
     public function ipAddress(): Vo\IpAddress
     {
-        return Vo\IpAddress::fromString($this->ip_address);
+        return $this->ip_address;
     }
 
     /**
@@ -135,7 +135,7 @@ final class PageAccessLog
      */
     public function userAgent(): Vo\UserAgent
     {
-        return Vo\UserAgent::fromString($this->user_agent);
+        return $this->user_agent;
     }
 
     /**
@@ -143,7 +143,7 @@ final class PageAccessLog
      */
     public function created(): SVo\Created
     {
-        return new SVo\Created($this->created);
+        return $this->created;
     }
 
     /**
@@ -151,6 +151,6 @@ final class PageAccessLog
      */
     public function searchKey(): Vo\SearchKey
     {
-        return Vo\SearchKey::fromString($this->search_key);
+        return $this->search_key;
     }
 }

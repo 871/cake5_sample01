@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace App\Middleware\User;
 
-use App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterCode;
+use App\Domain\Exception\RepositoryException;
+use App\Domain\User\UserAccounts\Entity\UserAccount;
+use App\Domain\User\UserAccounts\Repository\UserAccountsRepository as UserAccountsRepositoryInterface;
+use App\Domain\User\UserAccounts\ValueObject as UserAccountVo;
 use App\Infrastructure\Persistence\Cake\User\RefreshTokensRepository;
 use App\Infrastructure\Persistence\Cake\User\UserAccountsRepository;
-use App\Model\Entity\User\UserAccount;
 use App\Security\Auth\AuthContext\Fields\Type;
 use App\Security\Auth\UserTokenService;
 use App\Security\Input\Cast;
@@ -22,12 +24,12 @@ class UserAuthMiddleware implements MiddlewareInterface
 {
     /**
      * @param \App\Security\Auth\UserTokenService $tokenService
-     * @param \App\Infrastructure\Persistence\Cake\User\UserAccountsRepository $userAccountsRepository
+     * @param \App\Domain\User\UserAccounts\Repository\UserAccountsRepository $userAccountsRepository
      * @param \App\Infrastructure\Persistence\Cake\User\RefreshTokensRepository $refreshTokensRepository
      */
     public function __construct(
         private readonly UserTokenService $tokenService = new UserTokenService(),
-        private readonly UserAccountsRepository $userAccountsRepository = new UserAccountsRepository(),
+        private readonly UserAccountsRepositoryInterface $userAccountsRepository = new UserAccountsRepository(),
         private readonly RefreshTokensRepository $refreshTokensRepository = new RefreshTokensRepository(),
     ) {
     }
@@ -57,7 +59,12 @@ class UserAuthMiddleware implements MiddlewareInterface
             && isset($refreshAuth['refresh_token_id'])
             && $this->refreshTokensRepository->isValid($refreshAuth['refresh_token_id'], $account_id, $now)
         ) {
-            $account = $this->userAccountsRepository->read($account_id);
+            try {
+                $account = $this->userAccountsRepository->read(UserAccountVo\Id::fromString($account_id));
+            } catch (RepositoryException) {
+                $account = null;
+            }
+
             if ($account !== null && $this->canAuthenticate($account)) {
                 $tokenSet = $this->tokenService->createTokenSet($account, $now);
                 $this->refreshTokensRepository->rotate(
@@ -103,18 +110,18 @@ class UserAuthMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param \App\Model\Entity\User\UserAccount $account
+     * @param \App\Domain\User\UserAccounts\Entity\UserAccount $account
      * @return bool
      */
     private function canAuthenticate(UserAccount $account): bool
     {
-        if ($account->password_expires_at->getTimestamp() < (new DateTimeImmutable())->getTimestamp()) {
+        if ($account->passwordExpiresAt()->toDateTime()->getTimestamp() < (new DateTimeImmutable())->getTimestamp()) {
             return false;
         }
 
-        return in_array((string)$account->account_status_master->code, [
-            AccountStatusMasterCode::ACTIVE,
-            AccountStatusMasterCode::PENDING,
+        return in_array($account->accountStatusMasterCode()->toString(), [
+            UserAccountVo\AccountStatusMasterCode::ACTIVE,
+            UserAccountVo\AccountStatusMasterCode::PENDING,
         ], true);
     }
 }

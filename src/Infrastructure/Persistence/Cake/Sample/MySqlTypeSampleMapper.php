@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Persistence\Cake\Sample;
 
 use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample as DomainEntity;
+use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
 use App\Lib\UUID\UUID;
 use App\Model\Entity\Sample\MySqlTypeSample as OrmEntity;
 use App\Model\Table\Sample\MySqlTypeSamplesTable;
@@ -92,21 +93,23 @@ final class MySqlTypeSampleMapper
     public function toDomainEntity(OrmEntity $ormEntity): DomainEntity
     {
         return new DomainEntity(
-            id: $ormEntity->id,
-            int_col: Cast::toStringOrNull($ormEntity->int_col),
-            bigint_col: Cast::toStringOrNull($ormEntity->bigint_col),
-            decimal_col: Cast::toStringOrNull($ormEntity->decimal_col),
-            float_col: Cast::toStringOrNull($ormEntity->float_col),
-            double_col: Cast::toStringOrNull($ormEntity->double_col),
-            date_col: Cast::toStringOrNull($ormEntity->date_col?->format('Y-m-d')),
-            time_col: Cast::toStringOrNull($ormEntity->time_col?->format('H:i:s')),
-            datetime_col: Cast::toStringOrNull($ormEntity->datetime_col?->format('Y-m-d\TH:i:s')),
-            char_col: Cast::toStringOrNull($ormEntity->char_col),
-            varchar_col: Cast::toStringOrNull($ormEntity->varchar_col),
-            text_col: Cast::toStringOrNull($ormEntity->text_col),
-            mediumtext_col: Cast::toStringOrNull($ormEntity->mediumtext_col),
-            longtext_col: Cast::toStringOrNull($ormEntity->longtext_col),
-            json_col: json_encode($ormEntity->json_col) ?: null,
+            id: Vo\Id::fromString(Cast::toStringOrNull($ormEntity->id)),
+            int_col: Vo\IntCol::fromString(Cast::toStringOrNull($ormEntity->int_col)),
+            bigint_col: Vo\BigintCol::fromString(Cast::toStringOrNull($ormEntity->bigint_col)),
+            decimal_col: Vo\DecimalCol::fromString(Cast::toStringOrNull($ormEntity->decimal_col)),
+            float_col: Vo\FloatCol::fromString(Cast::toStringOrNull($ormEntity->float_col)),
+            double_col: Vo\DoubleCol::fromString(Cast::toStringOrNull($ormEntity->double_col)),
+            date_col: Vo\DateCol::fromString(Cast::toStringOrNull($ormEntity->date_col?->format('Y-m-d'))),
+            time_col: Vo\TimeCol::fromString(Cast::toStringOrNull($ormEntity->time_col?->format('H:i:s'))),
+            datetime_col: Vo\DateTimeCol::fromString(
+                Cast::toStringOrNull($ormEntity->datetime_col?->format('Y-m-d\TH:i:s')),
+            ),
+            char_col: Vo\CharCol::fromString(Cast::toStringOrNull($ormEntity->char_col)),
+            varchar_col: Vo\VarcharCol::fromString(Cast::toStringOrNull($ormEntity->varchar_col)),
+            text_col: Vo\TextCol::fromString(Cast::toStringOrNull($ormEntity->text_col)),
+            mediumtext_col: Vo\MediumtextCol::fromString(Cast::toStringOrNull($ormEntity->mediumtext_col)),
+            longtext_col: Vo\LongtextCol::fromString(Cast::toStringOrNull($ormEntity->longtext_col)),
+            json_col: Vo\JsonCol::fromString(json_encode($ormEntity->json_col) ?: null),
         );
     }
 }

@@ -5,15 +5,16 @@ namespace App\Application\Controller\User;
 
 use App\Application\Controller\Shared\ServiceInterface;
 use App\Application\Controller\Shared\ServiceTrait;
-use App\Domain\Admin\AdminAccounts\ValueObject\AccountStatusMasterCode;
 use App\Domain\Log\LoginLogs\Entity\LoginLog as LoginLogEntity;
 use App\Domain\Log\LoginLogs\ValueObject as LoginLogVo;
+use App\Domain\Shared\ValueObject as SVo;
+use App\Domain\User\UserAccounts\Entity\UserAccount;
+use App\Domain\User\UserAccounts\ValueObject as UserAccountVo;
 use App\Exception\AuthException;
 use App\Infrastructure\Persistence\Cake\Log\LoginLogs\LoginLogsRepository;
 use App\Infrastructure\Persistence\Cake\User\RefreshTokensRepository;
 use App\Infrastructure\Persistence\Cake\User\UserAccountsRepository;
 use App\Lib\UUID\UUID;
-use App\Model\Entity\User\UserAccount;
 use App\Security\Auth\UserTokenService;
 use App\Security\Input\Cast;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
@@ -23,7 +24,7 @@ final class Login implements ServiceInterface
     use ServiceTrait;
 
     /**
-     * @var \App\Model\Entity\User\UserAccount
+     * @var \App\Domain\User\UserAccounts\Entity\UserAccount
      */
     private UserAccount $accountEntity;
 
@@ -92,7 +93,9 @@ final class Login implements ServiceInterface
      */
     private function loadAccountEntity(): self
     {
-        $this->accountEntity = (new UserAccountsRepository())->findByEmail($this->login_id)
+        $this->accountEntity = (new UserAccountsRepository($this->datetime))->findByEmail(
+            UserAccountVo\Email::fromString($this->login_id),
+        )
             ?? throw new AuthException(
                 __('ログインIDまたはパスワードが違います。'),
                 AuthException::LOGIN_ID_NOT_FOUND,
@@ -106,7 +109,7 @@ final class Login implements ServiceInterface
      */
     private function verifyPassword(): self
     {
-        if (!(new DefaultPasswordHasher())->check($this->password, (string)$this->accountEntity->password)) {
+        if (!(new DefaultPasswordHasher())->check($this->password, $this->accountEntity->password()->toString())) {
             throw new AuthException(
                 __('ログインIDまたはパスワードが違います。'),
                 AuthException::INVALID_PASSWORD,
@@ -121,7 +124,7 @@ final class Login implements ServiceInterface
      */
     private function checkPasswordExpiresAt(): self
     {
-        if ($this->accountEntity->password_expires_at->getTimestamp() < $this->datetime->getTimestamp()) {
+        if ($this->accountEntity->passwordExpiresAt()->toDateTime()->getTimestamp() < $this->datetime->getTimestamp()) {
             throw new AuthException(
                 __('パスワードの有効期限が切れています。'),
                 AuthException::PASSWORD_EXPIRED,
@@ -136,17 +139,18 @@ final class Login implements ServiceInterface
      */
     private function checkAccountStatus(): self
     {
-        return match ((string)$this->accountEntity->account_status_master->code) {
-            AccountStatusMasterCode::ACTIVE, AccountStatusMasterCode::PENDING => $this,
-            AccountStatusMasterCode::SUSPENDED => throw new AuthException(
+        return match ($this->accountEntity->accountStatusMasterCode()->toString()) {
+            UserAccountVo\AccountStatusMasterCode::ACTIVE,
+            UserAccountVo\AccountStatusMasterCode::PENDING => $this,
+            UserAccountVo\AccountStatusMasterCode::SUSPENDED => throw new AuthException(
                 __('アカウントが無効です。'),
                 AuthException::ACCOUNT_SUSPENDED,
             ),
-            AccountStatusMasterCode::LOCKED => throw new AuthException(
+            UserAccountVo\AccountStatusMasterCode::LOCKED => throw new AuthException(
                 __('アカウントが無効です。'),
                 AuthException::ACCOUNT_LOCKED,
             ),
-            AccountStatusMasterCode::DELETED => throw new AuthException(
+            UserAccountVo\AccountStatusMasterCode::DELETED => throw new AuthException(
                 __('アカウントが無効です。'),
                 AuthException::ACCOUNT_DELETED,
             ),
@@ -162,7 +166,7 @@ final class Login implements ServiceInterface
      */
     private function createTokens(): self
     {
-        $this->account_id = (string)$this->accountEntity->id;
+        $this->account_id = $this->accountEntity->id()->toString();
         $tokenSet = (new UserTokenService())->createTokenSet($this->accountEntity, $this->datetime);
         (new RefreshTokensRepository())->create(
             id: $tokenSet['refresh_token_id'],
@@ -181,17 +185,19 @@ final class Login implements ServiceInterface
     public function recordLoginSuccess(): self
     {
         (new LoginLogsRepository())->create(new LoginLogEntity(
-            id: UUID::uuid7(),
-            login_id: $this->login_id,
-            login_actor_type: LoginLogVo\LoginActorType::USER,
-            account_id: isset($this->accountEntity) ? (string)$this->accountEntity->id : null,
-            impersonator_account_id: null,
-            login_result: LoginLogVo\LoginResult::SUCCESS,
-            ip_address: $this->request->clientIp(),
-            user_agent: $this->request->getHeaderLine('User-Agent'),
-            failure_reason_code: null,
-            logged_in_at: $this->datetime->format('Y-m-d\TH:i:s'),
-            created: $this->datetime->format('Y-m-d\TH:i:s'),
+            id: new LoginLogVo\Id(UUID::uuid7()),
+            login_id: new LoginLogVo\LoginId($this->login_id),
+            login_actor_type: new LoginLogVo\LoginActorType(LoginLogVo\LoginActorType::USER),
+            account_id: new LoginLogVo\AccountId(
+                isset($this->accountEntity) ? $this->accountEntity->id()->toString() : null,
+            ),
+            impersonator_account_id: new LoginLogVo\ImpersonatorAccountId(null),
+            login_result: new LoginLogVo\LoginResult(LoginLogVo\LoginResult::SUCCESS),
+            ip_address: LoginLogVo\IpAddress::fromString($this->request->clientIp()),
+            user_agent: LoginLogVo\UserAgent::fromString($this->request->getHeaderLine('User-Agent')),
+            failure_reason_code: LoginLogVo\FailureReasonCode::fromString(null),
+            logged_in_at: new LoginLogVo\LoggedInAt($this->datetime->format('Y-m-d\TH:i:s')),
+            created: new SVo\Created($this->datetime->format('Y-m-d\TH:i:s')),
         ));
 
         return $this;
@@ -235,17 +241,19 @@ final class Login implements ServiceInterface
         }
 
         (new LoginLogsRepository())->create(new LoginLogEntity(
-            id: UUID::uuid7(),
-            login_id: $this->login_id,
-            login_actor_type: LoginLogVo\LoginActorType::USER,
-            account_id: isset($this->accountEntity) ? (string)$this->accountEntity->id : null,
-            impersonator_account_id: null,
-            login_result: LoginLogVo\LoginResult::FAILURE,
-            ip_address: $this->request->clientIp(),
-            user_agent: $this->request->getHeaderLine('User-Agent'),
-            failure_reason_code: $e->getFailureReasonCode(),
-            logged_in_at: $this->datetime->format('Y-m-d\TH:i:s'),
-            created: $this->datetime->format('Y-m-d\TH:i:s'),
+            id: new LoginLogVo\Id(UUID::uuid7()),
+            login_id: new LoginLogVo\LoginId($this->login_id),
+            login_actor_type: new LoginLogVo\LoginActorType(LoginLogVo\LoginActorType::USER),
+            account_id: new LoginLogVo\AccountId(
+                isset($this->accountEntity) ? $this->accountEntity->id()->toString() : null,
+            ),
+            impersonator_account_id: new LoginLogVo\ImpersonatorAccountId(null),
+            login_result: new LoginLogVo\LoginResult(LoginLogVo\LoginResult::FAILURE),
+            ip_address: LoginLogVo\IpAddress::fromString($this->request->clientIp()),
+            user_agent: LoginLogVo\UserAgent::fromString($this->request->getHeaderLine('User-Agent')),
+            failure_reason_code: LoginLogVo\FailureReasonCode::fromString($e->getFailureReasonCode()),
+            logged_in_at: new LoginLogVo\LoggedInAt($this->datetime->format('Y-m-d\TH:i:s')),
+            created: new SVo\Created($this->datetime->format('Y-m-d\TH:i:s')),
         ));
 
         return $this;

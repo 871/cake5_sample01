@@ -9,6 +9,7 @@ use App\Domain\Admin\AdminAccounts\Entity\AdminAccount as AccountEntity;
 use App\Domain\Admin\AdminAccounts\ValueObject as Vo;
 use App\Domain\Log\LoginLogs\Entity\LoginLog as LoginLogEntity;
 use App\Domain\Log\LoginLogs\ValueObject as LoginLogVo;
+use App\Domain\Shared\ValueObject as SVo;
 use App\Exception\AuthException;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository;
 use App\Infrastructure\Persistence\Cake\Admin\AdminAccountsRepository\Mapper as AdminAccountMapper;
@@ -190,17 +191,19 @@ final class Login implements ServiceInterface
     public function recordLoginSuccess(): self
     {
         (new LoginLogsRepository())->create(new LoginLogEntity(
-            id: UUID::uuid7(),
-            login_id: $this->login_id,
-            login_actor_type: LoginLogVo\LoginActorType::ADMIN,
-            account_id: isset($this->accountEntity) ? $this->accountEntity->id()->toString() : null, // ログインIDをaccount_idとして記録
-            impersonator_account_id: null,
-            login_result: LoginLogVo\LoginResult::SUCCESS,
-            ip_address: $this->request->clientIp(),
-            user_agent: $this->request->getHeaderLine('User-Agent'),
-            failure_reason_code: null,
-            logged_in_at: $this->datetime->format('Y-m-d\TH:i:s'),
-            created: $this->datetime->format('Y-m-d\TH:i:s'),
+            id: new LoginLogVo\Id(UUID::uuid7()),
+            login_id: new LoginLogVo\LoginId($this->login_id),
+            login_actor_type: new LoginLogVo\LoginActorType(LoginLogVo\LoginActorType::ADMIN),
+            account_id: new LoginLogVo\AccountId(
+                isset($this->accountEntity) ? $this->accountEntity->id()->toString() : null,
+            ), // ログインIDをaccount_idとして記録
+            impersonator_account_id: new LoginLogVo\ImpersonatorAccountId(null),
+            login_result: new LoginLogVo\LoginResult(LoginLogVo\LoginResult::SUCCESS),
+            ip_address: LoginLogVo\IpAddress::fromString($this->request->clientIp()),
+            user_agent: LoginLogVo\UserAgent::fromString($this->request->getHeaderLine('User-Agent')),
+            failure_reason_code: LoginLogVo\FailureReasonCode::fromString(null),
+            logged_in_at: new LoginLogVo\LoggedInAt($this->datetime->format('Y-m-d\TH:i:s')),
+            created: new SVo\Created($this->datetime->format('Y-m-d\TH:i:s')),
         ));
 
         return $this;
@@ -237,17 +240,19 @@ final class Login implements ServiceInterface
         }
 
         (new LoginLogsRepository())->create(new LoginLogEntity(
-            id: UUID::uuid7(),
-            login_id: $this->login_id,
-            login_actor_type: LoginLogVo\LoginActorType::ADMIN,
-            account_id: isset($this->accountEntity) ? $this->accountEntity->id()->toString() : null,
-            impersonator_account_id: null,
-            login_result: LoginLogVo\LoginResult::FAILURE,
-            ip_address: $this->request->clientIp(),
-            user_agent: $this->request->getHeaderLine('User-Agent'),
-            failure_reason_code: $e->getFailureReasonCode(),
-            logged_in_at: $this->datetime->format('Y-m-d\TH:i:s'),
-            created: $this->datetime->format('Y-m-d\TH:i:s'),
+            id: new LoginLogVo\Id(UUID::uuid7()),
+            login_id: new LoginLogVo\LoginId($this->login_id),
+            login_actor_type: new LoginLogVo\LoginActorType(LoginLogVo\LoginActorType::ADMIN),
+            account_id: new LoginLogVo\AccountId(
+                isset($this->accountEntity) ? $this->accountEntity->id()->toString() : null,
+            ),
+            impersonator_account_id: new LoginLogVo\ImpersonatorAccountId(null),
+            login_result: new LoginLogVo\LoginResult(LoginLogVo\LoginResult::FAILURE),
+            ip_address: LoginLogVo\IpAddress::fromString($this->request->clientIp()),
+            user_agent: LoginLogVo\UserAgent::fromString($this->request->getHeaderLine('User-Agent')),
+            failure_reason_code: LoginLogVo\FailureReasonCode::fromString($e->getFailureReasonCode()),
+            logged_in_at: new LoginLogVo\LoggedInAt($this->datetime->format('Y-m-d\TH:i:s')),
+            created: new SVo\Created($this->datetime->format('Y-m-d\TH:i:s')),
         ));
 
         return $this;
