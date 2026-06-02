@@ -23,6 +23,8 @@ $prefix = (string)$request->getParam('prefix');
         <li class="nav-item">
             <details class="admin-menu-group"<?= in_array((string)$request->getParam('prefix'), [
                 'Admin/UserAccount',
+                'Admin/UserGrant',
+                'Admin/UserGrant/Role',
             ], true) ? ' open' : '' ?>>
                 <summary class="nav-link text-white">ユーザ管理</summary>
                 <ul class="nav flex-column admin-submenu">
@@ -36,6 +38,17 @@ $prefix = (string)$request->getParam('prefix');
                                 'account_id' => $accountId,
                             ]) ?>"
                         >ユーザアカウント</a>
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link text-white"
+                            href="<?= $this->Url->build([
+                                'prefix' => 'Admin/UserGrant',
+                                'controller' => 'Search',
+                                'action' => 'init',
+                                'account_id' => $accountId,
+                            ]) ?>"
+                        >ユーザ権限</a>
                     </li>
                 </ul>
             </details>
@@ -77,6 +90,7 @@ $prefix = (string)$request->getParam('prefix');
                 'Admin/MailManage',
                 'Admin/AdminAccount',
                 'Admin/AdminGrant',
+                'Admin/AdminGrant/Role',
             ], true) ? ' open' : '' ?>>
                 <summary class="nav-link text-white">システム管理</summary>
                 <ul class="nav flex-column admin-submenu">

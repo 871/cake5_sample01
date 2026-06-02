@@ -35,7 +35,7 @@ final class GrantRolesTable extends Table
             'className' => GrantAccountRolesTable::class,
             'foreignKey' => 'grant_role_id',
             'conditions' => [
-                'GrantAccountRoles.account_type = GrantRoles.account_type',
+
             ],
             'sort' => [
                 'GrantAccountRoles.created' => 'DESC',
@@ -46,7 +46,7 @@ final class GrantRolesTable extends Table
             'className' => GrantRolePermissionsTable::class,
             'foreignKey' => 'grant_role_id',
             'conditions' => [
-                'GrantRolePermissions.account_type = GrantRoles.account_type',
+
             ],
             'sort' => [
                 'GrantRolePermissions.created' => 'DESC',
