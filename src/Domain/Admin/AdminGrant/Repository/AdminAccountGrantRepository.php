@@ -6,7 +6,7 @@ namespace App\Domain\Admin\AdminGrant\Repository;
 use App\Domain\Admin\AdminGrant\Entity\AdminAccountGrant;
 use App\Domain\Admin\AdminGrant\SearchAdminAccountGrantCondition;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
-use Cake\ORM\Query\array;
+use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
 
 interface AdminAccountGrantRepository
@@ -24,9 +24,9 @@ interface AdminAccountGrantRepository
      * Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。 --- IGNORE ---
      *
      * @param \App\Domain\Admin\AdminGrant\SearchAdminAccountGrantCondition $condition
-     * @return \Cake\ORM\Query\array<\App\Model\Entity\Admin\AdminAccount>
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
      */
-    public function search(SearchAdminAccountGrantCondition $condition): array;
+    public function search(SearchAdminAccountGrantCondition $condition): SelectQuery;
 
     /**
      * 管理者ステータスマスタの取得

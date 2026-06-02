@@ -18,7 +18,7 @@ class LoginLogsRepository implements DomainRepository
      * @param \App\Domain\Log\LoginLogs\SearchCondition $condition
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Log\LoginLog>
      */
-    public function search(SearchCondition $condition): array
+    public function search(SearchCondition $condition): SelectQuery
     {
         return (new LoginLogsRepository\Search($condition))->run();
     }

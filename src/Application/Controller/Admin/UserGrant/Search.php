@@ -30,7 +30,7 @@ final class Search implements ServiceInterface
     /**
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\User\UserAccount>
      */
-    public function getSearchQuery(): array
+    public function getSearchQuery(): SelectQuery
     {
         return (new UserAccountGrantRepository($this->datetime))->search(new SearchUserAccountGrantCondition(
             userAccountIds: $this->request->getQuery('user_account_id') ? [

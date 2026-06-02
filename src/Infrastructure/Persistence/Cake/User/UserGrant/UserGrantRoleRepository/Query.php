@@ -32,7 +32,7 @@ final class Query
     /**
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Grant\GrantRole>
      */
-    public function run(SearchCondition $condition): array
+    public function run(SearchCondition $condition): SelectQuery
     {
         $query = $this->table
             ->find()

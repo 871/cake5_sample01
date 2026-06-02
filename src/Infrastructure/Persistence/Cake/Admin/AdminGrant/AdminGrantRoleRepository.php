@@ -29,7 +29,7 @@ final class AdminGrantRoleRepository implements DomainAdminGrantRoleRepository
      * @param \App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition $condition
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Grant\GrantRole>
      */
-    public function query(SearchAdminGrantRoleCondition $condition): array
+    public function query(SearchAdminGrantRoleCondition $condition): SelectQuery
     {
         return (new AdminGrantRoleRepository\Query())->run($condition);
     }

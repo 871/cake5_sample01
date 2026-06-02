@@ -31,7 +31,7 @@ final class Search implements ServiceInterface
     /**
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Grant\GrantRole>
      */
-    public function getSearchQuery(): array
+    public function getSearchQuery(): SelectQuery
     {
         return (new AdminGrantRoleRepository($this->datetime))->query(new SearchAdminGrantRoleCondition(
             searchText: new SearchText(Cast::toStringOrNull($this->request->getQuery('keyword'))),

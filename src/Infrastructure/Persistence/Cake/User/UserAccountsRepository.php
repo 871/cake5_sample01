@@ -28,7 +28,7 @@ final class UserAccountsRepository implements DomainUserAccountsRepository
      * @param \App\Domain\User\UserAccounts\SearchCondition $condition
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\User\UserAccount>
      */
-    public function search(SearchCondition $condition): array
+    public function search(SearchCondition $condition): SelectQuery
     {
         return (new UserAccountsRepository\Search($condition))->run();
     }

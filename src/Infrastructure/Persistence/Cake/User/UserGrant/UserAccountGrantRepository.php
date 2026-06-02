@@ -29,7 +29,7 @@ final class UserAccountGrantRepository implements InterfaceRepo
      * @param \App\Domain\User\UserGrant\SearchUserAccountGrantCondition $condition
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\User\UserAccount>
      */
-    public function search(SearchUserAccountGrantCondition $condition): array
+    public function search(SearchUserAccountGrantCondition $condition): SelectQuery
     {
         return (new UserAccountGrantRepository\Search())->run($condition);
     }

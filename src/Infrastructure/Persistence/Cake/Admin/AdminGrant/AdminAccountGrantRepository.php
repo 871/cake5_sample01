@@ -31,7 +31,7 @@ final class AdminAccountGrantRepository implements DomainAdminAccountGrantReposi
      * @param \App\Domain\Admin\AdminGrant\SearchAdminAccountGrantCondition $condition
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
      */
-    public function search(SearchAdminAccountGrantCondition $condition): array
+    public function search(SearchAdminAccountGrantCondition $condition): SelectQuery
     {
         return (new AdminAccountGrantRepository\Search())->run($condition);
     }

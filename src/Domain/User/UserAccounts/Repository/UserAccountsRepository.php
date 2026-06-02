@@ -6,7 +6,7 @@ namespace App\Domain\User\UserAccounts\Repository;
 use App\Domain\User\UserAccounts\Entity\UserAccount;
 use App\Domain\User\UserAccounts\SearchCondition;
 use App\Domain\User\UserAccounts\ValueObject as Vo;
-use Cake\ORM\Query\array;
+use Cake\ORM\Query\SelectQuery;
 use DateTimeInterface;
 
 interface UserAccountsRepository
@@ -18,9 +18,9 @@ interface UserAccountsRepository
 
     /**
      * @param \App\Domain\User\UserAccounts\SearchCondition $condition
-     * @return \Cake\ORM\Query\array<\App\Model\Entity\User\UserAccount>
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\User\UserAccount>
      */
-    public function search(SearchCondition $condition): array;
+    public function search(SearchCondition $condition): SelectQuery;
 
     /**
      * @param \App\Domain\User\UserAccounts\Entity\UserAccount $entity

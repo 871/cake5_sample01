@@ -33,7 +33,7 @@ final class Search implements ServiceInterface
     /**
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Sample\MySqlTypeSample>
      */
-    public function getSearchQuery(): array
+    public function getSearchQuery(): SelectQuery
     {
         /** @var array<string, string> $data */
         $data = $this->request->getQuery();

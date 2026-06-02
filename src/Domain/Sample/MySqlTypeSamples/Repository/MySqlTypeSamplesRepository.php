@@ -6,7 +6,7 @@ namespace App\Domain\Sample\MySqlTypeSamples\Repository;
 use App\Domain\Sample\MySqlTypeSamples\Entity\MySqlTypeSample;
 use App\Domain\Sample\MySqlTypeSamples\SearchCondition;
 use App\Domain\Sample\MySqlTypeSamples\ValueObject as Vo;
-use Cake\ORM\Query\array;
+use Cake\ORM\Query\SelectQuery;
 
 interface MySqlTypeSamplesRepository
 {
@@ -14,9 +14,9 @@ interface MySqlTypeSamplesRepository
      * Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。 --- IGNORE ---
      * 完全なDDDへ再設計する場合は、ドメインサービス内でページネーションやソートの処理も完結させる形にすることも検討してください。 --- IGNORE ---
      *
-     * @return \Cake\ORM\Query\array<\App\Model\Entity\Sample\MySqlTypeSample>
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Sample\MySqlTypeSample>
      */
-    public function search(SearchCondition $condition): array;
+    public function search(SearchCondition $condition): SelectQuery;
 
     /**
      * 作成

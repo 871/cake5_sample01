@@ -6,7 +6,7 @@ namespace App\Domain\Log\LoginLogs\Repository;
 use App\Domain\Log\LoginLogs\Entity\LoginLog;
 use App\Domain\Log\LoginLogs\SearchCondition;
 use App\Domain\Log\LoginLogs\ValueObject as Vo;
-use Cake\ORM\Query\array;
+use Cake\ORM\Query\SelectQuery;
 
 interface LoginLogsRepository
 {
@@ -15,9 +15,9 @@ interface LoginLogsRepository
      * 完全なDDDへ再設計する場合は、ドメインサービス内でページネーションやソートの処理も完結させる形にすることも検討してください。 --- IGNORE ---
      *
      * @param \App\Domain\Log\LoginLogs\SearchCondition $condition
-     * @return \Cake\ORM\Query\array<\App\Model\Entity\Log\LoginLog>
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Log\LoginLog>
      */
-    public function search(SearchCondition $condition): array;
+    public function search(SearchCondition $condition): SelectQuery;
 
     /**
      * 作成

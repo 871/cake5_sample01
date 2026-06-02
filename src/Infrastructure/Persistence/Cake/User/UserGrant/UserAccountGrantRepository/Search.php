@@ -37,7 +37,7 @@ final class Search
      * @param \App\Domain\User\UserGrant\SearchUserAccountGrantCondition $condition
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\User\UserAccount>
      */
-    public function run(SearchUserAccountGrantCondition $condition): array
+    public function run(SearchUserAccountGrantCondition $condition): SelectQuery
     {
         return $this->table
             ->find()

@@ -29,7 +29,7 @@ final class Search
     /**
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
      */
-    public function run(): array
+    public function run(): SelectQuery
     {
         return $this->table
             ->find()

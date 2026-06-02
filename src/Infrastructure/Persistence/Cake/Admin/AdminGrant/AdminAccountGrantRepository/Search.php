@@ -36,7 +36,7 @@ final class Search
     /**
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
      */
-    public function run(SearchAdminAccountGrantCondition $condition): array
+    public function run(SearchAdminAccountGrantCondition $condition): SelectQuery
     {
         // ※ 採用アプローチ: INNER JOIN grant_permissions + EXISTS (UNION ALL) 方式
         //   【比較検討】
