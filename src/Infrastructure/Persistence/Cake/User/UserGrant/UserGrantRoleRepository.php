@@ -23,7 +23,7 @@ final class UserGrantRoleRepository implements InterfaceRepo
      * @param \App\Domain\User\UserGrant\SearchUserGrantRoleCondition $condition
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Grant\GrantRole>
      */
-    public function query(SearchUserGrantRoleCondition $condition): SelectQuery
+    public function query(SearchUserGrantRoleCondition $condition): array
     {
         return (new UserGrantRoleRepository\Query())->run($condition);
     }

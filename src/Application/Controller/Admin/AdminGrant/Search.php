@@ -30,7 +30,7 @@ final class Search implements ServiceInterface
     /**
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
      */
-    public function getSearchQuery(): SelectQuery
+    public function getSearchQuery(): array
     {
         return (new AdminAccountGrantRepository($this->datetime))->search(new SearchAdminAccountGrantCondition(
             adminAccountIds: $this->request->getQuery('admin_account_id') ? [

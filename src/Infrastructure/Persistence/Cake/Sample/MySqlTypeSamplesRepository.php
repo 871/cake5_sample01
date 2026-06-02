@@ -17,7 +17,7 @@ final class MySqlTypeSamplesRepository implements DomainMySqlTypeSamplesReposito
      * @param \App\Domain\Sample\MySqlTypeSamples\SearchCondition $condition
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Sample\MySqlTypeSample>
      */
-    public function search(SearchCondition $condition): SelectQuery
+    public function search(SearchCondition $condition): array
     {
         return (new MySqlTypeSamplesRepository\Search($condition))->run();
     }

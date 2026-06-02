@@ -6,7 +6,7 @@ namespace App\Domain\Admin\AdminGrant\Repository;
 use App\Domain\Admin\AdminGrant\Entity\GrantRole;
 use App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition;
 use App\Domain\Admin\AdminGrant\ValueObject as Vo;
-use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Query\array;
 use DateTimeInterface;
 
 interface AdminGrantRoleRepository
@@ -22,9 +22,9 @@ interface AdminGrantRoleRepository
      * Memo: Cake5のController::paginate()の仕様を優先した設計とするため、Cake\ORM\Queryを直接返す形にしています。 --- IGNORE ---
      *
      * @param \App\Domain\Admin\AdminGrant\SearchAdminGrantRoleCondition $condition
-     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Grant\GrantRole>
+     * @return \Cake\ORM\Query\array<\App\Model\Entity\Grant\GrantRole>
      */
-    public function query(SearchAdminGrantRoleCondition $condition): SelectQuery;
+    public function query(SearchAdminGrantRoleCondition $condition): array;
 
     /**
      * ロール権限の検索

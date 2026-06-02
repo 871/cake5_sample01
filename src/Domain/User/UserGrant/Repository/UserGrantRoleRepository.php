@@ -6,7 +6,7 @@ namespace App\Domain\User\UserGrant\Repository;
 use App\Domain\User\UserGrant\Entity\GrantRole;
 use App\Domain\User\UserGrant\SearchUserGrantRoleCondition;
 use App\Domain\User\UserGrant\ValueObject as Vo;
-use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Query\array;
 use DateTimeInterface;
 
 interface UserGrantRoleRepository
@@ -18,9 +18,9 @@ interface UserGrantRoleRepository
 
     /**
      * @param \App\Domain\User\UserGrant\SearchUserGrantRoleCondition $condition
-     * @return SelectQuery<\App\Model\Entity\Grant\GrantRole>
+     * @return array
      */
-    public function query(SearchUserGrantRoleCondition $condition): SelectQuery;
+    public function query(SearchUserGrantRoleCondition $condition): array;
 
     /**
      * @param \App\Domain\User\UserGrant\SearchUserGrantRoleCondition $condition

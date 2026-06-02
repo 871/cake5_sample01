@@ -6,7 +6,7 @@ namespace App\Domain\User\UserGrant\Repository;
 use App\Domain\User\UserGrant\Entity\UserAccountGrant;
 use App\Domain\User\UserGrant\SearchUserAccountGrantCondition;
 use App\Domain\User\UserGrant\ValueObject as Vo;
-use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Query\array;
 use DateTimeInterface;
 
 interface UserAccountGrantRepository
@@ -18,9 +18,9 @@ interface UserAccountGrantRepository
 
     /**
      * @param \App\Domain\User\UserGrant\SearchUserAccountGrantCondition $condition
-     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\User\UserAccount>
+     * @return \Cake\ORM\Query\array<\App\Model\Entity\User\UserAccount>
      */
-    public function search(SearchUserAccountGrantCondition $condition): SelectQuery;
+    public function search(SearchUserAccountGrantCondition $condition): array;
 
     /**
      * @return array<\App\Domain\User\UserGrant\Entity\AccountStatusMaster>

@@ -51,7 +51,7 @@ final class Search implements ServiceInterface
     /**
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Log\LoginLog>
      */
-    public function getSearchQuery(): SelectQuery
+    public function getSearchQuery(): array
     {
         /** @var array<string, string|array<string>> $data */
         $data = $this->request->getQuery();

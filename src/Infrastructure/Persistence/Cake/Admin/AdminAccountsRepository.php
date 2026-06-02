@@ -27,7 +27,7 @@ final class AdminAccountsRepository implements DomainAdminAccountsRepository
      * @param \App\Domain\Admin\AdminAccounts\SearchCondition $condition
      * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Admin\AdminAccount>
      */
-    public function search(SearchCondition $condition): SelectQuery
+    public function search(SearchCondition $condition): array
     {
         return (new AdminAccountsRepository\Search($condition))->run();
     }
